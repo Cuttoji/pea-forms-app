@@ -1,11 +1,12 @@
+// app/auth/register/page.tsx
+"use client"; // This component uses client-side interactivity
 
-"use client";
-
-import React, { useState } from 'react';
+import React, { useState } from 'react'; // ไม่จำเป็นต้องใช้ useEffect ที่นี่แล้ว
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; // ยังคงเก็บไว้เผื่อต้องการ redirect ในอนาคต
 
-
+// ไม่จำเป็นต้องมีการตั้งค่า Supabase URL/Key หรือ SupabaseClientType ที่นี่
+// หากการทำงานทั้งหมดสำหรับการสมัครสมาชิกผ่าน API route
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -54,10 +55,16 @@ export default function RegisterPage() {
       const result = await response.json();
 
       if (!response.ok) {
+        // result.error มาจาก NextResponse.json({ error: ... }) ใน API route
         setMessage(result.error || `เกิดข้อผิดพลาด: ${response.statusText}`);
       } else {
+        // result.message และ result.user มาจาก NextResponse.json({ message: ..., user: ... })
         setMessage(result.message || 'สมัครสมาชิกสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันบัญชี');
         console.log('Registration API success:', result.user);
+        // คุณอาจจะ clear form หลังจากสมัครสมาชิกสำเร็จ
+        // setForm({ username: '', email: '', password: '', confirmPassword: '' });
+        // การ redirect (router.push('/')) อาจจะยังไม่เหมาะสมทันที
+        // จนกว่าผู้ใช้จะยืนยันอีเมลและเข้าสู่ระบบได้
       }
     } catch (err: any) {
       console.error('API call error:', err);
@@ -88,7 +95,7 @@ export default function RegisterPage() {
               required
               value={form.username}
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5b2d90] focus:border-[#5b2d90] sm:text-sm"
+              className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5b2d90] focus:border-[#5b2d90] sm:text-sm text-gray-900"
               placeholder="เลือกชื่อผู้ใช้งานของคุณ"
             />
           </div>
@@ -105,7 +112,7 @@ export default function RegisterPage() {
               required
               value={form.email}
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5b2d90] focus:border-[#5b2d90] sm:text-sm"
+              className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5b2d90] focus:border-[#5b2d90] sm:text-sm text-gray-900"
               placeholder="you@example.com"
             />
           </div>
@@ -122,7 +129,7 @@ export default function RegisterPage() {
               required
               value={form.password}
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5b2d90] focus:border-[#5b2d90] sm:text-sm"
+              className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5b2d90] focus:border-[#5b2d90] sm:text-sm text-gray-900"
               placeholder="อย่างน้อย 6 ตัวอักษร"
             />
           </div>
@@ -139,7 +146,7 @@ export default function RegisterPage() {
               required
               value={form.confirmPassword}
               onChange={handleChange}
-              className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5b2d90] focus:border-[#5b2d90] sm:text-sm"
+              className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5b2d90] focus:border-[#5b2d90] sm:text-sm text-gray-900"
               placeholder="กรอกรหัสผ่านอีกครั้ง"
             />
           </div>
