@@ -103,20 +103,6 @@ export default function HomePage() {
           linkText="เริ่มกรอกฟอร์ม"
         />
       </div>
-
-      <div className="mt-16 text-center">
-        <p className="text-gray-600 mb-4">
-          หากคุณยังไม่มีบัญชีผู้ใช้งาน สามารถสมัครสมาชิกเพื่อเริ่มใช้งานระบบได้
-        </p>
-        {/* แก้ไข: ลบ legacyBehavior และแท็ก <a> ที่ซ้อนอยู่ */}
-        {/* Fix: Removed legacyBehavior and nested <a> tag */}
-        <Link
-          href="/auth/register"
-          className="inline-block px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg shadow-md hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105"
-        >
-          สมัครสมาชิก
-        </Link>
-      </div>
     </div>
   );
 }

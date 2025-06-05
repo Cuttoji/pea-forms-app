@@ -11,7 +11,7 @@ export default function Navbar() {
         </Link>
         <div className="space-x-4"> {/* */}
           <Link href="/" className="hover:text-purple-300 transition-colors">หน้าหลัก</Link> {/* */}
-          <Link href="/auth/register" className="hover:text-purple-300 transition-colors">สมัครสมาชิก</Link> {/* */}
+          <Link href="/auth/login" className="hover:text-purple-300 transition-colors">Logout</Link>
           {/* คุณสามารถเพิ่มลิงก์ Login/Logout หรือ Profile ที่นี่ได้ โดยอาจจะต้องรับ props เพิ่มเติม */}
         </div>
       </div>
