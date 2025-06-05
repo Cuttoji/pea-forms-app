@@ -20,7 +20,7 @@ export default function FormsLayout({ children }) {
 
   // Function to determine if a link is active (basic client-side check)
   // For server components, active state needs a different approach or can be omitted for simplicity
-  const isActive = (href: string) => {
+  const isActive = (href) => {
     if (typeof window !== 'undefined') {
       return window.location.pathname === href;
     }
