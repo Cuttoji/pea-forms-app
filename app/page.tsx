@@ -24,21 +24,24 @@ interface FeatureCardProps {
 // Sub-component for displaying feature cards / links to forms
 const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, href, linkText }) => {
   return (
-    <Link href={href} legacyBehavior>
-      <a className="group block p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out border border-transparent hover:border-purple-300 transform hover:-translate-y-1">
-        <div className="flex items-center justify-center w-12 h-12 bg-purple-100 text-[#5b2d90] rounded-full mb-4 group-hover:bg-[#5b2d90] group-hover:text-white transition-colors">
-          {icon}
-        </div>
-        <h2 className="text-xl sm:text-2xl font-semibold text-[#3a1a5b] mb-3 group-hover:text-[#5b2d90] transition-colors">
-          {title}
-        </h2>
-        <p className="text-gray-600 text-sm sm:text-base mb-4 min-h-[3em]"> {/* min-h to keep card height consistent */}
-          {description}
-        </p>
-        <span className="inline-block text-sm font-medium text-[#5b2d90] group-hover:underline">
-          {linkText} &rarr;
-        </span>
-      </a>
+    // แก้ไข: ลบ legacyBehavior และแท็ก <a> ที่ซ้อนอยู่
+    // Fix: Removed legacyBehavior and nested <a> tag
+    <Link
+      href={href}
+      className="group block p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out border border-transparent hover:border-purple-300 transform hover:-translate-y-1"
+    >
+      <div className="flex items-center justify-center w-12 h-12 bg-purple-100 text-[#5b2d90] rounded-full mb-4 group-hover:bg-[#5b2d90] group-hover:text-white transition-colors">
+        {icon}
+      </div>
+      <h2 className="text-xl sm:text-2xl font-semibold text-[#3a1a5b] mb-3 group-hover:text-[#5b2d90] transition-colors">
+        {title}
+      </h2>
+      <p className="text-gray-600 text-sm sm:text-base mb-4 min-h-[3em]"> {/* min-h to keep card height consistent */}
+        {description}
+      </p>
+      <span className="inline-block text-sm font-medium text-[#5b2d90] group-hover:underline">
+        {linkText} &rarr;
+      </span>
     </Link>
   );
 };
@@ -61,42 +64,42 @@ export default function HomePage() {
           icon={<FileText size={24} />}
           title="ฟอร์มที่อยู่อาศัย"
           description="สำหรับตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัย"
-          href="/residential-inspection" // อัปเดต path ตามโครงสร้างของคุณ
+          href="/form/residential-inspection" // อัปเดต path ตามโครงสร้างของคุณ
           linkText="เริ่มกรอกฟอร์ม"
         />
         <FeatureCard
           icon={<Building size={24} />}
-          title="ฟอร์มอื่นๆ/เชิงพาณิชย์"
+          title="ฟอร์มอื่นๆ"
           description="สำหรับตรวจสอบการติดตั้งระบบไฟฟ้าประเภทอื่นๆ นอกเหนือจากที่อยู่อาศัย"
-          href="/commercial-inspection" // อัปเดต path ตามโครงสร้างของคุณ
+          href="/form/commercial-inspection" // อัปเดต path ตามโครงสร้างของคุณ
           linkText="เริ่มกรอกฟอร์ม"
         />
         <FeatureCard
           icon={<Zap size={24} />}
           title="ฟอร์ม EV Charger (แรงต่ำ)"
           description="สำหรับตรวจสอบระบบอัดประจุยานยนต์ไฟฟ้าที่รับไฟแรงต่ำ"
-          href="/ev-charger-lv-inspection" // อัปเดต path ตามโครงสร้างของคุณ
+          href="/form/ev-charger-lv-inspection" // อัปเดต path ตามโครงสร้างของคุณ
           linkText="เริ่มกรอกฟอร์ม"
         />
         <FeatureCard
           icon={<Zap className="transform rotate-180" size={24} />} // Example of slightly different icon
           title="ฟอร์ม EV Charger (แรงสูง)"
           description="สำหรับตรวจสอบระบบอัดประจุยานยนต์ไฟฟ้าที่รับไฟแรงสูง"
-          href="/ev-charger-hv-inspection" // อัปเดต path ตามโครงสร้างของคุณ
+          href="/form/ev-charger-hv-inspection" // อัปเดต path ตามโครงสร้างของคุณ
           linkText="เริ่มกรอกฟอร์ม"
         />
         <FeatureCard
           icon={<Building size={24} />}
-          title="ฟอร์มอาคารชุด"
+          title="ฟอร์มคอนโด"
           description="สำหรับตรวจสอบการติดตั้งระบบไฟฟ้าในอาคารชุดหรืออาคารที่มีผู้ทรงสิทธิ์หลายราย"
-          href="/condo-inspection" // อัปเดต path ตามโครงสร้างของคุณ
+          href="/form/condo-inspection" // อัปเดต path ตามโครงสร้างของคุณ
           linkText="เริ่มกรอกฟอร์ม"
         />
         <FeatureCard
           icon={<Construction size={24} />}
           title="ฟอร์มตรวจสอบงานก่อสร้าง"
           description="สำหรับตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจำหน่ายของ กฟภ."
-          href="/construction-inspection" // อัปเดต path ตามโครงสร้างของคุณ
+          href="/form/construction-inspection" // อัปเดต path ตามโครงสร้างของคุณ
           linkText="เริ่มกรอกฟอร์ม"
         />
       </div>
@@ -105,10 +108,13 @@ export default function HomePage() {
         <p className="text-gray-600 mb-4">
           หากคุณยังไม่มีบัญชีผู้ใช้งาน สามารถสมัครสมาชิกเพื่อเริ่มใช้งานระบบได้
         </p>
-        <Link href="/auth/register" legacyBehavior>
-          <a className="inline-block px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg shadow-md hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105">
-            สมัครสมาชิก
-          </a>
+        {/* แก้ไข: ลบ legacyBehavior และแท็ก <a> ที่ซ้อนอยู่ */}
+        {/* Fix: Removed legacyBehavior and nested <a> tag */}
+        <Link
+          href="/auth/register"
+          className="inline-block px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg shadow-md hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105"
+        >
+          สมัครสมาชิก
         </Link>
       </div>
     </div>

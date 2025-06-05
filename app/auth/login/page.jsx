@@ -6,8 +6,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation'; // For redirecting after login
 
 // --- Supabase Configuration ---
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// IMPORTANT: Replace with your actual Supabase URL and Anon Key if not using environment variables
+// It's highly recommended to use environment variables for these in a real application.
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'YOUR_SUPABASE_URL';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -41,14 +43,32 @@ export default function LoginPage() {
     const scriptId = 'supabase-js-cdn';
     if (document.getElementById(scriptId)) {
         console.log("Supabase script tag already exists (Login Page).");
-        // Assume it will load or has loaded, check window.supabase in a bit
         const checkSupabaseInterval = setInterval(() => {
             if (window.supabase) {
                 clearInterval(checkSupabaseInterval);
-                script.onload(); // Manually trigger onload logic
+                // Manually trigger onload logic if script was already there but window.supabase wasn't set yet
+                if (script && typeof script.onload === 'function') {
+                    script.onload();
+                } else if (window.supabase) { // Fallback if script.onload is not accessible
+                    console.log("Supabase script loaded from CDN (Login Page - detected via interval).");
+                    if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseKey && supabaseKey !== 'YOUR_SUPABASE_ANON_KEY') {
+                        try {
+                            setSupabaseClient(window.supabase.createClient(supabaseUrl, supabaseKey));
+                            console.log("Supabase client initialized after CDN load (Login Page - interval).");
+                        } catch (e) {
+                            console.error("Error initializing Supabase client after CDN load (Login Page - interval):", e);
+                            setMessage('เกิดข้อผิดพลาดในการโหลด Supabase');
+                        }
+                    } else {
+                        console.warn("Supabase URL or Key is not configured after CDN load (Login Page - interval).");
+                        setMessage('Supabase ยังไม่ได้ตั้งค่า กรุณาตรวจสอบ URL และ Key');
+                    }
+                    setSupabaseLoaded(true);
+                }
             }
         }, 100);
-        return;
+        // Cleanup interval on component unmount
+        return () => clearInterval(checkSupabaseInterval);
     }
 
     const script = document.createElement('script');
@@ -87,14 +107,14 @@ export default function LoginPage() {
     document.head.appendChild(script);
 
     return () => {
-      // Optional cleanup
+
     };
   }, []);
 
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setMessage(''); // Clear previous messages
+    setMessage('');
     setIsLoading(true);
 
     if (!supabaseLoaded) {
@@ -121,13 +141,10 @@ export default function LoginPage() {
       } else if (data.user) {
         setMessage('เข้าสู่ระบบสำเร็จ! กำลังนำคุณไปยังหน้าหลัก...');
         console.log('Logged in user:', data.user);
-        // Redirect to homepage or dashboard after successful login
-        // You might want to store user session or use Supabase's session management
         setTimeout(() => {
-          router.push('/'); // Redirect to homepage
+          router.push('/');
         }, 1500);
       } else {
-        // This case should ideally not happen if there's no error and no user
         setMessage('เกิดข้อผิดพลาดที่ไม่คาดคิดระหว่างการเข้าสู่ระบบ');
       }
     } catch (err) {
@@ -139,11 +156,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-purple-50 to-indigo-100 px-4">
+    <div className="min-h-screen flex items-center justify-center ">
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
         <div className="text-center mb-8">
-          {/* You can add a logo here */}
-          {/* <img src="/pea_logo.png" alt="PEA Logo" className="w-20 h-auto mx-auto mb-4"/> */}
           <h1 className="text-3xl font-bold text-[#3a1a5b]">เข้าสู่ระบบ</h1>
           <p className="text-gray-600 mt-2">ยินดีต้อนรับกลับเข้าสู่ระบบฟอร์ม PEA</p>
         </div>
@@ -183,13 +198,12 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* (Optional) Forgot password link */}
           <div className="flex items-center justify-end">
             <div className="text-sm">
-              <Link href="/auth/forgot-password" legacyBehavior>
-                <a className="font-medium text-[#5b2d90] hover:text-[#3a1a5b] hover:underline">
-                  ลืมรหัสผ่าน?
-                </a>
+              {/* แก้ไข: ลบ legacyBehavior และแท็ก <a> ที่ซ้อนอยู่ */}
+              {/* Fix: Removed legacyBehavior and nested <a> tag */}
+              <Link href="/auth/forgot-password" className="font-medium text-[#5b2d90] hover:text-[#3a1a5b] hover:underline">
+                ลืมรหัสผ่าน?
               </Link>
             </div>
           </div>
@@ -218,14 +232,13 @@ export default function LoginPage() {
 
         <p className="mt-8 text-center text-sm text-gray-600">
           ยังไม่มีบัญชี?{' '}
-          <Link href="/auth/register" legacyBehavior>
-            <a className="font-medium text-[#5b2d90] hover:text-[#3a1a5b] hover:underline">
-              สมัครสมาชิกที่นี่
-            </a>
+          {/* แก้ไข: ลบ legacyBehavior และแท็ก <a> ที่ซ้อนอยู่ */}
+          {/* Fix: Removed legacyBehavior and nested <a> tag */}
+          <Link href="/auth/register" className="font-medium text-[#5b2d90] hover:text-[#3a1a5b] hover:underline">
+            สมัครสมาชิกที่นี่
           </Link>
         </p>
       </div>
     </div>
   );
 }
-
