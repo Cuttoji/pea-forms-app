@@ -5,12 +5,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'; // For redirecting after login
 
-// --- Supabase Configuration ---
-// IMPORTANT: Replace with your actual Supabase URL and Anon Key if not using environment variables
-// It's highly recommended to use environment variables for these in a real application.
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'YOUR_SUPABASE_URL';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
-
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,98 +12,79 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [supabaseClient, setSupabaseClient] = useState(null);
   const [supabaseLoaded, setSupabaseLoaded] = useState(false);
+  const [supabaseUrl, setSupabaseUrl] = useState('YOUR_SUPABASE_URL');
+  const [supabaseKey, setSupabaseKey] = useState('YOUR_SUPABASE_ANON_KEY');
   const router = useRouter();
+
+  useEffect(() => {
+    setSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL || 'YOUR_SUPABASE_URL');
+    setSupabaseKey(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY');
+  }, []);
 
   // Effect for loading Supabase client from CDN
   useEffect(() => {
-    if (window.supabase) {
-      console.log("Supabase already available on window (Login Page).");
-      if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseKey && supabaseKey !== 'YOUR_SUPABASE_ANON_KEY') {
-        try {
-          setSupabaseClient(window.supabase.createClient(supabaseUrl, supabaseKey));
-          console.log("Supabase client initialized from existing window.supabase (Login Page).");
-        } catch (e) {
-          console.error("Error initializing Supabase client from existing window.supabase (Login Page):", e);
-          setMessage('เกิดข้อผิดพลาดในการโหลด Supabase');
+    let checkSupabaseInterval = null;
+    let scriptElement = null;
+
+    const initializeSupabase = () => {
+      if (window.supabase) {
+        if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseKey && supabaseKey !== 'YOUR_SUPABASE_ANON_KEY') {
+          try {
+            const client = window.supabase.createClient(supabaseUrl, supabaseKey);
+            setSupabaseClient(client);
+            console.log("Supabase client initialized (Login Page).");
+          } catch (e) {
+            console.error("Error initializing Supabase client (Login Page):", e);
+            setMessage('เกิดข้อผิดพลาดในการโหลด Supabase');
+          }
+        } else {
+          console.warn("Supabase URL or Key is not configured (Login Page).");
+          setMessage('Supabase ยังไม่ได้ตั้งค่า กรุณาตรวจสอบ URL และ Key');
         }
-      } else {
-        console.warn("Supabase URL or Key is not configured (using existing window.supabase - Login Page).");
-        setMessage('Supabase ยังไม่ได้ตั้งค่า กรุณาตรวจสอบ URL และ Key');
+        setSupabaseLoaded(true);
+        if (checkSupabaseInterval) clearInterval(checkSupabaseInterval);
       }
-      setSupabaseLoaded(true);
+    };
+
+    if (window.supabase) {
+      initializeSupabase();
       return;
     }
 
     const scriptId = 'supabase-js-cdn';
-    if (document.getElementById(scriptId)) {
-        console.log("Supabase script tag already exists (Login Page).");
-        const checkSupabaseInterval = setInterval(() => {
-            if (window.supabase) {
-                clearInterval(checkSupabaseInterval);
-                // Manually trigger onload logic if script was already there but window.supabase wasn't set yet
-                if (script && typeof script.onload === 'function') {
-                    script.onload();
-                } else if (window.supabase) { // Fallback if script.onload is not accessible
-                    console.log("Supabase script loaded from CDN (Login Page - detected via interval).");
-                    if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseKey && supabaseKey !== 'YOUR_SUPABASE_ANON_KEY') {
-                        try {
-                            setSupabaseClient(window.supabase.createClient(supabaseUrl, supabaseKey));
-                            console.log("Supabase client initialized after CDN load (Login Page - interval).");
-                        } catch (e) {
-                            console.error("Error initializing Supabase client after CDN load (Login Page - interval):", e);
-                            setMessage('เกิดข้อผิดพลาดในการโหลด Supabase');
-                        }
-                    } else {
-                        console.warn("Supabase URL or Key is not configured after CDN load (Login Page - interval).");
-                        setMessage('Supabase ยังไม่ได้ตั้งค่า กรุณาตรวจสอบ URL และ Key');
-                    }
-                    setSupabaseLoaded(true);
-                }
-            }
-        }, 100);
-        // Cleanup interval on component unmount
-        return () => clearInterval(checkSupabaseInterval);
+    scriptElement = document.getElementById(scriptId);
+
+    if (scriptElement) {
+      if (window.supabase) {
+        initializeSupabase();
+      } else if (scriptElement.onload === null && !scriptElement.dataset.initializedLogin) {
+        scriptElement.onload = initializeSupabase;
+        scriptElement.dataset.initializedLogin = "true";
+      } else if (!scriptElement.dataset.initializedLogin) {
+        checkSupabaseInterval = setInterval(initializeSupabase, 100);
+      }
+    } else {
+      scriptElement = document.createElement('script');
+      scriptElement.id = scriptId;
+      scriptElement.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'; // CDN for Supabase v2
+      scriptElement.async = true;
+      scriptElement.dataset.initializedLogin = "true";
+      scriptElement.onload = () => {
+        initializeSupabase();
+      };
+      scriptElement.onerror = () => {
+        setSupabaseLoaded(true);
+        setMessage('เกิดข้อผิดพลาดในการโหลด Supabase จาก CDN');
+      };
+      document.head.appendChild(scriptElement);
     }
 
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'; // CDN for Supabase v2
-    script.async = true;
-
-    script.onload = () => {
-      console.log("Supabase script loaded from CDN (Login Page).");
-      if (window.supabase) {
-        if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseKey && supabaseKey !== 'YOUR_SUPABASE_ANON_KEY') {
-          try {
-            setSupabaseClient(window.supabase.createClient(supabaseUrl, supabaseKey));
-            console.log("Supabase client initialized after CDN load (Login Page).");
-          } catch (e) {
-             console.error("Error initializing Supabase client after CDN load (Login Page):", e);
-             setMessage('เกิดข้อผิดพลาดในการโหลด Supabase');
-          }
-        } else {
-          console.warn("Supabase URL or Key is not configured after CDN load (Login Page).");
-          setMessage('Supabase ยังไม่ได้ตั้งค่า กรุณาตรวจสอบ URL และ Key');
-        }
-      } else {
-        console.error("Supabase object (window.supabase) not found after script load (Login Page).");
-        setMessage('ไม่สามารถโหลด Supabase library ได้');
-      }
-      setSupabaseLoaded(true);
-    };
-
-    script.onerror = () => {
-      console.error("Error loading Supabase script from CDN (Login Page).");
-      setSupabaseLoaded(true);
-      setMessage('เกิดข้อผิดพลาดในการโหลด Supabase จาก CDN');
-    };
-
-    document.head.appendChild(script);
-
     return () => {
-
+      if (checkSupabaseInterval) {
+        clearInterval(checkSupabaseInterval);
+      }
     };
-  }, []);
+  }, [supabaseUrl, supabaseKey]);
 
 
   const handleLogin = async (e) => {
@@ -136,19 +111,16 @@ export default function LoginPage() {
       });
 
       if (error) {
-        console.error('Supabase login error:', error);
         setMessage(error.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
       } else if (data.user) {
         setMessage('เข้าสู่ระบบสำเร็จ! กำลังนำคุณไปยังหน้าหลัก...');
-        console.log('Logged in user:', data.user);
         setTimeout(() => {
           router.push('/');
         }, 1500);
       } else {
-        setMessage('เกิดข้อผิดพลาดที่ไม่คาดคิดระหว่างการเข้าสู่ระบบ');
+        setMessage('เกิดข้อผิดพลาดที่ไม่คาดคิดระหว่างการเข้าสู่ระบบ หรืออาจต้องการการยืนยันเพิ่มเติม');
       }
     } catch (err) {
-      console.error('Unexpected login error:', err);
       setMessage('เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง');
     } finally {
       setIsLoading(false);

@@ -417,7 +417,7 @@ export default function HomeForm() {
     }
     
     console.log("Submitting to Supabase:", dataToSubmit);
-    const tableName = 'inspection_forms'; // !!! IMPORTANT: Replace with your actual table name !!!
+    const tableName = 'inspection_forms';
 
     try {
       const { data, error } = await supabaseClient

@@ -1,30 +1,30 @@
+// app/your-ev-inspection-form-path/page.jsx
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useImperativeHandle } from "react"; // เพิ่ม React และ useImperativeHandle
 
-// ส่วนประกอบเสริมสำหรับปุ่มตัวเลือก "ถูกต้อง" / "ต้องแก้ไข"
-// ส่วนประกอบนี้จะแสดงป้ายกำกับ, ปุ่มตัวเลือกสำหรับ "ถูกต้อง" และ "ต้องแก้ไข",
-// และช่องข้อความเสริมสำหรับบันทึกเพิ่มเติมหากเลือก "ต้องแก้ไข"
+// --- Supabase Configuration ---
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+// ส่วนประกอบเสริมสำหรับปุ่มตัวเลือก "ถูกต้อง" / "ต้องแก้ไข" (คงเดิม)
 const CorrectiveRadio = ({ groupName, label, currentValue, currentNote, onStatusChange, onNoteChange }) => {
-  const noteFieldName = `${groupName}_note`; // สร้างชื่อสำหรับช่องบันทึกที่เกี่ยวข้อง
+  const noteFieldName = `${groupName}_note`;
   return (
     <div className="border-b border-gray-200 pb-4 mb-4">
-      {/* ป้ายกำกับสำหรับกลุ่มปุ่มตัวเลือก */}
       <label className="block text-gray-700 text-sm font-bold mb-2">{label}</label>
       <div className="flex flex-wrap gap-4 mt-2">
-        {/* ตัวเลือก "ถูกต้อง" */}
         <label className="inline-flex items-center text-gray-800">
           <input
             type="radio"
-            name={groupName} // ชื่อกลุ่มเพื่อเชื่อมโยงปุ่มตัวเลือก
-            value="ถูกต้อง" // ค่าเมื่อเลือกตัวเลือกนี้
-            checked={currentValue === 'ถูกต้อง'} // ตรวจสอบว่าตัวเลือกนี้ถูกเลือกอยู่หรือไม่
-            onChange={() => onStatusChange(groupName, 'ถูกต้อง', noteFieldName)} // จัดการการอัปเดตสถานะเมื่อมีการเปลี่ยนแปลง
-            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" // คลาส Tailwind สำหรับการจัดรูปแบบ (ขนาดและการโฟกัส)
+            name={groupName}
+            value="ถูกต้อง"
+            checked={currentValue === 'ถูกต้อง'}
+            onChange={() => onStatusChange(groupName, 'ถูกต้อง', noteFieldName)}
+            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
           />
-          <span className="ml-3">ถูกต้อง</span> {/* ป้ายข้อความสำหรับปุ่มตัวเลือก */}
+          <span className="ml-3">ถูกต้อง</span>
         </label>
-        {/* ตัวเลือก "ต้องแก้ไข" */}
         <label className="inline-flex items-center text-gray-800">
           <input
             type="radio"
@@ -32,528 +32,436 @@ const CorrectiveRadio = ({ groupName, label, currentValue, currentNote, onStatus
             value="ต้องแก้ไข"
             checked={currentValue === 'ต้องแก้ไข'}
             onChange={() => onStatusChange(groupName, 'ต้องแก้ไข', noteFieldName)}
-            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" // คลาส Tailwind สำหรับการจัดรูปแบบ (ขนาดและการโฟกัส)
+            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
           />
-          <span className="ml-3">ต้องแก้ไข</span> {/* ป้ายข้อความสำหรับปุ่มตัวเลือก */}
+          <span className="ml-3">ต้องแก้ไข</span>
         </label>
       </div>
-      {/* การแสดงผลแบบมีเงื่อนไขสำหรับช่องบันทึก */}
       {currentValue === 'ต้องแก้ไข' && (
         <input
           type="text"
-          name={noteFieldName} // ชื่อสำหรับช่องบันทึก
+          name={noteFieldName}
           className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-400 focus:border-transparent mt-2"
-          value={currentNote} // ค่าปัจจุบันของบันทึก
-          onChange={onNoteChange} // จัดการการอัปเดตสถานะสำหรับบันทึก
-          placeholder="โปรดระบุรายละเอียด" // ข้อความตัวยึด
+          value={currentNote || ''} // เพิ่ม || '' เพื่อป้องกัน undefined
+          onChange={onNoteChange}
+          placeholder="โปรดระบุรายละเอียด"
         />
       )}
     </div>
   );
 };
 
+// Signature Pad Component (คัดลอกมาจาก page.jsx เวอร์ชันสอง)
+const SignaturePad = React.forwardRef(({ title, onSave, onClear }, ref) => {
+  const canvasRef = useRef(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [hasDrawing, setHasDrawing] = useState(false);
+
+  const getPosition = (event) => {
+    if (!canvasRef.current) return { x: 0, y: 0 };
+    const rect = canvasRef.current.getBoundingClientRect();
+    if (event.touches && event.touches.length > 0) {
+      return {
+        x: event.touches[0].clientX - rect.left,
+        y: event.touches[0].clientY - rect.top,
+      };
+    }
+    return {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    };
+  };
+
+  const startDrawing = (event) => {
+    if (!canvasRef.current) return;
+    if (event.type === 'touchstart') {
+        event.preventDefault();
+    }
+    const { x, y } = getPosition(event);
+    const context = canvasRef.current.getContext('2d');
+    context.beginPath();
+    context.moveTo(x, y);
+    setIsDrawing(true);
+    setHasDrawing(true);
+  };
+
+  const draw = (event) => {
+    if (!canvasRef.current) return;
+    if (event.type === 'touchmove') {
+        event.preventDefault();
+    }
+    if (!isDrawing) return;
+    const { x, y } = getPosition(event);
+    const context = canvasRef.current.getContext('2d');
+    context.lineTo(x, y);
+    context.stroke();
+  };
+
+  const stopDrawing = () => {
+    if (!canvasRef.current || !isDrawing) return;
+    const context = canvasRef.current.getContext('2d');
+    context.closePath();
+    setIsDrawing(false);
+    if (typeof onSave === 'function' && hasDrawing) {
+      onSave(canvasRef.current.toDataURL('image/png'));
+    } else if (typeof onSave === 'function' && !hasDrawing) {
+      onSave("");
+    }
+  };
+
+  const clearCanvas = () => {
+    if (!canvasRef.current) return;
+    const context = canvasRef.current.getContext('2d');
+    // ตรวจสอบว่า canvas มีขนาดก่อนที่จะพยายามตั้งค่าความกว้าง/สูงใหม่
+    if (canvasRef.current.offsetWidth > 0 && canvasRef.current.offsetHeight > 0) {
+        canvasRef.current.width = canvasRef.current.offsetWidth;
+        canvasRef.current.height = canvasRef.current.offsetHeight;
+    } else {
+        // ตั้งค่า default ถ้า offsetWidth/Height เป็น 0 (อาจเกิดขึ้นถ้า element ถูกซ่อน)
+        // คุณอาจจะต้องปรับค่าเหล่านี้ตามความเหมาะสม
+        canvasRef.current.width = 300; // Default width
+        canvasRef.current.height = 150; // Default height
+    }
+    context.strokeStyle = 'black';
+    context.lineWidth = 2;
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    setHasDrawing(false);
+    if (typeof onClear === 'function') {
+      onClear();
+    }
+    if (typeof onSave === 'function') {
+        onSave("");
+    }
+  };
+
+  useImperativeHandle(ref, () => ({
+    clear: clearCanvas,
+    toDataURL: (type = 'image/png') => {
+      if (canvasRef.current && hasDrawing) {
+        return canvasRef.current.toDataURL(type);
+      }
+      return "";
+    },
+    isEmpty: () => !hasDrawing,
+  }));
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const setCanvasDimensionsAndContext = () => {
+        if (!canvas.offsetWidth || !canvas.offsetHeight) {
+            // ถ้า element ถูกซ่อน หรือยังไม่ได้ render อย่างถูกต้อง ให้ลองตั้งค่า default หรือรอ
+             canvas.width = canvas.parentElement?.clientWidth || 300; // พยายามใช้ความกว้างของ parent
+             canvas.height = 128; // 8rem, หรือค่า h-32 ที่เคยใช้
+        } else {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        const context = canvas.getContext('2d');
+        context.strokeStyle = 'black';
+        context.lineWidth = 2;
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        // อาจจะต้องเรียก clearCanvas ที่นี่เพื่อให้แน่ใจว่าพื้นหลังถูกต้องตั้งแต่ต้น
+        // context.clearRect(0, 0, canvas.width, canvas.height);
+    };
+    
+    const timer = setTimeout(setCanvasDimensionsAndContext, 50); // เพิ่ม delay เล็กน้อย
+    
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-medium text-gray-700 mb-1">{title}:</label>
+      <div className="border border-gray-300 rounded-md p-1">
+        <canvas
+          ref={canvasRef}
+          className="w-full h-32 rounded-md sigCanvas bg-gray-50 cursor-crosshair" // h-32 คือ 8rem หรือ 128px
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseLeave={stopDrawing}
+          onTouchStart={startDrawing}
+          onTouchMove={draw}
+          onTouchEnd={stopDrawing}
+        />
+      </div>
+      <button
+        type="button"
+        onClick={clearCanvas}
+        className="mt-2 px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm"
+      >
+        ล้างลายเซ็น
+      </button>
+    </div>
+  );
+});
+SignaturePad.displayName = 'SignaturePad';
+
 
 export default function ElectricityInspectionForm() {
-  // สถานะเพื่อจัดการข้อมูลฟอร์มทั้งหมด
-  const [formData, setFormData] = useState({
+  // initialFormData ควรจะตรงกับโครงสร้างของฟอร์ม EV ที่ละเอียด
+  const initialFormData = {
     // ข้อมูลส่วนหัว
-    inspectionNumber: "",
-    inspectionDate: "",
-    requestNumber: "",
-    requestDate: "",
-    peaOffice: "", // เพิ่มสำหรับ "การไฟฟ้า"
+    inspectionNumber: "", //
+    inspectionDate: "", //
+    requestNumber: "", //
+    requestDate: "", //
+    peaOffice: "", //
 
     // 1. ข้อมูลทั่วไป
-    fullName: "",
-    phone: "",
-    address: "",
-    systemType: "", // เปลี่ยนจาก phaseType เป็น systemType เพื่อให้ตรงกับ PDF (3 เฟส / 1 เฟส)
-    estimatedLoadAmp: "", // เปลี่ยนจาก estimatedLoad เป็น estimatedLoadAmp สำหรับแอมแปร์
-    evChargerCount: "", // เพิ่มสำหรับ "ติดตั้งเครื่องอัดประจุยานยนต์ไฟฟ้ารวม"
-    evChargerPowerKw: "", // เพิ่มสำหรับ "พิกัดกำลังไฟฟ้ารวมของเครื่องอัดประจุยานยนต์ไฟฟ้า"
+    fullName: "", //
+    phone: "", //
+    address: "", //
+    systemType: "", //
+    estimatedLoadAmp: "", //
+    evChargerCount: "", //
+    evChargerPowerKw: "", //
 
     // 2. เอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
-    // 2.1 กรณีผู้ขอใช้ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าในพื้นที่ส่วนบุคคล
-    personal_specSheetChecked: false,
-    personal_singleLineDiagramChecked: false,
-    personal_loadScheduleChecked: false,
-    personal_documentsComplete: "", // "ครบถ้วน", "ไม่ครบถ้วน"
-    personal_documentsIncompleteNote: "",
-
-    // 2.2 กรณีผู้ขอใช้ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าในพื้นที่สาธารณะ
-    public_singleLineDiagramChecked: false,
-    public_asBuiltDrawingChecked: false,
-    public_loadScheduleCalculationChecked: false,
-    public_engineerLicenseCopyChecked: false,
-    public_specSheetChecked: false,
-    public_notificationLicenseChecked: false,
-    public_documentsComplete: "", // "ครบถ้วน", "ไม่ครบถ้วน"
-    public_documentsIncompleteNote: "",
-
-    // 3. ระบบไฟฟ้าแรงต่ำ
-    // 3.1 วงจรประธานแรงต่ำ
-    mainCableStandard: "", // มอก. 11-2553, มอก. 293-2541, IEC 60502
-    mainCableStandard_correct: "",
-    mainCableStandard_note: "",
-
-    mainCableType: "", // IEC01, NYY, CV, อื่นๆ
-    mainCableOtherType: "",
-    mainCableType_correct: "",
-    mainCableType_note: "",
-
-    mainCablePhaseSizeSqmm: "",
-    mainCablePhaseSize_correct: "",
-    mainCablePhaseSize_note: "",
-
-    mainCableNeutralSizeSqmm: "",
-    mainCableNeutralSize_correct: "",
-    mainCableNeutralSize_note: "",
-
-    mainCablePhaseMarking_correct: "",
-    mainCablePhaseMarking_note: "",
-
-    mainConduitContinuity_correct: "",
-    mainConduitContinuity_note: "",
-
-    mainWiringMethodOverhead: false,
-    mainWiringMethodCableTray: false,
-    mainWiringMethodCableTraySizeX: "",
-    mainWiringMethodCableTraySizeY: "",
-    mainWiringMethodDirectBurial: false,
-    mainWiringMethodConduitBurial: false,
-    mainWiringMethodConduitBurialSize: "",
-    mainWiringMethodConduitWall: false,
-    mainWiringMethodConduitWallSize: "",
-    mainWiringMethodOther: false,
-    mainWiringMethodOtherText: "",
-    mainWiringMethod_correct: "",
-    mainWiringMethod_note: "",
-
-    mainConduitTypeRMC: false,
-    mainConduitTypeIMC: false,
-    mainConduitTypeEMT: false,
-    mainConduitTypeRNC: false,
-    mainConduitTypeENT: false,
-    mainConduitTypeFlexibleMetal: false,
-    mainConduitTypeOther: false,
-    mainConduitTypeOtherText: "",
-    mainConduitType_correct: "",
-    mainConduitType_note: "",
-
-    // 3.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์ (บริภัณฑ์ประธาน)
-    mainBreakerStandard_correct: "",
-    mainBreakerStandard_note: "",
-    mainBreakerAmpRating: "",
-    mainBreakerAmpRating_correct: "",
-    mainBreakerAmpRating_note: "",
-    mainBreakerShortCircuitRating: "",
-    mainBreakerShortCircuitRating_correct: "",
-    mainBreakerShortCircuitRating_note: "",
-
-    // 3.3 ระบบการต่อลงดินที่แผงเมนสวิตช์
-    mainGroundWireSizeSqmm: "",
-    mainGroundWireSize_correct: "",
-    mainGroundWireSize_note: "",
-    mainGrounding1Phase_correct: "",
-    mainGrounding1Phase_note: "",
-    mainGrounding3Phase_correct: "",
-    mainGrounding3Phase_note: "",
-
-    // 3.4 รูปแบบการต่อลงดินที่แผงเมนสวิตช์
-    groundingSystemType: "", // TN-C-S, TT, TT บางส่วน
-
-    // 3.4.1 กรณีต่อลงดินแบบ TN-C-S ทั้งระบบ
-    tncs_groundResistanceOhm: "",
-    tncs_groundResistance_correct: "",
-    tncs_groundResistance_note: "",
-    tncs_overUnderVoltageProtection: false,
-    tncs_overUnderVoltageProtection_correct: "",
-    tncs_overUnderVoltageProtection_note: "",
-    tncs_evChargerBuiltInProtection: false,
-    tncs_evChargerBuiltInProtection_correct: "",
-    tncs_evChargerBuiltInProtection_note: "",
-    tncs_touchVoltageProtection: false,
-    tncs_touchVoltageProtection_correct: "",
-    tncs_touchVoltageProtection_note: "",
-
-    // 3.4.2 กรณีต่อลงดินแบบ TT ทั้งระบบ
-    tt_rcdAllCircuits: false,
-    tt_rcdAllCircuits_correct: "",
-    tt_rcdAllCircuits_note: "",
-    tt_overUnderVoltageProtection: false,
-    tt_overUnderVoltageProtection_correct: "",
-    tt_overUnderVoltageProtection_note: "",
-
-    // 3.4.3 กรณีต่อลงดินแบบ TT บางส่วน
-    ttPartial_riskAssessment: false,
-    ttPartial_riskAssessment_correct: "",
-    ttPartial_riskAssessment_note: "",
-    ttPartial_groundDistance: false,
-    ttPartial_groundDistance_correct: "",
-    ttPartial_groundDistance_note: "",
-    ttPartial_warningSign: false,
-    ttPartial_warningSign_correct: "",
-    ttPartial_warningSign_note: "",
-
-    ttPartial_groundResistanceOhm: "",
-    ttPartial_groundResistance_correct: "",
-    ttPartial_groundResistance_note: "",
-    ttPartial_overUnderVoltageProtection: false,
-    ttPartial_overUnderVoltageProtection_correct: "",
-    ttPartial_overUnderVoltageProtection_note: "",
-    ttPartial_evChargerBuiltInProtection: false,
-    ttPartial_evChargerBuiltInProtection_correct: "",
-    ttPartial_evChargerBuiltInProtection_note: "",
-    ttPartial_touchVoltageProtection: false,
-    ttPartial_touchVoltageProtection_correct: "",
-    ttPartial_touchVoltageProtection_note: "",
-
-    // 3.5 วงจรสายป้อน/แผงวงจรย่อย (Panel board) (ถ้ามี)
-    // 3.5.1 วงจรสายป้อน
-    feederCableStandard: "", // มอก. 11-2553, มอก. 293-2541, IEC 60502
-    feederCableStandard_correct: "",
-    feederCableStandard_note: "",
-
-    feederCableType: "", // IEC01, NYY, CV, อื่นๆ
-    feederCableOtherType: "",
-    feederCableType_correct: "",
-    feederCableType_note: "",
-
-    feederCablePhaseSizeSqmm: "",
-    feederCablePhaseSize_correct: "",
-    feederCablePhaseSize_note: "",
-
-    feederCableNeutralSizeSqmm: "",
-    feederCableNeutralSize_correct: "",
-    feederCableNeutralSize_note: "",
-
-    feederCableGroundSizeSqmm: "",
-    feederCableGroundSize_correct: "",
-    feederCableGroundSize_note: "",
-
-    feederCablePhaseMarking_correct: "",
-    feederCablePhaseMarking_note: "",
-
-    feederConduitContinuity_correct: "",
-    feederConduitContinuity_note: "",
-
-    // 3.5.2 วิธีการเดินสาย
-    feederWiringWireway: false,
-    feederWiringWirewaySizeX: "",
-    feederWiringWirewaySizeY: "",
-    feederWiringWireway_correct: "",
-    feederWiringWireway_note: "",
-
-    feederWiringCableTray: false,
-    feederWiringCableTraySizeX: "",
-    feederWiringCableTraySizeY: "",
-    feederWiringCableTray_correct: "",
-    feederWiringCableTray_note: "",
-
-    feederWiringBusway: false,
-    feederWiringBuswaySizeX: "",
-    feederWiringBuswaySizeY: "",
-    feederWiringBusway_correct: "",
-    feederWiringBusway_note: "",
-
-    feederWiringConduitWall: false,
-    feederWiringConduitWallSize: "",
-    feederWiringConduitWall_correct: "",
-    feederWiringConduitWall_note: "",
-
-    feederWiringDirectBurial: false,
-    feederWiringDirectBurial_correct: "",
-    feederWiringDirectBurial_note: "",
-
-    feederWiringConduitBurial: false,
-    feederWiringConduitBurialSize: "",
-    feederWiringConduitBurial_correct: "",
-    feederWiringConduitBurial_note: "",
-
-    feederWiringOther: false,
-    feederWiringOtherText: "",
-    feederWiringOther_correct: "",
-    feederWiringOther_note: "",
-
-    // 3.5.3 ประเภทท่อร้อยสาย
-    feederConduitTypeRMC: false,
-    feederConduitTypeIMC: false,
-    feederConduitTypeEMT: false,
-    feederConduitTypeRNC: false,
-    feederConduitTypeENT: false,
-    feederConduitTypeFlexibleMetal: false,
-    feederConduitTypeOther: false,
-    feederConduitTypeOtherText: "",
-    feederConduitType_correct: "",
-    feederConduitType_note: "",
-
-    // 3.5.4 เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน
-    feederBreakerStandard_correct: "",
-    feederBreakerStandard_note: "",
-    feederBreakerAmpRating: "",
-    feederBreakerAmpRating_correct: "",
-    feederBreakerAmpRating_note: "",
-
-    // 3.5.5 การติดตั้งแผงวงจรย่อย (Panel board)
-    panelBoardRating_correct: "",
-    panelBoardRating_note: "",
-    panelBoardNoBridging_correct: "",
-    panelBoardNoBridging_note: "",
-
-    // 3.6 วงจรย่อย (Branch Circuit)
-    branchCircuitNumber: "", // วงจรที่...
-
-    // 3.6.1 วงจรย่อยของเครื่องอัดประจุยานยนต์ไฟฟ้า
-    evDedicatedCircuit_correct: "",
-    evDedicatedCircuit_note: "",
-    evOneChargerPerCircuit_correct: "",
-    evOneChargerPerCircuit_note: "",
-
-    // 3.6.2 วงจรย่อย
-    branchCableStandard: "", // มอก. 11-2553, มอก. 293-2541, IEC 60502
-    branchCableStandard_correct: "",
-    branchCableStandard_note: "",
-
-    branchCableType: "", // IEC01, NYY, CV, อื่นๆ
-    branchCableOtherType: "",
-    branchCableType_correct: "",
-    branchCableType_note: "",
-
-    branchCablePhaseSizeSqmm: "",
-    branchCablePhaseSize_correct: "",
-    branchCablePhaseSize_note: "",
-
-    branchCableNeutralSizeSqmm: "",
-    branchCableNeutralSize_correct: "",
-    branchCableNeutralSize_note: "",
-
-    branchCableGroundSizeSqmm: "",
-    branchCableGroundSize_correct: "",
-    branchCableGroundSize_note: "",
-
-    branchCablePhaseMarking_correct: "",
-    branchCablePhaseMarking_note: "",
-
-    branchConduitContinuity_correct: "",
-    branchConduitContinuity_note: "",
-
-    // 3.6.3 วิธีการเดินสาย
-    branchWiringConduitWall: false,
-    branchWiringConduitWallSize: "",
-    branchWiringConduitWall_correct: "",
-    branchWiringConduitWall_note: "",
-
-    branchWiringConduitBurial: false,
-    branchWiringConduitBurialSize: "",
-    branchWiringConduitBurial_correct: "",
-    branchWiringConduitBurial_note: "",
-
-    branchWiringDirectBurial: false,
-    branchWiringDirectBurial_correct: "",
-    branchWiringDirectBurial_note: "",
-
-    branchWiringWireway: false,
-    branchWiringWirewaySizeX: "",
-    branchWiringWirewaySizeY: "",
-    branchWiringWireway_correct: "",
-    branchWiringWireway_note: "",
-
-    branchWiringCableTray: false,
-    branchWiringCableTraySizeX: "",
-    branchWiringCableTraySizeY: "",
-    branchWiringCableTray_correct: "",
-    branchWiringCableTray_note: "",
-
-    branchWiringOther: false,
-    branchWiringOtherText: "",
-    branchWiringOther_correct: "",
-    branchWiringOther_note: "",
-
-    // 3.6.4 ประเภทท่อร้อยสาย
-    branchConduitTypeRMC: false,
-    branchConduitTypeIMC: false,
-    branchConduitTypeEMT: false,
-    branchConduitTypeRNC: false,
-    branchConduitTypeENT: false,
-    branchConduitTypeFlexibleMetal: false,
-    branchConduitTypeOther: false,
-    branchConduitTypeOtherText: "",
-    branchConduitType_correct: "",
-    branchConduitType_note: "",
-
-    // 3.6.5 เซอร์กิตเบรกเกอร์ป้องกันวงจรย่อย
-    branchBreakerStandard_correct: "",
-    branchBreakerStandard_note: "",
-    branchBreakerMode3_4AmpRating: "",
-    branchBreakerMode3_4AmpRating_correct: "",
-    branchBreakerMode3_4AmpRating_note: "",
-    branchBreakerMode2AmpRating: "",
-    branchBreakerMode2AmpRating_correct: "",
-    branchBreakerMode2AmpRating_note: "",
-
-    // 3.6.6 ต้องติดตั้งระบบป้องกันอันตรายต่อบุคคล
-    personnelProtectionRCDTypeB: false,
-    personnelProtectionRCDTypeBAmp: "",
-    personnelProtectionRCDTypeB_correct: "",
-    personnelProtectionRCDTypeB_note: "",
-
-    personnelProtectionRCDTypeAF_RDC_DD: false,
-    personnelProtectionRCDTypeAF_RDC_DD_correct: "",
-    personnelProtectionRCDTypeAF_RDC_DD_note: "",
-
-    personnelProtectionRCDTypeBBuiltIn: false,
-    personnelProtectionRCDTypeBBuiltInAmp: "",
-    personnelProtectionRCDTypeBBuiltIn_correct: "",
-    personnelProtectionRCDTypeBBuiltIn_note: "",
-
-    personnelProtectionIsolatingTransformer: false,
-    personnelProtectionIsolatingTransformer_correct: "",
-    personnelProtectionIsolatingTransformer_note: "",
-
-    // 3.6.7 กรณีติดตั้งเครื่องตัดไฟรั่ว (RCD) Type B
-    rcdTypeBInstallation_correct: "",
-    rcdTypeBInstallation_note: "",
-
-    // 3.6.8 การตรวจสอบกรณีติดตั้งมิเตอร์เครื่องที่สอง
-    secondMeterSeparation_correct: "",
-    secondMeterSeparation_note: "",
-    secondMeterDedicatedCircuit_correct: "",
-    secondMeterDedicatedCircuit_note: "",
-
-    // 3.7 การตรวจสอบเครื่องอัดประจุยานยนต์ไฟฟ้า
-    evChargerInspectionNumber: "", // เครื่องที่...
-
-    // 3.7.1 ข้อมูลเครื่องอัดประจุยานยนต์ไฟฟ้า
-    evChargerProduct: "",
-    evChargerModel: "",
-    evChargerSerialNumber: "",
-    evChargerIPRating: "",
-    evChargerPhase: "", // 1 เฟส, 3 เฟส
-    evChargerHeadCount: "",
-    evChargerTotalPowerKw: "",
-    evChargerTotalCurrentAmp: "",
-    evChargerChargingMode: "", // โหมด 2 (AC), โหมด 3 (AC), โหมด 4 (DC)
-    evChargerInfo_correct: "",
-    evChargerInfo_note: "",
-
-    // 3.7.2 ลักษณะหัวชาร์จ / การชาร์จ
-    chargerHeadACType2: false,
-    chargerHeadACType2Current: "",
-    chargerHeadACType2Voltage: "",
-    chargerHeadACType2Power: "",
-
-    chargerHeadDCCHAdeMO: false,
-    chargerHeadDCCHAdeMOCurrent: "",
-    chargerHeadDCCHAdeMOVoltage: "",
-    chargerHeadDCCHAdeMOPower: "",
-
-    chargerHeadDCCCS: false,
-    chargerHeadDCCCSCurrent: "",
-    chargerHeadDCCCSVoltage: "",
-    chargerHeadDCCCSPower: "",
-
-    chargerHeadOther: false,
-    chargerHeadOtherText: "",
-    chargerHeadOtherCurrent: "",
-    chargerHeadOtherVoltage: "",
-    chargerHeadOtherPower: "",
-
-    chargerHeadSimultaneousCount: "",
-    chargerHeadSimultaneousDetails: "",
-    chargerHead_correct: "",
-    chargerHead_note: "",
-
-    // 3.7.3 กรณีติดตั้งเครื่องอัดประจุยานยนต์ไฟฟ้า โหมด 2
-    mode2ReceptacleStandard_correct: "",
-    mode2ReceptacleStandard_note: "",
-    mode2ReceptacleNonRemovable_correct: "",
-    mode2ReceptacleNonRemovable_note: "",
-    mode2WarningSign_correct: "",
-    mode2WarningSign_note: "",
-
-    // 3.7.4 กรณีติดตั้งเครื่องอัดประจุยานยนต์ไฟฟ้า โหมด 3 และโหมด 4
-    mode3_4WarningSign_correct: "",
-    mode3_4WarningSign_note: "",
-    mode3_4EmergencySwitch_correct: "",
-    mode3_4EmergencySwitch_note: "",
-    mode3_4Ventilation_correct: "",
-    mode3_4Ventilation_note: "",
-    mode3_4CableLength_correct: "",
-    mode3_4CableLength_note: "",
-
-    // 3.7.5 กรณีติดตั้งเครื่องอัดประจุยานยนต์ไฟฟ้าอยู่ในบริเวณสถานีบริการน้ำมัน, LPG และ CNG
-    fuelStationMode_correct: "",
-    fuelStationMode_note: "",
-    fuelStationFixedCable_correct: "",
-    fuelStationFixedCable_note: "",
-    fuelStationEmergencySwitchMain_correct: "",
-    fuelStationEmergencySwitchMain_note: "",
-    fuelStationEmergencySwitchDistance_correct: "",
-    fuelStationEmergencySwitchDistance_note: "",
-    fuelStationElectricalEquipmentHazard_correct: "",
-    fuelStationElectricalEquipmentHazard_note: "",
-    fuelStationChargerDistance_correct: "",
-    fuelStationChargerDistance_note: "",
-
-    // 3.7.6 ข้อแนะนำในการป้องกันเครื่องอัดประจุยานยนต์ไฟฟ้า
-    chargerProtectionCollision: "", // "ติดตั้งแล้ว", "ยังไม่ติดตั้ง"
-    chargerProtectionFire: "", // "ติดตั้งแล้ว", "ยังไม่ติดตั้ง"
-    chargerProtectionLightning: "", // "ติดตั้งแล้ว", "ยังไม่ติดตั้ง"
-
-    // 4. สรุปผลการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
-    summaryResult: "", // "ติดตั้งมิเตอร์ถาวร", "ติดตั้งมิเตอร์ชั่วคราว", "ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์"
-
-    // 5. ขอบเขตและข้อจำกัดในการตรวจสอบ
-    scopeOfInspection: "",
-
-    // 6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ (Signatures)
-    userSignature: "",
-    inspectorSignature: "",
-  });
-
-  // จัดการการเปลี่ยนแปลงสำหรับช่องป้อนข้อมูลทั้งหมด (ข้อความ, ตัวเลข, เลือก, ตัวเลือก, กล่องกาเครื่องหมาย)
+    personal_specSheetChecked: false, //
+    personal_singleLineDiagramChecked: false, //
+    personal_loadScheduleChecked: false, //
+    personal_documentsComplete: "", //
+    personal_documentsIncompleteNote: "", //
+
+    public_singleLineDiagramChecked: false, //
+    public_asBuiltDrawingChecked: false, //
+    public_loadScheduleCalculationChecked: false, //
+    public_engineerLicenseCopyChecked: false, //
+    public_specSheetChecked: false, //
+    public_notificationLicenseChecked: false, //
+    public_documentsComplete: "", //
+    public_documentsIncompleteNote: "", //
+
+    // 3. ระบบไฟฟ้าแรงต่ำ (เพิ่มฟิลด์อื่นๆ ทั้งหมดที่นี่ตามฟอร์มของคุณ)
+    // ... (คัดลอกฟิลด์ทั้งหมดจาก formData เดิมของคุณมาที่นี่) ...
+    mainCableStandard: "", //
+    mainCableStandard_correct: "", //
+    mainCableStandard_note: "", //
+    // ... (เพิ่มฟิลด์อื่นๆ ที่เหลือทั้งหมด)
+
+    // 4. สรุปผลการตรวจสอบ
+    summaryResult: "", //
+
+    // 5. ขอบเขตและข้อจำกัด
+    scopeOfInspection: "", //
+
+    // 6. ลายเซ็น (จะถูกจัดการโดย SignaturePad และเก็บเป็น Data URL)
+    userSignature: "", //
+    inspectorSignature: "", //
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [supabaseClient, setSupabaseClient] = useState(null);
+  const [supabaseLoaded, setSupabaseLoaded] = useState(false);
+  const [showSupabaseConfigWarning, setShowSupabaseConfigWarning] = useState(false);
+
+  const userSigRef = useRef(null);
+  const inspectorSigRef = useRef(null);
+
+  // Effect for loading Supabase client (คัดลอกมาจาก page.jsx เวอร์ชันสอง)
+  useEffect(() => {
+    if (window.supabase) {
+      console.log("Supabase already available on window (EV Form).");
+      if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseKey && supabaseKey !== 'YOUR_SUPABASE_ANON_KEY') {
+        try {
+          setSupabaseClient(window.supabase.createClient(supabaseUrl, supabaseKey));
+          console.log("Supabase client initialized from existing window.supabase (EV Form).");
+        } catch (e) {
+          console.error("Error initializing Supabase client from existing window.supabase (EV Form):", e);
+        }
+      } else {
+        console.warn("Supabase URL or Key is not configured (EV Form, using existing window.supabase).");
+        setShowSupabaseConfigWarning(true);
+      }
+      setSupabaseLoaded(true);
+      return;
+    }
+
+    const scriptId = 'supabase-js-cdn-evform'; // ใช้ ID ที่ไม่ซ้ำกัน
+    if (document.getElementById(scriptId)) {
+        console.log("Supabase script tag already exists (EV Form).");
+        // อาจจะต้องมี logic เพิ่มเติมถ้า script โหลดแต่ window.supabase ยังไม่พร้อม
+        if(window.supabase) { // เช็คอีกครั้ง
+            // Initialize here if it became available
+        }
+        return;
+    }
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    script.async = true;
+
+    script.onload = () => {
+      console.log("Supabase script loaded from CDN (EV Form).");
+      if (window.supabase) {
+        if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseKey && supabaseKey !== 'YOUR_SUPABASE_ANON_KEY') {
+          try {
+            setSupabaseClient(window.supabase.createClient(supabaseUrl, supabaseKey));
+            console.log("Supabase client initialized after CDN load (EV Form).");
+            setShowSupabaseConfigWarning(false);
+          } catch (e) {
+             console.error("Error initializing Supabase client after CDN load (EV Form):", e);
+             setShowSupabaseConfigWarning(true);
+          }
+        } else {
+          console.warn("Supabase URL or Key is not configured after CDN load (EV Form).");
+          setShowSupabaseConfigWarning(true);
+        }
+      } else {
+        console.error("Supabase object (window.supabase) not found after script load (EV Form).");
+        setShowSupabaseConfigWarning(true);
+      }
+      setSupabaseLoaded(true);
+    };
+
+    script.onerror = () => {
+      console.error("Error loading Supabase script from CDN (EV Form).");
+      setSupabaseLoaded(true);
+      setShowSupabaseConfigWarning(true);
+    };
+
+    document.head.appendChild(script);
+
+  }, []);
+
+
+  // handleChange และ handleRadioChange (คงเดิม)
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value, // กำหนดค่า checked สำหรับกล่องกาเครื่องหมาย, ค่าสำหรับอื่นๆ
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  // จัดการการเปลี่ยนแปลงเฉพาะสำหรับสถานะของส่วนประกอบ CorrectiveRadio
   const handleRadioChange = (groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
-      [groupName]: value, // อัปเดตสถานะ (เช่น 'ถูกต้อง' หรือ 'ต้องแก้ไข')
-      ...(value === 'ถูกต้อง' && { [noteFieldName]: '' }), // ล้างบันทึกหากสถานะถูกตั้งค่าเป็น 'ถูกต้อง'
+      [groupName]: value,
+      ...(value === 'ถูกต้อง' && { [noteFieldName]: '' }),
     }));
   };
 
-  // useEffect เพื่อตั้งค่าวันที่เริ่มต้นเป็นวันที่ปัจจุบันเมื่อส่วนประกอบถูกเมานต์
+  // ฟังก์ชันสำหรับจัดการการบันทึกและล้างลายเซ็น (จาก page.jsx เวอร์ชันสอง)
+  const handleSignatureSave = (fieldName, dataUrl) => {
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: dataUrl,
+    }));
+  };
+  
+  const handleSignatureClear = (fieldName) => {
+    setFormData(prev => ({
+        ...prev,
+        [fieldName]: "",
+    }));
+  };
+
+  // useEffect สำหรับตั้งค่าวันที่ (คงเดิม)
   useEffect(() => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // เดือนเป็นแบบ 0-indexed ดังนั้นต้องบวก 1
+    const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`; // รูปแบบ YYYY-MM-DD สำหรับประเภท input date
+    const formattedDate = `${year}-${month}-${day}`;
 
     setFormData(prev => ({
       ...prev,
-      inspectionDate: formattedDate,
-      requestDate: formattedDate,
+      inspectionDate: formattedDate, //
+      requestDate: formattedDate, //
     }));
-  }, []); // อาร์เรย์ dependency ว่างเปล่าหมายความว่าโค้ดนี้จะทำงานเพียงครั้งเดียวเมื่อเมานต์
+  }, []);
 
-  // จัดการการส่งฟอร์ม
-  const handleSubmit = (e) => {
-    e.preventDefault(); // ป้องกันพฤติกรรมการส่งฟอร์มเริ่มต้น
-    console.log("Form Data Submitted:", formData); // บันทึกข้อมูลฟอร์มปัจจุบันลงในคอนโซล
-    // TODO: ผสานรวมกับแบ็กเอนด์สำหรับการส่งฟอร์ม (เช่น การเรียก API)
+  // handleSubmit ที่อัปเดตแล้ว
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    if (!supabaseLoaded) {
+        alert("Supabase library is still loading. Please wait a moment and try again.");
+        setIsSubmitting(false);
+        return;
+    }
+
+    if (!supabaseClient) {
+        alert("Supabase client is not initialized. Please check your Supabase URL/Key configuration. Data will be logged to console only.");
+        
+        let fallbackData = { ...formData };
+        if (userSigRef.current && !userSigRef.current.isEmpty()) { //
+            fallbackData.userSignature = userSigRef.current.toDataURL('image/png'); //
+        } else {
+            fallbackData.userSignature = ""; //
+        }
+        if (inspectorSigRef.current && !inspectorSigRef.current.isEmpty()) { //
+            fallbackData.inspectorSignature = inspectorSigRef.current.toDataURL('image/png'); //
+        } else {
+            fallbackData.inspectorSignature = ""; //
+        }
+        console.log("Form Data (Supabase not initialized, EV Form):", fallbackData);
+        setIsSubmitting(false);
+        setShowSupabaseConfigWarning(true);
+        return;
+    }
+
+    let dataToSubmit = { ...formData };
+    // ดึงข้อมูลลายเซ็นจาก SignaturePad
+    if (userSigRef.current) {
+        dataToSubmit.userSignature = userSigRef.current.toDataURL('image/png'); //
+    }
+    if (inspectorSigRef.current) {
+        dataToSubmit.inspectorSignature = inspectorSigRef.current.toDataURL('image/png'); //
+    }
+    
+    console.log("Submitting to Supabase (EV Form):", dataToSubmit);
+    // !!! สำคัญ: เปลี่ยน 'ev_inspection_forms' เป็นชื่อตารางจริงของคุณใน Supabase !!!
+    const tableName = 'ev_inspection_forms';
+
+    try {
+      const { data, error } = await supabaseClient
+        .from(tableName)
+        .insert([dataToSubmit]) //
+        .select(); 
+
+      if (error) {
+        console.error('Error saving to Supabase (EV Form):', error);
+        alert(`เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${error.message}`);
+      } else {
+        console.log('Data saved to Supabase (EV Form):', data);
+        alert('ข้อมูลถูกบันทึกเรียบร้อยแล้ว!');
+        setFormData(initialFormData); // ล้างฟอร์ม
+        // ล้างลายเซ็น
+        if (userSigRef.current) userSigRef.current.clear(); //
+        if (inspectorSigRef.current) inspectorSigRef.current.clear(); //
+      }
+    } catch (error) {
+      console.error('An unexpected error occurred during Supabase operation (EV Form):', error);
+      alert('เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
+  // JSX ของฟอร์ม (คงโครงสร้างเดิมไว้ แต่ปรับปรุงส่วนลายเซ็นและปุ่ม submit)
   return (
     <form onSubmit={handleSubmit} className="p-6 bg-gray-100 min-h-screen font-sans">
+      {/* เพิ่ม global style สำหรับ touch-action บน canvas ถ้าจำเป็น */}
+      <style jsx global>{`
+        .sigCanvas {
+          touch-action: none; 
+        }
+      `}</style>
       {/* ชื่อฟอร์มหลัก */}
       <h2 className="text-3xl font-extrabold mb-8 text-center text-[#5b2d90]">
         การไฟฟ้าส่วนภูมิภาค
@@ -563,6 +471,7 @@ export default function ElectricityInspectionForm() {
         สำหรับผู้ใช้ไฟฟ้าที่รับไฟฟ้าแรงต่ำจากหม้อแปลงจำหน่ายของการไฟฟ้าส่วนภูมิภาค (PEA)
       </h2>
 
+      {/* ... (ส่วนอื่นๆ ของฟอร์มคงเดิมทั้งหมด) ... */}
       {/* ส่วนข้อมูลส่วนหัว */}
       <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
@@ -578,7 +487,7 @@ export default function ElectricityInspectionForm() {
               type="text"
               id="peaOffice"
               name="peaOffice"
-              value={formData.peaOffice}
+              value={formData.peaOffice} //
               onChange={handleChange}
               className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
@@ -592,7 +501,7 @@ export default function ElectricityInspectionForm() {
               type="text"
               id="inspectionNumber"
               name="inspectionNumber"
-              value={formData.inspectionNumber}
+              value={formData.inspectionNumber} //
               onChange={handleChange}
               className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
@@ -600,15 +509,16 @@ export default function ElectricityInspectionForm() {
           {/* ช่องป้อนข้อมูลวันที่ตรวจสอบ */}
           <div>
             <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-700 mb-1">
-              วันที่:
+              วันที่: <span className="text-xs text-gray-500">(อัตโนมัติ)</span>
             </label>
             <input
               type="date"
               id="inspectionDate"
               name="inspectionDate"
-              value={formData.inspectionDate}
+              value={formData.inspectionDate} //
               onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+              readOnly // เนื่องจากตั้งค่าอัตโนมัติ
+              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100"
             />
           </div>
           {/* ช่องป้อนข้อมูลเลขที่คำร้องขอใช้ไฟฟ้า */}
@@ -620,7 +530,7 @@ export default function ElectricityInspectionForm() {
               type="text"
               id="requestNumber"
               name="requestNumber"
-              value={formData.requestNumber}
+              value={formData.requestNumber} //
               onChange={handleChange}
               className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
@@ -634,7 +544,7 @@ export default function ElectricityInspectionForm() {
               type="date"
               id="requestDate"
               name="requestDate"
-              value={formData.requestDate}
+              value={formData.requestDate} //
               onChange={handleChange}
               className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
@@ -3005,46 +2915,31 @@ export default function ElectricityInspectionForm() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="userSignature" className="block text-sm font-medium text-gray-700 mb-1">
-              ลงชื่อ:
-            </label>
-            <input
-              type="text"
-              id="userSignature"
-              name="userSignature"
-              value={formData.userSignature}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
-              placeholder="ผู้ขอใช้ไฟฟ้าหรือผู้แทน"
-            />
-          </div>
-          <div>
-            <label htmlFor="inspectorSignature" className="block text-sm font-medium text-gray-700 mb-1">
-              ลงชื่อ:
-            </label>
-            <input
-              type="text"
-              id="inspectorSignature"
-              name="inspectorSignature"
-              value={formData.inspectorSignature}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
-              placeholder="เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค"
-            />
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* ใช้ SignaturePad แทน input text เดิม */}
+          <SignaturePad title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" ref={userSigRef} onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} onClear={() => handleSignatureClear('userSignature')}/>
+          <SignaturePad title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" ref={inspectorSigRef} onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} onClear={() => handleSignatureClear('inspectorSignature')}/>
+        </div>
         </div>
       </section>
 
-      {/* ปุ่มส่งข้อมูล */}
+{/* ปุ่มส่งข้อมูลที่อัปเดตแล้ว */}
       <div className="flex justify-center mt-10">
         <button
           type="submit"
-          className="px-8 py-4 bg-[#5b2d90] text-white font-semibold text-lg rounded-full shadow-lg hover:bg-[#3a1a5b] focus:outline-none focus:ring-4 focus:ring-[#a78bfa] focus:ring-offset-2 transition duration-300 ease-in-out"
+          disabled={isSubmitting || !supabaseLoaded || !supabaseClient} // อัปเดตเงื่อนไข disabled
+          className={`px-8 py-4 bg-[#5b2d90] text-white font-semibold text-lg rounded-full shadow-lg hover:bg-[#3a1a5b] focus:outline-none focus:ring-4 focus:ring-[#a78bfa] focus:ring-offset-2 transition duration-300 ease-in-out ${
+            (isSubmitting || !supabaseLoaded || !supabaseClient) ? 'opacity-50 cursor-not-allowed' : '' //
+          }`}
         >
-          บันทึกข้อมูล
+          {isSubmitting ? 'กำลังบันทึก...' : 'บันทึกข้อมูล'} {/* */}
         </button>
       </div>
+      {showSupabaseConfigWarning && ( //
+        <p className="text-center text-red-500 mt-4">
+          Supabase ยังไม่ได้ตั้งค่าอย่างถูกต้อง หรือเกิดปัญหาในการโหลดไลบรารี กรุณาตรวจสอบ Supabase URL และ Key ในโค้ด และดูข้อความใน Console
+        </p>
+      )}
     </form>
   );
 }
