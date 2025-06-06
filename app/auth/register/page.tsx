@@ -17,7 +17,7 @@ export default function RegisterPage() {
   });
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter(); // เก็บไว้เผื่อใช้งาน
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });

@@ -42,7 +42,7 @@ const CorrectiveRadio = ({
       </div>
       {currentValue === 'ต้องแก้ไข' && (
         <div className="mt-3"> {/* เพิ่ม margin top ให้ช่อง note */}
-          <label htmlFor={noteFieldName} className="block text-xs font-medium text-gray-600 mb-1">
+          <label htmlFor={noteFieldName} className="block text-xs font-medium text-gray-900 mb-1">
             รายละเอียดการแก้ไข:
           </label>
           <textarea
