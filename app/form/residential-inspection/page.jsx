@@ -291,46 +291,82 @@ export default function HomeForm() {
     setFormData(prev => ({ ...prev, inspectionDate: formattedDate }));
   }, []);
 
-  const handleSubmit = async (e) => {
+// page.jsx (แทนที่ฟังก์ชัน handleSubmit เดิมด้วยโค้ดนี้)
+
+const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     if (!supabaseClient) {
-        alert("Supabase client is not initialized. Please check your Supabase URL/Key configuration. Data will be logged to console only.");
-        let fallbackData = { ...formData };
-        if (userSigRef.current) fallbackData.userSignature = userSigRef.current.toDataURL();
-        if (inspectorSigRef.current) fallbackData.inspectorSignature = inspectorSigRef.current.toDataURL();
-        console.log("Form Data (Supabase not initialized):", fallbackData);
+        alert("Supabase client is not initialized. Please check your Supabase URL/Key configuration.");
         setIsSubmitting(false);
         return;
     }
 
+    // 1. สร้างสำเนาของ formData เพื่อป้องกันการแก้ไข state โดยตรง
     let dataToSubmit = { ...formData };
-    if (userSigRef.current) dataToSubmit.userSignature = userSigRef.current.toDataURL();
-    if (inspectorSigRef.current) dataToSubmit.inspectorSignature = inspectorSigRef.current.toDataURL();
+
+    // 2. ตรวจสอบและแก้ไขค่าวันที่ที่ไม่ถูกต้อง
+    // ระบุชื่อฟิลด์ทั้งหมดที่เป็น date หรือ timestamp
+    const dateFields = ['inspectionDate', 'requestDate'];
+    for (const field of dateFields) {
+        // ตรวจสอบว่ามีค่า และค่าที่มียังไม่ใช่ format YYYY-MM-DD หรือไม่
+        if (dataToSubmit[field] && !/^\d{4}-\d{2}-\d{2}$/.test(dataToSubmit[field])) {
+             console.warn(`Correcting malformed date in field '${field}'. Incorrect value was:`, dataToSubmit[field]);
+             // หากค่าผิดพลาด ให้ตั้งเป็นค่าว่าง เพื่อให้ฐานข้อมูลใช้ค่า default หรือ null
+             dataToSubmit[field] = new Date().toISOString();
+        }
+    }
+
+    // 3. แปลงค่าว่างในฟิลด์ตัวเลขเป็น null (จากครั้งก่อน)
+    const numericFields = [
+        'estimatedLoad', 'cableSizeSqmm', 'breakerAmpRating', 
+        'groundWireSizeSqmm', 'groundResistanceOhm'
+        // หากมีฟิลด์ตัวเลขอื่นๆ ให้เพิ่มที่นี่
+    ];
+    for (const field of numericFields) {
+        if (dataToSubmit[field] === '') {
+            dataToSubmit[field] = null;
+        }
+    }
+
+    // เพิ่มข้อมูลลายเซ็น (เหมือนเดิม)
+    if (userSigRef.current) {
+        dataToSubmit.userSignature = userSigRef.current.toDataURL('image/png');
+    }
+    if (inspectorSigRef.current) {
+        dataToSubmit.inspectorSignature = inspectorSigRef.current.toDataURL('image/png');
+    }
     
+    // Debugging: แสดงข้อมูลสุดท้ายก่อนส่ง
+    console.log("Submitting processed data to Supabase:", dataToSubmit);
+
     const tableName = 'inspection_forms';
 
     try {
+      // ใช้ dataToSubmit ที่ผ่านการประมวลผลแล้ว
       const { data, error } = await supabaseClient
         .from(tableName)
         .insert([dataToSubmit])
         .select(); 
 
       if (error) {
+        console.error('Error saving to Supabase:', error);
         alert(`เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${error.message}`);
       } else {
+        console.log('Data saved to Supabase:', data);
         alert('ข้อมูลถูกบันทึกเรียบร้อยแล้ว!');
         setFormData(initialFormData); 
         if (userSigRef.current) userSigRef.current.clear();
         if (inspectorSigRef.current) inspectorSigRef.current.clear();
       }
     } catch (error) {
+      console.error('An unexpected error occurred during Supabase operation:', error);
       alert('เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง');
     } finally {
       setIsSubmitting(false);
     }
-  };
+};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto my-8">
