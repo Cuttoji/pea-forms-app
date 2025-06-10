@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useImperativeHandle } from "react";
+import ImageUpload from "@/components/forms/ImageUpload";
 
 // --- Supabase Configuration ---
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -153,6 +154,7 @@ export default function HomeForm() {
     fullName: "",
     phone: "",
     address: "",
+    address_photo_url: "",
     phaseType: "",
     estimatedLoad: "",
     cableStandard_correct: '',
@@ -194,6 +196,7 @@ export default function HomeForm() {
     scopeOfInspection: "",
     userSignature: "",
     inspectorSignature: "",
+    
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -201,6 +204,8 @@ export default function HomeForm() {
   const [supabaseClient, setSupabaseClient] = useState(null);
   const [supabaseLoaded, setSupabaseLoaded] = useState(false);
   const [showSupabaseConfigWarning, setShowSupabaseConfigWarning] = useState(false);
+  const [user, setUser] = useState(null); // Add user state
+  const [imageFile, setImageFile] = useState(null);
 
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
@@ -258,6 +263,22 @@ export default function HomeForm() {
     document.head.appendChild(script);
   }, []);
 
+
+useEffect(() => {
+    console.log("Checking Environment Variables:");
+    console.log("Supabase URL Loaded:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+
+}, []);
+  useEffect(() => {
+    const getUser = async () => {
+      if (supabaseClient) {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        setUser(user);
+      }
+    };
+    getUser();
+  }, [supabaseClient]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -287,11 +308,9 @@ export default function HomeForm() {
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
-    const formattedDate = `<span class="math-inline">\{year\}\-</span>{month}-${day}`;
+    const formattedDate = `${year}-${month}-${day}`;
     setFormData(prev => ({ ...prev, inspectionDate: formattedDate }));
   }, []);
-
-// page.jsx (แทนที่ฟังก์ชัน handleSubmit เดิมด้วยโค้ดนี้)
 
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -303,52 +322,77 @@ const handleSubmit = async (e) => {
         return;
     }
 
-    // 1. สร้างสำเนาของ formData เพื่อป้องกันการแก้ไข state โดยตรง
-    let dataToSubmit = { ...formData };
+    if (!user) {
+      alert("กรุณาเข้าสู่ระบบก่อนทำการบันทึกข้อมูล");
+      setIsSubmitting(false);
+      return;
+    }
+    let imageUrl = formData.address_photo_url; // ใช้ URL เดิมถ้าไม่มีการอัปโหลดใหม่
 
-    // 2. ตรวจสอบและแก้ไขค่าวันที่ที่ไม่ถูกต้อง
-    // ระบุชื่อฟิลด์ทั้งหมดที่เป็น date หรือ timestamp
+    // --- ส่วนการอัปโหลดรูปภาพ ---
+    if (imageFile) {
+      const fileName = `${user.id}/${Date.now()}_${imageFile.name}`;
+      const { data: uploadData, error: uploadError } = await supabaseClient.storage
+        .from('form-images') // << ชื่อ Bucket ใน Supabase Storage ของคุณ
+        .upload(fileName, imageFile, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error('Error uploading image:', uploadError);
+        alert(`เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ: ${uploadError.message}`);
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // ดึง Public URL ของไฟล์ที่เพิ่งอัปโหลด
+      const { data: publicUrlData } = supabaseClient.storage
+        .from('form-images') // << ชื่อ Bucket เดียวกัน
+        .getPublicUrl(uploadData.path);
+        
+      imageUrl = publicUrlData.publicUrl;
+      console.log('Image uploaded successfully:', imageUrl);
+    }
+    // --- จบส่วนการอัปโหลดรูปภาพ ---
+
+    let dataToSubmit = {
+      ...formData,
+      user_id: user.id,
+      address_photo_url: imageUrl, // อัปเดต URL ของรูปภาพ
+    };
+
     const dateFields = ['inspectionDate', 'requestDate'];
     for (const field of dateFields) {
-        // ตรวจสอบว่ามีค่า และค่าที่มียังไม่ใช่ format YYYY-MM-DD หรือไม่
-        if (dataToSubmit[field] && !/^\d{4}-\d{2}-\d{2}$/.test(dataToSubmit[field])) {
-             console.warn(`Correcting malformed date in field '${field}'. Incorrect value was:`, dataToSubmit[field]);
-             // หากค่าผิดพลาด ให้ตั้งเป็นค่าว่าง เพื่อให้ฐานข้อมูลใช้ค่า default หรือ null
-             dataToSubmit[field] = new Date().toISOString();
-        }
+      if (dataToSubmit[field] && !/^\d{4}-\d{2}-\d{2}$/.test(dataToSubmit[field])) {
+        console.warn(`Correcting malformed date in field '${field}'. Incorrect value was:`, dataToSubmit[field]);
+        dataToSubmit[field] = new Date().toISOString().split('T')[0];
+      }
     }
 
-    // 3. แปลงค่าว่างในฟิลด์ตัวเลขเป็น null (จากครั้งก่อน)
     const numericFields = [
-        'estimatedLoad', 'cableSizeSqmm', 'breakerAmpRating', 
-        'groundWireSizeSqmm', 'groundResistanceOhm'
-        // หากมีฟิลด์ตัวเลขอื่นๆ ให้เพิ่มที่นี่
+      'estimatedLoad', 'cableSizeSqmm', 'breakerAmpRating',
+      'groundWireSizeSqmm', 'groundResistanceOhm'
     ];
     for (const field of numericFields) {
-        if (dataToSubmit[field] === '') {
-            dataToSubmit[field] = null;
-        }
+      if (dataToSubmit[field] === '') {
+        dataToSubmit[field] = null;
+      }
     }
 
-    // เพิ่มข้อมูลลายเซ็น (เหมือนเดิม)
+    // Add signatures
     if (userSigRef.current) {
-        dataToSubmit.userSignature = userSigRef.current.toDataURL('image/png');
+      dataToSubmit.userSignature = userSigRef.current.toDataURL('image/png');
     }
     if (inspectorSigRef.current) {
-        dataToSubmit.inspectorSignature = inspectorSigRef.current.toDataURL('image/png');
+      dataToSubmit.inspectorSignature = inspectorSigRef.current.toDataURL('image/png');
     }
-    
-    // Debugging: แสดงข้อมูลสุดท้ายก่อนส่ง
-    console.log("Submitting processed data to Supabase:", dataToSubmit);
-
-    const tableName = 'inspection_forms';
 
     try {
-      // ใช้ dataToSubmit ที่ผ่านการประมวลผลแล้ว
       const { data, error } = await supabaseClient
-        .from(tableName)
+        .from('inspection_forms')
         .insert([dataToSubmit])
-        .select(); 
+        .select();
 
       if (error) {
         console.error('Error saving to Supabase:', error);
@@ -356,12 +400,12 @@ const handleSubmit = async (e) => {
       } else {
         console.log('Data saved to Supabase:', data);
         alert('ข้อมูลถูกบันทึกเรียบร้อยแล้ว!');
-        setFormData(initialFormData); 
+        setFormData(initialFormData);
         if (userSigRef.current) userSigRef.current.clear();
         if (inspectorSigRef.current) inspectorSigRef.current.clear();
       }
     } catch (error) {
-      console.error('An unexpected error occurred during Supabase operation:', error);
+      console.error('An unexpected error occurred:', error);
       alert('เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง');
     } finally {
       setIsSubmitting(false);
@@ -412,6 +456,12 @@ const handleSubmit = async (e) => {
           <div className="md:col-span-2">
             <label htmlFor="address" className="block text-sm font-medium text-gray-900 mb-1">ที่อยู่:</label>
             <textarea id="address" name="address" value={formData.address} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"></textarea>
+          </div>
+          <div className="md:col-span-2 mt-4">
+            <ImageUpload 
+              onImageSelected={(file) => setImageFile(file)}
+              disabled={isSubmitting}
+            />
           </div>
           <div>
             <label htmlFor="phaseType" className="block text-sm font-medium text-gray-900 mb-1">ชนิดของระบบไฟฟ้า:</label>

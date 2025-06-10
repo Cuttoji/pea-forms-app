@@ -61,10 +61,6 @@ export default function RegisterPage() {
         // result.message และ result.user มาจาก NextResponse.json({ message: ..., user: ... })
         setMessage(result.message || 'สมัครสมาชิกสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันบัญชี');
         console.log('Registration API success:', result.user);
-        // คุณอาจจะ clear form หลังจากสมัครสมาชิกสำเร็จ
-        // setForm({ username: '', email: '', password: '', confirmPassword: '' });
-        // การ redirect (router.push('/')) อาจจะยังไม่เหมาะสมทันที
-        // จนกว่าผู้ใช้จะยืนยันอีเมลและเข้าสู่ระบบได้
       }
     } catch (err: any) {
       console.error('API call error:', err);
