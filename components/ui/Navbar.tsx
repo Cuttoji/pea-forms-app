@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase/client'; // Import Supabase client ที่สร้างไว้
+import { supabase } from '@/lib/supabase/client';
 
 export default function SiteNavbar() {
   const [user, setUser] = useState(null);
