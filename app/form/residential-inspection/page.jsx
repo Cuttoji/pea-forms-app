@@ -2,55 +2,14 @@
 
 import React, { useState, useEffect, useRef, useImperativeHandle } from "react";
 import ImageUpload from "@/components/forms/ImageUpload";
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import InspectionPDF from '@/components/forms/InspectionPDF';
+import { Download, Save } from "lucide-react";
+import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 
 // --- Supabase Configuration ---
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-// Helper component for "ถูกต้อง" / "ต้องแก้ไข" radio buttons
-const CorrectiveRadio = ({ groupName, label, currentValue, currentNote, onStatusChange, onNoteChange }) => {
-  const noteFieldName = `${groupName}_note`;
-  return (
-    <div className="border-b border-gray-200 pb-4 mb-4">
-      <label className="block text-sm font-medium text-gray-900 mb-2">{label}</label>
-      <div className="flex flex-wrap gap-4 mt-2">
-        <label className="inline-flex items-center text-sm font-medium text-gray-900">
-          <input
-            type="radio"
-            name={groupName}
-            value="ถูกต้อง"
-            checked={currentValue === 'ถูกต้อง'}
-            onChange={() => onStatusChange(groupName, 'ถูกต้อง', noteFieldName)}
-            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"
-          />
-          <span className="ml-2">ถูกต้อง</span>
-        </label>
-        <label className="inline-flex items-center text-sm font-medium text-gray-900">
-          <input
-            type="radio"
-            name={groupName}
-            value="ต้องแก้ไข"
-            checked={currentValue === 'ต้องแก้ไข'}
-            onChange={() => onStatusChange(groupName, 'ต้องแก้ไข', noteFieldName)}
-            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"
-          />
-          <span className="ml-2">ต้องแก้ไข</span>
-        </label>
-      </div>
-      {currentValue === 'ต้องแก้ไข' && (
-        <input
-          type="text"
-          name={noteFieldName}
-          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-400 focus:border-transparent mt-2 text-gray-900"
-          value={currentNote || ''}
-          onChange={onNoteChange}
-          placeholder="โปรดระบุรายละเอียด"
-        />
-      )}
-    </div>
-  );
-};
-
 
 // Signature Pad Component
 const SignaturePad = React.forwardRef(({ title, onSave, onClear }, ref) => {
@@ -413,7 +372,7 @@ const handleSubmit = async (e) => {
 };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto my-8">
+    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md max-w-6xl mx-auto my-8">
       <style jsx global>{`.sigCanvas { touch-action: none; }`}</style>
       <h2 className="text-2xl font-bold mb-6 text-center text-[#5b2d90]">
         แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน
@@ -618,24 +577,56 @@ const handleSubmit = async (e) => {
           <SignaturePad title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" ref={inspectorSigRef} onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} onClear={() => handleSignatureClear('inspectorSignature')}/>
         </div>
       </section>
-
-      {/* Submit Button */}
-      <div className="flex justify-center mt-10">
-        <button
-          type="submit"
-          disabled={isSubmitting || !supabaseLoaded || !supabaseClient}
-          className={`px-8 py-4 bg-[#5b2d90] text-white font-semibold text-lg rounded-full shadow-lg hover:bg-[#3a1a5b] focus:outline-none focus:ring-4 focus:ring-[#a78bfa] focus:ring-offset-2 transition duration-300 ease-in-out ${
-            (isSubmitting || !supabaseLoaded || !supabaseClient) ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+{/* Action Buttons Section */}
+<div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
+    {/* Download PDF Button (Secondary Action) */}
+    {formData.inspectionNumber && (
+        <PDFDownloadLink
+            document={
+                <InspectionPDF 
+                    formData={formData} 
+                    userSignature={formData.userSignature}
+                    inspectorSignature={formData.inspectorSignature}
+                />
+            }
+            fileName={`inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
+            className="w-full sm:w-auto"
         >
-          {isSubmitting ? (
-             <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-             </svg>
-           ) : 'บันทึกข้อมูล'}
-        </button>
-      </div>
+            {({ loading }) => (
+                <button
+                    type="button"
+                    disabled={loading || isSubmitting}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+                >
+                    <Download className="w-5 h-5"/>
+                    {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
+                </button>
+            )}
+        </PDFDownloadLink>
+    )}
+
+    {/* Submit Button (Primary Action) */}
+    <button
+        type="submit"
+        disabled={isSubmitting || !supabaseClient}
+        className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-white bg-[#5b2d90] rounded-lg shadow-lg hover:bg-[#4a2575] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a78bfa] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+    >
+        {isSubmitting ? (
+            <>
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span>กำลังบันทึก...</span>
+            </>
+        ) : (
+            <>
+                <Save className="w-5 h-5"/>
+                <span>บันทึกข้อมูล</span>
+            </>
+        )}
+    </button>
+</div>
       {showSupabaseConfigWarning && (
         <p className="text-center text-red-500 mt-4">
           Supabase ยังไม่ได้ตั้งค่าอย่างถูกต้อง หรือเกิดปัญหาในการโหลดไลบรารี กรุณาตรวจสอบ Supabase URL และ Key ในโค้ด และดูข้อความใน Console
