@@ -13,158 +13,95 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 
-// Signature Pad Component (คัดลอกมาจาก page.jsx เวอร์ชันสอง)
+// Signature Pad Component
 const SignaturePad = React.forwardRef(({ title, onSave, onClear }, ref) => {
-  const canvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [hasDrawing, setHasDrawing] = useState(false);
+    const canvasRef = useRef(null);
+    const [isDrawing, setIsDrawing] = useState(false);
+    const [hasDrawing, setHasDrawing] = useState(false);
 
-  const getPosition = (event) => {
-    if (!canvasRef.current) return { x: 0, y: 0 };
-    const rect = canvasRef.current.getBoundingClientRect();
-    if (event.touches && event.touches.length > 0) {
-      return {
-        x: event.touches[0].clientX - rect.left,
-        y: event.touches[0].clientY - rect.top,
-      };
-    }
-    return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
+    const getPosition = (event) => {
+        if (!canvasRef.current) return { x: 0, y: 0 };
+        const rect = canvasRef.current.getBoundingClientRect();
+        const touch = event.touches && event.touches.length > 0 ? event.touches[0] : null;
+        return {
+            x: (touch ? touch.clientX : event.clientX) - rect.left,
+            y: (touch ? touch.clientY : event.clientY) - rect.top,
+        };
     };
-  };
 
-  const startDrawing = (event) => {
-    if (!canvasRef.current) return;
-    if (event.type === 'touchstart') {
-        event.preventDefault();
-    }
-    const { x, y } = getPosition(event);
-    const context = canvasRef.current.getContext('2d');
-    context.beginPath();
-    context.moveTo(x, y);
-    setIsDrawing(true);
-    setHasDrawing(true);
-  };
+    const startDrawing = (event) => {
+        if (event.type === 'touchstart') event.preventDefault();
+        const { x, y } = getPosition(event);
+        const context = canvasRef.current.getContext('2d');
+        context.beginPath();
+        context.moveTo(x, y);
+        setIsDrawing(true);
+        setHasDrawing(true);
+    };
 
-  const draw = (event) => {
-    if (!canvasRef.current) return;
-    if (event.type === 'touchmove') {
-        event.preventDefault();
-    }
-    if (!isDrawing) return;
-    const { x, y } = getPosition(event);
-    const context = canvasRef.current.getContext('2d');
-    context.lineTo(x, y);
-    context.stroke();
-  };
+    const draw = (event) => {
+        if (!isDrawing) return;
+        if (event.type === 'touchmove') event.preventDefault();
+        const { x, y } = getPosition(event);
+        const context = canvasRef.current.getContext('2d');
+        context.lineTo(x, y);
+        context.stroke();
+    };
 
-  const stopDrawing = () => {
-    if (!canvasRef.current || !isDrawing) return;
-    const context = canvasRef.current.getContext('2d');
-    context.closePath();
-    setIsDrawing(false);
-    if (typeof onSave === 'function' && hasDrawing) {
-      onSave(canvasRef.current.toDataURL('image/png'));
-    } else if (typeof onSave === 'function' && !hasDrawing) {
-      onSave("");
-    }
-  };
-
-  const clearCanvas = () => {
-    if (!canvasRef.current) return;
-    const context = canvasRef.current.getContext('2d');
-    // ตรวจสอบว่า canvas มีขนาดก่อนที่จะพยายามตั้งค่าความกว้าง/สูงใหม่
-    if (canvasRef.current.offsetWidth > 0 && canvasRef.current.offsetHeight > 0) {
-        canvasRef.current.width = canvasRef.current.offsetWidth;
-        canvasRef.current.height = canvasRef.current.offsetHeight;
-    } else {
-        // ตั้งค่า default ถ้า offsetWidth/Height เป็น 0 (อาจเกิดขึ้นถ้า element ถูกซ่อน)
-        // คุณอาจจะต้องปรับค่าเหล่านี้ตามความเหมาะสม
-        canvasRef.current.width = 300; // Default width
-        canvasRef.current.height = 150; // Default height
-    }
-    context.strokeStyle = 'black';
-    context.lineWidth = 2;
-    context.lineCap = 'round';
-    context.lineJoin = 'round';
-    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    setHasDrawing(false);
-    if (typeof onClear === 'function') {
-      onClear();
-    }
-    if (typeof onSave === 'function') {
-        onSave("");
-    }
-  };
-
-  useImperativeHandle(ref, () => ({
-    clear: clearCanvas,
-    toDataURL: (type = 'image/png') => {
-      if (canvasRef.current && hasDrawing) {
-        return canvasRef.current.toDataURL(type);
-      }
-      return "";
-    },
-    isEmpty: () => !hasDrawing,
-  }));
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const setCanvasDimensionsAndContext = () => {
-        if (!canvas.offsetWidth || !canvas.offsetHeight) {
-            // ถ้า element ถูกซ่อน หรือยังไม่ได้ render อย่างถูกต้อง ให้ลองตั้งค่า default หรือรอ
-             canvas.width = canvas.parentElement?.clientWidth || 300; // พยายามใช้ความกว้างของ parent
-             canvas.height = 128; // 8rem, หรือค่า h-32 ที่เคยใช้
-        } else {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+    const stopDrawing = () => {
+        if (!isDrawing) return;
+        const context = canvasRef.current.getContext('2d');
+        context.closePath();
+        setIsDrawing(false);
+        if (typeof onSave === 'function' && hasDrawing) {
+            onSave(canvasRef.current.toDataURL('image/png'));
         }
+    };
 
+    const clearCanvas = () => {
+        if (!canvasRef.current) return;
+        const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        setHasDrawing(false);
+        if (typeof onClear === 'function') onClear();
+        if (typeof onSave === 'function') onSave("");
+    };
+
+    useImperativeHandle(ref, () => ({
+        clear: clearCanvas,
+        toDataURL: (type = 'image/png') => hasDrawing ? canvasRef.current.toDataURL(type) : "",
+        isEmpty: () => !hasDrawing,
+    }));
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const context = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
         context.strokeStyle = 'black';
         context.lineWidth = 2;
         context.lineCap = 'round';
         context.lineJoin = 'round';
-        // อาจจะต้องเรียก clearCanvas ที่นี่เพื่อให้แน่ใจว่าพื้นหลังถูกต้องตั้งแต่ต้น
-        // context.clearRect(0, 0, canvas.width, canvas.height);
-    };
-    
-    const timer = setTimeout(setCanvasDimensionsAndContext, 50); // เพิ่ม delay เล็กน้อย
-    
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
+    }, []);
 
-
-  return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">{title}:</label>
-      <div className="border border-gray-300 rounded-md p-1">
-        <canvas
-          ref={canvasRef}
-          className="w-full h-32 rounded-md sigCanvas bg-gray-50 cursor-crosshair" // h-32 คือ 8rem หรือ 128px
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
-          onTouchStart={startDrawing}
-          onTouchMove={draw}
-          onTouchEnd={stopDrawing}
-        />
-      </div>
-      <button
-        type="button"
-        onClick={clearCanvas}
-        className="mt-2 px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm"
-      >
-        ล้างลายเซ็น
-      </button>
-    </div>
-  );
+    return (
+        <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-900 mb-1">{title}:</label>
+            <div className="border border-gray-300 rounded-md p-1">
+                <canvas
+                    ref={canvasRef}
+                    className="w-full h-32 rounded-md sigCanvas bg-gray-50 cursor-crosshair"
+                    onMouseDown={startDrawing} onMouseMove={draw} onMouseUp={stopDrawing} onMouseLeave={stopDrawing}
+                    onTouchStart={startDrawing} onTouchMove={draw} onTouchEnd={stopDrawing}
+                />
+            </div>
+            <button type="button" onClick={clearCanvas} className="mt-2 px-3 py-1 bg-gray-200 text-gray-900 rounded-md hover:bg-gray-300 text-sm">
+                ล้างลายเซ็น
+            </button>
+        </div>
+    );
 });
 SignaturePad.displayName = 'SignaturePad';
 
@@ -227,36 +164,30 @@ export default function condo() {
   const [supabaseClient, setSupabaseClient] = useState(null);
   const [supabaseLoaded, setSupabaseLoaded] = useState(false);
   const [showSupabaseConfigWarning, setShowSupabaseConfigWarning] = useState(false);
+  const [user, setUser] = useState(null); // Add user state
+  const [imageFile, setImageFile] = useState(null);
 
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
-
-  // Effect for loading Supabase client (คัดลอกมาจาก page.jsx เวอร์ชันสอง)
+  
   useEffect(() => {
     if (window.supabase) {
-      console.log("Supabase already available on window (EV Form).");
       if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseKey && supabaseKey !== 'YOUR_SUPABASE_ANON_KEY') {
         try {
           setSupabaseClient(window.supabase.createClient(supabaseUrl, supabaseKey));
-          console.log("Supabase client initialized from existing window.supabase (EV Form).");
         } catch (e) {
-          console.error("Error initializing Supabase client from existing window.supabase (EV Form):", e);
+          console.error("Error initializing Supabase client:", e);
+          setShowSupabaseConfigWarning(true);
         }
       } else {
-        console.warn("Supabase URL or Key is not configured (EV Form, using existing window.supabase).");
         setShowSupabaseConfigWarning(true);
       }
       setSupabaseLoaded(true);
       return;
     }
 
-    const scriptId = 'supabase-js-cdn-evform'; // ใช้ ID ที่ไม่ซ้ำกัน
+    const scriptId = 'supabase-js-cdn';
     if (document.getElementById(scriptId)) {
-        console.log("Supabase script tag already exists (EV Form).");
-        // อาจจะต้องมี logic เพิ่มเติมถ้า script โหลดแต่ window.supabase ยังไม่พร้อม
-        if(window.supabase) { // เช็คอีกครั้ง
-            // Initialize here if it became available
-        }
         return;
     }
 
@@ -266,40 +197,48 @@ export default function condo() {
     script.async = true;
 
     script.onload = () => {
-      console.log("Supabase script loaded from CDN (EV Form).");
       if (window.supabase) {
         if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseKey && supabaseKey !== 'YOUR_SUPABASE_ANON_KEY') {
           try {
             setSupabaseClient(window.supabase.createClient(supabaseUrl, supabaseKey));
-            console.log("Supabase client initialized after CDN load (EV Form).");
             setShowSupabaseConfigWarning(false);
           } catch (e) {
-             console.error("Error initializing Supabase client after CDN load (EV Form):", e);
-             setShowSupabaseConfigWarning(true);
+            console.error("Error initializing Supabase client after load:", e);
+            setShowSupabaseConfigWarning(true);
           }
         } else {
-          console.warn("Supabase URL or Key is not configured after CDN load (EV Form).");
           setShowSupabaseConfigWarning(true);
         }
       } else {
-        console.error("Supabase object (window.supabase) not found after script load (EV Form).");
         setShowSupabaseConfigWarning(true);
       }
       setSupabaseLoaded(true);
     };
 
     script.onerror = () => {
-      console.error("Error loading Supabase script from CDN (EV Form).");
       setSupabaseLoaded(true);
       setShowSupabaseConfigWarning(true);
     };
 
     document.head.appendChild(script);
-
   }, []);
 
 
-  // handleChange และ handleRadioChange (คงเดิม)
+useEffect(() => {
+    console.log("Checking Environment Variables:");
+    console.log("Supabase URL Loaded:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+
+}, []);
+  useEffect(() => {
+    const getUser = async () => {
+      if (supabaseClient) {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        setUser(user);
+      }
+    };
+    getUser();
+  }, [supabaseClient]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -316,104 +255,123 @@ export default function condo() {
     }));
   };
 
-  // ฟังก์ชันสำหรับจัดการการบันทึกและล้างลายเซ็น (จาก page.jsx เวอร์ชันสอง)
   const handleSignatureSave = (fieldName, dataUrl) => {
-    setFormData(prev => ({
-      ...prev,
-      [fieldName]: dataUrl,
-    }));
+    setFormData(prev => ({ ...prev, [fieldName]: dataUrl }));
   };
   
   const handleSignatureClear = (fieldName) => {
-    setFormData(prev => ({
-        ...prev,
-        [fieldName]: "",
-    }));
+    setFormData(prev => ({ ...prev, [fieldName]: "" }));
   };
 
-  // useEffect สำหรับตั้งค่าวันที่ (คงเดิม)
   useEffect(() => {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}`;
-
-    setFormData(prev => ({
-      ...prev,
-      inspectionDate: formattedDate, //
-      requestDate: formattedDate, //
-    }));
+    setFormData(prev => ({ ...prev, inspectionDate: formattedDate }));
   }, []);
 
-  // handleSubmit ที่อัปเดตแล้ว
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    if (!supabaseLoaded) {
-        alert("Supabase library is still loading. Please wait a moment and try again.");
-        setIsSubmitting(false);
-        return;
-    }
-
     if (!supabaseClient) {
-        alert("Supabase client is not initialized. Please check your Supabase URL/Key configuration. Data will be logged to console only.");
-        
-        let fallbackData = { ...formData };
-        if (userSigRef.current && !userSigRef.current.isEmpty()) { //
-            fallbackData.userSignature = userSigRef.current.toDataURL('image/png'); //
-        } else {
-            fallbackData.userSignature = ""; //
-        }
-        if (inspectorSigRef.current && !inspectorSigRef.current.isEmpty()) { //
-            fallbackData.inspectorSignature = inspectorSigRef.current.toDataURL('image/png'); //
-        } else {
-            fallbackData.inspectorSignature = ""; //
-        }
-        console.log("Form Data (Supabase not initialized, EV Form):", fallbackData);
+        alert("Supabase client is not initialized. Please check your Supabase URL/Key configuration.");
         setIsSubmitting(false);
-        setShowSupabaseConfigWarning(true);
         return;
     }
 
-    let dataToSubmit = { ...formData };
-    // ดึงข้อมูลลายเซ็นจาก SignaturePad
+    if (!user) {
+      alert("กรุณาเข้าสู่ระบบก่อนทำการบันทึกข้อมูล");
+      setIsSubmitting(false);
+      return;
+    }
+    let imageUrl = formData.address_photo_url; // ใช้ URL เดิมถ้าไม่มีการอัปโหลดใหม่
+
+    // --- ส่วนการอัปโหลดรูปภาพ ---
+    if (imageFile) {
+      const fileName = `${user.id}/${Date.now()}_${imageFile.name}`;
+      const { data: uploadData, error: uploadError } = await supabaseClient.storage
+        .from('form-images') // << ชื่อ Bucket ใน Supabase Storage ของคุณ
+        .upload(fileName, imageFile, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error('Error uploading image:', uploadError);
+        alert(`เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ: ${uploadError.message}`);
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // ดึง Public URL ของไฟล์ที่เพิ่งอัปโหลด
+      const { data: publicUrlData } = supabaseClient.storage
+        .from('form-images') // << ชื่อ Bucket เดียวกัน
+        .getPublicUrl(uploadData.path);
+        
+      imageUrl = publicUrlData.publicUrl;
+      console.log('Image uploaded successfully:', imageUrl);
+    }
+    // --- จบส่วนการอัปโหลดรูปภาพ ---
+
+    let dataToSubmit = {
+      ...formData,
+      user_id: user.id,
+      address_photo_url: imageUrl, // อัปเดต URL ของรูปภาพ
+    };
+
+    const dateFields = ['inspectionDate', 'requestDate'];
+    for (const field of dateFields) {
+      if (dataToSubmit[field] && !/^\d{4}-\d{2}-\d{2}$/.test(dataToSubmit[field])) {
+        console.warn(`Correcting malformed date in field '${field}'. Incorrect value was:`, dataToSubmit[field]);
+        dataToSubmit[field] = new Date().toISOString().split('T')[0];
+      }
+    }
+
+    const numericFields = [
+      'estimatedLoad', 'cableSizeSqmm', 'breakerAmpRating',
+      'groundWireSizeSqmm', 'groundResistanceOhm'
+    ];
+    for (const field of numericFields) {
+      if (dataToSubmit[field] === '') {
+        dataToSubmit[field] = null;
+      }
+    }
+
+    // Add signatures
     if (userSigRef.current) {
-        dataToSubmit.userSignature = userSigRef.current.toDataURL('image/png'); //
+      dataToSubmit.userSignature = userSigRef.current.toDataURL('image/png');
     }
     if (inspectorSigRef.current) {
-        dataToSubmit.inspectorSignature = inspectorSigRef.current.toDataURL('image/png'); //
+      dataToSubmit.inspectorSignature = inspectorSigRef.current.toDataURL('image/png');
     }
-    
-    console.log("Submitting to Supabase (EV Form):", dataToSubmit);
-    // !!! สำคัญ: เปลี่ยน 'ev_inspection_forms' เป็นชื่อตารางจริงของคุณใน Supabase !!!
-    const tableName = 'ev_inspection_forms';
 
     try {
       const { data, error } = await supabaseClient
-        .from(tableName)
-        .insert([dataToSubmit]) //
-        .select(); 
+        .from('inspection_forms')
+        .insert([dataToSubmit])
+        .select();
 
       if (error) {
-        console.error('Error saving to Supabase (EV Form):', error);
+        console.error('Error saving to Supabase:', error);
         alert(`เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${error.message}`);
       } else {
-        console.log('Data saved to Supabase (EV Form):', data);
+        console.log('Data saved to Supabase:', data);
         alert('ข้อมูลถูกบันทึกเรียบร้อยแล้ว!');
-        setFormData(initialFormData); // ล้างฟอร์ม
-        // ล้างลายเซ็น
-        if (userSigRef.current) userSigRef.current.clear(); //
-        if (inspectorSigRef.current) inspectorSigRef.current.clear(); //
+        setFormData(initialFormData);
+        if (userSigRef.current) userSigRef.current.clear();
+        if (inspectorSigRef.current) inspectorSigRef.current.clear();
       }
     } catch (error) {
-      console.error('An unexpected error occurred during Supabase operation (EV Form):', error);
+      console.error('An unexpected error occurred:', error);
       alert('เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง');
     } finally {
       setIsSubmitting(false);
     }
-  };
+};
+
 
   // JSX ของฟอร์ม (คงโครงสร้างเดิมไว้ แต่ปรับปรุงส่วนลายเซ็นและปุ่ม submit)
   return (
