@@ -373,15 +373,8 @@ const handleSubmit = async (e) => {
 };
 
 
-  // JSX ของฟอร์ม (คงโครงสร้างเดิมไว้ แต่ปรับปรุงส่วนลายเซ็นและปุ่ม submit)
   return (
-    <form onSubmit={handleSubmit} className="p-6 bg-gray-100 min-h-screen font-sans">
-      {/* เพิ่ม global style สำหรับ touch-action บน canvas ถ้าจำเป็น */}
-      <style jsx global>{`
-        .sigCanvas {
-          touch-action: none; 
-        }
-      `}</style>
+    <form onSubmit={handleSubmit} className="p-6 bg-gray-100 min-h-screen font-sans ">
       {/* ชื่อฟอร์มหลัก */}
       <h2 className="text-3xl font-extrabold mb-8 text-center text-[#5b2d90]">
         การไฟฟ้าส่วนภูมิภาค

@@ -1,12 +1,6 @@
-// app/page.tsx
-// นี่คือหน้าแรกของแอปพลิเคชัน (Homepage) โดยใช้ TypeScript
-// This is the homepage of your application, using TypeScript.
+import Link from 'next/link';
+import { FileText, Zap, Building, Construction } from 'lucide-react';
 
-import Link from 'next/link'; // สำหรับการนำทางระหว่างหน้า (For navigation between pages)
-import { FileText, Zap, Building, Construction } from 'lucide-react'; // ตัวอย่างไอคอน (Example icons)
-
-// Metadata สำหรับหน้านี้ (สามารถกำหนดแยกสำหรับแต่ละหน้าได้)
-// Metadata for this specific page (can be defined per page)
 export const metadata = {
   title: 'หน้าหลัก | ระบบฟอร์มตรวจสอบ PEA',
   description: 'ยินดีต้อนรับสู่ระบบฟอร์มตรวจสอบออนไลน์ของการไฟฟ้าส่วนภูมิภาค',
@@ -21,11 +15,8 @@ interface FeatureCardProps {
 }
 
 // คอมโพเนนต์ย่อยสำหรับแสดงการ์ดคุณสมบัติ/ลิงก์ไปยังฟอร์ม
-// Sub-component for displaying feature cards / links to forms
 const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, href, linkText }) => {
   return (
-    // แก้ไข: ลบ legacyBehavior และแท็ก <a> ที่ซ้อนอยู่
-    // Fix: Removed legacyBehavior and nested <a> tag
     <Link
       href={href}
       className="group block p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out border border-transparent hover:border-purple-300 transform hover:-translate-y-1"

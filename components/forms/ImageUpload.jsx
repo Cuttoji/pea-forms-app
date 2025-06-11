@@ -1,12 +1,16 @@
 // components/forms/ImageUpload.jsx
 "use client";
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
-const ImageUpload = ({ onImageSelected, disabled = false }) => {
-  const [preview, setPreview] = useState(null);
+const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false }) => {
+  const [preview, setPreview] = useState(initialImageUrl);
   const fileInputRef = useRef(null);
 
-  // เมื่อผู้ใช้เลือกไฟล์
+  // อัปเดต preview เมื่อ initialImageUrl เปลี่ยน
+  useEffect(() => {
+    setPreview(initialImageUrl);
+  }, [initialImageUrl]);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -15,16 +19,15 @@ const ImageUpload = ({ onImageSelected, disabled = false }) => {
         setPreview(reader.result);
       };
       reader.readAsDataURL(file);
-      onImageSelected(file); // ส่ง object ของไฟล์กลับไป
+      onImageSelected(file);
     }
   };
 
-  // เมื่อผู้ใช้กดปุ่ม "ลบรูปภาพ"
   const handleRemoveImage = () => {
     setPreview(null);
     onImageSelected(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // รีเซ็ตค่าใน input file
+      fileInputRef.current.value = "";
     }
   };
 
@@ -48,7 +51,7 @@ const ImageUpload = ({ onImageSelected, disabled = false }) => {
             onChange={handleFileChange}
             ref={fileInputRef}
             disabled={disabled}
-            className="hidden" // ซ่อน input เริ่มต้น
+            className="hidden"
             id="image-upload-input"
           />
           <label
@@ -57,14 +60,8 @@ const ImageUpload = ({ onImageSelected, disabled = false }) => {
           >
             เลือกรูปภาพ...
           </label>
-
           {preview && (
-            <button
-              type="button"
-              onClick={handleRemoveImage}
-              disabled={disabled}
-              className="rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 shadow-sm hover:bg-red-100 disabled:opacity-50"
-            >
+            <button type="button" onClick={handleRemoveImage} disabled={disabled} className="rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 shadow-sm hover:bg-red-100 disabled:opacity-50">
               ลบรูปภาพ
             </button>
           )}

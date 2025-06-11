@@ -6,6 +6,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import InspectionPDF from '@/components/forms/InspectionPDF';
 import { Download, Save } from "lucide-react";
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
+import { useSearchParams } from 'next/navigation';
 
 // --- Supabase Configuration ---
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -160,11 +161,13 @@ export default function HomeForm() {
 
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false); // Add this line
   const [supabaseClient, setSupabaseClient] = useState(null);
   const [supabaseLoaded, setSupabaseLoaded] = useState(false);
   const [showSupabaseConfigWarning, setShowSupabaseConfigWarning] = useState(false);
   const [user, setUser] = useState(null); // Add user state
   const [imageFile, setImageFile] = useState(null);
+  const searchParams = useSearchParams();
 
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
@@ -228,15 +231,42 @@ useEffect(() => {
     console.log("Supabase URL Loaded:", process.env.NEXT_PUBLIC_SUPABASE_URL);
 
 }, []);
-  useEffect(() => {
-    const getUser = async () => {
-      if (supabaseClient) {
+ useEffect(() => {
+    const formId = searchParams.get('id');
+
+    const initializeForm = async () => {
+      setIsLoadingData(true);
+      try {
         const { data: { user } } = await supabaseClient.auth.getUser();
         setUser(user);
+
+        if (formId) {
+          const { data, error } = await supabaseClient
+            .from('inspection_forms')
+            .select('*')
+            .eq('id', formId)
+            .single();
+
+          if (error) {
+            console.error("Error fetching form data:", error);
+            alert("ไม่สามารถโหลดข้อมูลฟอร์มได้");
+            setFormData(initialFormData);
+          } else if (data) {
+            setFormData(data);
+          }
+        }
+      } catch (error) {
+        console.error("Error in initializeForm:", error);
+        alert("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+      } finally {
+        setIsLoadingData(false);
       }
     };
-    getUser();
-  }, [supabaseClient]);
+
+    if (supabaseClient) {
+      initializeForm();
+    }
+  }, [searchParams, supabaseClient]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -372,7 +402,7 @@ const handleSubmit = async (e) => {
 };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md max-w-6xl mx-auto my-8">
+    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-gray-100 rounded-lg shadow-md max-w-6xl mx-auto my-8">
       <style jsx global>{`.sigCanvas { touch-action: none; }`}</style>
       <h2 className="text-2xl font-bold mb-6 text-center text-[#5b2d90]">
         แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน
