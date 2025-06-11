@@ -68,13 +68,6 @@ export default function SiteNavbar() {
             </>
           ) : (
             <>
-              <Link href="/auth/login" className="hover:text-purple-300 transition-colors text-sm sm:text-base">เข้าสู่ระบบ</Link>
-              <Link 
-                href="/auth/register" 
-                className="bg-emerald-500 hover:bg-emerald-600 px-3 py-1.5 text-sm rounded-md transition-colors"
-              >
-                สมัครสมาชิก
-              </Link>
             </>
           )}
         </div>

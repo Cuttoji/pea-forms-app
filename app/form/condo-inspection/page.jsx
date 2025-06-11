@@ -2,54 +2,16 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useImperativeHandle } from "react"; // เพิ่ม React และ useImperativeHandle
+import ImageUpload from "@/components/forms/ImageUpload";
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import InspectionPDF from '@/components/forms/InspectionPDF';
+import { Download, Save } from "lucide-react";
+import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 
 // --- Supabase Configuration ---
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// ส่วนประกอบเสริมสำหรับปุ่มตัวเลือก "ถูกต้อง" / "ต้องแก้ไข" (คงเดิม)
-const CorrectiveRadio = ({ groupName, label, currentValue, currentNote, onStatusChange, onNoteChange }) => {
-  const noteFieldName = `${groupName}_note`;
-  return (
-    <div className="border-b border-gray-200 pb-4 mb-4">
-      <label className="block text-gray-700 text-sm font-bold mb-2">{label}</label>
-      <div className="flex flex-wrap gap-4 mt-2">
-        <label className="inline-flex items-center text-gray-800">
-          <input
-            type="radio"
-            name={groupName}
-            value="ถูกต้อง"
-            checked={currentValue === 'ถูกต้อง'}
-            onChange={() => onStatusChange(groupName, 'ถูกต้อง', noteFieldName)}
-            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
-          />
-          <span className="ml-3">ถูกต้อง</span>
-        </label>
-        <label className="inline-flex items-center text-gray-800">
-          <input
-            type="radio"
-            name={groupName}
-            value="ต้องแก้ไข"
-            checked={currentValue === 'ต้องแก้ไข'}
-            onChange={() => onStatusChange(groupName, 'ต้องแก้ไข', noteFieldName)}
-            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
-          />
-          <span className="ml-3">ต้องแก้ไข</span>
-        </label>
-      </div>
-      {currentValue === 'ต้องแก้ไข' && (
-        <input
-          type="text"
-          name={noteFieldName}
-          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-400 focus:border-transparent mt-2"
-          value={currentNote || ''} // เพิ่ม || '' เพื่อป้องกัน undefined
-          onChange={onNoteChange}
-          placeholder="โปรดระบุรายละเอียด"
-        />
-      )}
-    </div>
-  );
-};
 
 // Signature Pad Component (คัดลอกมาจาก page.jsx เวอร์ชันสอง)
 const SignaturePad = React.forwardRef(({ title, onSave, onClear }, ref) => {
@@ -207,7 +169,7 @@ const SignaturePad = React.forwardRef(({ title, onSave, onClear }, ref) => {
 SignaturePad.displayName = 'SignaturePad';
 
 
-export default function ElectricityInspectionForm() {
+export default function condo() {
   // initialFormData ควรจะตรงกับโครงสร้างของฟอร์ม EV ที่ละเอียด
   const initialFormData = {
     // ข้อมูลส่วนหัว
@@ -489,12 +451,12 @@ export default function ElectricityInspectionForm() {
               name="peaOffice"
               value={formData.peaOffice} //
               onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"
             />
           </div>
           {/* ช่องป้อนข้อมูลเลขที่บันทึกตรวจสอบ */}
           <div>
-            <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-700 mb-1 text-gray-900">
               การตรวจสอบครั้งที่:
             </label>
             <input
@@ -503,12 +465,12 @@ export default function ElectricityInspectionForm() {
               name="inspectionNumber"
               value={formData.inspectionNumber} //
               onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"
             />
           </div>
           {/* ช่องป้อนข้อมูลวันที่ตรวจสอบ */}
           <div>
-            <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-700 mb-1 text-gray-900">
               วันที่: <span className="text-xs text-gray-500">(อัตโนมัติ)</span>
             </label>
             <input
@@ -518,12 +480,12 @@ export default function ElectricityInspectionForm() {
               value={formData.inspectionDate} //
               onChange={handleChange}
               readOnly // เนื่องจากตั้งค่าอัตโนมัติ
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100"
+              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100 text-gray-900"
             />
           </div>
           {/* ช่องป้อนข้อมูลเลขที่คำร้องขอใช้ไฟฟ้า */}
           <div>
-            <label htmlFor="requestNumber" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="requestNumber" className="block text-sm font-medium text-gray-700 mb-1 text-gray-900">
               การตรวจสอบตามคำร้องขอใช้ไฟเลขที่:
             </label>
             <input
@@ -532,7 +494,7 @@ export default function ElectricityInspectionForm() {
               name="requestNumber"
               value={formData.requestNumber} //
               onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"
             />
           </div>
           {/* ช่องป้อนข้อมูลวันที่ยื่นคำร้อง */}
@@ -546,7 +508,7 @@ export default function ElectricityInspectionForm() {
               name="requestDate"
               value={formData.requestDate} //
               onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"
             />
           </div>
         </div>
@@ -576,7 +538,7 @@ export default function ElectricityInspectionForm() {
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+              className="text-gray-900 mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
           </div>
           {/* ช่องป้อนข้อมูลโทรศัพท์ */}
@@ -590,7 +552,7 @@ export default function ElectricityInspectionForm() {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+              className="text-gray-900 mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
           </div>
           {/* ช่องป้อนข้อมูลชื่อนิติบุคคล */}
@@ -611,7 +573,7 @@ export default function ElectricityInspectionForm() {
               name="corporateName"
               // value={formData.corporateName}
               // onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+              className="text-gray-900 mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
           </div>
           {/* ช่องป้อนข้อมูลโทรศัพท์นิติบุคคล */}
@@ -625,7 +587,7 @@ export default function ElectricityInspectionForm() {
               name="corporatePhone"
               // value={formData.corporatePhone}
               // onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+              className="text-gray-900 mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
           </div>
           {/* ช่องข้อความที่อยู่ */}
@@ -639,7 +601,7 @@ export default function ElectricityInspectionForm() {
               value={formData.address}
               onChange={handleChange}
               rows="3"
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+              className="text-gray-900 mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             ></textarea>
           </div>
           {/* ประเภทระบบไฟฟ้า */}
@@ -2898,43 +2860,71 @@ export default function ElectricityInspectionForm() {
         ></textarea>
       </section>
 
-      {/* 6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ (ลายเซ็น) ส่วน */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
-        <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">
-          6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ
-        </h3>
-        <div className="text-gray-700 text-sm mb-4 space-y-3">
-          <p>
-            6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าที่รับไฟฟ้าจากหม้อแปลงจำหน่ายของการไฟฟ้าส่วนภูมิภาค (PEA) ตลอดจนข้อปลีกย่อยอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง PEA จะตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ให้เป็นไปตามมาตรฐานการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ตามที่ PEA กำหนด และแม้ว่า PEA ได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงให้อยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว
-          </p>
-          <p>
-            6.2 ในกรณีที่ PEA เป็นผู้ดำเนินการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการเองในภายหน้า หรืออุปกรณ์ดังกล่าว เสื่อมคุณภาพไปตามสภาพ ทางผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว
-          </p>
-          <p>
-            6.3 สำหรับระบบอัดประจุยานยนต์ไฟฟ้าของผู้ขอใช้ไฟฟ้าในส่วนที่ PEA ไม่สามารถตรวจสอบได้ ผู้ขอใช้ไฟฟ้าต้องติดตั้งตามมาตรฐาน การติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ตามที่ PEA กำหนด หากเกิดความเสียหายผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว
-          </p>
+        {/* 6. Acknowledgment & Signatures */}
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+        <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
+        <div className="text-gray-900 text-sm mb-6 space-y-3">
+            <p>6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจนสิ่งก่อสร้างอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงอยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว</p>
+            <p>6.2 ในกรณีที่การไฟฟ้าส่วนภูมิภาคเป็นผู้ดำเนินการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการเองในภายหลัง หรืออุปกรณ์ดังกล่าวเสื่อมคุณภาพไปตามสภาพ ทางผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
+            <p>6.3 สำหรับระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าในส่วนที่การไฟฟ้าส่วนภูมิภาคไม่สามารถตรวจสอบได้ ผู้ขอใช้ไฟฟ้าต้องติดตั้งตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) หากเกิดความเสียหายผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
+            <p>6.4 หากเกิดความเสียหายใดๆ ที่เกิดจากการที่ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว (RCD) ในวงจรที่มีความเสี่ยง ผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* ใช้ SignaturePad แทน input text เดิม */}
           <SignaturePad title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" ref={userSigRef} onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} onClear={() => handleSignatureClear('userSignature')}/>
           <SignaturePad title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" ref={inspectorSigRef} onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} onClear={() => handleSignatureClear('inspectorSignature')}/>
         </div>
-        </div>
       </section>
 
-{/* ปุ่มส่งข้อมูลที่อัปเดตแล้ว */}
-      <div className="flex justify-center mt-10">
-        <button
-          type="submit"
-          disabled={isSubmitting || !supabaseLoaded || !supabaseClient} // อัปเดตเงื่อนไข disabled
-          className={`px-8 py-4 bg-[#5b2d90] text-white font-semibold text-lg rounded-full shadow-lg hover:bg-[#3a1a5b] focus:outline-none focus:ring-4 focus:ring-[#a78bfa] focus:ring-offset-2 transition duration-300 ease-in-out ${
-            (isSubmitting || !supabaseLoaded || !supabaseClient) ? 'opacity-50 cursor-not-allowed' : '' //
-          }`}
+{/* Action Buttons Section */}
+<div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
+    {/* Download PDF Button (Secondary Action) */}
+    {formData.inspectionNumber && (
+        <PDFDownloadLink
+            document={
+                <InspectionPDF 
+                    formData={formData} 
+                    userSignature={formData.userSignature}
+                    inspectorSignature={formData.inspectorSignature}
+                />
+            }
+            fileName={`inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
+            className="w-full sm:w-auto"
         >
-          {isSubmitting ? 'กำลังบันทึก...' : 'บันทึกข้อมูล'} {/* */}
-        </button>
-      </div>
+            {({ loading }) => (
+                <button
+                    type="button"
+                    disabled={loading || isSubmitting}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+                >
+                    <Download className="w-5 h-5"/>
+                    {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
+                </button>
+            )}
+        </PDFDownloadLink>
+    )}
+
+    {/* Submit Button (Primary Action) */}
+    <button
+        type="submit"
+        disabled={isSubmitting || !supabaseClient}
+        className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-white bg-[#5b2d90] rounded-lg shadow-lg hover:bg-[#4a2575] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a78bfa] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+    >
+        {isSubmitting ? (
+            <>
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span>กำลังบันทึก...</span>
+            </>
+        ) : (
+            <>
+                <Save className="w-5 h-5"/>
+                <span>บันทึกข้อมูล</span>
+            </>
+        )}
+    </button>
+</div>
       {showSupabaseConfigWarning && ( //
         <p className="text-center text-red-500 mt-4">
           Supabase ยังไม่ได้ตั้งค่าอย่างถูกต้อง หรือเกิดปัญหาในการโหลดไลบรารี กรุณาตรวจสอบ Supabase URL และ Key ในโค้ด และดูข้อความใน Console

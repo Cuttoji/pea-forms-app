@@ -1,54 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-
-const CorrectiveRadio = ({ groupName, label, currentValue, currentNote, onStatusChange, onNoteChange }) => {
-  const noteFieldName = `${groupName}_note`; // Create a field name for the associated note
-  return (
-    <div className="border-b border-gray-200 pb-4 mb-4">
-      {/* Label for the radio button group */}
-      <label className="block text-gray-700 text-sm font-bold mb-2">{label}</label>
-      <div className="flex flex-wrap gap-4 mt-2">
-        {/* "Correct" option */}
-        <label className="inline-flex items-center text-gray-800">
-          <input
-            type="radio"
-            name={groupName} // Group name to link radio buttons
-            value="ถูกต้อง" // Value when this option is selected
-            checked={currentValue === 'ถูกต้อง'} // Check if this option is currently selected
-            onChange={() => onStatusChange(groupName, 'ถูกต้อง', noteFieldName)} // Handle status update on change
-            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" // Tailwind classes for styling (size and focus)
-          />
-          <span className="ml-3">ถูกต้อง</span> {/* Label for the radio button */}
-        </label>
-        {/* "Needs Correction" option */}
-        <label className="inline-flex items-center text-gray-800">
-          <input
-            type="radio"
-            name={groupName}
-            value="ต้องแก้ไข"
-            checked={currentValue === 'ต้องแก้ไข'}
-            onChange={() => onStatusChange(groupName, 'ต้องแก้ไข', noteFieldName)}
-            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" // Tailwind classes for styling (size and focus)
-          />
-          <span className="ml-3">ต้องแก้ไข</span> {/* Label for the radio button */}
-        </label>
-      </div>
-      {/* Conditional rendering for the note input */}
-      {currentValue === 'ต้องแก้ไข' && (
-        <input
-          type="text"
-          name={noteFieldName} // Name for the note input
-          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-400 focus:border-transparent mt-2"
-          value={currentNote} // Current value of the note
-          onChange={onNoteChange} // Handle status update for the note
-          placeholder="โปรดระบุรายละเอียด" // Placeholder text
-        />
-      )}
-    </div>
-  );
-};
+import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 
 export default function PEAChecklistForm() {
   // State to manage all form data

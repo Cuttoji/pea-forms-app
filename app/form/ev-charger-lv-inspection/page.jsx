@@ -2988,51 +2988,17 @@ export default function ElectricityInspectionForm() {
         ></textarea>
       </section>
 
-      {/* 6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ (ลายเซ็น) ส่วน */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
-        <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">
-          6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ
-        </h3>
-        <div className="text-gray-700 text-sm mb-4 space-y-3">
-          <p>
-            6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าที่รับไฟฟ้าจากหม้อแปลงจำหน่ายของการไฟฟ้าส่วนภูมิภาค (PEA) ตลอดจนข้อปลีกย่อยอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง PEA จะตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ให้เป็นไปตามมาตรฐานการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ตามที่ PEA กำหนด และแม้ว่า PEA ได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงให้อยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว
-          </p>
-          <p>
-            6.2 ในกรณีที่ PEA เป็นผู้ดำเนินการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการเองในภายหน้า หรืออุปกรณ์ดังกล่าว เสื่อมคุณภาพไปตามสภาพ ทางผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว
-          </p>
-          <p>
-            6.3 สำหรับระบบอัดประจุยานยนต์ไฟฟ้าของผู้ขอใช้ไฟฟ้าในส่วนที่ PEA ไม่สามารถตรวจสอบได้ ผู้ขอใช้ไฟฟ้าต้องติดตั้งตามมาตรฐาน การติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ตามที่ PEA กำหนด หากเกิดความเสียหายผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว
-          </p>
+ <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+        <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
+        <div className="text-gray-900 text-sm mb-6 space-y-3">
+            <p>6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจนสิ่งก่อสร้างอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงอยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว</p>
+            <p>6.2 ในกรณีที่การไฟฟ้าส่วนภูมิภาคเป็นผู้ดำเนินการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการเองในภายหลัง หรืออุปกรณ์ดังกล่าวเสื่อมคุณภาพไปตามสภาพ ทางผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
+            <p>6.3 สำหรับระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าในส่วนที่การไฟฟ้าส่วนภูมิภาคไม่สามารถตรวจสอบได้ ผู้ขอใช้ไฟฟ้าต้องติดตั้งตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) หากเกิดความเสียหายผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
+            <p>6.4 หากเกิดความเสียหายใดๆ ที่เกิดจากการที่ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว (RCD) ในวงจรที่มีความเสี่ยง ผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="userSignature" className="block text-sm font-medium text-gray-700 mb-1">
-              ลงชื่อ:
-            </label>
-            <input
-              type="text"
-              id="userSignature"
-              name="userSignature"
-              value={formData.userSignature}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
-              placeholder="ผู้ขอใช้ไฟฟ้าหรือผู้แทน"
-            />
-          </div>
-          <div>
-            <label htmlFor="inspectorSignature" className="block text-sm font-medium text-gray-700 mb-1">
-              ลงชื่อ:
-            </label>
-            <input
-              type="text"
-              id="inspectorSignature"
-              name="inspectorSignature"
-              value={formData.inspectorSignature}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
-              placeholder="เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค"
-            />
-          </div>
+          <SignaturePad title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" ref={userSigRef} onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} onClear={() => handleSignatureClear('userSignature')}/>
+          <SignaturePad title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" ref={inspectorSigRef} onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} onClear={() => handleSignatureClear('inspectorSignature')}/>
         </div>
       </section>
 

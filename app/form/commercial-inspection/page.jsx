@@ -2358,40 +2358,13 @@ export default function ElectricityInspectionForm() {
           ></textarea>
         </div>
 
-        {/* 5. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ (For Applicant Acknowledgment - Signatures) */}
-        <div className="mb-8 border-t border-gray-200 pt-6">
-          <h3 className="text-2xl font-bold mb-4 text-pea-dark">
-            5. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ (Signatures)
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="applicantSignature" className="block text-sm font-medium text-gray-700 mb-1">
-                ลายมือชื่อผู้ขอใช้ไฟฟ้า:
-              </label>
-              <input
-                type="text"
-                id="applicantSignature"
-                name="applicantSignature"
-                value={formData.applicantSignature}
-                onChange={handleChange}
-                className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-pea-secondary focus:ring-pea-secondary"
-              />
-            </div>
-            <div>
-              <label htmlFor="peaOfficerSignature" className="block text-sm font-medium text-gray-700 mb-1">
-                ลายมือชื่อเจ้าหน้าที่ PEA:
-              </label>
-              <input
-                type="text"
-                id="peaOfficerSignature"
-                name="peaOfficerSignature"
-                value={formData.peaOfficerSignature}
-                onChange={handleChange}
-                className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-pea-secondary focus:ring-pea-secondary"
-              />
-            </div>
-          </div>
+<section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+        <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <SignaturePad title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" ref={userSigRef} onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} onClear={() => handleSignatureClear('userSignature')}/>
+          <SignaturePad title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" ref={inspectorSigRef} onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} onClear={() => handleSignatureClear('inspectorSignature')}/>
         </div>
+      </section>
       </section>
 
       <div className="text-center mt-10">
