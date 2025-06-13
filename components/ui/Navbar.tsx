@@ -114,12 +114,12 @@ export default function SiteNavbar() {
         <div className="bg-pea-primary text-white bg-[#5b2d90]">
           <div className="container mx-auto px-4 hidden md:flex items-center justify-center h-12 relative">
             <div className="flex items-center space-x-1">
-                <Link href="/" className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors">หน้าหลัก</Link>
+                <Link href="/" className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors hover:text-purple-300">หน้าหลัก</Link>
                 <Link href="/dashboard" className="text-sm hover:text-purple-300">Dashboard</Link>
 
                 {/* ตัวอย่างเมนู Dropdown */}
                 <Menu as="div" className="relative">
-                    <Menu.Button className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors flex items-center">
+                    <Menu.Button className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors flex items-center hover:text-purple-300">
                         <span>ฟอร์ม</span>
                         <ChevronDown className="w-4 h-4 ml-1" />
                     </Menu.Button>

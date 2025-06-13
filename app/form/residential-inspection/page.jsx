@@ -9,6 +9,10 @@ import ImageUpload from "@/components/forms/ImageUpload";
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import InspectionPDF from '@/components/forms/InspectionPDF';
 import { Download, Save } from "lucide-react";
+import dynamic from 'next/dynamic';
+
+const LongdoMap = dynamic(() => import('@/components/forms/LongdoMap'), { ssr: false });
+
 
 export default function HomeForm() {
   const initialFormData = {
@@ -19,6 +23,8 @@ export default function HomeForm() {
     fullName: "",
     phone: "",
     address: "",
+    latitude: null,  
+    longitude: null,
     address_photo_url: "",
     phaseType: "",
     estimatedLoad: "",
@@ -128,6 +134,17 @@ export default function HomeForm() {
 
   const handleSignatureSave = (fieldName, dataUrl) => {
     setFormData(prev => ({ ...prev, [fieldName]: dataUrl }));
+  };
+
+  const handleLocationSelect = (location) => {
+    if (!location) return;
+    
+    setFormData(prev => ({
+      ...prev,
+      address: location.address || prev.address,
+      latitude: location.lat || null,
+      longitude: location.lon || null
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -272,6 +289,14 @@ export default function HomeForm() {
                 onImageSelected={(file) => setImageFile(file)}
                 disabled={isSubmitting}
               />
+            </div>
+            <div className="md:col-span-2 bg-white p-4 rounded-lg shadow">
+              <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
+              <LongdoMap onLocationSelect={handleLocationSelect} />
+              <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
+                <p>ละติจูด: <span className="font-mono text-gray-700">{formData.latitude || 'N/A'}</span></p>
+                <p>ลองจิจูด: <span className="font-mono text-gray-700">{formData.longitude || 'N/A'}</span></p>
+              </div>
             </div>
             <div>
               <label htmlFor="phaseType" className="block text-sm font-medium text-gray-900 mb-1">ชนิดของระบบไฟฟ้า:</label>
