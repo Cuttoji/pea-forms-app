@@ -6,32 +6,25 @@ import { useState, useEffect, Fragment } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Menu, Transition, Dialog } from '@headlessui/react';
-import { ChevronDown, Globe, Search, Menu as MenuIcon, X, FileText, Building, Zap } from 'lucide-react';
+import { ChevronDown, Globe, Search, Menu as MenuIcon, X, FileText, Building, Zap, LogOut, User as UserIcon } from 'lucide-react';
 
-{/*const serviceLinks = [
-  { href: "/news", label: "ข่าวประชาสัมพันธ์" },
-  { href: "/procurement", label: "ประกาศจัดซื้อจัดจ้าง" },
-  { href: "/ita", label: "การเปิดเผยข้อมูลสาธารณะ (ITA)" },
-  // เพิ่มลิงก์อื่นๆ ตามต้องการ
-];*/}
 
 // รายการฟอร์มสำหรับเมนู
 const formLinks = [
   { href: "/form/residential-inspection", label: "ฟอร์มที่อยู่อาศัย", icon: <FileText size={16} /> },
   { href: "/form/condo-inspection", label: "ฟอร์มอาคารชุด", icon: <Building size={16} /> },
-  { href: "/form/ev-charger-lv-inspection", label: "ฟอร์ม EV Charger", icon: <Zap size={16} /> },
+  { href: "/form/ev-charger-lv-inspection", label: "ฟอร์ม EV Charger (แรงต่ำ)", icon: <Zap size={16} /> },
+  { href: "/form/ev-charger-hv-inspection", label: "ฟอร์ม EV Charger (แรงสูง)", icon: <Zap size={16} /> },
+  { href: "/form/commercial-inspection", label: "ฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)", icon: <FileText size={16} /> },
+  { href: "/form/construction-inspection", label: "ฟอร์มตรวจสอบงานก่อสร้าง", icon: <Building size={16} /> },
 ];
 
 
 export default function SiteNavbar() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
-  // ✅ 1. เพิ่ม State สำหรับจัดการการแสดงผล Navbar
-  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
   const router = useRouter();
   const pathname = usePathname();
   const supabase = createClient();
@@ -43,7 +36,6 @@ export default function SiteNavbar() {
       setLoading(false);
     };
     
-
     getSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
@@ -61,9 +53,8 @@ export default function SiteNavbar() {
     await supabase.auth.signOut();
   };
 
-  const isActive = (href) => pathname === href;
+  const isActive = (href: string) => pathname === href;
 
-  // คอมโพเนนต์เมนูลิงก์สำหรับ Mobile Sidebar
   const MobileFormLinksMenu = () => (
     <nav className="flex flex-col space-y-1 mt-4">
         <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-600 hover:bg-gray-100 p-3 rounded-md">หน้าหลัก</Link>
@@ -74,7 +65,7 @@ export default function SiteNavbar() {
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2 text-base font-medium rounded-md transition-colors ${
-                    isActive(link.href) ? 'bg-pea-primary text-gray-900' : 'text-gray-700 hover:bg-gray-100'
+                    isActive(link.href) ? 'bg-purple-100 text-[#5b2d90]' : 'text-gray-700 hover:bg-gray-100'
                 }`}
             >
                 {link.icon}
@@ -87,10 +78,8 @@ export default function SiteNavbar() {
   return (
     <>
       <header className="bg-white text-gray-800 shadow-sm sticky top-0 z-40">
-        {/* Top Bar */}
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
-              {/* Left Section: Mobile Menu & Logo */}
               <div className="flex items-center gap-2">
                   <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 rounded-full hover:bg-gray-100 md:hidden" aria-label="Open menu">
                       <MenuIcon className="h-6 w-6 text-gray-600" />
@@ -100,53 +89,59 @@ export default function SiteNavbar() {
                       <span className="text-lg font-semibold text-[#5b2d90]">PEA Forms</span>
                   </Link>
               </div>
-              {/* Top Right Menu */}
-              <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <Link href="#" className="hover:text-pea-primary p-2 rounded-full hover:bg-gray-100"><Globe size={18} /></Link>
-                  <Link href="#" className="hover:text-pea-primary p-2 rounded-full hover:bg-gray-100">TH</Link>
-                  <Link href="#" className="hover:text-pea-primary p-2 rounded-full hover:bg-gray-100"><Search size={18} /></Link>
-                  <button onClick={handleLogout} className="hover:text-pea-primary p-2 rounded-full hover:bg-red-400">Logout</button>
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  {user && (
+                    <Menu as="div" className="relative">
+                      <Menu.Button className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100">
+                        <UserIcon size={18} />
+                        <span className="hidden sm:inline">{user.email}</span>
+                        <ChevronDown size={16} />
+                      </Menu.Button>
+                       <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95" enterTo="transform opacity-100 scale-100" leave="transition ease-in duration-75" leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95">
+                        <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black/5 focus:outline-none">
+                            <div className="p-1">
+                              <Menu.Item>
+                                {({ active }) => (
+                                  <button onClick={handleLogout} className={`${active ? 'bg-red-50' : ''} group flex w-full items-center rounded-md px-2 py-2 text-sm text-red-700`}>
+                                    <LogOut className="mr-2 h-5 w-5" aria-hidden="true" />
+                                    ออกจากระบบ
+                                  </button>
+                                )}
+                              </Menu.Item>
+                            </div>
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  )}
               </div>
           </div>
         </div>
-
-        {/* Main Navigation Bar */}
         <div className="bg-pea-primary text-white bg-[#5b2d90]">
           <div className="container mx-auto px-4 hidden md:flex items-center justify-center h-12 relative">
             <div className="flex items-center space-x-1">
-                <Link href="/" className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors hover:text-purple-300">หน้าหลัก</Link>
-                <Link href="/dashboard" className="text-sm hover:text-purple-300">Dashboard</Link>
-
-                {/* ตัวอย่างเมนู Dropdown */}
+                <Link href="/" className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors">หน้าหลัก</Link>
+                <Link href="/dashboard" className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors">Dashboard</Link>
                 <Menu as="div" className="relative">
-                    <Menu.Button className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors flex items-center hover:text-purple-300">
-                        <span>ฟอร์ม</span>
+                    <Menu.Button className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors flex items-center">
+                        <span>ฟอร์มทั้งหมด</span>
                         <ChevronDown className="w-4 h-4 ml-1" />
                     </Menu.Button>
-                    <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95" enterTo="transform opacity-100 scale-100" leave="transition ease-in duration-75" leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95">
+                     <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95" enterTo="transform opacity-100 scale-100" leave="transition ease-in duration-75" leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95">
                         <Menu.Items className="absolute left-0 mt-2 w-64 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black/5 text-gray-800 focus:outline-none">
                             <div className="p-1">
                                 {formLinks.map(link => (
                                     <Menu.Item key={link.href}>
-                                        {({ active }) => ( <Link href={link.href} className={`${active ? 'bg-gray-100' : ''} block px-4 py-2 text-sm`}>{link.label}</Link> )}
+                                        {({ active }) => ( <Link href={link.href} className={`${active ? 'bg-gray-100' : ''} group flex w-full items-center gap-3 rounded-md px-4 py-2 text-sm`}>{link.icon} {link.label}</Link> )}
                                     </Menu.Item>
                                 ))}
                             </div>
                         </Menu.Items>
                     </Transition>
                 </Menu>
-                
-                {/* ลิงก์เมนูอื่นๆ 
-                <Link href="/forms" className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors">สำหรับลูกค้า</Link>
-                <Link href="/about" className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors">เกี่ยวกับเรา</Link>
-                <Link href="/contact" className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors">ติดต่อเรา</Link>
-            */}
             </div>
           </div>
         </div>
       </header>
-
-      {/* Mobile Sidebar (Slide-out menu) */}
       <Transition show={isMobileMenuOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50 md:hidden" onClose={setIsMobileMenuOpen}>
           <Transition.Child as={Fragment} enter="transition-opacity ease-linear duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="transition-opacity ease-linear duration-300" leaveFrom="opacity-100" leaveTo="opacity-0">

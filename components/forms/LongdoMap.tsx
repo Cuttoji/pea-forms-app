@@ -2,54 +2,44 @@
 
 import React, { useState, useEffect } from 'react';
 import Script from 'next/script';
-import { Search } from 'lucide-react';
+import { Search, AlertTriangle } from 'lucide-react';
 
-// Add type definitions for Longdo Map
-declare global {
-  interface Window {
-    longdo: {
-      Map: any;
-      Marker: any;
-      SearchResult: any;
-    };
-  }
-}
+
+const formatAddress = (result) => {
+  if (!result) return 'ไม่สามารถระบุที่อยู่ได้';
+  const parts = [
+    result.name,
+    result.address,
+    result.subdistrict,
+    result.district,
+    result.province,
+    result.postcode,
+  ];
+  const uniqueParts = [...new Set(parts.filter(p => p && p.trim() !== ''))];
+  return uniqueParts.join(' ').trim() || 'ไม่สามารถระบุที่อยู่ได้';
+};
+
 
 export default function LongdoMap({ onLocationSelect }) {
   const [map, setMap] = useState(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [isMapReady, setIsMapReady] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
-  
-  // Get API key from environment variables with fallback
+
   const API_KEY = process.env.NEXT_PUBLIC_LONGDO_MAP_API_KEY;
 
-  // Validate API key before rendering script
-  if (!API_KEY) {
-    console.error('Longdo Map API Key is not set in environment variables');
-    return (
-      <div className="w-full h-72 border rounded-lg shadow-inner bg-gray-100 flex justify-center items-center">
-        <p className="text-red-600">กรุณาตั้งค่า Longdo Map API Key ใน .env.local</p>
-      </div>
-    );
-  }
-
-  // 1. ใช้ useEffect เพื่อรอให้ window.longdo พร้อมใช้งาน
   useEffect(() => {
-    if (!isScriptLoaded) return;
+    if (!isScriptLoaded || !API_KEY) return;
 
-    // สร้าง Interval เพื่อเช็คทุกๆ 100ms
     const intervalId = setInterval(() => {
-      // เมื่อ window.longdo พร้อมใช้งานแล้ว
       if (window.longdo) {
-        clearInterval(intervalId); // หยุดการเช็ค
-        initializeMap(); // เริ่มสร้างแผนที่
+        clearInterval(intervalId);
+        initializeMap();
       }
     }, 100);
 
-    // Cleanup function เพื่อลบ interval หาก component ถูก unmount
     return () => clearInterval(intervalId);
-
-  }, [isScriptLoaded]); // Effect นี้จะทำงานเมื่อ isScriptLoaded เป็น true
+  }, [isScriptLoaded, API_KEY]);
 
 
   const initializeMap = () => {
@@ -60,10 +50,9 @@ export default function LongdoMap({ onLocationSelect }) {
         language: 'th',
       });
       
-      // เพิ่ม Event Listener สำหรับการคลิกบนแผนที่
       mapInstance.Event.bind('click', (e) => handleMapClick(mapInstance, e));
-      
       setMap(mapInstance);
+      setIsMapReady(true);
 
     } catch (error) {
       console.error("Failed to initialize Longdo Map:", error);
@@ -72,20 +61,16 @@ export default function LongdoMap({ onLocationSelect }) {
   
   const handleMapClick = (mapInstance, event) => {
       const mouseLocation = mapInstance.location('POINTER');
-      mapInstance.Overlays.clear(); // ล้างหมุดเก่า
+      mapInstance.Overlays.clear();
       mapInstance.Overlays.add(new window.longdo.Marker(mouseLocation));
       mapInstance.location(mouseLocation, true);
       
-      // แปลงพิกัดเป็นที่อยู่
       mapInstance.Search.search(mouseLocation, {
         span: '1km',
         callback: (result) => {
-          let address = 'ไม่สามารถระบุที่อยู่ได้';
-          if(result.data && result.data.length > 0) {
-              const closest = result.data.find(d => d.name && d.address) || result.data[0];
-              address = `${closest.name ? closest.name + ' ' : ''}${closest.address || ''}`.trim();
-          }
-          const location = { address: address, lat: mouseLocation.lat, lon: mouseLocation.lon };
+          const formatted = formatAddress(result.data && result.data.length > 0 ? result.data[0] : null);
+          const location = { address: formatted, lat: mouseLocation.lat, lon: mouseLocation.lon };
+          
           if (typeof onLocationSelect === 'function') {
             onLocationSelect(location);
           }
@@ -100,8 +85,9 @@ export default function LongdoMap({ onLocationSelect }) {
         callback: (result) => {
           if (result.data && result.data.length > 0) {
             const firstResult = result.data[0];
+            const formatted = formatAddress(firstResult);
             const location = {
-              address: `${firstResult.name ? firstResult.name + ' ' : ''}${firstResult.address || ''}`.trim(),
+              address: formatted,
               lat: firstResult.lat,
               lon: firstResult.lon
             };
@@ -132,17 +118,26 @@ export default function LongdoMap({ onLocationSelect }) {
     }
   };
   
+  if (!API_KEY) {
+    return (
+      <div className="flex flex-col justify-center items-center h-full text-red-600 bg-red-50 p-4 rounded-lg border border-red-200">
+        <AlertTriangle className="w-12 h-12 mb-2" />
+        <p className="font-semibold">เกิดข้อผิดพลาด</p>
+        <p className="text-sm">ไม่ได้ตั้งค่า Longdo Map API Key</p>
+        <p className="text-xs mt-2 text-red-500">กรุณาตั้งค่า `NEXT_PUBLIC_LONGDO_MAP_API_KEY` ในไฟล์ `.env.local`</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-3">
-      {API_KEY && (
-        <Script
-          src={`https://api.longdo.com/map/?key=${API_KEY}`}
-          strategy="afterInteractive"
-          onLoad={() => setIsScriptLoaded(true)}
-          onError={(e) => console.error("Longdo Map Script failed to load:", e)}
-        />
-      )}
-      
+    <div className="space-y-3 text-gray-800">
+      <Script
+        src={`https://api.longdo.com/map/?key=${API_KEY}`}
+        strategy="afterInteractive"
+        onLoad={() => setIsScriptLoaded(true)}
+        onError={(e) => console.error("Longdo Map Script failed to load:", e)}
+      />
+
       <div className="flex gap-2 text-gray-700">
         <input
           type="text"
@@ -151,28 +146,19 @@ export default function LongdoMap({ onLocationSelect }) {
           onKeyPress={handleSearchKeyPress}
           placeholder="ค้นหาชื่อสถานที่ หรือ ที่อยู่..."
           className="flex-grow p-2 border border-gray-300 rounded-md shadow-sm"
-          disabled={!map}
+          disabled={!isMapReady}
         />
         <button
           type="button"
           onClick={handleSearchClick}
           className="p-2 bg-[#5b2d90] text-white rounded-md hover:bg-[#4a2575] disabled:bg-gray-300"
-          disabled={!map}
+          disabled={!isMapReady}
         >
           <Search size={20} />
         </button>
       </div>
       
       <div id="longdo-map" className="w-full h-72 border rounded-lg shadow-inner bg-gray-100">
-        {!API_KEY ? (
-            <div className="flex justify-center items-center h-full text-red-600">
-                <p>ไม่ได้ตั้งค่า Longdo Map API Key</p>
-            </div>
-        ) : !isScriptLoaded && (
-            <div className="flex justify-center items-center h-full text-gray-500">
-                <p>กำลังโหลดสคริปต์แผนที่...</p>
-            </div>
-        )}
       </div>
     </div>
   );
