@@ -85,7 +85,7 @@ const SignaturePad = React.forwardRef(({ title, onSave, onClear }, ref) => {
 
         // ใช้ Timeout เล็กน้อยเพื่อให้แน่ใจว่า layout เสถียรแล้ว
         const timer = setTimeout(setCanvasSize, 50);
-        window.addEventListener('resize', setCanvasSize); // ปรับขนาด canvas เมื่อหน้าจอเปลี่ยน
+        window.addEventListener('resize', setCanvasSize);
 
         return () => {
             clearTimeout(timer);

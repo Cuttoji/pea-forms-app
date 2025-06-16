@@ -436,7 +436,7 @@ const handleLocationSelect = (location) => {
         {/* 5. Scope */}
         <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
           <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">5. ขอบเขตและข้อจำกัดในการตรวจสอบ</h3>
-          <textarea id="scopeOfInspection" name="scopeOfInspection" value={formData.scopeOfInspection} onChange={handleChange} rows="4" className="bg-white mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"></textarea>
+          <textarea id="scopeOfInspection" name="scopeOfInspection" value={formData.scopeOfInspection} onChange={handleChange} rows="4" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"></textarea>
         </section>
 
         {/* 6. Acknowledgment & Signatures */}

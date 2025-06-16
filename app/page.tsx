@@ -27,7 +27,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, hre
       <h2 className="text-xl sm:text-2xl font-semibold text-[#3a1a5b] mb-3 group-hover:text-[#5b2d90] transition-colors">
         {title}
       </h2>
-      <p className="text-gray-600 text-sm sm:text-base mb-4 min-h-[3em]"> {/* min-h to keep card height consistent */}
+      <p className="text-gray-600 text-sm sm:text-base mb-4 min-h-[3em]">
         {description}
       </p>
       <span className="inline-block text-sm font-medium text-[#5b2d90] group-hover:underline">

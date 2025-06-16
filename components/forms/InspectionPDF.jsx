@@ -1,9 +1,7 @@
-// app/components/forms/InspectionPDF.jsx
 "use client";
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Font, Image } from '@react-pdf/renderer';
 
-// 1. ลงทะเบียนฟอนต์ภาษาไทย
 Font.register({
   family: 'Sarabun',
   fonts: [
@@ -12,7 +10,6 @@ Font.register({
   ]
 });
 
-// 2. สร้างสไตล์ชีทสำหรับเอกสาร PDF
 const styles = StyleSheet.create({
   page: {
     fontFamily: 'Sarabun',
@@ -155,7 +152,6 @@ const styles = StyleSheet.create({
 });
 
 
-// --- คอมโพเนนต์เสริม ---
 const Checkbox = ({ checked, label }) => (
   <View style={styles.checkboxContainer}>
     <View style={styles.checkbox}><Text>{checked ? '✓' : ' '}</Text></View>
@@ -182,9 +178,7 @@ const CorrectiveDisplay = ({ checked, note }) => {
     );
 };
 
-// --- คอมโพเนนต์หลักของเอกสาร PDF ---
 const InspectionPDF = ({ formData }) => {
-  // ตรวจสอบให้แน่ใจว่า formData ไม่ใช่ null หรือ undefined
   if (!formData) {
     return (
       <Document>
@@ -198,8 +192,8 @@ const InspectionPDF = ({ formData }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        
-        {/* === Header === */}
+
+        {/*  Header  */}
         <View style={styles.headerContainer}>
           <Image src="/pea_logo.png" style={{ width: 45, height: 45 }} />
           <View style={styles.headerText}>
@@ -220,7 +214,7 @@ const InspectionPDF = ({ formData }) => {
            <FormField label="วันที่" value={formData.requestDate} />
         </View>
 
-        {/* === Section 1: ข้อมูลทั่วไป === */}
+        {/*  Section 1: ข้อมูลทั่วไป  */}
         <View style={styles.section} wrap={false}>
           <Text style={styles.sectionTitle}>1. ข้อมูลทั่วไป</Text>
           <FormField label="ชื่อ-นามสกุลผู้ขอใช้ไฟฟ้า (นาย / นาง / น.ส.)" value={formData.fullName} />
@@ -233,7 +227,7 @@ const InspectionPDF = ({ formData }) => {
           </View>
         </View>
 
-        {/* === Section 2: การตรวจสอบ === */}
+        {/*  Section 2: การตรวจสอบ  */}
         <View style={styles.section} wrap={false}>
             <Text style={styles.sectionTitle}>2. การตรวจสอบ</Text>
             <View style={styles.twoColumnLayout}>
@@ -286,7 +280,7 @@ const InspectionPDF = ({ formData }) => {
             </View>
         </View>
 
-        {/* === Section 4 & 5 === */}
+        {/*  Section 4 & 5  */}
         <View style={styles.section} wrap={false}>
             <Text style={styles.sectionTitle}>4. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</Text>
              <View style={styles.row}>
@@ -299,7 +293,7 @@ const InspectionPDF = ({ formData }) => {
              <Text>{formData.scopeOfInspection || '...'}</Text>
         </View>
 
-        {/* === Section 6: Signatures === */}
+        {/* Section 6: Signatures */}
         <View style={styles.section} wrap={false}>
             <Text style={styles.sectionTitle}>6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</Text>
             <Text style={{fontSize: 7}}>6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้า... (คัดลอกข้อความทั้งหมดมาใส่ที่นี่)</Text>
@@ -323,7 +317,7 @@ const InspectionPDF = ({ formData }) => {
             </View>
         </View>
 
-        {/* === Page Footer === */}
+        {/* Page Footer */}
         <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => (`หน้า ${pageNumber} / ${totalPages}`)} fixed />
         <Text style={styles.docIdFooter} fixed>กมฟ.ผมต.-01-63 (แบบฟอร์มตรวจสอบฯ สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน)</Text>
       </Page>

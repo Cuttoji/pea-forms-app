@@ -6,7 +6,7 @@ import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 
-export default function PEAChecklistForm() {
+export default function construction_inspection() {
     const [formData, setFormData] = useState({
         // Header Information
         workName: "",
@@ -222,63 +222,56 @@ export default function PEAChecklistForm() {
         }));
     };
 
-    // ฟังก์ชัน handleSubmit ที่รวมข้อดีของทั้งสองเวอร์ชัน
-const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
 
-    try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            toast.error("กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูล");
-            setIsSubmitting(false); // ต้องออกจากฟังก์ชันตรงนี้
-            return;
-        }
-
-        // เตรียมข้อมูล (โค้ดเดิมของเราที่แปลงค่า date ที่เป็น "" ให้เป็น null)
-        const dataToSubmit = { ...formData, user_id: user.id };
-        const dateFields = [
-            'approvalDate', 'inspectionDate', 'inspector1Date',
-            'inspector2Date', 'inspector3Date', 'supervisorSignatureDate'
-        ];
-        for (const field of dateFields) {
-            if (dataToSubmit[field] === '') {
-                dataToSubmit[field] = null;
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                toast.error("กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูล");
+                setIsSubmitting(false);
+                return;
             }
+
+            const dataToSubmit = { ...formData, user_id: user.id };
+            const dateFields = [
+                'approvalDate', 'inspectionDate', 'inspector1Date',
+                'inspector2Date', 'inspector3Date', 'supervisorSignatureDate'
+            ];
+            for (const field of dateFields) {
+                if (dataToSubmit[field] === '') {
+                    dataToSubmit[field] = null;
+                }
+            }
+
+            let dbOperation;
+            if (id) {
+                dbOperation = supabase
+                    .from('construction_inspection')
+                    .update(dataToSubmit)
+                    .eq('id', id);
+            } else {
+                dbOperation = supabase
+                    .from('construction_inspection')
+                    .insert([dataToSubmit]);
+            }
+
+            const { error } = await dbOperation;
+            if (error) {
+                throw error;
+            }
+
+            toast.success('บันทึกข้อมูลเรียบร้อยแล้ว!');
+            router.push('/dashboard');
+
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            toast.error(`เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${error.message}`);
+        } finally {
+            setIsSubmitting(false);
         }
-
-        // เลือก operation (insert หรือ update)
-        let dbOperation;
-        if (id) {
-            dbOperation = supabase
-                .from('construction_inspection') // <-- ใช้ชื่อตารางที่ถูกต้อง
-                .update(dataToSubmit)
-                .eq('id', id);
-        } else {
-            dbOperation = supabase
-                .from('construction_inspection') // <-- ใช้ชื่อตารางที่ถูกต้อง
-                .insert([dataToSubmit]);
-        }
-
-        const { error } = await dbOperation;
-
-        // ถ้ามี error ให้โยนไปที่ catch block
-        if (error) {
-            throw error;
-        }
-
-        toast.success('บันทึกข้อมูลเรียบร้อยแล้ว!');
-        router.push('/dashboard');
-
-    } catch (error) {
-        // จัดการ error ทั้งหมดที่เกิดขึ้นใน try block
-        console.error('Error submitting form:', error);
-        toast.error(`เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${error.message}`);
-    } finally {
-        // บรรทัดนี้จะทำงานเสมอ ไม่ว่าจะสำเร็จหรือล้มเหลว
-        setIsSubmitting(false);
-    }
-};
+    };
 
     if (isLoading) {
         return (

@@ -2,17 +2,16 @@
 
 import React, { useState, useCallback, useRef } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from '@react-google-maps/api';
-import { toast } from 'sonner'; // เราจะใช้ toast สำหรับแจ้งเตือน
-import { LocateFixed } from 'lucide-react'; // ไอคอนสวยๆ
+import { toast } from 'sonner';
+import { LocateFixed } from 'lucide-react';
 
-// ต้องระบุ 'places' library เพื่อใช้งาน Autocomplete
 const libraries: ('places')[] = ['places'];
 
 const containerStyle = {
   width: '100%',
   height: '400px',
   borderRadius: '8px',
-  position: 'relative' as 'relative', // ทำให้เราวางปุ่มทับบนแผนที่ได้
+  position: 'relative' as 'relative',
 };
 
 const center = {
@@ -44,7 +43,6 @@ function GoogleMapComponent({ onLocationSelect, initialPosition }: GoogleMapComp
     setMap(null);
   }, []);
 
-  // Callback เมื่อมีการคลิกบนแผนที่
   const onMapClick = useCallback((event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
       const newPosition = {
@@ -56,7 +54,6 @@ function GoogleMapComponent({ onLocationSelect, initialPosition }: GoogleMapComp
     }
   }, [onLocationSelect]);
 
-  // Handler สำหรับ Autocomplete Search Box
   const onPlaceChanged = () => {
     if (autocompleteRef.current) {
       const place = autocompleteRef.current.getPlace();
@@ -73,7 +70,6 @@ function GoogleMapComponent({ onLocationSelect, initialPosition }: GoogleMapComp
     }
   };
   
-  // Handler สำหรับปุ่ม "ตำแหน่งปัจจุบัน"
   const handleCurrentLocationClick = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -104,7 +100,7 @@ function GoogleMapComponent({ onLocationSelect, initialPosition }: GoogleMapComp
         onLoad={(ref) => (autocompleteRef.current = ref)}
         onPlaceChanged={onPlaceChanged}
         options={{
-          componentRestrictions: { country: 'th' }, // จำกัดการค้นหาในประเทศไทย
+          componentRestrictions: { country: 'th' }, // จำกัดการค้นหาในไทย
         }}
       >
         <input
@@ -137,8 +133,8 @@ function GoogleMapComponent({ onLocationSelect, initialPosition }: GoogleMapComp
           onUnmount={onUnmount}
           onClick={onMapClick}
           options={{
-            streetViewControl: false, // ปิด Street View
-            mapTypeControl: false,    // ปิดปุ่มเลือกประเภทแผนที่
+            streetViewControl: false,
+            mapTypeControl: false, 
           }}
         >
           {markerPosition && <Marker position={markerPosition} />}

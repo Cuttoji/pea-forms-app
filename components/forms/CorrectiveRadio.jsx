@@ -7,14 +7,14 @@ const CorrectiveRadio = ({
   currentNote,
   onStatusChange,
   onNoteChange,
-  disabled = false, // Default value for disabled
+  disabled = false,
 }) => {
   const noteFieldName = `${groupName}_note`;
 
   return (
-    <div className="border-b border-gray-200 pb-4 mb-6"> {/* เพิ่ม mb-6 เพื่อระยะห่างที่ดีขึ้น */}
+    <div className="border-b border-gray-200 pb-4 mb-6"> 
       <label className="block text-sm font-semibold text-gray-800 mb-2">{label}</label>
-      <div className="flex flex-wrap gap-x-6 gap-y-2 mt-1"> {/* ปรับ gap และ mt */}
+      <div className="flex flex-wrap gap-x-6 gap-y-2 mt-1">
         <label className="inline-flex items-center cursor-pointer">
           <input
             type="radio"
@@ -41,16 +41,16 @@ const CorrectiveRadio = ({
         </label>
       </div>
       {currentValue === 'ต้องแก้ไข' && (
-        <div className="mt-3"> {/* เพิ่ม margin top ให้ช่อง note */}
+        <div className="mt-3">
           <label htmlFor={noteFieldName} className="block text-xs font-medium text-gray-900 mb-1">
             รายละเอียดการแก้ไข:
           </label>
           <textarea
             id={noteFieldName}
             name={noteFieldName}
-            rows={2} // ปรับ rows ให้น้อยลงถ้าข้อความไม่ยาวมาก
+            rows={2}
             className="w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-purple-400 text-sm disabled:bg-gray-50 disabled:cursor-not-allowed"
-            value={currentNote || ''} // Ensure value is not undefined
+            value={currentNote || ''}
             onChange={onNoteChange}
             disabled={disabled}
             placeholder="โปรดระบุรายละเอียดที่ต้องแก้ไข..."
