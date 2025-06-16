@@ -11,7 +11,9 @@ import InspectionPDF from '@/components/forms/InspectionPDF';
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 
-const LongdoMap = dynamic(() => import('@/components/forms/LongdoMap'), { ssr: false });
+const GoogleMapComponent = dynamic(() => import('@/components/forms/GoogleMap'), { 
+  ssr: false 
+});
 
 
 export default function HomeForm() {
@@ -136,16 +138,14 @@ export default function HomeForm() {
     setFormData(prev => ({ ...prev, [fieldName]: dataUrl }));
   };
 
-  const handleLocationSelect = (location) => {
-    if (!location) return;
-    
-    setFormData(prev => ({
-      ...prev,
-      address: location.address || prev.address,
-      latitude: location.lat || null,
-      longitude: location.lon || null
-    }));
-  };
+const handleLocationSelect = (location) => {
+  console.log('Location selected:', location);
+  setFormData(prevData => ({
+    ...prevData,
+    latitude: location.lat.toString(),
+    longitude: location.lng.toString(),
+  }));
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -292,7 +292,7 @@ export default function HomeForm() {
             </div>
             <div className="md:col-span-2 bg-white p-4 rounded-lg shadow">
               <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
-              <LongdoMap onLocationSelect={handleLocationSelect} />
+              <GoogleMapComponent onLocationSelect={handleLocationSelect} />
               <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
                 <p>ละติจูด: <span className="font-mono text-gray-700">{formData.latitude || 'N/A'}</span></p>
                 <p>ลองจิจูด: <span className="font-mono text-gray-700">{formData.longitude || 'N/A'}</span></p>
@@ -436,7 +436,7 @@ export default function HomeForm() {
         {/* 5. Scope */}
         <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
           <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">5. ขอบเขตและข้อจำกัดในการตรวจสอบ</h3>
-          <textarea id="scopeOfInspection" name="scopeOfInspection" value={formData.scopeOfInspection} onChange={handleChange} rows="4" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"></textarea>
+          <textarea id="scopeOfInspection" name="scopeOfInspection" value={formData.scopeOfInspection} onChange={handleChange} rows="4" className="bg-white mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"></textarea>
         </section>
 
         {/* 6. Acknowledgment & Signatures */}
