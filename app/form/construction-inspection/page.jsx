@@ -289,7 +289,7 @@ export default function construction_inspection() {
                 แบบฟอร์มตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจำหน่าย ของ กฟภ.
             </h2>
 
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     ข้อมูลส่วนหัว
                 </h2>
@@ -457,7 +457,7 @@ export default function construction_inspection() {
             </section>
 
             {/* 1. ระบบจำหน่ายแรงสูง (High Voltage Distribution System) */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     1. ระบบจำหน่ายแรงสูง
                 </h2>
@@ -664,7 +664,7 @@ export default function construction_inspection() {
             </section>
 
             {/* 2. ระบบจำหน่ายแรงต่ำ (Low Voltage Distribution System) */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     2. ระบบจำหน่ายแรงต่ำ
                 </h2>
@@ -852,7 +852,7 @@ export default function construction_inspection() {
             </section>
 
             {/* 3. การติดตั้งหม้อแปลง (Transformer Installation) */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     3. การติดตั้งหม้อแปลง
                 </h2>
@@ -1058,7 +1058,7 @@ export default function construction_inspection() {
             </section>
 
             {/* Inspection Summary Section */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     ผลการตรวจสอบ
                 </h2>
@@ -1111,7 +1111,7 @@ export default function construction_inspection() {
             </section>
 
             {/* Signatures Section */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     ลายเซ็น
                 </h2>

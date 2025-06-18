@@ -403,7 +403,7 @@ export default function EvChargerHvForm() {
       </h2>
 
       {/* Header Info */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">ข้อมูลการตรวจสอบ</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
@@ -463,7 +463,7 @@ export default function EvChargerHvForm() {
       </div>
 
       {/* 1. General Information */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">1. ข้อมูลทั่วไป</h3>
         <div className="space-y-4">
           <div>
@@ -617,7 +617,7 @@ export default function EvChargerHvForm() {
       </div>
 
       {/* 2. Document Checklist */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">2. เอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า</h3>
 
         {/* 2.1 Individual Case */}
@@ -808,7 +808,7 @@ export default function EvChargerHvForm() {
       </div>
 
       {/* 3. High Voltage Distribution System */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">3. ระบบจำหน่ายแรงสูง</h3>
 
         {/* 3.1 Overhead Distribution System */}
@@ -1032,7 +1032,7 @@ export default function EvChargerHvForm() {
       </div>
 
       {/* 4. Transformer */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">4. หม้อแปลง</h3>
 
         {/* 4.1 Transformer General Properties */}
@@ -1301,7 +1301,7 @@ export default function EvChargerHvForm() {
       </div>
 
       {/* 5. Low Voltage System */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">5. ระบบไฟฟ้าแรงต่ำ</h3>
 
         {/* 5.1 LV Main Circuit */}
@@ -2062,7 +2062,7 @@ export default function EvChargerHvForm() {
         </div>
       </div>
 
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
         <div className="text-gray-900 text-sm mb-6 space-y-3">
             <p>6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจนสิ่งก่อสร้างอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงอยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว</p>

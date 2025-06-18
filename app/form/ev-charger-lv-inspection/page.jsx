@@ -564,7 +564,7 @@ export default function ElectricityInspectionForm() {
       </h2>
 
       {/* ส่วนข้อมูลส่วนหัว */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           ข้อมูลส่วนหัว
         </h2>
@@ -643,7 +643,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* 1. ส่วนข้อมูลทั่วไป */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           1. ข้อมูลทั่วไป
         </h2>
@@ -809,7 +809,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* 2. ส่วนเอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           2. เอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
         </h2>
@@ -992,7 +992,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* ส่วนมาตรฐานอ้างอิง */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           การตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าอ้างอิงแบบมาตรฐาน ดังนี้
         </h2>
@@ -1009,7 +1009,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* 3. ส่วนระบบไฟฟ้าแรงต่ำ */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           3. ระบบไฟฟ้าแรงต่ำ
         </h2>
@@ -2932,7 +2932,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* 4. สรุปผลการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ส่วน */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">
           4. สรุปผลการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
         </h3>
@@ -2974,7 +2974,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* 5. ขอบเขตและข้อจำกัดในการตรวจสอบ ส่วน */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">
           5. ขอบเขตและข้อจำกัดในการตรวจสอบ
         </h3>
@@ -2988,7 +2988,7 @@ export default function ElectricityInspectionForm() {
         ></textarea>
       </section>
 
- <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+ <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
         <div className="text-gray-900 text-sm mb-6 space-y-3">
             <p>6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจนสิ่งก่อสร้างอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงอยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว</p>

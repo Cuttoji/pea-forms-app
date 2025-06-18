@@ -374,8 +374,7 @@ const handleSubmit = async (e) => {
 
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 bg-gray-100 min-h-screen font-sans ">
-      {/* ชื่อฟอร์มหลัก */}
+    <form onSubmit={handleSubmit} className=" min-h-screen font-sans ">
       <h2 className="text-3xl font-extrabold mb-8 text-center text-[#5b2d90]">
         การไฟฟ้าส่วนภูมิภาค
         <br />
@@ -384,14 +383,9 @@ const handleSubmit = async (e) => {
         สำหรับผู้ใช้ไฟฟ้าที่รับไฟฟ้าแรงต่ำจากหม้อแปลงจำหน่ายของการไฟฟ้าส่วนภูมิภาค (PEA)
       </h2>
 
-      {/* ... (ส่วนอื่นๆ ของฟอร์มคงเดิมทั้งหมด) ... */}
-      {/* ส่วนข้อมูลส่วนหัว */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
-        <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
-          ข้อมูลส่วนหัว
-        </h2>
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* ช่องป้อนข้อมูลการไฟฟ้า */}
           <div className="md:col-span-2">
             <label htmlFor="peaOffice" className="block text-sm font-medium text-gray-700 mb-1">
               การไฟฟ้า:
@@ -400,12 +394,11 @@ const handleSubmit = async (e) => {
               type="text"
               id="peaOffice"
               name="peaOffice"
-              value={formData.peaOffice} //
+              value={formData.peaOffice}
               onChange={handleChange}
               className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"
             />
           </div>
-          {/* ช่องป้อนข้อมูลเลขที่บันทึกตรวจสอบ */}
           <div>
             <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-700 mb-1 text-gray-900">
               การตรวจสอบครั้งที่:
@@ -466,7 +459,7 @@ const handleSubmit = async (e) => {
       </section>
 
       {/* 1. ส่วนข้อมูลทั่วไป */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           1. ข้อมูลทั่วไป
         </h2>
@@ -632,7 +625,7 @@ const handleSubmit = async (e) => {
       </section>
 
       {/* 2. ส่วนเอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           2. เอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
         </h2>
@@ -815,7 +808,7 @@ const handleSubmit = async (e) => {
       </section>
 
       {/* ส่วนมาตรฐานอ้างอิง */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           การตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าอ้างอิงแบบมาตรฐาน ดังนี้
         </h2>
@@ -832,7 +825,7 @@ const handleSubmit = async (e) => {
       </section>
 
       {/* 3. ส่วนระบบไฟฟ้าแรงต่ำ */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           3. ระบบไฟฟ้าแรงต่ำ
         </h2>
@@ -2755,7 +2748,7 @@ const handleSubmit = async (e) => {
       </section>
 
       {/* 4. สรุปผลการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ส่วน */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">
           4. สรุปผลการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
         </h3>
@@ -2797,7 +2790,7 @@ const handleSubmit = async (e) => {
       </section>
 
       {/* 5. ขอบเขตและข้อจำกัดในการตรวจสอบ ส่วน */}
-      <section className="bg-white p-6 rounded-xl shadow-lg mb-8">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">
           5. ขอบเขตและข้อจำกัดในการตรวจสอบ
         </h3>
