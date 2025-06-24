@@ -1,8 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useSearchParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
+import SignaturePad from "@/components/forms/SignaturePad";
+import ImageUpload from "@/components/forms/ImageUpload";
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import InspectionPDF from '@/components/forms/InspectionPDF';
+import { Download, Save } from "lucide-react";
+import dynamic from 'next/dynamic';
 
 export default function EvChargerHvForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const userSigRef = useRef(null);
+  const inspectorSigRef = useRef(null);
+
   const [formData, setFormData] = useState({
     // Header Info
     peaOffice: "",
@@ -346,10 +359,26 @@ export default function EvChargerHvForm() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("ส่งข้อมูล:", formData);
-    // TODO: ส่งข้อมูลไปยัง backend
+    setIsSubmitting(true);
+    
+    try {
+      // Your form submission logic here
+      console.log("ส่งข้อมูล:", formData);
+      
+      // Add a small delay to simulate submission
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Success message or redirect
+      alert('บันทึกข้อมูลสำเร็จ');
+      
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Helper component for Yes/No radio buttons with note
@@ -403,7 +432,7 @@ export default function EvChargerHvForm() {
       </h2>
 
       {/* Header Info */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">ข้อมูลการตรวจสอบ</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
@@ -463,7 +492,7 @@ export default function EvChargerHvForm() {
       </div>
 
       {/* 1. General Information */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">1. ข้อมูลทั่วไป</h3>
         <div className="space-y-4">
           <div>
@@ -505,8 +534,6 @@ export default function EvChargerHvForm() {
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-md"
                 />
-              </div>
-              <div>
                 <label className="block text-sm font-medium text-gray-700">โทรศัพท์</label>
                 <input
                   type="text"
@@ -617,7 +644,7 @@ export default function EvChargerHvForm() {
       </div>
 
       {/* 2. Document Checklist */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">2. เอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า</h3>
 
         {/* 2.1 Individual Case */}
@@ -808,7 +835,7 @@ export default function EvChargerHvForm() {
       </div>
 
       {/* 3. High Voltage Distribution System */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">3. ระบบจำหน่ายแรงสูง</h3>
 
         {/* 3.1 Overhead Distribution System */}
@@ -1032,7 +1059,7 @@ export default function EvChargerHvForm() {
       </div>
 
       {/* 4. Transformer */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">4. หม้อแปลง</h3>
 
         {/* 4.1 Transformer General Properties */}
@@ -1301,7 +1328,7 @@ export default function EvChargerHvForm() {
       </div>
 
       {/* 5. Low Voltage System */}
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">5. ระบบไฟฟ้าแรงต่ำ</h3>
 
         {/* 5.1 LV Main Circuit */}
@@ -2062,7 +2089,7 @@ export default function EvChargerHvForm() {
         </div>
       </div>
 
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
         <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
         <div className="text-gray-900 text-sm mb-6 space-y-3">
             <p>6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจนสิ่งก่อสร้างอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงอยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว</p>
@@ -2075,9 +2102,26 @@ export default function EvChargerHvForm() {
           <SignaturePad title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" ref={inspectorSigRef} onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} onClear={() => handleSignatureClear('inspectorSignature')}/>
         </div>
       </section>
-      <button type="submit" className="w-full bg-[#5b2d90] text-white p-3 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 font-bold text-lg">
-        บันทึกข้อมูล
-      </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-white bg-[#5b2d90] rounded-lg shadow-lg hover:bg-[#4a2575] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a78bfa] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+          >
+            {isSubmitting ? (
+                <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    <span>กำลังบันทึก...</span>
+                </>
+            ) : (
+                <>
+                    <Save className="w-5 h-5"/>
+                    <span>บันทึกข้อมูล</span>
+                </>
+            )}
+          </button>
     </form>
   );
 }

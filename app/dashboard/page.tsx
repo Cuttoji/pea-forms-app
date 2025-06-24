@@ -28,7 +28,7 @@ export default function DashboardPage() {
   const fetchForms = useCallback(async () => {
     setIsLoading(true);
     
-    const columnsToSelect = 'id, inspectionNumber, fullName, created_at, requestNumber, requestDate, inspectionDate, address, phaseType, estimatedLoad';
+    const columnsToSelect = '*';
 
     const { data, error } = await supabase
       .from(selectedFormType)

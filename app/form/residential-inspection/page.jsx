@@ -11,14 +11,9 @@ import InspectionPDF from '@/components/forms/InspectionPDF';
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 
-// Comment out GoogleMapComponent import
-// const GoogleMapComponent = dynamic(() => import('@/components/forms/GoogleMap'), { 
-//   ssr: false 
-// });
-
-
 export default function HomeForm() {
   const initialFormData = {
+    id: null,
     inspectionNumber: "",
     inspectionDate: "",
     requestNumber: "",
@@ -106,7 +101,13 @@ export default function HomeForm() {
           alert("ไม่สามารถโหลดข้อมูลฟอร์มได้");
           setFormData(initialFormData);
         } else if (data) {
-          setFormData(data);
+          const sanitizedData = { ...initialFormData };
+          for (const key in data) {
+            if (key in sanitizedData) {
+               sanitizedData[key] = data[key] === null ? "" : data[key];
+            }
+          }
+          setFormData(sanitizedData);
         }
       } else {
         const today = new Date();
@@ -139,15 +140,15 @@ export default function HomeForm() {
     setFormData(prev => ({ ...prev, [fieldName]: dataUrl }));
   };
 
-  // Comment out handleLocationSelect function
-  // const handleLocationSelect = (location) => {
-  //   console.log('Location selected:', location);
-  //   setFormData(prevData => ({
-  //     ...prevData,
-  //     latitude: location.lat.toString(),
-  //     longitude: location.lng.toString(),
-  //   }));
-  // };
+  const handleSignatureClear = (fieldName) => {
+    setFormData(prev => ({ ...prev, [fieldName]: "" }));
+    if (fieldName === 'userSignature' && userSigRef.current) {
+        userSigRef.current.clear();
+    }
+    if (fieldName === 'inspectorSignature' && inspectorSigRef.current) {
+        inspectorSigRef.current.clear();
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -160,68 +161,74 @@ export default function HomeForm() {
     }
 
     try {
-      // Handle image upload
-      let imageUrl = formData.address_photo_url || null;
+      const numericFields = [
+        'estimatedLoad', 'cableSizeSqmm', 'breakerAmpRating', 
+        'groundWireSizeSqmm', 'groundResistanceOhm', 'latitude', 'longitude'
+      ];
+      
+      const sanitizedData = { ...formData };
+      numericFields.forEach(field => {
+        const value = sanitizedData[field];
+        sanitizedData[field] = (value === '' || value === undefined || value === null) ? null : parseFloat(value);
+      });
+
+      let imageUrl = sanitizedData.address_photo_url || null;
       if (imageFile) {
         const fileName = `${user.id}/${Date.now()}_home_${imageFile.name}`;
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('form-images')
           .upload(fileName, imageFile);
 
-        if (uploadError) {
-          alert(`เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ: ${uploadError.message}`);
-          setIsSubmitting(false);
-          return;
-        }
-        const { data: publicUrlData } = supabase.storage
-          .from('form-images')
-          .getPublicUrl(uploadData.path);
+        if (uploadError) throw new Error(`เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ: ${uploadError.message}`);
+        
+        const { data: publicUrlData } = supabase.storage.from('form-images').getPublicUrl(uploadData.path);
         imageUrl = publicUrlData.publicUrl;
       }
 
-      // Prepare data
-      let dataToSubmit = {
-        ...formData,
-        user_id: user.id,
-        address_photo_url: imageUrl,
-      };
-
-      // Add signatures if available
-      if (userSigRef.current) {
-        dataToSubmit.userSignature = userSigRef.current.toDataURL();
+      let dataToSubmit = { ...sanitizedData, user_id: user.id, address_photo_url: imageUrl };
+      
+      // Get signatures from refs, but only if they are not empty
+      if (userSigRef.current && !userSigRef.current.isEmpty()) {
+          dataToSubmit.userSignature = userSigRef.current.toDataURL();
       }
-      if (inspectorSigRef.current) {
-        dataToSubmit.inspectorSignature = inspectorSigRef.current.toDataURL();
+      if (inspectorSigRef.current && !inspectorSigRef.current.isEmpty()) {
+          dataToSubmit.inspectorSignature = inspectorSigRef.current.toDataURL();
       }
 
-      // Get form ID from URL
-      const formId = searchParams.get('id');
-
+      const formId = formData.id;
       let dbOperation;
       if (formId) {
-        // Update existing record
-        dbOperation = supabase
-          .from('inspection_forms')
-          .update(dataToSubmit)
-          .eq('id', formId);
+        delete dataToSubmit.created_at; 
+        delete dataToSubmit.id;
+        dbOperation = supabase.from('inspection_forms').update(dataToSubmit).eq('id', formId).select().single();
       } else {
-        // Insert new record
-        dbOperation = supabase
-          .from('inspection_forms')
-          .insert([dataToSubmit]);
+        delete dataToSubmit.id; 
+        dbOperation = supabase.from('inspection_forms').insert([dataToSubmit]).select().single();
       }
 
-      const { error } = await dbOperation;
-      if (error) throw error;
+      const { data: resultData, error } = await dbOperation;
+      if (error) {
+          console.error("Supabase error details:", error);
+          throw new Error(error.message);
+      }
 
       alert('ข้อมูลถูกบันทึกเรียบร้อยแล้ว!');
       
-      // Reset form only for new submissions
       if (!formId) {
+        // Reset form only on new submission
         setFormData(initialFormData);
         setImageFile(null);
         if (userSigRef.current) userSigRef.current.clear();
         if (inspectorSigRef.current) inspectorSigRef.current.clear();
+      } else {
+        // After update, refresh the state with the returned data to stay in sync
+        const sanitizedResult = { ...initialFormData };
+        for (const key in resultData) {
+          if (key in sanitizedResult) {
+            sanitizedResult[key] = resultData[key] === null ? "" : resultData[key];
+          }
+        }
+        setFormData(sanitizedResult);
       }
 
     } catch (error) {
@@ -243,7 +250,12 @@ export default function HomeForm() {
 
   return (
       <form onSubmit={handleSubmit} id="pea-inspection-form" className="space-y-8 max-w-5xl mx-auto">
-        <style jsx global>{`.sigCanvas { touch-action: none; }`}</style>
+        <style jsx global>{`
+          .sigCanvas { touch-action: none; }
+          input[type=number]::-webkit-inner-spin-button, 
+          input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+          input[type=number] { -moz-appearance: textfield; }
+        `}</style>
         <h2 className="text-2xl font-bold mb-6 text-center text-[#5b2d90]">
           แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน
         </h2>
@@ -290,18 +302,9 @@ export default function HomeForm() {
               <ImageUpload 
                 onImageSelected={(file) => setImageFile(file)}
                 disabled={isSubmitting}
+                currentImageUrl={formData.address_photo_url}
               />
             </div>
-            {/* Comment out map section */}
-            {/* <div className="md:col-span-2 bg-white p-4 rounded-lg shadow">
-              <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
-              <GoogleMapComponent onLocationSelect={handleLocationSelect} />
-              <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
-                <p>ละติจูด: <span className="font-mono text-gray-700">{formData.latitude || 'N/A'}</span></p>
-                <p>ลองจิจูด: <span className="font-mono text-gray-700">{formData.longitude || 'N/A'}</span></p>
-              </div>
-            </div> */}
-
             <div>
               <label htmlFor="phaseType" className="block text-sm font-medium text-gray-900 mb-1">ชนิดของระบบไฟฟ้า:</label>
               <select id="phaseType" name="phaseType" value={formData.phaseType} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-white text-gray-900">
@@ -311,15 +314,15 @@ export default function HomeForm() {
               </select>
             </div>
             <div>
-              <label htmlFor="estimatedLoad" className="block text-sm font-medium text-gray-900 mb-1">ประมาณการโหลด (kW):</label>
-              <input type="number" id="estimatedLoad" name="estimatedLoad" value={formData.estimatedLoad} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900" />
+              <label htmlFor="estimatedLoad" className="block text-sm font-medium text-gray-900 mb-1">ประมาณการโหลด (แอมแปร์):</label>
+              <input type="number" step="any" id="estimatedLoad" name="estimatedLoad" value={formData.estimatedLoad} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900" />
             </div>
           </div>
         </section>
         
         {/* 2. Inspection */}
         <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-          <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">2. การตรวจสอบ</h2>
+            <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">2. การตรวจสอบ</h2>
             <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">2.1 สายตัวนำประธานเข้าอาคาร</h3>
             <div className="mb-6 pl-4 border-l-4 border-purple-300 space-y-4">
               <CorrectiveRadio
@@ -340,9 +343,9 @@ export default function HomeForm() {
                       {formData.cableType === 'อื่นๆ' && (<input type="text" name="cableOtherType" value={formData.cableOtherType} onChange={handleChange} className="shadow-sm appearance-none border border-gray-300 rounded-md py-1 px-2 text-gray-900 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent ml-2 w-32" placeholder="ระบุ"/>)}
                   </div>
                   <label htmlFor="cableSizeSqmm" className="block text-sm font-medium text-gray-900 mb-1">ขนาด (ตร.มม.):</label>
-                  <input type="number" id="cableSizeSqmm" name="cableSizeSqmm" value={formData.cableSizeSqmm} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"/>
+                  <input type="number" step="any" id="cableSizeSqmm" name="cableSizeSqmm" value={formData.cableSizeSqmm} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"/>
               </div>
-              <CorrectiveRadio groupName="cableTypeSize_correct" label="ถูกต้องหรือไม่" currentValue={formData.cableTypeSize_correct} currentNote={formData.cableTypeSize_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="cableTypeSize_correct" label="ผลการตรวจสอบชนิดและขนาด" currentValue={formData.cableTypeSize_correct} currentNote={formData.cableTypeSize_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
               <div className="border-b border-gray-200 pb-4">
                   <label className="block text-sm font-medium text-gray-900 mb-2">ค) วิธีการเดินสาย:</label>
                   <div className="mt-2 space-y-4">
@@ -378,7 +381,7 @@ export default function HomeForm() {
               <CorrectiveRadio groupName="breakerStandard_correct" label="ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC60898" currentValue={formData.breakerStandard_correct} currentNote={formData.breakerStandard_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
               <div className="border-b border-gray-200 pb-4">
                   <label htmlFor="breakerAmpRating" className="block text-sm font-medium text-gray-900 mb-1">ขนาด AT:</label>
-                  <input type="number" id="breakerAmpRating" name="breakerAmpRating" value={formData.breakerAmpRating} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"/>
+                  <input type="number" step="any" id="breakerAmpRating" name="breakerAmpRating" value={formData.breakerAmpRating} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"/>
               </div>
               <CorrectiveRadio groupName="breakerMeterMatch_correct" label="ข) เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์" currentValue={formData.breakerMeterMatch_correct} currentNote={formData.breakerMeterMatch_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
               <CorrectiveRadio groupName="breakerShortCircuitRating_correct" label="ค) ขนาดกระแสลัดวงจรสูงสุดไม่ต่ำกว่า 10 กิโลแอมแปร์ (kA)" currentValue={formData.breakerShortCircuitRating_correct} currentNote={formData.breakerShortCircuitRating_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
@@ -388,7 +391,7 @@ export default function HomeForm() {
             <div className="mb-6 pl-4 border-l-4 border-purple-300 space-y-4">
               <div className="border-b border-gray-200 pb-4">
                   <label htmlFor="groundWireSizeSqmm" className="block text-sm font-medium text-gray-900 mb-1">ขนาดสายต่อหลักดิน (ตร.มม.):</label>
-                  <input type="number" id="groundWireSizeSqmm" name="groundWireSizeSqmm" value={formData.groundWireSizeSqmm} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"/>
+                  <input type="number" step="any" id="groundWireSizeSqmm" name="groundWireSizeSqmm" value={formData.groundWireSizeSqmm} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"/>
               </div>
               <CorrectiveRadio groupName="groundWireSize_correct" label="ก) ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายตัวนำประธาน" currentValue={formData.groundWireSize_correct} currentNote={formData.groundWireSize_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
               <div className="border-b border-gray-200 pb-4">
@@ -453,30 +456,41 @@ export default function HomeForm() {
               <p>6.4 หากเกิดความเสียหายใดๆ ที่เกิดจากการที่ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว (RCD) ในวงจรที่มีความเสี่ยง ผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <SignaturePad title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" ref={userSigRef} onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} onClear={() => handleSignatureClear('userSignature')}/>
-            <SignaturePad title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" ref={inspectorSigRef} onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} onClear={() => handleSignatureClear('inspectorSignature')}/>
+            <SignaturePad 
+              title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" 
+              ref={userSigRef} 
+              onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} 
+              onClear={() => handleSignatureClear('userSignature')}
+              initialValue={formData.userSignature}
+            />
+            <SignaturePad 
+              title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" 
+              ref={inspectorSigRef} 
+              onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} 
+              onClear={() => handleSignatureClear('inspectorSignature')}
+              initialValue={formData.inspectorSignature}
+            />
           </div>
         </section>
+        
         {/* Action Buttons Section */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
-          {formData.inspectionNumber && (
-            <PDFDownloadLink
-              document={<InspectionPDF formData={formData} userSignature={formData.userSignature} inspectorSignature={formData.inspectorSignature} />}
-              fileName={`inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
-              className="w-full sm:w-auto"
-            >
-              {({ loading }) => (
-                  <button
-                      type="button"
-                      disabled={loading || isSubmitting}
-                      className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
-                  >
-                      <Download className="w-5 h-5"/>
-                      {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
-                  </button>
-              )}
-            </PDFDownloadLink>
-          )}
+          <PDFDownloadLink
+            document={<InspectionPDF formData={formData} />}
+            fileName={`inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
+            className="w-full sm:w-auto"
+          >
+            {({ loading }) => (
+                <button
+                    type="button"
+                    disabled={loading || isSubmitting}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+                >
+                    <Download className="w-5 h-5"/>
+                    {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
+                </button>
+            )}
+          </PDFDownloadLink>
 
           <button
             type="submit"
