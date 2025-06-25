@@ -1,7 +1,18 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+const nextConfig = {
 
-const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        // *** แทนที่ตรงนี้ด้วย Hostname ของคุณที่คัดลอกมาจากขั้นตอนที่ 1 ***
+        hostname: 'https://cznbhkepfkhisdknayce.supabase.co', 
+        port: '',
+        // อนุญาตให้โหลดรูปจาก bucket 'form-images' เท่านั้นเพื่อความปลอดภัย
+        pathname: '/storage/v1/object/public/form-images/**', 
+      },
+    ],
+  },
 };
 
 export default nextConfig;

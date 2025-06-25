@@ -10,12 +10,12 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import InspectionPDF from '@/components/forms/InspectionPDF';
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
+import { useFormManager } from "@/lib/hooks/useFormManager"; 
 
 const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStreetMapComponent'), { 
   ssr: false 
 });
 
-export default function HomeForm() {
   const initialFormData = {
     id: null,
     inspectionNumber: "",
@@ -72,75 +72,51 @@ export default function HomeForm() {
     user_id: null,
   };
 
-  const [formData, setFormData] = useState(initialFormData);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(true);
-  const [user, setUser] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
 
-  const searchParams = useSearchParams();
-  const supabase = createClient();
-  
+export default function HomeForm() {
+  // 3. เรียกใช้ Custom Hook เพื่อจัดการ Logic ทั้งหมด
+  const {
+    formData,
+    setFormData,
+    isLoading,
+    isSubmitting,
+    handleChange,
+    handleImageUpload,
+    handleSubmit,
+    handleSignatureSave,
+    handleSignatureClear
+  } = useFormManager('inspection_forms', initialFormData, 'residential');
+
+  // 4. Ref สำหรับ Component ที่ต้องการการเข้าถึงโดยตรง ยังคงอยู่ที่นี่
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
+  const imageUploadRef = useRef(null); // เพิ่ม Ref สำหรับ ImageUpload
 
+  // 5. สร้างฟังก์ชัน "ตัวกลาง" เพื่อส่ง Ref เข้าไปใน handleSubmit ของ Hook
+  const onSubmitWithRefs = async (e) => {
+    const result = await handleSubmit(e, {
+      userSigRef: userSigRef,
+      inspectorSigRef: inspectorSigRef,
+      imageUploadRef: imageUploadRef
+    });
+
+    // หากเป็นการสร้างฟอร์มใหม่และสำเร็จ ให้เคลียร์ component ลูก
+    if (result && result.isNewSubmission) {
+      userSigRef.current?.clear();
+      inspectorSigRef.current?.clear();
+      imageUploadRef.current?.reset();
+    }
+  };
+
+  // 6. ฟังก์ชันที่ทำงานกับ UI โดยตรงและมีความเฉพาะตัว ยังคงอยู่ที่นี่ได้
   const handleLocationSelect = (location) => {
-    console.log('Location selected from map:', location);
     setFormData(prevData => ({
       ...prevData,
-      latitude: location.lat.toFixed(6), // toFixed(6) เพื่อความละเอียดที่เหมาะสม
+      latitude: location.lat.toFixed(6),
       longitude: location.lng.toFixed(6),
     }));
   };
 
-  useEffect(() => {
-    const formId = searchParams.get('id');
-
-    const initializeForm = async () => {
-      setIsLoadingData(true);
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-
-      if (formId) {
-        const { data, error } = await supabase
-          .from('inspection_forms')
-          .select('*')
-          .eq('id', formId)
-          .single();
-
-        if (error) {
-          console.error("Error fetching form data:", error);
-          alert("ไม่สามารถโหลดข้อมูลฟอร์มได้");
-          setFormData(initialFormData);
-        } else if (data) {
-          const sanitizedData = { ...initialFormData };
-          for (const key in data) {
-            if (key in sanitizedData) {
-               sanitizedData[key] = data[key] === null ? "" : data[key];
-            }
-          }
-          setFormData(sanitizedData);
-        }
-      } else {
-        const today = new Date();
-        const formattedDate = today.toISOString().split('T')[0];
-        setFormData(prev => ({ ...initialFormData, inspectionDate: formattedDate, requestDate: formattedDate }));
-      }
-      setIsLoadingData(false);
-    };
-
-    initializeForm();
-  }, [searchParams, supabase]);
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-  
   const handleRadioChange = (groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
@@ -148,111 +124,9 @@ export default function HomeForm() {
       ...(value === 'ถูกต้อง' && { [noteFieldName]: '' }),
     }));
   };
-
-  const handleSignatureSave = (fieldName, dataUrl) => {
-    setFormData(prev => ({ ...prev, [fieldName]: dataUrl }));
-  };
-
-  const handleSignatureClear = (fieldName) => {
-    setFormData(prev => ({ ...prev, [fieldName]: "" }));
-    if (fieldName === 'userSignature' && userSigRef.current) {
-        userSigRef.current.clear();
-    }
-    if (fieldName === 'inspectorSignature' && inspectorSigRef.current) {
-        inspectorSigRef.current.clear();
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    if (!user) {
-      alert("กรุณาเข้าสู่ระบบก่อนทำการบันทึกข้อมูล");
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      const numericFields = [
-        'estimatedLoad', 'cableSizeSqmm', 'breakerAmpRating', 
-        'groundWireSizeSqmm', 'groundResistanceOhm', 'latitude', 'longitude'
-      ];
-      
-      const sanitizedData = { ...formData };
-      numericFields.forEach(field => {
-        const value = sanitizedData[field];
-        sanitizedData[field] = (value === '' || value === undefined || value === null) ? null : parseFloat(value);
-      });
-
-      let imageUrl = sanitizedData.address_photo_url || null;
-      if (imageFile) {
-        const fileName = `${user.id}/${Date.now()}_home_${imageFile.name}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('form-images')
-          .upload(fileName, imageFile);
-
-        if (uploadError) throw new Error(`เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ: ${uploadError.message}`);
-        
-        const { data: publicUrlData } = supabase.storage.from('form-images').getPublicUrl(uploadData.path);
-        imageUrl = publicUrlData.publicUrl;
-      }
-
-      let dataToSubmit = { ...sanitizedData, user_id: user.id, address_photo_url: imageUrl };
-      
-      // Get signatures from refs, but only if they are not empty
-      if (userSigRef.current && !userSigRef.current.isEmpty()) {
-          dataToSubmit.userSignature = userSigRef.current.toDataURL();
-      }
-      if (inspectorSigRef.current && !inspectorSigRef.current.isEmpty()) {
-          dataToSubmit.inspectorSignature = inspectorSigRef.current.toDataURL();
-      }
-
-      const formId = formData.id;
-      let dbOperation;
-      if (formId) {
-        delete dataToSubmit.created_at; 
-        delete dataToSubmit.id;
-        dbOperation = supabase.from('inspection_forms').update(dataToSubmit).eq('id', formId).select().single();
-      } else {
-        delete dataToSubmit.id; 
-        dbOperation = supabase.from('inspection_forms').insert([dataToSubmit]).select().single();
-      }
-
-      const { data: resultData, error } = await dbOperation;
-      if (error) {
-          console.error("Supabase error details:", error);
-          throw new Error(error.message);
-      }
-
-      alert('ข้อมูลถูกบันทึกเรียบร้อยแล้ว!');
-      
-      if (!formId) {
-        // Reset form only on new submission
-        setFormData(initialFormData);
-        setImageFile(null);
-        if (userSigRef.current) userSigRef.current.clear();
-        if (inspectorSigRef.current) inspectorSigRef.current.clear();
-      } else {
-        // After update, refresh the state with the returned data to stay in sync
-        const sanitizedResult = { ...initialFormData };
-        for (const key in resultData) {
-          if (key in sanitizedResult) {
-            sanitizedResult[key] = resultData[key] === null ? "" : resultData[key];
-          }
-        }
-        setFormData(sanitizedResult);
-      }
-
-    } catch (error) {
-      console.error('Error saving form data:', error);
-      alert(`เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${error.message}`);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
   
-  if (isLoadingData) {
+  // 7. ส่วนแสดงผล (UI)
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-pea-primary"></div>
@@ -331,12 +205,14 @@ export default function HomeForm() {
             </div>
           </div>
             <div className="md:col-span-2 mt-4">
-              <ImageUpload 
-                onImageSelected={(file) => setImageFile(file)}
-                disabled={isSubmitting}
-                currentImageUrl={formData.address_photo_url}
-              />
-            </div>
+                        <ImageUpload 
+                            ref={imageUploadRef}
+                            // ส่งฟังก์ชัน handleImageUpload ที่ได้จาก Hook เข้าไปโดยตรง
+                            onImageSelected={handleImageUpload} 
+                            disabled={isSubmitting}
+                            currentImageUrl={formData.address_photo_url}
+                        />
+                    </div>
             <div>
               <label htmlFor="phaseType" className="block text-sm font-medium text-gray-900 mb-1">ชนิดของระบบไฟฟ้า:</label>
               <select id="phaseType" name="phaseType" value={formData.phaseType} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-white text-gray-900">
@@ -490,7 +366,7 @@ export default function HomeForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <SignaturePad 
               title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" 
-              ref={userSigRef} 
+              ref={userSigRef}
               onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} 
               onClear={() => handleSignatureClear('userSignature')}
               initialValue={formData.userSignature}
