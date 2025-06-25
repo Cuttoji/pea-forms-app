@@ -311,10 +311,20 @@ export default function HomeForm() {
               <label htmlFor="address" className="block text-sm font-medium text-gray-900 mb-1">ที่อยู่:</label>
               <textarea id="address" name="address" value={formData.address} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"></textarea>
             </div>
-            <div className="md:col-span-2 bg-white p-4 rounded-lg shadow mt-4">
+              {/* --- ส่วนของแผนที่ --- */}
+          <div className="md:col-span-2 bg-white p-4 rounded-lg shadow mt-4">
             <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
-            <p className="text-sm text-gray-500 mb-3">คลิกบนแผนที่เพื่อปักหมุดตำแหน่งและรับค่า Latitude, Longitude</p>
-            <OpenStreetMapComponent onLocationSelect={handleLocationSelect} />
+            <p className="text-sm text-gray-500 mb-3">ค้นหาหรือลากแผนที่เพื่อเลือกตำแหน่ง จากนั้นพิกัดจะแสดงด้านล่าง</p>
+            
+            {/* *** จุดที่แก้ไข: เพิ่ม div ที่มีคลาส relative และ z-0 ครอบ Component แผนที่ *** */}
+            <div className="relative z-0"> 
+              <OpenStreetMapComponent 
+                onLocationSelect={handleLocationSelect} 
+                initialLatitude={formData.latitude}
+                initialLongitude={formData.longitude}
+              />
+            </div>
+            
             <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
               <p>ละติจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.latitude || 'N/A'}</span></p>
               <p>ลองจิจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.longitude || 'N/A'}</span></p>
