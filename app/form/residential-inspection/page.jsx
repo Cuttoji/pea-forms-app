@@ -11,6 +11,10 @@ import InspectionPDF from '@/components/forms/InspectionPDF';
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 
+const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStreetMapComponent'), { 
+  ssr: false 
+});
+
 export default function HomeForm() {
   const initialFormData = {
     id: null,
@@ -79,6 +83,15 @@ export default function HomeForm() {
   
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
+
+  const handleLocationSelect = (location) => {
+    console.log('Location selected from map:', location);
+    setFormData(prevData => ({
+      ...prevData,
+      latitude: location.lat.toFixed(6), // toFixed(6) เพื่อความละเอียดที่เหมาะสม
+      longitude: location.lng.toFixed(6),
+    }));
+  };
 
   useEffect(() => {
     const formId = searchParams.get('id');
@@ -298,6 +311,15 @@ export default function HomeForm() {
               <label htmlFor="address" className="block text-sm font-medium text-gray-900 mb-1">ที่อยู่:</label>
               <textarea id="address" name="address" value={formData.address} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"></textarea>
             </div>
+            <div className="md:col-span-2 bg-white p-4 rounded-lg shadow mt-4">
+            <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
+            <p className="text-sm text-gray-500 mb-3">คลิกบนแผนที่เพื่อปักหมุดตำแหน่งและรับค่า Latitude, Longitude</p>
+            <OpenStreetMapComponent onLocationSelect={handleLocationSelect} />
+            <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
+              <p>ละติจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.latitude || 'N/A'}</span></p>
+              <p>ลองจิจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.longitude || 'N/A'}</span></p>
+            </div>
+          </div>
             <div className="md:col-span-2 mt-4">
               <ImageUpload 
                 onImageSelected={(file) => setImageFile(file)}
