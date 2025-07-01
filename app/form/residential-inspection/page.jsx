@@ -1,80 +1,81 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
 import ImageUpload from "@/components/forms/ImageUpload";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import InspectionPDF from '@/components/forms/InspectionPDF';
+import InspectionPDF from '@/components/forms/InspectionPDF'; // ตรวจสอบว่า path ไปยัง PDF component ถูกต้อง
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useFormManager } from "@/lib/hooks/useFormManager"; 
 
+// Dynamic import for OpenStreetMapComponent to avoid SSR issues
 const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStreetMapComponent'), { 
   ssr: false 
 });
 
-  const initialFormData = {
-    id: null,
-    inspectionNumber: "",
-    inspectionDate: "",
-    requestNumber: "",
-    requestDate: "",
-    fullName: "",
-    phone: "",
-    address: "",
-    latitude: null,  
-    longitude: null,
-    address_photo_url: "",
-    phaseType: "",
-    estimatedLoad: "",
-    cableStandard_correct: '',
-    cableStandard_correct_note: "",
-    cableType: "",
-    cableOtherType: "",
-    cableSizeSqmm: "",
-    cableTypeSize_correct: '',
-    cableTypeSize_correct_note: "",
-    wiringMethodOverheadChecked: false,
-    wiringMethodUndergroundChecked: false,
-    overhead_height_correct: '',
-    overhead_height_correct_note: "",
-    overhead_neutralMarked_correct: '',
-    overhead_neutralMarked_correct_note: "",
-    underground_neutralMarked_correct: '',
-    underground_neutralMarked_correct_note: "",
-    breakerStandard_correct: '',
-    breakerStandard_correct_note: "",
-    breakerMeterMatch_correct: '',
-    breakerMeterMatch_correct_note: "",
-    breakerAmpRating: "",
-    breakerShortCircuitRating_correct: '',
-    breakerShortCircuitRating_correct_note: "",
-    groundWireSize_correct: '',
-    groundWireSize_correct_note: "",
-    groundWireSizeSqmm: "",
-    groundResistance_correct: '',
-    groundResistance_correct_note: "",
-    groundResistanceOhm: "",
-    onePhaseGroundConnection_correct: '',
-    onePhaseGroundConnection_correct_note: "",
-    threePhaseGroundConnection_correct: '',
-    threePhaseGroundConnection_correct_note: "",
-    rcdInstalledOption: '',
-    rcdInstalled_correct: '',
-    rcdInstalled_correct_note: "",
-    summaryResult: "",
-    scopeOfInspection: "",
-    userSignature: "",
-    inspectorSignature: "",
-    user_id: null,
-  };
+// -- ค่าเริ่มต้นของข้อมูลในฟอร์ม --
+const initialFormData = {
+  id: null,
+  inspectionNumber: "",
+  inspectionDate: "",
+  requestNumber: "",
+  requestDate: "",
+  fullName: "",
+  phone: "",
+  address: "",
+  latitude: null,  
+  longitude: null,
+  address_photo_url: "",
+  phaseType: "",
+  estimatedLoad: "",
+  cableStandard_correct: '',
+  cableStandard_correct_note: "",
+  cableType: "",
+  cableOtherType: "",
+  cableSizeSqmm: "",
+  cableTypeSize_correct: '',
+  cableTypeSize_correct_note: "",
+  wiringMethodOverheadChecked: false,
+  wiringMethodUndergroundChecked: false,
+  overhead_height_correct: '',
+  overhead_height_correct_note: "",
+  overhead_neutralMarked_correct: '',
+  overhead_neutralMarked_correct_note: "",
+  underground_neutralMarked_correct: '',
+  underground_neutralMarked_correct_note: "",
+  breakerStandard_correct: '',
+  breakerStandard_correct_note: "",
+  breakerMeterMatch_correct: '',
+  breakerMeterMatch_correct_note: "",
+  breakerAmpRating: "",
+  breakerShortCircuitRating_correct: '',
+  breakerShortCircuitRating_correct_note: "",
+  groundWireSize_correct: '',
+  groundWireSize_correct_note: "",
+  groundWireSizeSqmm: "",
+  groundResistance_correct: '',
+  groundResistance_correct_note: "",
+  groundResistanceOhm: "",
+  onePhaseGroundConnection_correct: '',
+  onePhaseGroundConnection_correct_note: "",
+  threePhaseGroundConnection_correct: '',
+  threePhaseGroundConnection_correct_note: "",
+  rcdInstalledOption: '',
+  rcdInstalled_correct: '',
+  rcdInstalled_correct_note: "",
+  summaryResult: "",
+  scopeOfInspection: "",
+  userSignature: "",
+  inspectorSignature: "",
+  user_id: null,
+};
 
 
 export default function HomeForm() {
-  // 3. เรียกใช้ Custom Hook เพื่อจัดการ Logic ทั้งหมด
   const {
     formData,
     setFormData,
@@ -87,28 +88,10 @@ export default function HomeForm() {
     handleSignatureClear
   } = useFormManager('inspection_forms', initialFormData, 'residential');
 
-  // 4. Ref สำหรับ Component ที่ต้องการการเข้าถึงโดยตรง ยังคงอยู่ที่นี่
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
-  const imageUploadRef = useRef(null); // เพิ่ม Ref สำหรับ ImageUpload
+  const imageUploadRef = useRef(null);
 
-  // 5. สร้างฟังก์ชัน "ตัวกลาง" เพื่อส่ง Ref เข้าไปใน handleSubmit ของ Hook
-  const onSubmitWithRefs = async (e) => {
-    const result = await handleSubmit(e, {
-      userSigRef: userSigRef,
-      inspectorSigRef: inspectorSigRef,
-      imageUploadRef: imageUploadRef
-    });
-
-    // หากเป็นการสร้างฟอร์มใหม่และสำเร็จ ให้เคลียร์ component ลูก
-    if (result && result.isNewSubmission) {
-      userSigRef.current?.clear();
-      inspectorSigRef.current?.clear();
-      imageUploadRef.current?.reset();
-    }
-  };
-
-  // 6. ฟังก์ชันที่ทำงานกับ UI โดยตรงและมีความเฉพาะตัว ยังคงอยู่ที่นี่ได้
   const handleLocationSelect = (location) => {
     setFormData(prevData => ({
       ...prevData,
@@ -117,15 +100,15 @@ export default function HomeForm() {
     }));
   };
 
+  // **ใช้ฟังก์ชันนี้เพียงฟังก์ชันเดียวสำหรับ CorrectiveRadio**
   const handleRadioChange = (groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
-      [groupName]: value,
+      [groupName]: value, // รับค่า 'ถูกต้อง' หรือ 'ต้องแก้ไข' มาโดยตรง
       ...(value === 'ถูกต้อง' && { [noteFieldName]: '' }),
     }));
   };
   
-  // 7. ส่วนแสดงผล (UI)
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -136,13 +119,14 @@ export default function HomeForm() {
   }
 
   return (
-      <form onSubmit={handleSubmit} id="pea-inspection-form" className="space-y-8 max-w-5xl mx-auto">
+      <form onSubmit={handleSubmit} id="pea-inspection-form" className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
         <style jsx global>{`
           .sigCanvas { touch-action: none; }
           input[type=number]::-webkit-inner-spin-button, 
           input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
           input[type=number] { -moz-appearance: textfield; }
         `}</style>
+        
         <h2 className="text-2xl font-bold mb-6 text-center text-[#5b2d90]">
           แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน
         </h2>
@@ -185,34 +169,29 @@ export default function HomeForm() {
               <label htmlFor="address" className="block text-sm font-medium text-gray-900 mb-1">ที่อยู่:</label>
               <textarea id="address" name="address" value={formData.address} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"></textarea>
             </div>
-              {/* --- ส่วนของแผนที่ --- */}
-          <div className="md:col-span-2 bg-white p-4 rounded-lg shadow mt-4">
-            <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
-            <p className="text-sm text-gray-500 mb-3">ค้นหาหรือลากแผนที่เพื่อเลือกตำแหน่ง จากนั้นพิกัดจะแสดงด้านล่าง</p>
-            
-            {/* *** จุดที่แก้ไข: เพิ่ม div ที่มีคลาส relative และ z-0 ครอบ Component แผนที่ *** */}
-            <div className="relative z-0"> 
-              <OpenStreetMapComponent 
-                onLocationSelect={handleLocationSelect} 
-                initialLatitude={formData.latitude}
-                initialLongitude={formData.longitude}
-              />
+            <div className="md:col-span-2 bg-white p-4 rounded-lg shadow mt-4">
+              <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
+              <p className="text-sm text-gray-500 mb-3">ค้นหาหรือลากแผนที่เพื่อเลือกตำแหน่ง จากนั้นพิกัดจะแสดงด้านล่าง</p>
+              <div className="relative z-0 h-80 rounded-lg overflow-hidden"> 
+                <OpenStreetMapComponent 
+                  onLocationSelect={handleLocationSelect} 
+                  initialLatitude={formData.latitude}
+                  initialLongitude={formData.longitude}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
+                <p>ละติจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.latitude || 'N/A'}</span></p>
+                <p>ลองจิจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.longitude || 'N/A'}</span></p>
+              </div>
             </div>
-            
-            <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
-              <p>ละติจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.latitude || 'N/A'}</span></p>
-              <p>ลองจิจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.longitude || 'N/A'}</span></p>
-            </div>
-          </div>
             <div className="md:col-span-2 mt-4">
-                        <ImageUpload 
-                            ref={imageUploadRef}
-                            // ส่งฟังก์ชัน handleImageUpload ที่ได้จาก Hook เข้าไปโดยตรง
-                            onImageSelected={handleImageUpload} 
-                            disabled={isSubmitting}
-                            currentImageUrl={formData.address_photo_url}
-                        />
-                    </div>
+                <ImageUpload 
+                    ref={imageUploadRef}
+                    onImageSelected={handleImageUpload} 
+                    disabled={isSubmitting}
+                    currentImageUrl={formData.address_photo_url}
+                />
+            </div>
             <div>
               <label htmlFor="phaseType" className="block text-sm font-medium text-gray-900 mb-1">ชนิดของระบบไฟฟ้า:</label>
               <select id="phaseType" name="phaseType" value={formData.phaseType} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-white text-gray-900">
@@ -233,14 +212,8 @@ export default function HomeForm() {
             <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">2. การตรวจสอบ</h2>
             <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">2.1 สายตัวนำประธานเข้าอาคาร</h3>
             <div className="mb-6 pl-4 border-l-4 border-purple-300 space-y-4">
-              <CorrectiveRadio
-                  groupName="cableStandard_correct"
-                  label="ก) สายไฟฟ้าเป็นไปตามมาตรฐาน มอก. 11-2553 หรือ มอก. 293-2541 หรือ IEC 60502"
-                  currentValue={formData.cableStandard_correct}
-                  currentNote={formData.cableStandard_correct_note}
-                  onStatusChange={handleRadioChange}
-                  onNoteChange={handleChange}
-              />
+              <CorrectiveRadio groupName="cableStandard_correct" label="ก) สายไฟฟ้าเป็นไปตามมาตรฐาน มอก. 11-2553 หรือ มอก. 293-2541 หรือ IEC 60502" currentValue={formData.cableStandard_correct} currentNote={formData.cableStandard_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              
               <div className="border-b border-gray-200 pb-4">
                   <label className="block text-sm font-medium text-gray-900 mb-1">ข) ชนิดและขนาด:</label>
                   <div className="flex flex-wrap gap-4 mt-2 mb-2">
@@ -254,6 +227,7 @@ export default function HomeForm() {
                   <input type="number" step="any" id="cableSizeSqmm" name="cableSizeSqmm" value={formData.cableSizeSqmm} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"/>
               </div>
               <CorrectiveRadio groupName="cableTypeSize_correct" label="ผลการตรวจสอบชนิดและขนาด" currentValue={formData.cableTypeSize_correct} currentNote={formData.cableTypeSize_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              
               <div className="border-b border-gray-200 pb-4">
                   <label className="block text-sm font-medium text-gray-900 mb-2">ค) วิธีการเดินสาย:</label>
                   <div className="mt-2 space-y-4">
@@ -332,13 +306,12 @@ export default function HomeForm() {
             </div>
         </section>
 
-        {/* 3. High Voltage Section */}
+        {/* --- Sections 3, 4, 5, 6 --- */}
         <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">3. กรณีผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ติดตั้งหม้อแปลงไฟฟ้าเพื่อรับไฟแรงสูง</h3>
           <p className="text-sm text-gray-600">ให้ตรวจสอบมาตรฐานการติดตั้งระบบไฟฟ้าแรงสูงเพิ่มเติมโดยใช้แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทอื่นๆ นอกเหนือจากที่อยู่อาศัย</p>
         </section>
 
-        {/* 4. Summary */}
         <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
           <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">4. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</h3>
           <div className="flex flex-wrap gap-6 mb-4">
@@ -348,13 +321,11 @@ export default function HomeForm() {
           </div>
         </section>
 
-        {/* 5. Scope */}
         <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
           <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">5. ขอบเขตและข้อจำกัดในการตรวจสอบ</h3>
           <textarea id="scopeOfInspection" name="scopeOfInspection" value={formData.scopeOfInspection} onChange={handleChange} rows="4" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] text-gray-900"></textarea>
         </section>
 
-        {/* 6. Acknowledgment & Signatures */}
         <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
           <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
           <div className="text-gray-900 text-sm mb-6 space-y-3">
@@ -381,7 +352,7 @@ export default function HomeForm() {
           </div>
         </section>
         
-        {/* Action Buttons Section */}
+        {/* --- Action Buttons --- */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
           <PDFDownloadLink
             document={<InspectionPDF formData={formData} />}

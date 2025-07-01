@@ -8,6 +8,7 @@ const CorrectiveRadio = ({
   onStatusChange,
   onNoteChange,
   disabled = false,
+  alwaysShowNote = false, // เพิ่ม prop นี้
 }) => {
   const noteFieldName = `${groupName}_note`;
 
@@ -40,10 +41,10 @@ const CorrectiveRadio = ({
           <span className={`ml-2 text-sm ${disabled ? 'text-gray-400' : 'text-gray-700'}`}>ต้องแก้ไข</span>
         </label>
       </div>
-      {currentValue === 'ต้องแก้ไข' && (
+      {(alwaysShowNote || currentValue === 'ต้องแก้ไข') && (
         <div className="mt-3">
           <label htmlFor={noteFieldName} className="block text-xs font-medium text-gray-900 mb-1">
-            รายละเอียดการแก้ไข:
+            รายละเอียด{currentValue === 'ต้องแก้ไข' ? 'การแก้ไข' : ''}:
           </label>
           <textarea
             id={noteFieldName}
@@ -53,7 +54,7 @@ const CorrectiveRadio = ({
             value={currentNote || ''}
             onChange={onNoteChange}
             disabled={disabled}
-            placeholder="โปรดระบุรายละเอียดที่ต้องแก้ไข..."
+            placeholder="โปรดระบุรายละเอียด..."
           />
         </div>
       )}
