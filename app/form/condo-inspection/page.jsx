@@ -12,7 +12,7 @@ import { Download, Save } from "lucide-react";
 const initialFormData = {
   id: null,
   user_id: null,
-  
+
   // ข้อมูลทั่วไป
   inspectionNumber: "",
   inspectionDate: "",
@@ -75,12 +75,52 @@ const initialFormData = {
   // 2.3 เครื่องปลดวงจรต้นทาง
   disconnectingDeviceStatus: '',
   disconnectingDeviceNote: "",
-  disconnectingDeviceType: "",
+  disconnectingDeviceType: [],
   disconnectingDeviceSwitchType: "",
   hvDistributionOther: "",
   
-  // หม้อแปลง (เก็บเป็น JSON)
-  transformers: [],
+  // หม้อแปลง (เก็บเป็น JSON Array of Objects)
+  transformers: [
+    // {
+    //   tested: null, // true, false
+    //   number: "",
+    //   size_kva: "",
+    //   hv_voltage: "",
+    //   lv_voltage: "",
+    //   impedance: "",
+    //   type: "", // 'Oil', 'Dry', 'Other'
+    //   type_other: "",
+    //   vector_group: "",
+    //   short_circuit_rating_correct: '',
+    //   short_circuit_rating_note: '',
+    //   installation_type: [],
+    //   overcurrent_protection_type: "",
+    //   overcurrent_protection_correct: '',
+    //   overcurrent_protection_note: '',
+    //   continuous_current_a: '',
+    //   interrupting_capacity_ic: '',
+    //   hv_surge_arrester_correct: '',
+    //   hv_surge_arrester_note: '',
+    //   surge_arrester_kv: '',
+    //   surge_arrester_ka: '',
+    //   grounding_assembly_correct: '',
+    //   grounding_assembly_note: '',
+    //   hv_ground_resistance_ohm: '',
+    //   hv_ground_resistance_correct: '',
+    //   hv_ground_resistance_note: '',
+    //   silica_gel_correct: '',
+    //   silica_gel_note: '',
+    //   bushing_condition_correct: '',
+    //   bushing_condition_note: '',
+    //   oil_level_correct: '',
+    //   oil_level_note: '',
+    //   oil_leak_correct: '',
+    //   oil_leak_note: '',
+    //   warning_sign_correct: '',
+    //   warning_sign_note: '',
+    //   transformer_other_note: ''
+    // }
+  ],
 
   // 2.14 สายตัวนำประธานแรงต่ำ
   lvMainCable_standard_correct: '',
@@ -135,6 +175,7 @@ const initialFormData = {
   meterBreaker_size_note: '',
   meterBreaker_at: '',
   meterBreaker_af: '',
+  meterBreaker_ic: '', // **[เพิ่ม]** เพิ่มฟิลด์สำหรับ IC kA
 
   // 2.19 สายตัวนำประธานเข้าห้องชุด
   roomFeeder_standard_correct: '',
@@ -196,6 +237,23 @@ export default function CondoInspectionForm() {
       ...(value === 'ถูกต้อง' && { [noteFieldName]: '' }),
     }));
   };
+  // ฟังก์ชันสำหรับจัดการ Checkbox ที่เลือกได้หลายข้อ
+  const handleWiringMethodChange = (e) => {
+    const { value, checked } = e.target;
+    // ดึงข้อมูล array ปัจจุบันจาก state, ถ้ายังไม่มีให้ใช้ array ว่าง
+    const currentMethods = formData.lvMainCable_wiring_method || [];
+
+    let newMethods;
+    if (checked) {
+      // ถ้าถูกติ๊ก, ให้เพิ่มค่าใหม่เข้าไปใน array
+      newMethods = [...currentMethods, value];
+    } else {
+      // ถ้าติ๊กออก, ให้กรองค่าที่ตรงกันออกจาก array
+      newMethods = currentMethods.filter((method) => method !== value);
+    }
+    // อัปเดต state ด้วย array ใหม่
+    setFormData(prev => ({ ...prev, lvMainCable_wiring_method: newMethods }));
+  };
 
   // เพิ่ม handleImageUpload ที่ตรวจสอบไฟล์ภาพก่อน
   const handleImageUpload = (file) => {
@@ -211,6 +269,19 @@ export default function CondoInspectionForm() {
     if (typeof handleImageUpload === "function") {
       handleImageUpload(file);
     }
+  };
+  // ฟังก์ชันสำหรับจัดการ Checkbox (เลือกได้หลายข้อ) ของ "เครื่องปลดวงจร"
+  const handleDeviceTypeChange = (e) => {
+    const { value, checked } = e.target;
+    const currentTypes = formData.disconnectingDeviceType || [];
+
+    let newTypes;
+    if (checked) {
+      newTypes = [...currentTypes, value];
+    } else {
+      newTypes = currentTypes.filter((type) => type !== value);
+    }
+    setFormData(prev => ({ ...prev, disconnectingDeviceType: newTypes }));
   };
 
   if (isLoading) {
@@ -290,24 +361,49 @@ export default function CondoInspectionForm() {
       {/* --- 2. การตรวจสอบ --- */}
       <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
           <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">2. การตรวจสอบ</h2>
-          
           <div className="mb-6 pl-4 border-l-4 border-purple-300 space-y-4">
-            <CorrectiveRadio
-              groupName="overhead_cableType_correct"
-              label="2.1.1 ชนิดสายตัวนำ"
-              currentValue={formData.overhead_cableType_correct}
-              currentNote={formData.overhead_cableType_note}
-              onStatusChange={handleRadioChange}
-              onNoteChange={handleChange}
-            />
-            <CorrectiveRadio
-              groupName="overhead_cableSize_correct"
-              label="2.1.2 ขนาดสายตัวนำ"
-              currentValue={formData.overhead_cableSize_correct}
-              currentNote={formData.overhead_cableSize_note}
-              onStatusChange={handleRadioChange}
-              onNoteChange={handleChange}
-            />
+            <label className="block text-lg font-semibold mb-3 text-gray-800">2.1 ระบบจำหน่ายเหนือดิน</label>
+            {/* 2.1.1 ชนิดสายตัวนำ */}
+            <div className="mb-4">
+              <label htmlFor="overhead_cableType" className="block text-sm font-semibold text-gray-800 mb-2">2.1.1 ชนิดสายตัวนำ:</label>
+              <input
+                type="text"
+                id="overhead_cableType"
+                name="overhead_cableType"
+                value={formData.overhead_cableType}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-900"
+              />
+              <CorrectiveRadio
+                groupName="overhead_cableType_correct"
+                label=""
+                currentValue={formData.overhead_cableType_correct}
+                currentNote={formData.overhead_cableType_note}
+                onStatusChange={handleRadioChange}
+                onNoteChange={handleChange}
+              />
+            </div>
+            {/* 2.1.2 ขนาดสายตัวนำ */}
+            <div className="mb-4">
+              <label htmlFor="overhead_cableSizeSqmm" className="block text-sm font-semibold text-gray-800 mb-2">2.1.2 ขนาดสายตัวนำ (ตร.มม.):</label>
+              <input
+                type="number"
+                step="any"
+                id="overhead_cableSizeSqmm"
+                name="overhead_cableSizeSqmm"
+                value={formData.overhead_cableSizeSqmm}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-900"
+              />
+              <CorrectiveRadio
+                groupName="overhead_cableSize_correct"
+                label=""
+                currentValue={formData.overhead_cableSize_correct}
+                currentNote={formData.overhead_cableSize_note}
+                onStatusChange={handleRadioChange}
+                onNoteChange={handleChange}
+              />
+            </div>
             <CorrectiveRadio
               groupName="overhead_poleCondition_correct"
               label="2.1.3 สภาพเสาและระยะห่าง"
@@ -385,13 +481,30 @@ export default function CondoInspectionForm() {
           <div className="pl-4 border-l-4 border-purple-300 mt-6">
               <h4 className="text-lg font-semibold mb-3 text-gray-800">2.2 ระบบจำหน่ายใต้ดิน</h4>
               <div className="space-y-4">
+                  <label htmlFor="underground_cableType" className="block text-sm font-semibold text-gray-800 mb-2">2.2.1 ชนิดสายตัวนำ:</label>
+                  <input
+                    type="text"
+                    id="underground_cableType"
+                    name="underground_cableType"
+                    value={formData.underground_cableType}
+                    onChange={handleChange}
+                    className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-900"
+                  />
                   <CorrectiveRadio
                     groupName="underground_cableType_correct"
-                    label="2.2.1 ชนิดสายตัวนำ"
                     currentValue={formData.underground_cableType_correct}
                     currentNote={formData.underground_cableType_note}
                     onStatusChange={handleRadioChange}
                     onNoteChange={handleChange}
+                  />
+                  <label htmlFor="underground_cableSizeSqmm" className="block text-sm font-semibold text-gray-800 mb-2">2.2.2 ขนาดสายตัวนำ (ตร.มม.):</label>
+                  <input
+                    type="text"
+                    id="underground_cableSizeSqmm"
+                    name="underground_cableSizeSqmm"
+                    value={formData.underground_cableSizeSqmm}
+                    onChange={handleChange}
+                    className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-900"
                   />
                   <CorrectiveRadio
                     groupName="underground_cableSize_correct"
@@ -444,31 +557,611 @@ export default function CondoInspectionForm() {
               </div>
           </div>
 
-          <div className="pl-4 border-l-4 border-purple-300 mt-6">
-              <h4 className="text-lg font-semibold mb-3 text-gray-800">2.3 การติดตั้งเครื่องปลดวงจรต้นทาง</h4>
-              <div className="space-y-3">
-                <label className="flex items-center"><input type="radio" name="disconnectingDeviceType" value="dropout-fuse-cutout" checked={formData.disconnectingDeviceType === 'dropout-fuse-cutout'} onChange={handleChange} className="form-radio h-5 w-5 text-purple-600"/><span className="ml-2 text-sm text-gray-700">ดรอพเอาท์ฟิวส์คัตเอาท์</span></label>
-                <label className="flex items-center"><input type="radio" name="disconnectingDeviceType" value="switch-disconnect" checked={formData.disconnectingDeviceType === 'switch-disconnect'} onChange={handleChange} className="form-radio h-5 w-5 text-purple-600"/><span className="ml-2 text-sm text-gray-700">สวิตช์ตัดตอน ชนิด:</span>{formData.disconnectingDeviceType === 'switch-disconnect' && (<input type="text" name="disconnectingDeviceSwitchType" value={formData.disconnectingDeviceSwitchType} onChange={handleChange} className="ml-2 p-1 border rounded-md text-sm w-40 border-gray-300 text-gray-700"/>)}</label>
-                <label className="flex items-center"><input type="radio" name="disconnectingDeviceType" value="rmu" checked={formData.disconnectingDeviceType === 'rmu'} onChange={handleChange} className="form-radio h-5 w-5 text-purple-600"/><span className="ml-2 text-sm text-gray-700">RMU (ไม่รวมฟังก์ชั่น)</span></label>
-              </div>
-              <CorrectiveRadio groupName="disconnectingDeviceStatus" label="" currentValue={formData.disconnectingDeviceStatus} currentNote={formData.disconnectingDeviceNote} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-              <div className="mt-2"><label htmlFor="hvDistributionOther" className="text-sm font-medium">อื่นๆ:</label><input type="text" id="hvDistributionOther" name="hvDistributionOther" value={formData.hvDistributionOther} onChange={handleChange} className="mt-1 block w-full p-2 border rounded-md text-sm"/></div>
-          </div>
+{/* --- 2.3 การติดตั้งเครื่องปลดวงจรต้นทาง --- */}
+<div className="pl-4 border-l-4 border-purple-300 mt-6">
+    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.3 การติดตั้งเครื่องปลดวงจรต้นทาง</h4>
+    <div className="space-y-3">
+        
+        {/* สร้าง Checkbox สำหรับแต่ละตัวเลือก */}
+        {[
+            'ดรอพเอาท์ฟิวส์คัตเอาท์',
+            'สวิตช์ตัดตอน',
+            'RMU (ไม่รวมฟังก์ชั่น)'
+        ].map((device) => (
+            <label key={device} className="flex items-center">
+                <input
+                    type="checkbox"
+                    name="disconnectingDeviceType"
+                    value={device}
+                    // ตรวจสอบว่าค่านี้มีอยู่ใน array หรือไม่
+                    checked={formData.disconnectingDeviceType.includes(device)}
+                    // เรียกใช้ handler ใหม่
+                    onChange={handleDeviceTypeChange}
+                    className="form-checkbox h-5 w-5 text-purple-600 rounded border-gray-300"
+                />
+                <span className="ml-2 text-sm text-gray-700">{device}</span>
+
+                {/* แสดงช่อง input ถ้าเป็น 'สวิตช์ตัดตอน' และถูกเลือก */}
+                {device === 'สวิตช์ตัดตอน' && formData.disconnectingDeviceType.includes('สวิตช์ตัดตอน') && (
+                     <div className="flex items-center ml-2">
+                        <span className="text-sm mr-2">ชนิด:</span>
+                        <input
+                            type="text"
+                            name="disconnectingDeviceSwitchType"
+                            value={formData.disconnectingDeviceSwitchType}
+                            onChange={handleChange} // ใช้ handleChange ปกติ
+                            className="p-1 border rounded-md text-sm w-40 border-gray-300"
+                        />
+                    </div>
+                )}
+            </label>
+        ))}
+
+    </div>
+    
+    {/* ผลการตรวจสอบและอื่นๆ */}
+    <CorrectiveRadio 
+        groupName="disconnectingDeviceStatus" 
+        label="" 
+        currentValue={formData.disconnectingDeviceStatus} 
+        currentNote={formData.disconnectingDeviceNote} 
+        onStatusChange={handleRadioChange} 
+        onNoteChange={handleChange}
+    />
+    <div className="mt-2">
+        <label htmlFor="hvDistributionOther" className="text-sm font-medium">อื่นๆ:</label>
+        <input 
+            type="text" 
+            id="hvDistributionOther" 
+            name="hvDistributionOther" 
+            value={formData.hvDistributionOther} 
+            onChange={handleChange} 
+            className="mt-1 block w-full p-2 border rounded-md text-sm"
+        />
+    </div>
+</div>
 
           <div className="mt-6"><h3 className="text-xl font-semibold mb-3 text-[#3a1a5b] mt-6">หม้อแปลง</h3></div>
 
           <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b] mt-6">ระบบจำหน่ายแรงต่ำ</h3>
           <div className="pl-4 border-l-4 border-purple-300 space-y-6">
-              <div><h4 className="text-lg font-semibold mb-3 text-gray-800">2.14 สายตัวนำประธานแรงต่ำ</h4><CorrectiveRadio groupName="lvMainCable_standard_correct" label="2.14.1 สายไฟฟ้าเป็นไปตามมาตรฐาน" currentValue={formData.lvMainCable_standard_correct} currentNote={formData.lvMainCable_standard_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/><CorrectiveRadio groupName="lvMainCable_type_size_correct" label="2.14.2 ชนิดและขนาดของสายไฟฟ้า" currentValue={formData.lvMainCable_type_size_correct} currentNote={formData.lvMainCable_type_size_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/><CorrectiveRadio groupName="lvMainCable_wiring_correct" label="2.14.3 วิธีการเดินสาย" currentValue={formData.lvMainCable_wiring_correct} currentNote={formData.lvMainCable_wiring_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/></div>
-              <div><h4 className="text-lg font-semibold mb-3 text-gray-800">2.15 เครื่องปลดวงจรและเครื่องป้องกันกระแสเกิน</h4><CorrectiveRadio groupName="mainBreaker_correct" label="ผลการตรวจสอบ" currentValue={formData.mainBreaker_correct} currentNote={formData.mainBreaker_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/></div>
-              <div><h4 className="text-lg font-semibold mb-3 text-gray-800">2.16 การต่อลงดินของแผงเมนสวิตช์</h4><CorrectiveRadio groupName="mainGrounding_conductorSize_correct" label="2.16.1 ขนาดสายต่อหลักดิน" currentValue={formData.mainGrounding_conductorSize_correct} currentNote={formData.mainGrounding_conductorSize_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/><CorrectiveRadio groupName="mainGrounding_resistance_correct" label="2.16.2 ค่าความต้านทาน" currentValue={formData.mainGrounding_resistance_correct} currentNote={formData.mainGrounding_resistance_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/><CorrectiveRadio groupName="mainGrounding_testPoint_correct" label="2.16.3 จุดทดสอบ" currentValue={formData.mainGrounding_testPoint_correct} currentNote={formData.mainGrounding_testPoint_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/><CorrectiveRadio groupName="mainGrounding_bus_correct" label="2.16.4 การติดตั้งขั้วต่อ" currentValue={formData.mainGrounding_bus_correct} currentNote={formData.mainGrounding_bus_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/></div>
-              <div><h4 className="text-lg font-semibold mb-3 text-gray-800">2.17 แผงจ่ายไฟประจำชั้น</h4><CorrectiveRadio groupName="floorPanel_breakerStandard_correct" label="2.17.1 มาตรฐานเบรกเกอร์" currentValue={formData.floorPanel_breakerStandard_correct} currentNote={formData.floorPanel_breakerStandard_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/><CorrectiveRadio groupName="floorPanel_breakerSize_correct" label="2.17.2 ขนาดเบรกเกอร์" currentValue={formData.floorPanel_breakerSize_correct} currentNote={formData.floorPanel_breakerSize_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/><CorrectiveRadio groupName="floorPanel_groundBus_correct" label="2.17.3 ขั้วต่อสายดิน" currentValue={formData.floorPanel_groundBus_correct} currentNote={formData.floorPanel_groundBus_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/></div>
-              <div><h4 className="text-lg font-semibold mb-3 text-gray-800">2.18 เบรกเกอร์ด้านไฟเข้ามิเตอร์</h4><CorrectiveRadio groupName="meterBreaker_size_correct" label="ขนาดสอดคล้องกับมิเตอร์" currentValue={formData.meterBreaker_size_correct} currentNote={formData.meterBreaker_size_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/></div>
-              <div><h4 className="text-lg font-semibold mb-3 text-gray-800">2.19 สายตัวนำประธานเข้าห้องชุด</h4><CorrectiveRadio groupName="roomFeeder_standard_correct" label="ผลการตรวจสอบ" currentValue={formData.roomFeeder_standard_correct} currentNote={formData.roomFeeder_standard_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/></div>
-              <div><h4 className="text-lg font-semibold mb-3 text-gray-800">2.20 แผงจ่ายไฟในห้องชุด</h4><CorrectiveRadio groupName="roomPanel_breakerStandard_correct" label="2.20.1 มาตรฐานเบรกเกอร์" currentValue={formData.roomPanel_breakerStandard_correct} currentNote={formData.roomPanel_breakerStandard_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/><CorrectiveRadio groupName="roomPanel_breakerMeterMatch_correct" label="2.20.2 ขนาดเบรกเกอร์" currentValue={formData.roomPanel_breakerMeterMatch_correct} currentNote={formData.roomPanel_breakerMeterMatch_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/><CorrectiveRadio groupName="roomPanel_icRating_correct" label="2.20.3 พิกัด IC" currentValue={formData.roomPanel_icRating_correct} currentNote={formData.roomPanel_icRating_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/></div>
-              <div><h4 className="text-lg font-semibold mb-3 text-gray-800">2.21 ขั้วต่อสายดินในห้องชุด</h4><CorrectiveRadio groupName="roomPanel_groundBus_correct" label="สำหรับต่ออุปกรณ์" currentValue={formData.roomPanel_groundBus_correct} currentNote={formData.roomPanel_groundBus_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/></div>
-              <div className="mt-4"><label htmlFor="lvSystem_other_note" className="text-lg font-semibold text-gray-800">2.22 อื่นๆ</label><textarea id="lvSystem_other_note" name="lvSystem_other_note" value={formData.lvSystem_other_note} onChange={handleChange} rows="3" className="mt-1 block w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"></textarea></div>
-          </div>
+              <div><h4 className="text-lg font-semibold mb-3 text-gray-800">2.14 สายตัวนำประธานแรงต่ำ</h4>
+              <CorrectiveRadio groupName="lvMainCable_standard_correct" 
+                label="2.14.1 สายไฟฟ้าเป็นไปตามมาตรฐานมอก.11-2553, มอก. 293-2541 หรือ IEC 60502" 
+                currentValue={formData.lvMainCable_standard_correct} 
+                currentNote={formData.lvMainCable_standard_note} 
+                onStatusChange={handleRadioChange} onNoteChange={handleChange}
+              />
+              {/* 2.14.2 ชนิดและขนาดของสายไฟฟ้า */}
+              <div className="border-b border-gray-200 pb-4 mb-6">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">2.14.2 ชนิดและขนาดของสายไฟฟ้า</label>
+                
+                {/* ส่วนของ "ชนิด" */}
+                <div className="mt-2 space-y-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">ชนิด:</label>
+                    <div className="flex flex-wrap gap-x-6 gap-y-2">
+                        <label className="inline-flex items-center text-gray-700">
+                            <input
+                                type="radio"
+                                name="lvMainCable_type"
+                                value="IEC 01"
+                                checked={formData.lvMainCable_type === 'IEC 01'}
+                                onChange={handleChange}
+                                className="form-radio h-5 w-5 text-gray-800"
+                            />
+                            <span className="ml-2 text-sm">IEC 01</span>
+                        </label>
+                        <label className="inline-flex items-center text-gray-700">
+                            <input
+                                type="radio"
+                                name="lvMainCable_type"
+                                value="NYY"
+                                checked={formData.lvMainCable_type === 'NYY'}
+                                onChange={handleChange}
+                                className="form-radio h-5 w-5 text-gray-800"
+                            />
+                            <span className="ml-2 text-sm">NYY</span>
+                        </label>
+                        <label className="inline-flex items-center text-gray-700">
+                            <input
+                                type="radio"
+                                name="lvMainCable_type"
+                                value="CV"
+                                checked={formData.lvMainCable_type === 'CV'}
+                                onChange={handleChange}
+                                className="form-radio h-5 w-5 text-gray-800"
+                            />
+                            <span className="ml-2 text-sm">CV</span>
+                        </label>
+                        <label className="inline-flex items-center text-gray-700">
+                            <input
+                                type="radio"
+                                name="lvMainCable_type"
+                                value="อื่นๆ"
+                                checked={formData.lvMainCable_type === 'อื่นๆ'}
+                                onChange={handleChange}
+                                className="form-radio h-5 w-5 text-gray-800"
+                            />
+                             <span className="ml-2 text-sm">อื่นๆ:</span>
+                            {formData.lvMainCable_type === 'อื่นๆ' && (
+                                <input
+                                    type="text"
+                                    name="lvMainCable_other_type"
+                                    value={formData.lvMainCable_other_type}
+                                    onChange={handleChange}
+                                    className="ml-2 p-1 border rounded-md text-sm w-32 border-gray-300"
+                                    placeholder="ระบุชนิด"
+                                />
+                            )}
+                        </label>
+                    </div>
+                </div>
+
+                <div className="mt-4">
+                    <label htmlFor="lvMainCable_size" 
+                    className="block text-sm font-medium text-gray-700 mb-2">ขนาด (ตร.มม.):</label>
+                    <input
+                        type="number"
+                        step="any"
+                        id="lvMainCable_size"
+                        name="lvMainCable_size"
+                        value={formData.lvMainCable_size}
+                        onChange={handleChange}
+                        className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-900"
+                        placeholder="ระบุขนาดสาย"
+                    />
+                </div>
+
+                <CorrectiveRadio
+                    groupName="lvMainCable_type_size_correct"
+                    label=""
+                    currentValue={formData.lvMainCable_type_size_correct}
+                    currentNote={formData.lvMainCable_type_size_note}
+                    onStatusChange={handleRadioChange}
+                    onNoteChange={handleChange}
+                />;
+              </div>
+              {/* 2.14.3 วิธีการเดินสายไฟฟ้า */}
+              <div className="border-b border-gray-200 pb-4 mb-6">
+                  <label className="block text-sm font-semibold text-gray-800 mb-3">2.14.3 วิธีการเดินสายไฟฟ้า:</label>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3">
+                      
+                      {/* สร้าง Checkbox สำหรับแต่ละตัวเลือกโดยอัตโนมัติ */}
+                      {[
+                          'บนลูกถ้วยฉนวนในอากาศ', 
+                          'ท่อร้อยสาย (Conduit)', 
+                          'รางเดินสาย (Wire Way)', 
+                          'รางเคเบิล (Cable Tray)', 
+                          'บัสเวย์ (Bus Way)', 
+                          'เดินฝังใต้ดิน'
+                      ].map((method) => (
+                          <label key={method} className="inline-flex items-center">
+                              <input
+                                  type="checkbox"
+                                  name="lvMainCable_wiring_method"
+                                  value={method}
+                                  checked={formData.lvMainCable_wiring_method.includes(method)}
+                                  onChange={handleWiringMethodChange}
+                                  className="form-checkbox h-5 w-5 text-purple-600 rounded border-gray-300 focus:ring-purple-500"
+                              />
+                              <span className="ml-2 text-sm text-gray-700">{method}</span>
+                          </label>
+                      ))}
+
+                      {/* ตัวเลือก "อื่นๆ" */}
+                      <label className="inline-flex items-center">
+                          <input
+                              type="checkbox"
+                              name="lvMainCable_wiring_method"
+                              value="อื่นๆ"
+                              checked={formData.lvMainCable_wiring_method.includes('อื่นๆ')}
+                              onChange={handleWiringMethodChange}
+                              className="form-checkbox h-5 w-5 text-purple-600 rounded border-gray-300 focus:ring-purple-500"
+                          />
+                          <span className="ml-2 text-sm text-gray-700">อื่นๆ:</span>
+                      </label>
+                  </div>
+
+                  {/* ช่องใส่ข้อความสำหรับ "อื่นๆ" จะแสดงเมื่อถูกเลือก */}
+                  {formData.lvMainCable_wiring_method.includes('อื่นๆ') && (
+                      <div className="mt-3">
+                          <input
+                              type="text"
+                              name="lvMainCable_wiring_note" // ใช้ฟิลด์ note สำหรับเก็บค่า
+                              value={formData.lvMainCable_wiring_note || ''}
+                              onChange={handleChange} // ใช้ handleChange ปกติจาก useFormManager
+                              className="mt-1 block w-full p-2 border rounded-md text-sm border-gray-300 shadow-sm"
+                              placeholder="โปรดระบุวิธีการเดินสายอื่นๆ"
+                          />
+                      </div>
+                  )}
+
+                  {/* ผลการตรวจสอบ */}
+                  <CorrectiveRadio
+                      groupName="lvMainCable_wiring_correct"
+                      label=""
+                      currentValue={formData.lvMainCable_wiring_correct}
+                      currentNote={formData.lvMainCable_wiring_note} // หมายเหตุจะใช้ร่วมกับช่องอื่นๆ
+                      onStatusChange={handleRadioChange}
+                      onNoteChange={handleChange}
+                  />
+              </div>
+             {/* --- 2.15 เครื่องปลดวงจรและเครื่องป้องกันกระแสเกินที่แผงเมนสวิตช์ของอาคาร --- */}
+<div className="border-b border-gray-200 pb-4 mb-6">
+    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.15 เครื่องปลดวงจรและเครื่องป้องกันกระแสเกินที่แผงเมนสวิตช์ของอาคาร</h4>
+
+    <div className="space-y-3 mb-4">
+        {/* --- ตัวเลือกชนิด --- */}
+        <label className="block text-sm font-medium text-gray-700 mb-2">ชนิด:</label>
+        <div className="flex flex-col space-y-2">
+            <label className="inline-flex items-center">
+                <input
+                    type="radio"
+                    name="mainBreaker_type"
+                    value="เซอร์กิตเบรกเกอร์ ตามมาตรฐาน IEC60947-2"
+                    checked={formData.mainBreaker_type === "เซอร์กิตเบรกเกอร์ ตามมาตรฐาน IEC60947-2"}
+                    onChange={handleChange}
+                    className="form-radio h-5 w-5 text-purple-600"
+                />
+                <span className="ml-2 text-sm text-gray-700">เซอร์กิตเบรกเกอร์ ตามมาตรฐาน IEC60947-2</span>
+            </label>
+            <label className="inline-flex items-center">
+                <input
+                    type="radio"
+                    name="mainBreaker_type"
+                    value="สวิตช์พร้อมฟิวส์"
+                    checked={formData.mainBreaker_type === "สวิตช์พร้อมฟิวส์"}
+                    onChange={handleChange}
+                    className="form-radio h-5 w-5 text-purple-600"
+                />
+                <span className="ml-2 text-sm text-gray-700">สวิตช์พร้อมฟิวส์</span>
+            </label>
+            <label className="inline-flex items-center">
+                <input
+                    type="radio"
+                    name="mainBreaker_type"
+                    value="อื่นๆ"
+                    checked={formData.mainBreaker_type === "อื่นๆ"}
+                    onChange={handleChange}
+                    className="form-radio h-5 w-5 text-purple-600"
+                />
+                <span className="ml-2 text-sm text-gray-700">อื่นๆ:</span>
+                {formData.mainBreaker_type === "อื่นๆ" && (
+                    <input
+                        type="text"
+                        name="mainBreaker_standard" // ใช้ฟิลด์ standard เก็บค่า "อื่นๆ"
+                        value={formData.mainBreaker_standard || ''}
+                        onChange={handleChange}
+                        className="ml-2 p-1 border rounded-md text-sm w-40 border-gray-300"
+                        placeholder="ระบุมาตรฐานอื่นๆ"
+                    />
+                )}
+            </label>
+        </div>
+    </div>
+
+    {/* --- Input fields for details --- */}
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+        <div>
+            <label htmlFor="mainBreaker_in" className="block text-xs font-medium text-gray-600">In (A):</label>
+            <input type="number" name="mainBreaker_in" value={formData.mainBreaker_in} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
+        </div>
+        <div>
+            <label htmlFor="mainBreaker_ic" className="block text-xs font-medium text-gray-600">IC (kA):</label>
+            <input type="number" name="mainBreaker_ic" value={formData.mainBreaker_ic} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
+        </div>
+        <div>
+            <label htmlFor="mainBreaker_voltage" className="block text-xs font-medium text-gray-600">แรงดัน (V):</label>
+            <input type="number" name="mainBreaker_voltage" value={formData.mainBreaker_voltage} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-600"/>
+        </div>
+        <div>
+            <label htmlFor="mainBreaker_at" className="block text-xs font-medium text-gray-600">AT (A):</label>
+            <input type="number" name="mainBreaker_at" value={formData.mainBreaker_at} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
+        </div>
+        <div>
+            <label htmlFor="mainBreaker_af" className="block text-xs font-medium text-gray-600">AF (A):</label>
+            <input type="number" name="mainBreaker_af" value={formData.mainBreaker_af} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
+        </div>
+    </div>
+    {/* --- ผลการตรวจสอบ --- */}
+    <CorrectiveRadio
+        groupName="mainBreaker_correct"
+        label="ผลการตรวจสอบ:"
+        currentValue={formData.mainBreaker_correct}
+        currentNote={formData.mainBreaker_note}
+        onStatusChange={handleRadioChange}
+        onNoteChange={handleChange}
+    />
+</div>
+
+              {/* --- 2.16 การต่อลงดินของแผงเมนสวิตช์ของอาคาร --- */}
+<div className="border-b border-gray-200 pb-4 mb-6">
+    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.16 การต่อลงดินของแผงเมนสวิตช์ของอาคาร</h4>
+    <div className="space-y-4">
+        
+        {/* 2.16.1 ขนาดสายต่อหลักดิน */}
+        <div className="border-b border-gray-200 pb-4">
+            <label htmlFor="mainGrounding_conductorSize_sqmm" className="block text-sm font-semibold text-gray-800 mb-2">2.16.1 ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายตัวนำประธาน</label>
+            <div className="mt-1">
+                 <label htmlFor="mainGrounding_conductorSize_sqmm" className="block text-sm font-medium text-gray-700 mb-2">ขนาดสายต่อหลักดิน (ตร.มม.):</label>
+                <input
+                    type="number"
+                    step="any"
+                    id="mainGrounding_conductorSize_sqmm"
+                    name="mainGrounding_conductorSize_sqmm"
+                    value={formData.mainGrounding_conductorSize_sqmm}
+                    onChange={handleChange}
+                    className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-900"
+                    placeholder="ระบุขนาด"
+                />
+            </div>
+            <CorrectiveRadio
+                groupName="mainGrounding_conductorSize_correct"
+                label=""
+                currentValue={formData.mainGrounding_conductorSize_correct}
+                currentNote={formData.mainGrounding_conductorSize_note}
+                onStatusChange={handleRadioChange}
+                onNoteChange={handleChange}
+            />
+        </div>
+
+        {/* 2.16.2 ค่าความต้านทาน */}
+        <CorrectiveRadio
+            groupName="mainGrounding_resistance_correct"
+            label="2.16.2 ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม (มีข้อยกเว้น)"
+            currentValue={formData.mainGrounding_resistance_correct}
+            currentNote={formData.mainGrounding_resistance_note}
+            onStatusChange={handleRadioChange}
+            onNoteChange={handleChange}
+        />
+
+        {/* 2.16.3 จุดทดสอบ */}
+        <CorrectiveRadio
+            groupName="mainGrounding_testPoint_correct"
+            label="2.16.3 ต้องทำจุดทดสอบ สำหรับใช้วัดค่าความต้านทานการต่อลงดิน"
+            currentValue={formData.mainGrounding_testPoint_correct}
+            currentNote={formData.mainGrounding_testPoint_note}
+            onStatusChange={handleRadioChange}
+            onNoteChange={handleChange}
+        />
+
+        {/* 2.16.4 ขั้วต่อสายดิน */}
+        <CorrectiveRadio
+            groupName="mainGrounding_bus_correct"
+            label="2.16.4 แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) ตามที่ กฟภ. กำหนด"
+            currentValue={formData.mainGrounding_bus_correct}
+            currentNote={formData.mainGrounding_bus_note}
+            onStatusChange={handleRadioChange}
+            onNoteChange={handleChange}
+        />
+    </div>
+</div>
+              {/* --- 2.17 แผงจ่ายไฟประจำชั้น (Floor Panel) --- */}
+<div className="border-b border-gray-200 pb-4 mb-6">
+    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.17 แผงจ่ายไฟประจำชั้น (Floor Panel)</h4>
+    <div className="space-y-4">
+
+        {/* 2.17.1 มาตรฐานเซอร์กิตเบรกเกอร์ */}
+        <CorrectiveRadio
+            groupName="floorPanel_breakerStandard_correct"
+            label="2.17.1 เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898 หรือ มอก. 909-2548"
+            currentValue={formData.floorPanel_breakerStandard_correct}
+            currentNote={formData.floorPanel_breakerStandard_note}
+            onStatusChange={handleRadioChange}
+            onNoteChange={handleChange}
+        />
+
+        {/* 2.17.2 ขนาดเซอร์กิตเบรกเกอร์ */}
+        <div className="border-b border-gray-200 pb-4">
+            <label className="block text-sm font-semibold text-gray-800 mb-2">2.17.2 ขนาดเซอร์กิตเบรกเกอร์สอดคล้องกับขนาดสายป้อน</label>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+                <div>
+                    <label htmlFor="floorPanel_breaker_at" className="block text-xs font-medium text-gray-600">AT (A):</label>
+                    <input type="number" name="floorPanel_breaker_at" value={formData.floorPanel_breaker_at} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-gray-600 border-gray-600"/>
+                </div>
+                <div>
+                    <label htmlFor="floorPanel_breaker_af" className="block text-xs font-medium text-gray-600">AF (A):</label>
+                    <input type="number" name="floorPanel_breaker_af" value={formData.floorPanel_breaker_af} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-gray-600 border-gray-600"/>
+                </div>
+                <div>
+                    <label htmlFor="floorPanel_breaker_ic" className="block text-xs font-medium text-gray-600">IC (kA):</label>
+                    <input type="number" name="floorPanel_breaker_ic" value={formData.floorPanel_breaker_ic} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-gray-600 border-gray-600"/>
+                </div>
+            </div>
+
+            <CorrectiveRadio
+                groupName="floorPanel_breakerSize_correct"
+                label=""
+                currentValue={formData.floorPanel_breakerSize_correct}
+                currentNote={formData.floorPanel_breakerSize_note}
+                onStatusChange={handleRadioChange}
+                onNoteChange={handleChange}
+            />
+        </div>
+
+        {/* 2.17.3 ขั้วต่อสายดิน */}
+        <CorrectiveRadio
+            groupName="floorPanel_groundBus_correct"
+            label="2.17.3 แผงจ่ายไฟประจำชั้นต้องมีขั้วต่อสายดิน (Ground Bus) แยกจากขั้วต่อสายนิวทรัล (Neutral Bus)"
+            currentValue={formData.floorPanel_groundBus_correct}
+            currentNote={formData.floorPanel_groundBus_note}
+            onStatusChange={handleRadioChange}
+            onNoteChange={handleChange}
+        />
+    </div>
+</div>
+             {/* --- 2.18 เซอร์กิตเบรกเกอร์ด้านไฟเข้าของมิเตอร์ --- */}
+<div className="border-b border-gray-200 pb-4 mb-6">
+    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.18 เซอร์กิตเบรกเกอร์ด้านไฟเข้าของมิเตอร์</h4>
+    <div className="border-b border-gray-200 pb-4">
+        <label className="block text-sm font-semibold text-gray-800 mb-2">มีขนาดสอดคล้องกับขนาดมิเตอร์</label>
+        
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+            <div>
+                <label htmlFor="meterBreaker_at" className="block text-xs font-medium text-gray-600">AT (A):</label>
+                <input type="number" 
+                name="meterBreaker_at" 
+                value={formData.meterBreaker_at} 
+                onChange={handleChange} 
+                className="mt-1 w-full p-2 border rounded-md text-gray-600"/>
+            </div>
+            <div>
+                <label htmlFor="meterBreaker_af" className="block text-xs font-medium text-gray-600">AF (A):</label>
+                <input type="number" name="meterBreaker_af" 
+                value={formData.meterBreaker_af} onChange={handleChange} 
+                className="mt-1 w-full p-2 border rounded-md text-gray-600"/>
+            </div>
+        </div>
+
+        <CorrectiveRadio
+            groupName="meterBreaker_size_correct"
+            label=""
+            currentValue={formData.meterBreaker_size_correct}
+            currentNote={formData.meterBreaker_size_note}
+            onStatusChange={handleRadioChange}
+            onNoteChange={handleChange}
+        />
+    </div>
+</div>
+
+{/* --- 2.19 สายตัวนำประธานเข้าห้องชุด --- */}
+<div className="border-b border-gray-200 pb-4 mb-6">
+    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.19 สายตัวนำประธานเข้าห้องชุด</h4>
+    <CorrectiveRadio
+        groupName="roomFeeder_standard_correct"
+        label="สายไฟฟ้าเป็นไปตามมาตรฐาน มอก.11-2553 หรือ IEC 60502"
+        currentValue={formData.roomFeeder_standard_correct}
+        currentNote={formData.roomFeeder_standard_note}
+        onStatusChange={handleRadioChange}
+        onNoteChange={handleChange}
+    />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-3">
+        <div>
+            <label htmlFor="roomFeeder_type" className="block text-xs font-medium text-gray-600">ชนิด:</label>
+            <input type="text" 
+            name="roomFeeder_type" 
+            value={formData.roomFeeder_type} 
+            onChange={handleChange} 
+            className="mt-1 w-full p-2 border rounded-md border-gray-600 text-gray-600"/>
+        </div>
+        <div>
+            <label htmlFor="roomFeeder_size" className="block text-xs font-medium text-gray-600">ขนาด (ตร.มม.):</label>
+            <input type="number" 
+            name="roomFeeder_size" 
+            value={formData.roomFeeder_size} 
+            onChange={handleChange} 
+            className="mt-1 w-full p-2 border rounded-md border-gray-600 text-gray-600"/>
+        </div>
+    </div>
+    <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2">
+        <label className="inline-flex items-center">
+            <input type="checkbox" name="roomFeeder_wiring" 
+            value="ท่อร้อยสาย" checked={formData.roomFeeder_wiring.includes('ท่อร้อยสาย')} 
+            onChange={handleWiringMethodChange} className="form-checkbox h-5 w-5"/>
+            <span className="ml-2 text-sm text-gray-700">เดินในท่อร้อยสาย</span>
+        </label>
+        <label className="inline-flex items-center">
+            <input type="checkbox" name="roomFeeder_wiring" 
+            value="รางเดินสาย" 
+            checked={formData.roomFeeder_wiring.includes('รางเดินสาย')} 
+            onChange={handleWiringMethodChange} 
+            className="form-checkbox h-5 w-5"/>
+            <span className="ml-2 text-sm text-gray-700">เดินในรางเดินสาย</span>
+        </label>
+        <label className="inline-flex items-center">
+            <input type="checkbox" name="roomFeeder_wiring" 
+            value="อื่นๆ" 
+            checked={formData.roomFeeder_wiring.includes('อื่นๆ')} 
+            onChange={handleWiringMethodChange} 
+            className="form-checkbox h-5 w-5"/>
+            <span className="ml-2 text-sm text-gray-700">อื่นๆ</span>
+        </label>
+    </div>
+</div>
+
+{/* --- 2.20 แผงจ่ายไฟในห้องชุด --- */}
+<div className="border-b border-gray-200 pb-4 mb-6">
+    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.20 แผงจ่ายไฟในห้องชุด</h4>
+    <CorrectiveRadio
+        groupName="roomPanel_breakerStandard_correct"
+        label="2.20.1 เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898"
+        currentValue={formData.roomPanel_breakerStandard_correct}
+        currentNote={formData.roomPanel_breakerStandard_note}
+        onStatusChange={handleRadioChange}
+        onNoteChange={handleChange}
+    />
+    <div className="border-t border-b border-gray-200 py-4 my-4">
+        <label className="block text-sm font-semibold text-gray-800 mb-2">2.20.2 เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์</label>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+            <div>
+                <label htmlFor="roomPanel_breaker_at" className="block text-xs font-medium text-gray-600">AT (A):</label>
+                <input type="number" 
+                name="roomPanel_breaker_at" 
+                value={formData.roomPanel_breaker_at} 
+                onChange={handleChange} 
+                className="mt-1 w-full p-2 border rounded-md border-gray-600 text-gray-700"/>
+            </div>
+            <div>
+                <label htmlFor="roomPanel_breaker_af" className="block text-xs font-medium text-gray-600">AF (A):</label>
+                <input type="number" 
+                name="roomPanel_breaker_af" 
+                value={formData.roomPanel_breaker_af} 
+                onChange={handleChange} 
+                className="mt-1 w-full p-2 border rounded-md border-gray-600 text-gray-700"/>
+            </div>
+        </div>
+        <CorrectiveRadio
+            groupName="roomPanel_breakerMeterMatch_correct"
+            label=""
+            currentValue={formData.roomPanel_breakerMeterMatch_correct}
+            currentNote={formData.roomPanel_breakerMeterMatch_note}
+            onStatusChange={handleRadioChange}
+            onNoteChange={handleChange}
+            className="mt-4 text-sm font-semibold text-gray-800"
+        />
+    </div>
+    <CorrectiveRadio
+        groupName="roomPanel_icRating_correct"
+        label="2.20.3 พิกัดตัดกระแสลัดวงจร (IC) ไม่ต่ำกว่า 10 kA"
+        currentValue={formData.roomPanel_icRating_correct}
+        currentNote={formData.roomPanel_icRating_note}
+        onStatusChange={handleRadioChange}
+        onNoteChange={handleChange}
+        className="mb-4 text-sm font-semibold text-gray-800"
+    />
+</div>
+
+{/* --- 2.21 แผงจ่ายไฟในห้องชุดต้องมีขั้วต่อสายดิน --- */}
+<div className="border-b border-gray-200 pb-4 mb-6">
+    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.21 แผงจ่ายไฟในห้องชุดต้องมีขั้วต่อสายดิน (Ground Bus)</h4>
+    <CorrectiveRadio
+        groupName="roomPanel_groundBus_correct"
+        label="สำหรับต่อกับอุปกรณ์และเครื่องใช้ไฟฟ้า"
+        currentValue={formData.roomPanel_groundBus_correct}
+        currentNote={formData.roomPanel_groundBus_note}
+        onStatusChange={handleRadioChange}
+        onNoteChange={handleChange}
+        className="mb-4 text-sm font-semibold text-gray-800"
+    />
+</div>
+
+{/* --- 2.22 อื่นๆ --- */}
+<div className="mt-4">
+    <label htmlFor="lvSystem_other_note" className="text-lg font-semibold text-gray-800">2.22 อื่นๆ</label>
+    <textarea
+        id="lvSystem_other_note"
+        name="lvSystem_other_note"
+        value={formData.lvSystem_other_note}
+        onChange={handleChange}
+        rows="3"
+        className="mt-1 block w-full p-2 border rounded-md text-sm border-gray-300 shadow-sm text-gray-700"
+        placeholder="รายละเอียดเพิ่มเติม..."
+    ></textarea>
+</div>
+      </div>
+    </div>
       </section>
 
       {/* --- สรุปและลงนาม --- */}
