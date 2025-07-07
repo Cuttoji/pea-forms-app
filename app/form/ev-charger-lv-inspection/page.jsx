@@ -1,56 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
-// ส่วนประกอบเสริมสำหรับปุ่มตัวเลือก "ถูกต้อง" / "ต้องแก้ไข"
-// ส่วนประกอบนี้จะแสดงป้ายกำกับ, ปุ่มตัวเลือกสำหรับ "ถูกต้อง" และ "ต้องแก้ไข",
-// และช่องข้อความเสริมสำหรับบันทึกเพิ่มเติมหากเลือก "ต้องแก้ไข"
-const CorrectiveRadio = ({ groupName, label, currentValue, currentNote, onStatusChange, onNoteChange }) => {
-  const noteFieldName = `${groupName}_note`; // สร้างชื่อสำหรับช่องบันทึกที่เกี่ยวข้อง
-  return (
-    <div className="border-b border-gray-200 pb-4 mb-4">
-      {/* ป้ายกำกับสำหรับกลุ่มปุ่มตัวเลือก */}
-      <label className="block text-gray-700 text-sm font-bold mb-2">{label}</label>
-      <div className="flex flex-wrap gap-4 mt-2">
-        {/* ตัวเลือก "ถูกต้อง" */}
-        <label className="inline-flex items-center text-gray-800">
-          <input
-            type="radio"
-            name={groupName} // ชื่อกลุ่มเพื่อเชื่อมโยงปุ่มตัวเลือก
-            value="ถูกต้อง" // ค่าเมื่อเลือกตัวเลือกนี้
-            checked={currentValue === 'ถูกต้อง'} // ตรวจสอบว่าตัวเลือกนี้ถูกเลือกอยู่หรือไม่
-            onChange={() => onStatusChange(groupName, 'ถูกต้อง', noteFieldName)} // จัดการการอัปเดตสถานะเมื่อมีการเปลี่ยนแปลง
-            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" // คลาส Tailwind สำหรับการจัดรูปแบบ (ขนาดและการโฟกัส)
-          />
-          <span className="ml-3">ถูกต้อง</span> {/* ป้ายข้อความสำหรับปุ่มตัวเลือก */}
-        </label>
-        {/* ตัวเลือก "ต้องแก้ไข" */}
-        <label className="inline-flex items-center text-gray-800">
-          <input
-            type="radio"
-            name={groupName}
-            value="ต้องแก้ไข"
-            checked={currentValue === 'ต้องแก้ไข'}
-            onChange={() => onStatusChange(groupName, 'ต้องแก้ไข', noteFieldName)}
-            className="text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" // คลาส Tailwind สำหรับการจัดรูปแบบ (ขนาดและการโฟกัส)
-          />
-          <span className="ml-3">ต้องแก้ไข</span> {/* ป้ายข้อความสำหรับปุ่มตัวเลือก */}
-        </label>
-      </div>
-      {/* การแสดงผลแบบมีเงื่อนไขสำหรับช่องบันทึก */}
-      {currentValue === 'ต้องแก้ไข' && (
-        <input
-          type="text"
-          name={noteFieldName} // ชื่อสำหรับช่องบันทึก
-          className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-400 focus:border-transparent mt-2"
-          value={currentNote} // ค่าปัจจุบันของบันทึก
-          onChange={onNoteChange} // จัดการการอัปเดตสถานะสำหรับบันทึก
-          placeholder="โปรดระบุรายละเอียด" // ข้อความตัวยึด
-        />
-      )}
-    </div>
-  );
-};
+import React, { useState, useEffect, useRef } from "react";
+import { useSearchParams, useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
+import SignaturePad from "@/components/forms/SignaturePad";
+import ImageUpload from "@/components/forms/ImageUpload";
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { toast } from "react-hot-toast";
+import { Download, Save } from "lucide-react";
+import dynamic from 'next/dynamic';
+import { useFormManager } from "@/lib/hooks/useFormManager"; 
 
 
 export default function ElectricityInspectionForm() {
@@ -511,6 +471,16 @@ export default function ElectricityInspectionForm() {
     inspectorSignature: "",
   });
 
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { formId } = searchParams; // ดึง formId จากพารามิเตอร์ URL
+  const { saveForm, loadForm } = useFormManager(); // ใช้ hook สำหรับจัดการฟอร์ม
+  const [isLoading, setIsLoading] = useState(false); // สถานะการโหลดสำหรับการบันทึกฟอร์ม
+  // useRef สำหรับเก็บข้อมูลฟอร์มก่อนหน้า
+  const previousFormDataRef = useRef(null);
+  const userSigRef = useRef(null);
+  const inspectorSigRef = useRef(null);
+
   // จัดการการเปลี่ยนแปลงสำหรับช่องป้อนข้อมูลทั้งหมด (ข้อความ, ตัวเลข, เลือก, ตัวเลือก, กล่องกาเครื่องหมาย)
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -553,7 +523,7 @@ export default function ElectricityInspectionForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 bg-gray-100 min-h-screen font-sans">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
       {/* ชื่อฟอร์มหลัก */}
       <h2 className="text-3xl font-extrabold mb-8 text-center text-[#5b2d90]">
         การไฟฟ้าส่วนภูมิภาค
@@ -564,7 +534,7 @@ export default function ElectricityInspectionForm() {
       </h2>
 
       {/* ส่วนข้อมูลส่วนหัว */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           ข้อมูลส่วนหัว
         </h2>
@@ -643,7 +613,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* 1. ส่วนข้อมูลทั่วไป */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           1. ข้อมูลทั่วไป
         </h2>
@@ -809,7 +779,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* 2. ส่วนเอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           2. เอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
         </h2>
@@ -992,7 +962,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* ส่วนมาตรฐานอ้างอิง */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           การตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าอ้างอิงแบบมาตรฐาน ดังนี้
         </h2>
@@ -1009,7 +979,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* 3. ส่วนระบบไฟฟ้าแรงต่ำ */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
         <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
           3. ระบบไฟฟ้าแรงต่ำ
         </h2>
@@ -1291,8 +1261,8 @@ export default function ElectricityInspectionForm() {
             onNoteChange={handleChange}
           />
           <div className="mb-4">
-            <label htmlFor="mainBreakerAmpRating" className="block text-sm font-medium text-gray-700 mb-1">
-              3.2.2 เมนเซอร์กิตเบรกเกอร์ขนาด AT (A):
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              3.2.2 พิกัดกระแสเมนเซอร์กิตเบรกเกอร์ (A):
             </label>
             <input
               type="number"
@@ -2932,7 +2902,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* 4. สรุปผลการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ส่วน */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
         <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">
           4. สรุปผลการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
         </h3>
@@ -2974,7 +2944,7 @@ export default function ElectricityInspectionForm() {
       </section>
 
       {/* 5. ขอบเขตและข้อจำกัดในการตรวจสอบ ส่วน */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
         <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">
           5. ขอบเขตและข้อจำกัดในการตรวจสอบ
         </h3>
@@ -2988,19 +2958,31 @@ export default function ElectricityInspectionForm() {
         ></textarea>
       </section>
 
- <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
-        <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
-        <div className="text-gray-900 text-sm mb-6 space-y-3">
-            <p>6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจนสิ่งก่อสร้างอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงอยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว</p>
-            <p>6.2 ในกรณีที่การไฟฟ้าส่วนภูมิภาคเป็นผู้ดำเนินการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการเองในภายหลัง หรืออุปกรณ์ดังกล่าวเสื่อมคุณภาพไปตามสภาพ ทางผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
-            <p>6.3 สำหรับระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าในส่วนที่การไฟฟ้าส่วนภูมิภาคไม่สามารถตรวจสอบได้ ผู้ขอใช้ไฟฟ้าต้องติดตั้งตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) หากเกิดความเสียหายผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
-            <p>6.4 หากเกิดความเสียหายใดๆ ที่เกิดจากการที่ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว (RCD) ในวงจรที่มีความเสี่ยง ผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <SignaturePad title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" ref={userSigRef} onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} onClear={() => handleSignatureClear('userSignature')}/>
-          <SignaturePad title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" ref={inspectorSigRef} onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} onClear={() => handleSignatureClear('inspectorSignature')}/>
-        </div>
-      </section>
+        <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+          <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
+          <div className="text-gray-900 text-sm mb-6 space-y-3">
+              <p>6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจนสิ่งก่อสร้างอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงอยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว</p>
+              <p>6.2 ในกรณีที่การไฟฟ้าส่วนภูมิภาคเป็นผู้ดำเนินการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการเองในภายหลัง หรืออุปกรณ์ดังกล่าวเสื่อมคุณภาพไปตามสภาพ ทางผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
+              <p>6.3 สำหรับระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าในส่วนที่การไฟฟ้าส่วนภูมิภาคไม่สามารถตรวจสอบได้ ผู้ขอใช้ไฟฟ้าต้องติดตั้งตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) หากเกิดความเสียหายผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
+              <p>6.4 หากเกิดความเสียหายใดๆ ที่เกิดจากการที่ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว (RCD) ในวงจรที่มีความเสี่ยง ผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <SignaturePad 
+              title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" 
+              ref={userSigRef}
+              onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} 
+              onClear={() => handleSignatureClear('userSignature')}
+              initialValue={formData.userSignature}
+            />
+            <SignaturePad 
+              title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" 
+              ref={inspectorSigRef} 
+              onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} 
+              onClear={() => handleSignatureClear('inspectorSignature')}
+              initialValue={formData.inspectorSignature}
+            />
+          </div>
+        </section>
 
       {/* ปุ่มส่งข้อมูล */}
       <div className="flex justify-center mt-10">

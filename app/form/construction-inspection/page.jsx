@@ -282,14 +282,14 @@ export default function construction_inspection() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto my-8">
+        <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
             <h2 className="text-3xl font-extrabold mb-8 text-center text-[#5b2d90]">
                 การไฟฟ้าส่วนภูมิภาค
                 <br />
                 แบบฟอร์มตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจำหน่าย ของ กฟภ.
             </h2>
 
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     ข้อมูลส่วนหัว
                 </h2>
@@ -457,7 +457,7 @@ export default function construction_inspection() {
             </section>
 
             {/* 1. ระบบจำหน่ายแรงสูง (High Voltage Distribution System) */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     1. ระบบจำหน่ายแรงสูง
                 </h2>
@@ -664,7 +664,7 @@ export default function construction_inspection() {
             </section>
 
             {/* 2. ระบบจำหน่ายแรงต่ำ (Low Voltage Distribution System) */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     2. ระบบจำหน่ายแรงต่ำ
                 </h2>
@@ -852,7 +852,7 @@ export default function construction_inspection() {
             </section>
 
             {/* 3. การติดตั้งหม้อแปลง (Transformer Installation) */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     3. การติดตั้งหม้อแปลง
                 </h2>
@@ -1058,7 +1058,7 @@ export default function construction_inspection() {
             </section>
 
             {/* Inspection Summary Section */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     ผลการตรวจสอบ
                 </h2>
@@ -1111,7 +1111,7 @@ export default function construction_inspection() {
             </section>
 
             {/* Signatures Section */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-50">
+            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
                 <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
                     ลายเซ็น
                 </h2>

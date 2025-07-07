@@ -424,7 +424,7 @@ export default function EvChargerHvForm() {
 
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto my-8">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
       <h2 className="text-2xl font-bold mb-6 text-center text-[#5b2d90]">
         แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
         <br />

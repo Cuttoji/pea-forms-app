@@ -1,12 +1,19 @@
 "use client";
 
-import React, { useRef } from "react";
-import { useFormManager } from "@/lib/hooks/useFormManager";
+import React, { useState, useEffect, useRef } from "react";
+import { useSearchParams, useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
+import ImageUpload from "@/components/forms/ImageUpload";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import CondoInspectionPDF from '@/components/forms/CondoInspectionPDF';
+import InspectionPDF from '@/components/forms/InspectionPDF';
 import { Download, Save } from "lucide-react";
+import dynamic from 'next/dynamic';
+import { useFormManager } from "@/lib/hooks/useFormManager"; 
+import { toast } from "react-hot-toast";
+import CondoInspectionPDF from "@/components/forms/CondoInspectionPDF";
+
 
 // --- ค่าเริ่มต้นของข้อมูลในฟอร์มสำหรับอาคารชุด ---
 const initialFormData = {
