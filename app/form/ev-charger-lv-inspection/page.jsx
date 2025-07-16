@@ -626,7 +626,7 @@ export default function ElectricityInspectionForm() {
                 name="isIndividualApplicant" // สมมติว่าเป็นกล่องกาเครื่องหมายเพื่อเลือกระหว่างบุคคลธรรมดาหรือนิติบุคคล
                 // checked={formData.isIndividualApplicant}
                 // onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">ชื่อ-นามสกุล ผู้ขอใช้ไฟฟ้า (นาย/นาง/นางสาว):</span>
             </label>
@@ -661,7 +661,7 @@ export default function ElectricityInspectionForm() {
                 name="isCorporateApplicant" // สมมติว่าเป็นกล่องกาเครื่องหมายเพื่อเลือกระหว่างบุคคลธรรมดาหรือนิติบุคคล
                 // checked={formData.isCorporateApplicant}
                 // onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">ชื่อนิติบุคคล ที่ขอใช้ไฟฟ้า:</span>
             </label>
@@ -715,7 +715,7 @@ export default function ElectricityInspectionForm() {
                   value="3_phase"
                   checked={formData.systemType === '3_phase'}
                   onChange={handleChange}
-                  className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+                  className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
                 />
                 <span className="ml-3">3 เฟส (400/230 โวลต์)</span>
               </label>
@@ -726,7 +726,7 @@ export default function ElectricityInspectionForm() {
                   value="1_phase"
                   checked={formData.systemType === '1_phase'}
                   onChange={handleChange}
-                  className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+                  className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
                 />
                 <span className="ml-3">1 เฟส (230 โวลต์)</span>
               </label>
@@ -796,7 +796,7 @@ export default function ElectricityInspectionForm() {
                 name="personal_specSheetChecked"
                 checked={formData.personal_specSheetChecked}
                 onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">สเปคอุปกรณ์ (Specification) หรือ Data Sheet ของเครื่องอัดประจุยานยนต์ไฟฟ้า ที่แสดงรายละเอียดข้อมูลทั่วไปและอุปกรณ์ป้องกันต่างๆ</span>
             </label>
@@ -806,7 +806,7 @@ export default function ElectricityInspectionForm() {
                 name="personal_singleLineDiagramChecked"
                 checked={formData.personal_singleLineDiagramChecked}
                 onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">แผนผังระบบไฟฟ้า (Single Line Diagram) (ถ้ามี)</span>
             </label>
@@ -816,7 +816,7 @@ export default function ElectricityInspectionForm() {
                 name="personal_loadScheduleChecked"
                 checked={formData.personal_loadScheduleChecked}
                 onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">ตารางโหลด (Load Schedule) (ถ้ามี)</span>
             </label>
@@ -829,7 +829,7 @@ export default function ElectricityInspectionForm() {
                 value="ครบถ้วน"
                 checked={formData.personal_documentsComplete === 'ครบถ้วน'}
                 onChange={handleChange}
-                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
               />
               <span className="ml-3">ครบถ้วน</span>
             </label>
@@ -840,7 +840,7 @@ export default function ElectricityInspectionForm() {
                 value="ไม่ครบถ้วน"
                 checked={formData.personal_documentsComplete === 'ไม่ครบถ้วน'}
                 onChange={handleChange}
-                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
               />
               <span className="ml-3">ไม่ครบถ้วน</span>
             </label>
@@ -869,7 +869,7 @@ export default function ElectricityInspectionForm() {
                 name="public_singleLineDiagramChecked"
                 checked={formData.public_singleLineDiagramChecked}
                 onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">แผนผังระบบไฟฟ้า (Single Line Diagram) ระบุพิกัดของอุปกรณ์ต่างๆ วิธีการเดินสาย รายละเอียดท่อร้อยสาย รวมถึงระบบต่อลงดิน อย่างครบถ้วน โดยมีวิศวกรที่ได้รับใบอนุญาตประกอบวิชาชีพจากสภาวิศวกรลงนามรับรอง</span>
             </label>
@@ -879,7 +879,7 @@ export default function ElectricityInspectionForm() {
                 name="public_asBuiltDrawingChecked"
                 checked={formData.public_asBuiltDrawingChecked}
                 onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">แบบติดตั้งระบบไฟฟ้า (As-built Drawing) ที่มีวิศวกรที่ได้รับใบอนุญาตประกอบวิชาชีพจากสภาวิศวกรลงนามรับรอง</span>
             </label>
@@ -889,7 +889,7 @@ export default function ElectricityInspectionForm() {
                 name="public_loadScheduleCalculationChecked"
                 checked={formData.public_loadScheduleCalculationChecked}
                 onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">ตารางโหลด (Load Schedule) และรายการคำนวณทางไฟฟ้า ที่มีวิศวกรที่ได้รับใบอนุญาตประกอบวิชาชีพจากสภาวิศวกรลงนามรับรอง</span>
             </label>
@@ -899,7 +899,7 @@ export default function ElectricityInspectionForm() {
                 name="public_engineerLicenseCopyChecked"
                 checked={formData.public_engineerLicenseCopyChecked}
                 onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">สำเนาใบอนุญาตการประกอบวิชาชีพวิศวกรรมไฟฟ้า</span>
             </label>
@@ -909,7 +909,7 @@ export default function ElectricityInspectionForm() {
                 name="public_specSheetChecked"
                 checked={formData.public_specSheetChecked}
                 onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">สเปคอุปกรณ์ (Specification) หรือ Data Sheet ของเครื่องอัดประจุยานยนต์ไฟฟ้า ที่แสดงรายละเอียดข้อมูลทั่วไปและอุปกรณ์ป้องกันต่างๆ</span>
             </label>
@@ -919,7 +919,7 @@ export default function ElectricityInspectionForm() {
                 name="public_notificationLicenseChecked"
                 checked={formData.public_notificationLicenseChecked}
                 onChange={handleChange}
-                className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
+                className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">หนังสือจดแจ้ง (พิกัดน้อยกว่า 1,000 kVA) หรือใบอนุญาต (พิกัดตั้งแต่ 1,000 kVA ขึ้นไป) เพื่อประกอบกิจการสถานีอัดประจุยานยนต์ไฟฟ้าจากสำนักงานกำกับกิจการพลังงาน (สกพ.)</span>
             </label>
@@ -932,7 +932,7 @@ export default function ElectricityInspectionForm() {
                 value="ครบถ้วน"
                 checked={formData.public_documentsComplete === 'ครบถ้วน'}
                 onChange={handleChange}
-                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
               />
               <span className="ml-3">ครบถ้วน</span>
             </label>
@@ -943,7 +943,7 @@ export default function ElectricityInspectionForm() {
                 value="ไม่ครบถ้วน"
                 checked={formData.public_documentsComplete === 'ไม่ครบถ้วน'}
                 onChange={handleChange}
-                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
               />
               <span className="ml-3">ไม่ครบถ้วน</span>
             </label>
@@ -997,15 +997,15 @@ export default function ElectricityInspectionForm() {
               </label>
               <div className="flex flex-wrap gap-4 mt-2">
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="mainCableStandard" value="มอก. 11-2553" checked={formData.mainCableStandard === 'มอก. 11-2553'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="mainCableStandard" value="มอก. 11-2553" checked={formData.mainCableStandard === 'มอก. 11-2553'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">มอก. 11-2553</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="mainCableStandard" value="มอก. 293-2541" checked={formData.mainCableStandard === 'มอก. 293-2541'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="mainCableStandard" value="มอก. 293-2541" checked={formData.mainCableStandard === 'มอก. 293-2541'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">มอก. 293-2541</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="mainCableStandard" value="IEC 60502" checked={formData.mainCableStandard === 'IEC 60502'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="mainCableStandard" value="IEC 60502" checked={formData.mainCableStandard === 'IEC 60502'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">IEC 60502</span>
                 </label>
               </div>
@@ -1026,19 +1026,19 @@ export default function ElectricityInspectionForm() {
               </label>
               <div className="flex flex-wrap gap-4 mt-2">
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="mainCableType" value="IEC01" checked={formData.mainCableType === 'IEC01'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="mainCableType" value="IEC01" checked={formData.mainCableType === 'IEC01'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">IEC01</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="mainCableType" value="NYY" checked={formData.mainCableType === 'NYY'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="mainCableType" value="NYY" checked={formData.mainCableType === 'NYY'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">NYY</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="mainCableType" value="CV" checked={formData.mainCableType === 'CV'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="mainCableType" value="CV" checked={formData.mainCableType === 'CV'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">CV</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="mainCableType" value="อื่นๆ" checked={formData.mainCableType === 'อื่นๆ'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="mainCableType" value="อื่นๆ" checked={formData.mainCableType === 'อื่นๆ'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">อื่นๆ</span>
                 </label>
                 {formData.mainCableType === 'อื่นๆ' && (
@@ -1131,11 +1131,11 @@ export default function ElectricityInspectionForm() {
               </label>
               <div className="mt-2 space-y-3">
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="mainWiringMethodOverhead" checked={formData.mainWiringMethodOverhead} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="mainWiringMethodOverhead" checked={formData.mainWiringMethodOverhead} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินสายบนลูกถ้วยฉนวนในอากาศ</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="mainWiringMethodCableTray" checked={formData.mainWiringMethodCableTray} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="mainWiringMethodCableTray" checked={formData.mainWiringMethodCableTray} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินบนรางเคเบิล (Cable Tray) ขนาด</span>
                   {formData.mainWiringMethodCableTray && (
                     <>
@@ -1147,11 +1147,11 @@ export default function ElectricityInspectionForm() {
                   )}
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="mainWiringMethodDirectBurial" checked={formData.mainWiringMethodDirectBurial} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="mainWiringMethodDirectBurial" checked={formData.mainWiringMethodDirectBurial} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินสายฝังดินโดยตรง (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="mainWiringMethodConduitBurial" checked={formData.mainWiringMethodConduitBurial} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="mainWiringMethodConduitBurial" checked={formData.mainWiringMethodConduitBurial} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินสายร้อยท่อฝังดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้) โดยใช้ ท่อร้อยสายขนาด</span>
                   {formData.mainWiringMethodConduitBurial && (
                     <>
@@ -1161,7 +1161,7 @@ export default function ElectricityInspectionForm() {
                   )}
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="mainWiringMethodConduitWall" checked={formData.mainWiringMethodConduitWall} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="mainWiringMethodConduitWall" checked={formData.mainWiringMethodConduitWall} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินร้อยท่อเกาะผนัง โดยใช้ท่อร้อยสายขนาด</span>
                   {formData.mainWiringMethodConduitWall && (
                     <>
@@ -1171,7 +1171,7 @@ export default function ElectricityInspectionForm() {
                   )}
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="mainWiringMethodOther" checked={formData.mainWiringMethodOther} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="mainWiringMethodOther" checked={formData.mainWiringMethodOther} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">อื่นๆ ระบุ</span>
                   {formData.mainWiringMethodOther && (
                     <input type="text" name="mainWiringMethodOtherText" value={formData.mainWiringMethodOtherText} onChange={handleChange} className="shadow-sm appearance-none border border-gray-300 rounded-md py-1 px-2 text-gray-800 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent ml-2 w-32" placeholder="ระบุ" />
@@ -1200,35 +1200,35 @@ export default function ElectricityInspectionForm() {
                 <p className="text-gray-800 font-bold">ท่อโลหะ</p>
                 <div className="flex flex-wrap gap-4 ml-4">
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="mainConduitTypeRMC" checked={formData.mainConduitTypeRMC} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="mainConduitTypeRMC" checked={formData.mainConduitTypeRMC} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">หนา (RMC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="mainConduitTypeIMC" checked={formData.mainConduitTypeIMC} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="mainConduitTypeIMC" checked={formData.mainConduitTypeIMC} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">หนาปานกลาง (IMC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="mainConduitTypeEMT" checked={formData.mainConduitTypeEMT} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="mainConduitTypeEMT" checked={formData.mainConduitTypeEMT} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">บาง (EMT)</span>
                   </label>
                 </div>
                 <p className="text-gray-800 font-bold mt-2">ท่ออโลหะ</p>
                 <div className="flex flex-wrap gap-4 ml-4">
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="mainConduitTypeRNC" checked={formData.mainConduitTypeRNC} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="mainConduitTypeRNC" checked={formData.mainConduitTypeRNC} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">แข็ง (RNC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="mainConduitTypeENT" checked={formData.mainConduitTypeENT} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="mainConduitTypeENT" checked={formData.mainConduitTypeENT} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">อ่อน (ENT)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="mainConduitTypeFlexibleMetal" checked={formData.mainConduitTypeFlexibleMetal} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="mainConduitTypeFlexibleMetal" checked={formData.mainConduitTypeFlexibleMetal} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">ท่อโลหะอ่อน (Flexible Metal Conduit)</span>
                   </label>
                 </div>
                 <label className="inline-flex items-center text-gray-800 mt-2">
-                  <input type="checkbox" name="mainConduitTypeOther" checked={formData.mainConduitTypeOther} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="mainConduitTypeOther" checked={formData.mainConduitTypeOther} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">อื่นๆ ระบุ</span>
                   {formData.mainConduitTypeOther && (
                     <input type="text" name="mainConduitTypeOtherText" value={formData.mainConduitTypeOtherText} onChange={handleChange} className="shadow-sm appearance-none border border-gray-300 rounded-md py-1 px-2 text-gray-800 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent ml-2 w-32" placeholder="ระบุ" />
@@ -1349,7 +1349,7 @@ export default function ElectricityInspectionForm() {
                   value="ถูกต้อง"
                   checked={formData.mainGrounding1Phase_correct === 'ถูกต้อง'}
                   onChange={handleChange}
-                  className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+                  className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
                 />
                 <span className="ml-3">กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และต่อสายนิวทรัล (Neutral Wire) ของตัวนำประธาน (Main Conductor) เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน (Main Circuit Breaker) ตามที่การไฟฟ้าส่วนภูมิภาค กำหนด</span>
               </label>
@@ -1360,7 +1360,7 @@ export default function ElectricityInspectionForm() {
                   value="ถูกต้อง"
                   checked={formData.mainGrounding3Phase_correct === 'ถูกต้อง'}
                   onChange={handleChange}
-                  className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+                  className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
                 />
                 <span className="ml-3">กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายดินบริภัณฑ์ ภายในแผงเมนสวิตช์ ตามที่การไฟฟ้าส่วนภูมิภาค กำหนด</span>
               </label>
@@ -1391,15 +1391,15 @@ export default function ElectricityInspectionForm() {
           </h3>
           <div className="flex flex-wrap gap-4 mt-2 mb-4">
             <label className="inline-flex items-center text-gray-800">
-              <input type="radio" name="groundingSystemType" value="TN-C-S" checked={formData.groundingSystemType === 'TN-C-S'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+              <input type="radio" name="groundingSystemType" value="TN-C-S" checked={formData.groundingSystemType === 'TN-C-S'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
               <span className="ml-3">TN-C-S ทั้งระบบ</span>
             </label>
             <label className="inline-flex items-center text-gray-800">
-              <input type="radio" name="groundingSystemType" value="TT" checked={formData.groundingSystemType === 'TT'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+              <input type="radio" name="groundingSystemType" value="TT" checked={formData.groundingSystemType === 'TT'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
               <span className="ml-3">TT ทั้งระบบ</span>
             </label>
             <label className="inline-flex items-center text-gray-800">
-              <input type="radio" name="groundingSystemType" value="TT_partial" checked={formData.groundingSystemType === 'TT_partial'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+              <input type="radio" name="groundingSystemType" value="TT_partial" checked={formData.groundingSystemType === 'TT_partial'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
               <span className="ml-3">TT บางส่วน (ต้นทางเป็น TN-C-S และ โหลดเป็น TT)</span>
             </label>
           </div>
@@ -1436,7 +1436,7 @@ export default function ElectricityInspectionForm() {
                   />
                 </div>
                 <label className="inline-flex items-center text-gray-800 block mb-2">
-                  <input type="checkbox" name="tncs_overUnderVoltageProtection" checked={formData.tncs_overUnderVoltageProtection} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="tncs_overUnderVoltageProtection" checked={formData.tncs_overUnderVoltageProtection} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">ติดตั้งระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกินเพิ่มเติม ในตำแหน่งก่อนเข้าเครื่องอัดประจุยานยนต์ไฟฟ้า</span>
                 </label>
                 <CorrectiveRadio
@@ -1448,7 +1448,7 @@ export default function ElectricityInspectionForm() {
                   onNoteChange={handleChange}
                 />
                 <label className="inline-flex items-center text-gray-800 block mb-2">
-                  <input type="checkbox" name="tncs_evChargerBuiltInProtection" checked={formData.tncs_evChargerBuiltInProtection} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="tncs_evChargerBuiltInProtection" checked={formData.tncs_evChargerBuiltInProtection} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">มีระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกิน ติดตั้งมาภายในเครื่องอัดประจุยานยนต์ไฟฟ้าแล้ว</span>
                 </label>
                 <CorrectiveRadio
@@ -1460,7 +1460,7 @@ export default function ElectricityInspectionForm() {
                   onNoteChange={handleChange}
                 />
                 <label className="inline-flex items-center text-gray-800 block">
-                  <input type="checkbox" name="tncs_touchVoltageProtection" checked={formData.tncs_touchVoltageProtection} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="tncs_touchVoltageProtection" checked={formData.tncs_touchVoltageProtection} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">ติดตั้งอุปกรณ์ป้องกันแรงดันไฟฟ้าสัมผัส (Touch Voltage) ที่โครงบริภัณฑ์เทียบกับดินเกิน 70 โวลต์ ซึ่งอุปกรณ์ดังกล่าวใช้สำหรับปลดวงจรการอัดประจุไฟฟ้า โดยสามารถตัดกระแสไฟฟ้าทุกเส้น รวมถึงสายนิวทรัลและสายดิน ออกพร้อมกันภายในเวลา 5 วินาที</span>
                 </label>
                 <CorrectiveRadio
@@ -1480,7 +1480,7 @@ export default function ElectricityInspectionForm() {
               <h4 className="text-lg font-semibold mb-3 text-[#3a1a5b]">3.4.2 กรณีต่อลงดินแบบ TT ทั้งระบบ (ต้องดำเนินการครบทั้ง ก) และ ข))</h4>
               <div className="space-y-3">
                 <label className="inline-flex items-center text-gray-800 block mb-2">
-                  <input type="checkbox" name="tt_rcdAllCircuits" checked={formData.tt_rcdAllCircuits} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="tt_rcdAllCircuits" checked={formData.tt_rcdAllCircuits} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">ก) ติดตั้งเครื่องตัดไฟรั่ว (RCD) ทุกวงจรไฟฟ้าที่จ่ายไฟ หรือทุกเครื่องใช้ไฟฟ้า ไม่ว่าจะเกี่ยวข้องกับการอัดประจุยานยนต์ไฟฟ้าหรือไม่ก็ตาม</span>
                 </label>
                 <CorrectiveRadio
@@ -1492,7 +1492,7 @@ export default function ElectricityInspectionForm() {
                   onNoteChange={handleChange}
                 />
                 <label className="inline-flex items-center text-gray-800 block">
-                  <input type="checkbox" name="tt_overUnderVoltageProtection" checked={formData.tt_overUnderVoltageProtection} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="tt_overUnderVoltageProtection" checked={formData.tt_overUnderVoltageProtection} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">ข) ติดตั้งระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกิน สำหรับวงจรที่จ่ายไฟให้เครื่องอัดประจุยานยนต์ไฟฟ้า หรือมีระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกินที่ติดตั้งมาภายในเครื่องอัดประจุยานยนต์ไฟฟ้าแล้ว</span>
                 </label>
                 <CorrectiveRadio
@@ -1513,7 +1513,7 @@ export default function ElectricityInspectionForm() {
               <h5 className="text-base font-semibold mb-2 text-gray-700">3.4.3.1 มาตรการที่ต้องดำเนินการให้ครบทุกข้อ (ก – ค)</h5>
               <div className="space-y-3 mb-4">
                 <label className="inline-flex items-center text-gray-800 block mb-2">
-                  <input type="checkbox" name="ttPartial_riskAssessment" checked={formData.ttPartial_riskAssessment} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="ttPartial_riskAssessment" checked={formData.ttPartial_riskAssessment} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">ก) มีการประเมินความเสี่ยงก่อนว่า ไม่มีโอกาสที่บุคคลจะสัมผัสโครงบริภัณฑ์ไฟฟ้าอื่นที่ต่อลงดินแบบ TN-C-S กับโครงบริภัณฑ์จ่ายไฟยานยนต์ไฟฟ้า หรือโครงยานยนต์ไฟฟ้าที่ต่อลงดินแบบ TT โดยพร้อมกัน หรือมีระยะห่างไม่น้อยกว่า 2.50 เมตร สามารถใช้การห่อหุ้มหรือกั้นได้</span>
                 </label>
                 <CorrectiveRadio
@@ -1525,7 +1525,7 @@ export default function ElectricityInspectionForm() {
                   onNoteChange={handleChange}
                 />
                 <label className="inline-flex items-center text-gray-800 block mb-2">
-                  <input type="checkbox" name="ttPartial_groundDistance" checked={formData.ttPartial_groundDistance} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="ttPartial_groundDistance" checked={formData.ttPartial_groundDistance} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">ข) ระยะห่างระหว่างหลักดินของระบบ TN-C-S กับระบบ TT ต้องห่างกันอย่างน้อย 2.00 เมตร</span>
                 </label>
                 <CorrectiveRadio
@@ -1537,7 +1537,7 @@ export default function ElectricityInspectionForm() {
                   onNoteChange={handleChange}
                 />
                 <label className="inline-flex items-center text-gray-800 block">
-                  <input type="checkbox" name="ttPartial_warningSign" checked={formData.ttPartial_warningSign} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="ttPartial_warningSign" checked={formData.ttPartial_warningSign} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">ค) มีการติดตั้งป้ายแสดงข้อความเตือนบริเวณเครื่องอัดประจุยานยนต์ไฟฟ้า ตามที่การไฟฟ้าส่วนภูมิภาค กำหนด</span>
                 </label>
                 <CorrectiveRadio
@@ -1579,7 +1579,7 @@ export default function ElectricityInspectionForm() {
                   />
                 </div>
                 <label className="inline-flex items-center text-gray-800 block mb-2">
-                  <input type="checkbox" name="ttPartial_overUnderVoltageProtection" checked={formData.ttPartial_overUnderVoltageProtection} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="ttPartial_overUnderVoltageProtection" checked={formData.ttPartial_overUnderVoltageProtection} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">ติดตั้งระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกินเพิ่มเติม ในตำแหน่งก่อนเข้าเครื่องอัดประจุยานยนต์ไฟฟ้า</span>
                 </label>
                 <CorrectiveRadio
@@ -1591,7 +1591,7 @@ export default function ElectricityInspectionForm() {
                   onNoteChange={handleChange}
                 />
                 <label className="inline-flex items-center text-gray-800 block mb-2">
-                  <input type="checkbox" name="ttPartial_evChargerBuiltInProtection" checked={formData.ttPartial_evChargerBuiltInProtection} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="ttPartial_evChargerBuiltInProtection" checked={formData.ttPartial_evChargerBuiltInProtection} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">มีระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกิน ติดตั้งมาภายในเครื่องอัดประจุยานยนต์ไฟฟ้าแล้ว</span>
                 </label>
                 <CorrectiveRadio
@@ -1603,7 +1603,7 @@ export default function ElectricityInspectionForm() {
                   onNoteChange={handleChange}
                 />
                 <label className="inline-flex items-center text-gray-800 block">
-                  <input type="checkbox" name="ttPartial_touchVoltageProtection" checked={formData.ttPartial_touchVoltageProtection} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="ttPartial_touchVoltageProtection" checked={formData.ttPartial_touchVoltageProtection} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">ติดตั้งอุปกรณ์ป้องกันแรงดันไฟฟ้าสัมผัส (Touch Voltage) ที่โครงบริภัณฑ์เทียบกับดินเกิน 70 โวลต์ ซึ่งอุปกรณ์ดังกล่าวใช้สำหรับปลดวงจรการอัดประจุไฟฟ้า โดยสามารถตัดกระแสไฟฟ้าทุกเส้น รวมถึงสายนิวทรัลและสายดิน ออกพร้อมกันภายในเวลา 5 วินาที</span>
                 </label>
                 <CorrectiveRadio
@@ -1633,15 +1633,15 @@ export default function ElectricityInspectionForm() {
               </label>
               <div className="flex flex-wrap gap-4 mt-2">
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="feederCableStandard" value="มอก. 11-2553" checked={formData.feederCableStandard === 'มอก. 11-2553'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="feederCableStandard" value="มอก. 11-2553" checked={formData.feederCableStandard === 'มอก. 11-2553'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">มอก. 11-2553</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="feederCableStandard" value="มอก. 293-2541" checked={formData.feederCableStandard === 'มอก. 293-2541'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="feederCableStandard" value="มอก. 293-2541" checked={formData.feederCableStandard === 'มอก. 293-2541'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">มอก. 293-2541</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="feederCableStandard" value="IEC 60502" checked={formData.feederCableStandard === 'IEC 60502'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="feederCableStandard" value="IEC 60502" checked={formData.feederCableStandard === 'IEC 60502'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">IEC 60502</span>
                 </label>
               </div>
@@ -1661,19 +1661,19 @@ export default function ElectricityInspectionForm() {
               </label>
               <div className="flex flex-wrap gap-4 mt-2">
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="feederCableType" value="IEC01" checked={formData.feederCableType === 'IEC01'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="feederCableType" value="IEC01" checked={formData.feederCableType === 'IEC01'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">IEC01</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="feederCableType" value="NYY" checked={formData.feederCableType === 'NYY'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="feederCableType" value="NYY" checked={formData.feederCableType === 'NYY'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">NYY</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="feederCableType" value="CV" checked={formData.feederCableType === 'CV'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="feederCableType" value="CV" checked={formData.feederCableType === 'CV'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">CV</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="feederCableType" value="อื่นๆ" checked={formData.feederCableType === 'อื่นๆ'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="feederCableType" value="อื่นๆ" checked={formData.feederCableType === 'อื่นๆ'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">อื่นๆ</span>
                 </label>
                 {formData.feederCableType === 'อื่นๆ' && (
@@ -1787,7 +1787,7 @@ export default function ElectricityInspectionForm() {
               </label>
               <div className="mt-2 space-y-3">
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="feederWiringWireway" checked={formData.feederWiringWireway} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="feederWiringWireway" checked={formData.feederWiringWireway} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินในรางเดินสาย (Wireway) ขนาด</span>
                   {formData.feederWiringWireway && (
                     <>
@@ -1808,7 +1808,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="feederWiringCableTray" checked={formData.feederWiringCableTray} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="feederWiringCableTray" checked={formData.feederWiringCableTray} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินบนรางเคเบิล (Cable Tray) ขนาด</span>
                   {formData.feederWiringCableTray && (
                     <>
@@ -1829,7 +1829,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="feederWiringBusway" checked={formData.feederWiringBusway} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="feederWiringBusway" checked={formData.feederWiringBusway} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">บัสเวย์ (Busway) หรือบัสดัก (Bus duct) ขนาด</span>
                   {formData.feederWiringBusway && (
                     <>
@@ -1850,7 +1850,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="feederWiringConduitWall" checked={formData.feederWiringConduitWall} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="feederWiringConduitWall" checked={formData.feederWiringConduitWall} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินร้อยท่อเกาะผนัง โดยใช้ท่อร้อยสายขนาด</span>
                   {formData.feederWiringConduitWall && (
                     <>
@@ -1869,7 +1869,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="feederWiringDirectBurial" checked={formData.feederWiringDirectBurial} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="feederWiringDirectBurial" checked={formData.feederWiringDirectBurial} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินสายฝังดินโดยตรง (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)</span>
                 </label>
                 <CorrectiveRadio
@@ -1882,7 +1882,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="feederWiringConduitBurial" checked={formData.feederWiringConduitBurial} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="feederWiringConduitBurial" checked={formData.feederWiringConduitBurial} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินสายร้อยท่อฝังดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้) โดยใช้ ท่อร้อยสายขนาด</span>
                   {formData.feederWiringConduitBurial && (
                     <>
@@ -1901,7 +1901,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="feederWiringOther" checked={formData.feederWiringOther} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="feederWiringOther" checked={formData.feederWiringOther} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">อื่นๆ ระบุ</span>
                   {formData.feederWiringOther && (
                     <input type="text" name="feederWiringOtherText" value={formData.feederWiringOtherText} onChange={handleChange} className="shadow-sm appearance-none border border-gray-300 rounded-md py-1 px-2 text-gray-800 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent ml-2 w-32" placeholder="ระบุ" />
@@ -1927,35 +1927,35 @@ export default function ElectricityInspectionForm() {
                 <p className="text-gray-800 font-bold">ท่อโลหะ</p>
                 <div className="flex flex-wrap gap-4 ml-4">
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="feederConduitTypeRMC" checked={formData.feederConduitTypeRMC} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="feederConduitTypeRMC" checked={formData.feederConduitTypeRMC} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">หนา (RMC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="feederConduitTypeIMC" checked={formData.feederConduitTypeIMC} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="feederConduitTypeIMC" checked={formData.feederConduitTypeIMC} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">หนาปานกลาง (IMC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="feederConduitTypeEMT" checked={formData.feederConduitTypeEMT} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="feederConduitTypeEMT" checked={formData.feederConduitTypeEMT} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">บาง (EMT)</span>
                   </label>
                 </div>
                 <p className="text-gray-800 font-bold mt-2">ท่ออโลหะ</p>
                 <div className="flex flex-wrap gap-4 ml-4">
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="feederConduitTypeRNC" checked={formData.feederConduitTypeRNC} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="feederConduitTypeRNC" checked={formData.feederConduitTypeRNC} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">แข็ง (RNC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="feederConduitTypeENT" checked={formData.feederConduitTypeENT} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="feederConduitTypeENT" checked={formData.feederConduitTypeENT} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">อ่อน (ENT)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="feederConduitTypeFlexibleMetal" checked={formData.feederConduitTypeFlexibleMetal} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="feederConduitTypeFlexibleMetal" checked={formData.feederConduitTypeFlexibleMetal} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">ท่อโลหะอ่อน (Flexible Metal Conduit)</span>
                   </label>
                 </div>
                 <label className="inline-flex items-center text-gray-800 mt-2">
-                  <input type="checkbox" name="feederConduitTypeOther" checked={formData.feederConduitTypeOther} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="feederConduitTypeOther" checked={formData.feederConduitTypeOther} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">อื่นๆ ระบุ</span>
                   {formData.feederConduitTypeOther && (
                     <input type="text" name="feederConduitTypeOtherText" value={formData.feederConduitTypeOtherText} onChange={handleChange} className="shadow-sm appearance-none border border-gray-300 rounded-md py-1 px-2 text-gray-800 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent ml-2 w-32" placeholder="ระบุ" />
@@ -2074,15 +2074,15 @@ export default function ElectricityInspectionForm() {
               </label>
               <div className="flex flex-wrap gap-4 mt-2">
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="branchCableStandard" value="มอก. 11-2553" checked={formData.branchCableStandard === 'มอก. 11-2553'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="branchCableStandard" value="มอก. 11-2553" checked={formData.branchCableStandard === 'มอก. 11-2553'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">มอก. 11-2553</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="branchCableStandard" value="มอก. 293-2541" checked={formData.branchCableStandard === 'มอก. 293-2541'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="branchCableStandard" value="มอก. 293-2541" checked={formData.branchCableStandard === 'มอก. 293-2541'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">มอก. 293-2541</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="branchCableStandard" value="IEC 60502" checked={formData.branchCableStandard === 'IEC 60502'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="branchCableStandard" value="IEC 60502" checked={formData.branchCableStandard === 'IEC 60502'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">IEC 60502</span>
                 </label>
               </div>
@@ -2102,19 +2102,19 @@ export default function ElectricityInspectionForm() {
               </label>
               <div className="flex flex-wrap gap-4 mt-2">
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="branchCableType" value="IEC01" checked={formData.branchCableType === 'IEC01'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="branchCableType" value="IEC01" checked={formData.branchCableType === 'IEC01'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">IEC01</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="branchCableType" value="NYY" checked={formData.branchCableType === 'NYY'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="branchCableType" value="NYY" checked={formData.branchCableType === 'NYY'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">NYY</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="branchCableType" value="CV" checked={formData.branchCableType === 'CV'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="branchCableType" value="CV" checked={formData.branchCableType === 'CV'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">CV</span>
                 </label>
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="radio" name="branchCableType" value="อื่นๆ" checked={formData.branchCableType === 'อื่นๆ'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                  <input type="radio" name="branchCableType" value="อื่นๆ" checked={formData.branchCableType === 'อื่นๆ'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                   <span className="ml-3">อื่นๆ</span>
                 </label>
                 {formData.branchCableType === 'อื่นๆ' && (
@@ -2228,7 +2228,7 @@ export default function ElectricityInspectionForm() {
               </label>
               <div className="mt-2 space-y-3">
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="branchWiringConduitWall" checked={formData.branchWiringConduitWall} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="branchWiringConduitWall" checked={formData.branchWiringConduitWall} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินร้อยท่อเกาะผนัง โดยใช้ท่อร้อยสายขนาด</span>
                   {formData.branchWiringConduitWall && (
                     <>
@@ -2247,7 +2247,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="branchWiringConduitBurial" checked={formData.branchWiringConduitBurial} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="branchWiringConduitBurial" checked={formData.branchWiringConduitBurial} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินสายร้อยท่อฝังดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้) โดยใช้ ท่อร้อยสายขนาด</span>
                   {formData.branchWiringConduitBurial && (
                     <>
@@ -2266,7 +2266,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="branchWiringDirectBurial" checked={formData.branchWiringDirectBurial} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="branchWiringDirectBurial" checked={formData.branchWiringDirectBurial} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินสายฝังดินโดยตรง (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)</span>
                 </label>
                 <CorrectiveRadio
@@ -2279,7 +2279,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="branchWiringWireway" checked={formData.branchWiringWireway} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="branchWiringWireway" checked={formData.branchWiringWireway} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินในรางเดินสาย (Wireway) ขนาด</span>
                   {formData.branchWiringWireway && (
                     <>
@@ -2300,7 +2300,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="branchWiringCableTray" checked={formData.branchWiringCableTray} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="branchWiringCableTray" checked={formData.branchWiringCableTray} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">เดินบนรางเคเบิล (Cable Tray) ขนาด</span>
                   {formData.branchWiringCableTray && (
                     <>
@@ -2321,7 +2321,7 @@ export default function ElectricityInspectionForm() {
                 />
 
                 <label className="inline-flex items-center text-gray-800">
-                  <input type="checkbox" name="branchWiringOther" checked={formData.branchWiringOther} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="branchWiringOther" checked={formData.branchWiringOther} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">อื่นๆ ระบุ</span>
                   {formData.branchWiringOther && (
                     <input type="text" name="branchWiringOtherText" value={formData.branchWiringOtherText} onChange={handleChange} className="shadow-sm appearance-none border border-gray-300 rounded-md py-1 px-2 text-gray-800 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent ml-2 w-32" placeholder="ระบุ" />
@@ -2350,35 +2350,35 @@ export default function ElectricityInspectionForm() {
                 <p className="text-gray-800 font-bold">ท่อโลหะ</p>
                 <div className="flex flex-wrap gap-4 ml-4">
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="branchConduitTypeRMC" checked={formData.branchConduitTypeRMC} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="branchConduitTypeRMC" checked={formData.branchConduitTypeRMC} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">หนา (RMC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="branchConduitTypeIMC" checked={formData.branchConduitTypeIMC} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="branchConduitTypeIMC" checked={formData.branchConduitTypeIMC} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">หนาปานกลาง (IMC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="branchConduitTypeEMT" checked={formData.branchConduitTypeEMT} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="branchConduitTypeEMT" checked={formData.branchConduitTypeEMT} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">บาง (EMT)</span>
                   </label>
                 </div>
                 <p className="text-gray-800 font-bold mt-2">ท่ออโลหะ</p>
                 <div className="flex flex-wrap gap-4 ml-4">
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="branchConduitTypeRNC" checked={formData.branchConduitTypeRNC} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="branchConduitTypeRNC" checked={formData.branchConduitTypeRNC} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">แข็ง (RNC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="branchConduitTypeENT" checked={formData.branchConduitTypeENT} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="branchConduitTypeENT" checked={formData.branchConduitTypeENT} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">อ่อน (ENT)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="checkbox" name="branchConduitTypeFlexibleMetal" checked={formData.branchConduitTypeFlexibleMetal} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                    <input type="checkbox" name="branchConduitTypeFlexibleMetal" checked={formData.branchConduitTypeFlexibleMetal} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                     <span className="ml-3">ท่อโลหะอ่อน (Flexible Metal Conduit)</span>
                   </label>
                 </div>
                 <label className="inline-flex items-center text-gray-800 mt-2">
-                  <input type="checkbox" name="branchConduitTypeOther" checked={formData.branchConduitTypeOther} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                  <input type="checkbox" name="branchConduitTypeOther" checked={formData.branchConduitTypeOther} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                   <span className="ml-3">อื่นๆ ระบุ</span>
                   {formData.branchConduitTypeOther && (
                     <input type="text" name="branchConduitTypeOtherText" value={formData.branchConduitTypeOtherText} onChange={handleChange} className="shadow-sm appearance-none border border-gray-300 rounded-md py-1 px-2 text-gray-800 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent ml-2 w-32" placeholder="ระบุ" />
@@ -2458,7 +2458,7 @@ export default function ElectricityInspectionForm() {
             <h4 className="text-lg font-semibold mb-2 text-gray-700">3.6.6 ต้องติดตั้งระบบป้องกันอันตรายต่อบุคคล (เลือกติดตั้งอย่างใดอย่างหนึ่ง)</h4>
             <div className="space-y-3">
               <label className="inline-flex items-center text-gray-800 block mb-2">
-                <input type="checkbox" name="personnelProtectionRCDTypeB" checked={formData.personnelProtectionRCDTypeB} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                <input type="checkbox" name="personnelProtectionRCDTypeB" checked={formData.personnelProtectionRCDTypeB} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                 <span className="ml-3">เครื่องตัดไฟรั่ว (RCD) Type B ตามมาตรฐาน มอก. 2955 หรือ IEC 62423 พิกัดกระแสรั่ว IΔN ≤ 30 มิลลิแอมแปร์ (mA) พิกัดกระแส (In)</span>
                 {formData.personnelProtectionRCDTypeB && (
                   <>
@@ -2477,7 +2477,7 @@ export default function ElectricityInspectionForm() {
               />
 
               <label className="inline-flex items-center text-gray-800 block mb-2">
-                <input type="checkbox" name="personnelProtectionRCDTypeAF_RDC_DD" checked={formData.personnelProtectionRCDTypeAF_RDC_DD} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                <input type="checkbox" name="personnelProtectionRCDTypeAF_RDC_DD" checked={formData.personnelProtectionRCDTypeAF_RDC_DD} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                 <span className="ml-3">เครื่องตัดไฟรั่ว (RCD) Type A หรือ F ร่วมกับอุปกรณ์ตัดไฟฟ้ารั่วกระแสตรง (RDC-DD) ขนาดพิกัด IΔN,DC ≥ 6 mA</span>
               </label>
               <p className="text-xs text-gray-500 mt-1 ml-9">* อุปกรณ์ RDC-DD อ้างอิงตาม IEC 62955</p>
@@ -2491,7 +2491,7 @@ export default function ElectricityInspectionForm() {
               />
 
               <label className="inline-flex items-center text-gray-800 block mb-2">
-                <input type="checkbox" name="personnelProtectionRCDTypeBBuiltIn" checked={formData.personnelProtectionRCDTypeBBuiltIn} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                <input type="checkbox" name="personnelProtectionRCDTypeBBuiltIn" checked={formData.personnelProtectionRCDTypeBBuiltIn} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                 <span className="ml-3">มีเครื่องตัดไฟรั่ว (RCD) Type B ตามมาตรฐาน มอก. 2955 หรือ IEC 62423 พิกัดกระแสรั่ว IΔN ≤ 30 มิลลิแอมแปร์ (mA) พิกัดกระแส (In)</span>
                 {formData.personnelProtectionRCDTypeBBuiltIn && (
                   <>
@@ -2510,7 +2510,7 @@ export default function ElectricityInspectionForm() {
               />
 
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="checkbox" name="personnelProtectionIsolatingTransformer" checked={formData.personnelProtectionIsolatingTransformer} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                <input type="checkbox" name="personnelProtectionIsolatingTransformer" checked={formData.personnelProtectionIsolatingTransformer} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                 <span className="ml-3">มีหม้อแปลงแยกขดลวด (Isolating Transformer) ติดตั้งมากับเครื่องอัดประจุยานยนต์ไฟฟ้า</span>
               </label>
               <CorrectiveRadio
@@ -2609,11 +2609,11 @@ export default function ElectricityInspectionForm() {
                 </label>
                 <div className="flex flex-wrap gap-4 mt-2">
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="radio" name="evChargerPhase" value="1_phase" checked={formData.evChargerPhase === '1_phase'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                    <input type="radio" name="evChargerPhase" value="1_phase" checked={formData.evChargerPhase === '1_phase'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                     <span className="ml-3">1 เฟส</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="radio" name="evChargerPhase" value="3_phase" checked={formData.evChargerPhase === '3_phase'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                    <input type="radio" name="evChargerPhase" value="3_phase" checked={formData.evChargerPhase === '3_phase'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                     <span className="ml-3">3 เฟส</span>
                   </label>
                 </div>
@@ -2642,15 +2642,15 @@ export default function ElectricityInspectionForm() {
                 </label>
                 <div className="flex flex-wrap gap-4 mt-2">
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="radio" name="evChargerChargingMode" value="โหมด 2 (AC)" checked={formData.evChargerChargingMode === 'โหมด 2 (AC)'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                    <input type="radio" name="evChargerChargingMode" value="โหมด 2 (AC)" checked={formData.evChargerChargingMode === 'โหมด 2 (AC)'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                     <span className="ml-3">โหมด 2 (AC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="radio" name="evChargerChargingMode" value="โหมด 3 (AC)" checked={formData.evChargerChargingMode === 'โหมด 3 (AC)'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                    <input type="radio" name="evChargerChargingMode" value="โหมด 3 (AC)" checked={formData.evChargerChargingMode === 'โหมด 3 (AC)'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                     <span className="ml-3">โหมด 3 (AC)</span>
                   </label>
                   <label className="inline-flex items-center text-gray-800">
-                    <input type="radio" name="evChargerChargingMode" value="โหมด 4 (DC)" checked={formData.evChargerChargingMode === 'โหมด 4 (DC)'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                    <input type="radio" name="evChargerChargingMode" value="โหมด 4 (DC)" checked={formData.evChargerChargingMode === 'โหมด 4 (DC)'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                     <span className="ml-3">โหมด 4 (DC)</span>
                   </label>
                 </div>
@@ -2670,7 +2670,7 @@ export default function ElectricityInspectionForm() {
             <h4 className="text-lg font-semibold mb-2 text-gray-700">3.7.2 ลักษณะหัวชาร์จ / การชาร์จ</h4>
             <div className="space-y-3 mb-4">
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="checkbox" name="chargerHeadACType2" checked={formData.chargerHeadACType2} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                <input type="checkbox" name="chargerHeadACType2" checked={formData.chargerHeadACType2} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                 <span className="ml-3">AC Type 2 พิกัดกระแส</span>
                 {formData.chargerHeadACType2 && (
                   <>
@@ -2684,7 +2684,7 @@ export default function ElectricityInspectionForm() {
                 )}
               </label>
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="checkbox" name="chargerHeadDCCHAdeMO" checked={formData.chargerHeadDCCHAdeMO} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                <input type="checkbox" name="chargerHeadDCCHAdeMO" checked={formData.chargerHeadDCCHAdeMO} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                 <span className="ml-3">DC CHAdeMO พิกัดกระแส</span>
                 {formData.chargerHeadDCCHAdeMO && (
                   <>
@@ -2698,7 +2698,7 @@ export default function ElectricityInspectionForm() {
                 )}
               </label>
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="checkbox" name="chargerHeadDCCCS" checked={formData.chargerHeadDCCCS} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                <input type="checkbox" name="chargerHeadDCCCS" checked={formData.chargerHeadDCCCS} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                 <span className="ml-3">DC CCS พิกัดกระแส</span>
                 {formData.chargerHeadDCCCS && (
                   <>
@@ -2712,7 +2712,7 @@ export default function ElectricityInspectionForm() {
                 )}
               </label>
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="checkbox" name="chargerHeadOther" checked={formData.chargerHeadOther} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                <input type="checkbox" name="chargerHeadOther" checked={formData.chargerHeadOther} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                 <span className="ml-3">อื่นๆ ระบุ</span>
                 {formData.chargerHeadOther && (
                   <>
@@ -2728,7 +2728,7 @@ export default function ElectricityInspectionForm() {
                 )}
               </label>
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="checkbox" name="chargerHeadSimultaneousCount" checked={formData.chargerHeadSimultaneousCount} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                <input type="checkbox" name="chargerHeadSimultaneousCount" checked={formData.chargerHeadSimultaneousCount} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                 <span className="ml-3">หัวชาร์จสามารถชาร์จได้พร้อมกัน</span>
                 {formData.chargerHeadSimultaneousCount && (
                   <>
@@ -2871,29 +2871,29 @@ export default function ElectricityInspectionForm() {
             <h4 className="text-lg font-semibold mb-2 text-gray-700">3.7.6 ข้อแนะนำในการป้องกันเครื่องอัดประจุยานยนต์ไฟฟ้า</h4>
             <div className="space-y-3">
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="radio" name="chargerProtectionCollision" value="ติดตั้งแล้ว" checked={formData.chargerProtectionCollision === 'ติดตั้งแล้ว'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                <input type="radio" name="chargerProtectionCollision" value="ติดตั้งแล้ว" checked={formData.chargerProtectionCollision === 'ติดตั้งแล้ว'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                 <span className="ml-3">มีการป้องกันความเสียหายของเครื่องอัดประจุไฟฟ้าจากการชนของยานยนต์</span>
               </label>
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="radio" name="chargerProtectionCollision" value="ยังไม่ติดตั้ง" checked={formData.chargerProtectionCollision === 'ยังไม่ติดตั้ง'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                <input type="radio" name="chargerProtectionCollision" value="ยังไม่ติดตั้ง" checked={formData.chargerProtectionCollision === 'ยังไม่ติดตั้ง'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                 <span className="ml-3">ยังไม่ติดตั้ง</span>
               </label>
 
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="radio" name="chargerProtectionFire" value="ติดตั้งแล้ว" checked={formData.chargerProtectionFire === 'ติดตั้งแล้ว'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                <input type="radio" name="chargerProtectionFire" value="ติดตั้งแล้ว" checked={formData.chargerProtectionFire === 'ติดตั้งแล้ว'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                 <span className="ml-3">มีการป้องกันและระงับอัคคีภัย โดยการติดตั้งถังดับเพลิง</span>
               </label>
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="radio" name="chargerProtectionFire" value="ยังไม่ติดตั้ง" checked={formData.chargerProtectionFire === 'ยังไม่ติดตั้ง'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                <input type="radio" name="chargerProtectionFire" value="ยังไม่ติดตั้ง" checked={formData.chargerProtectionFire === 'ยังไม่ติดตั้ง'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                 <span className="ml-3">ยังไม่ติดตั้ง</span>
               </label>
 
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="radio" name="chargerProtectionLightning" value="ติดตั้งแล้ว" checked={formData.chargerProtectionLightning === 'ติดตั้งแล้ว'} onChange={handleChange} className="form-checkbox h-6 w-6 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
+                <input type="radio" name="chargerProtectionLightning" value="ติดตั้งแล้ว" checked={formData.chargerProtectionLightning === 'ติดตั้งแล้ว'} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500" />
                 <span className="ml-3">กรณีติดตั้งอยู่ภายนอกอาคาร มีการติดตั้งระบบป้องกันฟ้าผ่า</span>
               </label>
               <label className="inline-flex items-center text-gray-800 block">
-                <input type="radio" name="chargerProtectionLightning" value="ยังไม่ติดตั้ง" checked={formData.chargerProtectionLightning === 'ยังไม่ติดตั้ง'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6" />
+                <input type="radio" name="chargerProtectionLightning" value="ยังไม่ติดตั้ง" checked={formData.chargerProtectionLightning === 'ยังไม่ติดตั้ง'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4" />
                 <span className="ml-3">ยังไม่ติดตั้ง</span>
               </label>
             </div>
@@ -2914,7 +2914,7 @@ export default function ElectricityInspectionForm() {
               value="ติดตั้งมิเตอร์ถาวร"
               checked={formData.summaryResult === 'ติดตั้งมิเตอร์ถาวร'}
               onChange={handleChange}
-              className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+              className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
             />
             <span className="ml-3">ติดตั้งมิเตอร์ถาวร</span>
           </label>
@@ -2925,7 +2925,7 @@ export default function ElectricityInspectionForm() {
               value="ติดตั้งมิเตอร์ชั่วคราว"
               checked={formData.summaryResult === 'ติดตั้งมิเตอร์ชั่วคราว'}
               onChange={handleChange}
-              className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+              className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
             />
             <span className="ml-3">ติดตั้งมิเตอร์ชั่วคราว</span>
           </label>
@@ -2936,7 +2936,7 @@ export default function ElectricityInspectionForm() {
               value="ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์"
               checked={formData.summaryResult === 'ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์'}
               onChange={handleChange}
-              className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-6 w-6"
+              className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-4 w-4"
             />
             <span className="ml-3">ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์</span>
           </label>

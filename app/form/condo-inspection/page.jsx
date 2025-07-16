@@ -21,198 +21,157 @@ const initialFormData = {
   user_id: null,
 
   // ข้อมูลทั่วไป
-  inspectionNumber: "",
-  inspectionDate: "",
-  requestNumber: "",
-  requestDate: "",
-  peaOffice: "",
-  fullName: "",
+  inspection_number: "",
+  inspection_date: "",
+  request_number: "",
+  request_date: "",
+  pea_office: "",
+  full_name: "",
   phone: "",
   address: "",
-  voltageSystem: "", // '22kV' หรือ '33kV'
-  estimatedLoad: "",
-  hasDesignCertification: null,
-  asBuiltDrawingCertified: false,
-  engineerLicenseCopy: false,
+  voltage_system: "", // '22kV' หรือ '33kV'
+  estimated_load: "",
+  has_design_certification: null,
+  as_built_drawing_certified: false,
+  engineer_license_copy: false,
 
   // 2.1 ระบบจำหน่ายเหนือดิน
-  overhead_cableType: "",
-  overhead_cableType_correct: '',
-  overhead_cableType_note: "",
-  overhead_cableSizeSqmm: "",
-  overhead_cableSize_correct: '',
-  overhead_cableSize_note: "",
-  overhead_poleCondition_correct: '',
-  overhead_poleCondition_note: "",
-  overhead_poleTopEquipment_correct: '',
-  overhead_poleTopEquipment_note: "",
-  overhead_guyWireAssembly_correct: '',
-  overhead_guyWireAssembly_note: "",
-  overhead_insulatorType_correct: '',
-  overhead_insulatorType_note: "",
-  overhead_cableSagging_correct: '',
-  overhead_cableSagging_note: "",
+  overhead_cable_type: "",
+  overhead_cable_type_correct: '',
+  overhead_cable_type_note: "",
+  overhead_cable_size_sqmm: "",
+  overhead_cable_size_correct: '',
+  overhead_cable_size_note: "",
+  overhead_pole_condition_correct: '',
+  overhead_pole_condition_note: "",
+  overhead_pole_top_equipment_correct: '',
+  overhead_pole_top_equipment_note: "",
+  overhead_guy_wire_assembly_correct: '',
+  overhead_guy_wire_assembly_note: "",
+  overhead_insulator_type_correct: '',
+  overhead_insulator_type_note: "",
+  overhead_cable_sagging_correct: '',
+  overhead_cable_sagging_note: "",
   overhead_clearance_correct: '',
   overhead_clearance_note: "",
-  overhead_hvSurgeArrester_correct: '',
-  overhead_hvSurgeArrester_note: "",
-  overhead_cableJointCondition_correct: '',
-  overhead_cableJointCondition_note: "",
+  overhead_hv_surge_arrester_correct: '',
+  overhead_hv_surge_arrester_note: "",
+  overhead_cable_joint_condition_correct: '',
+  overhead_cable_joint_condition_note: "",
   overhead_grounding_correct: '',
   overhead_grounding_note: "",
 
   // 2.2 ระบบจำหน่ายใต้ดิน
-  underground_cableType: "",
-  underground_cableType_correct: '',
-  underground_cableType_note: "",
-  underground_cableSizeSqmm: "",
-  underground_cableSize_correct: '',
-  underground_cableSize_note: "",
-  underground_visibleCableCondition_correct: '',
-  underground_visibleCableCondition_note: "",
-  underground_cableTension_correct: '',
-  underground_cableTension_note: "",
-  underground_hvSurgeArrester_correct: '',
-  underground_hvSurgeArrester_note: "",
-  underground_cableJointCondition_correct: '',
-  underground_cableJointCondition_note: "",
+  underground_cable_type: "",
+  underground_cable_type_correct: '',
+  underground_cable_type_note: "",
+  underground_cable_size_sqmm: "",
+  underground_cable_size_correct: '',
+  underground_cable_size_note: "",
+  underground_visible_cable_condition_correct: '',
+  underground_visible_cable_condition_note: "",
+  underground_cable_tension_correct: '',
+  underground_cable_tension_note: "",
+  underground_hv_surge_arrester_correct: '',
+  underground_hv_surge_arrester_note: "",
+  underground_cable_joint_condition_correct: '',
+  underground_cable_joint_condition_note: "",
   underground_grounding_correct: '',
   underground_grounding_note: "",
 
   // 2.3 เครื่องปลดวงจรต้นทาง
-  disconnectingDeviceStatus: '',
-  disconnectingDeviceNote: "",
-  disconnectingDeviceType: [],
-  disconnectingDeviceSwitchType: "",
-  hvDistributionOther: "",
-  
+  disconnecting_device_status: '',
+  disconnecting_device_note: "",
+  disconnecting_device_type: [],
+  disconnecting_device_switch_type: "",
+  hv_distribution_other: "",
+
   // หม้อแปลง (เก็บเป็น JSON Array of Objects)
-  transformers: [
-    // {
-    //   tested: null, // true, false
-    //   number: "",
-    //   size_kva: "",
-    //   hv_voltage: "",
-    //   lv_voltage: "",
-    //   impedance: "",
-    //   type: "", // 'Oil', 'Dry', 'Other'
-    //   type_other: "",
-    //   vector_group: "",
-    //   short_circuit_rating_correct: '',
-    //   short_circuit_rating_note: '',
-    //   installation_type: [],
-    //   overcurrent_protection_type: "",
-    //   overcurrent_protection_correct: '',
-    //   overcurrent_protection_note: '',
-    //   continuous_current_a: '',
-    //   interrupting_capacity_ic: '',
-    //   hv_surge_arrester_correct: '',
-    //   hv_surge_arrester_note: '',
-    //   surge_arrester_kv: '',
-    //   surge_arrester_ka: '',
-    //   grounding_assembly_correct: '',
-    //   grounding_assembly_note: '',
-    //   hv_ground_resistance_ohm: '',
-    //   hv_ground_resistance_correct: '',
-    //   hv_ground_resistance_note: '',
-    //   silica_gel_correct: '',
-    //   silica_gel_note: '',
-    //   bushing_condition_correct: '',
-    //   bushing_condition_note: '',
-    //   oil_level_correct: '',
-    //   oil_level_note: '',
-    //   oil_leak_correct: '',
-    //   oil_leak_note: '',
-    //   warning_sign_correct: '',
-    //   warning_sign_note: '',
-    //   transformer_other_note: ''
-    // }
-  ],
+  transformers: [], // ค่าเริ่มต้นเป็น Array ว่าง
 
   // 2.14 สายตัวนำประธานแรงต่ำ
-  lvMainCable_standard_correct: '',
-  lvMainCable_standard_note: '',
-  lvMainCable_type: '',
-  lvMainCable_other_type: '',
-  lvMainCable_size: '',
-  lvMainCable_type_size_correct: '',
-  lvMainCable_type_size_note: '',
-  lvMainCable_wiring_method: [],
-  lvMainCable_wiring_correct: '',
-  lvMainCable_wiring_note: '',
+  lv_main_cable_standard_correct: '',
+  lv_main_cable_standard_note: '',
+  lv_main_cable_type: '',
+  lv_main_cable_other_type: '',
+  lv_main_cable_size: '',
+  lv_main_cable_type_size_correct: '',
+  lv_main_cable_type_size_note: '',
+  lv_main_cable_wiring_method: [],
+  lv_main_cable_wiring_correct: '',
+  lv_main_cable_wiring_note: '',
 
   // 2.15 เครื่องป้องกันกระแสเกินที่แผงเมนสวิตช์
-  mainBreaker_type: '',
-  mainBreaker_standard: '',
-  mainBreaker_product: '',
-  mainBreaker_type_spec: '',
-  mainBreaker_in: '',
-  mainBreaker_ic: '',
-  mainBreaker_voltage: '',
-  mainBreaker_at: '',
-  mainBreaker_af: '',
-  mainBreaker_gfp_installed: false,
-  mainBreaker_correct: '',
-  mainBreaker_note: '',
-  
+  main_breaker_type: '',
+  main_breaker_standard: '',
+  main_breaker_product: '',
+  main_breaker_type_spec: '',
+  main_breaker_in: '',
+  main_breaker_ic: '',
+  main_breaker_voltage: '',
+  main_breaker_at: '',
+  main_breaker_af: '',
+  main_breaker_gfp_installed: false,
+  main_breaker_correct: '',
+  main_breaker_note: '',
+
   // 2.16 การต่อลงดินของแผงเมนสวิตช์
-  mainGrounding_conductorSize_correct: '',
-  mainGrounding_conductorSize_note: '',
-  mainGrounding_conductorSize_sqmm: '',
-  mainGrounding_resistance_correct: '',
-  mainGrounding_resistance_note: '',
-  mainGrounding_testPoint_correct: '',
-  mainGrounding_testPoint_note: '',
-  mainGrounding_bus_correct: '',
-  mainGrounding_bus_note: '',
+  main_grounding_conductor_size_correct: '',
+  main_grounding_conductor_size_note: '',
+  main_grounding_conductor_size_sqmm: '',
+  main_grounding_resistance_correct: '',
+  main_grounding_resistance_note: '',
+  main_grounding_test_point_correct: '',
+  main_grounding_test_point_note: '',
+  main_grounding_bus_correct: '',
+  main_grounding_bus_note: '',
 
   // 2.17 แผงจ่ายไฟประจำชั้น
-  floorPanel_breakerStandard_correct: '',
-  floorPanel_breakerStandard_note: '',
-  floorPanel_breakerSize_correct: '',
-  floorPanel_breakerSize_note: '',
-  floorPanel_breaker_at: '',
-  floorPanel_breaker_af: '',
-  floorPanel_breaker_ic: '',
-  floorPanel_groundBus_correct: '',
-  floorPanel_groundBus_note: '',
-  
+  floor_panel_breaker_standard_correct: '',
+  floor_panel_breaker_standard_note: '',
+  floor_panel_breaker_size_correct: '',
+  floor_panel_breaker_size_note: '',
+  floor_panel_breaker_at: '',
+  floor_panel_breaker_af: '',
+  floor_panel_breaker_ic: '',
+  floor_panel_ground_bus_correct: '',
+  floor_panel_ground_bus_note: '',
+
   // 2.18 เซอร์กิตเบรกเกอร์ด้านไฟเข้าของมิเตอร์
-  meterBreaker_size_correct: '',
-  meterBreaker_size_note: '',
-  meterBreaker_at: '',
-  meterBreaker_af: '',
-  meterBreaker_ic: '', // **[เพิ่ม]** เพิ่มฟิลด์สำหรับ IC kA
+  meter_breaker_size_correct: '',
+  meter_breaker_size_note: '',
+  meter_breaker_at: '',
+  meter_breaker_af: '',
+  meter_breaker_ic: '',
 
   // 2.19 สายตัวนำประธานเข้าห้องชุด
-  roomFeeder_standard_correct: '',
-  roomFeeder_standard_note: '',
-  roomFeeder_type: '',
-  roomFeeder_size: '',
-  roomFeeder_wiring: [],
+  room_feeder_standard_correct: '',
+  room_feeder_standard_note: '',
+  room_feeder_type: '',
+  room_feeder_size: '',
+  room_feeder_wiring: [],
 
   // 2.20 แผงจ่ายไฟในห้องชุด
-  roomPanel_breakerStandard_correct: '',
-  roomPanel_breakerStandard_note: '',
-  roomPanel_breakerMeterMatch_correct: '',
-  roomPanel_breakerMeterMatch_note: '',
-  roomPanel_breaker_at: '',
-  roomPanel_breaker_af: '',
-  roomPanel_icRating_correct: '',
-  roomPanel_icRating_note: '',
-  roomPanel_groundBus_correct: '',
-  roomPanel_groundBus_note: '',
+  room_panel_breaker_standard_correct: '',
+  room_panel_breaker_standard_note: '',
+  room_panel_breaker_meter_match_correct: '',
+  room_panel_breaker_meter_match_note: '',
+  room_panel_breaker_at: '',
+  room_panel_breaker_af: '',
+  room_panel_ic_rating_correct: '',
+  room_panel_ic_rating_note: '',
+  room_panel_ground_bus_correct: '',
+  room_panel_ground_bus_note: '',
 
   // 2.22 อื่นๆ
-  lvSystem_other_note: '',
+  lv_system_other_note: '',
 
   // สรุปและลงนาม
-  summaryResult: "",
-  scopeAndLimitations: "",
-  applicantSignature: "",
-  peaOfficerSignature: "",
+  summary_result: "",
+  scope_and_limitations: "",
+  applicant_signature: "",
+  pea_officer_signature: "",
 };
-
 
 // เพิ่มฟังก์ชันตรวจสอบไฟล์ภาพ (image extension) ก่อนอัปโหลด
 function isValidImageFile(file) {
@@ -248,7 +207,7 @@ export default function CondoInspectionForm() {
   const handleWiringMethodChange = (e) => {
     const { value, checked } = e.target;
     // ดึงข้อมูล array ปัจจุบันจาก state, ถ้ายังไม่มีให้ใช้ array ว่าง
-    const currentMethods = formData.lvMainCable_wiring_method || [];
+    const currentMethods = formData.lv_main_cable_wiring_method || [];
 
     let newMethods;
     if (checked) {
@@ -259,7 +218,7 @@ export default function CondoInspectionForm() {
       newMethods = currentMethods.filter((method) => method !== value);
     }
     // อัปเดต state ด้วย array ใหม่
-    setFormData(prev => ({ ...prev, lvMainCable_wiring_method: newMethods }));
+    setFormData(prev => ({ ...prev, lv_main_cable_wiring_method: newMethods }));
   };
 
   // เพิ่ม handleImageUpload ที่ตรวจสอบไฟล์ภาพก่อน
@@ -280,7 +239,7 @@ export default function CondoInspectionForm() {
   // ฟังก์ชันสำหรับจัดการ Checkbox (เลือกได้หลายข้อ) ของ "เครื่องปลดวงจร"
   const handleDeviceTypeChange = (e) => {
     const { value, checked } = e.target;
-    const currentTypes = formData.disconnectingDeviceType || [];
+    const currentTypes = formData.disconnecting_device_type || [];
 
     let newTypes;
     if (checked) {
@@ -288,7 +247,26 @@ export default function CondoInspectionForm() {
     } else {
       newTypes = currentTypes.filter((type) => type !== value);
     }
-    setFormData(prev => ({ ...prev, disconnectingDeviceType: newTypes }));
+    setFormData(prev => ({ ...prev, disconnecting_device_type: newTypes }));
+  };
+
+  // --- เพิ่ม error handler สำหรับ Supabase ---
+  const safeHandleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await handleSubmit(e);
+    } catch (err) {
+      let msg = 'เกิดข้อผิดพลาดในการบันทึกข้อมูล';
+      if (err) {
+        if (err.message) msg += `\n${err.message}`;
+        if (err.details) msg += `\nรายละเอียด: ${err.details}`;
+        if (err.hint) msg += `\nคำแนะนำ: ${err.hint}`;
+      }
+      if (typeof window !== 'undefined') {
+        alert(msg);
+      }
+      console.error('Supabase Error:', err);
+    }
   };
 
   if (isLoading) {
@@ -301,7 +279,7 @@ export default function CondoInspectionForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} id="pea-condo-inspection-form" className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
+    <form onSubmit={safeHandleSubmit} id="pea-condo-inspection-form" className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
       <style jsx global>{`
         .sigCanvas { touch-action: none; }
         input[type=number]::-webkit-inner-spin-button, 
@@ -317,19 +295,19 @@ export default function CondoInspectionForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่บันทึกตรวจสอบ:</label>
-            <input type="text" id="inspectionNumber" name="inspectionNumber" value={formData.inspectionNumber} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+            <input type="text" id="inspectionNumber" name="inspection_number" value={formData.inspection_number} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
           </div>
           <div>
             <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ:</label>
-            <input type="date" id="inspectionDate" name="inspectionDate" value={formData.inspectionDate} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900 bg-gray-100" />
+            <input type="date" id="inspectionDate" name="inspection_date" value={formData.inspection_date} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900 bg-gray-100" />
           </div>
           <div>
             <label htmlFor="requestNumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่คำร้องขอใช้ไฟฟ้า:</label>
-            <input type="text" id="requestNumber" name="requestNumber" value={formData.requestNumber} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+            <input type="text" id="requestNumber" name="request_number" value={formData.request_number} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
           </div>
           <div>
             <label htmlFor="requestDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ยื่นคำร้อง:</label>
-            <input type="date" id="requestDate" name="requestDate" value={formData.requestDate} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+            <input type="date" id="requestDate" name="request_date" value={formData.request_date} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
           </div>
         </div>
       </section>
@@ -340,7 +318,7 @@ export default function CondoInspectionForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-900 mb-1">ชื่อนิติบุคคล/ผู้ขอใช้ไฟฟ้า:</label>
-            <input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+            <input type="text" id="fullName" name="full_name" value={formData.full_name} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
           </div>
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-900 mb-1">โทรศัพท์:</label>
@@ -352,7 +330,7 @@ export default function CondoInspectionForm() {
           </div>
           <div>
             <label htmlFor="voltageSystem" className="block text-sm font-medium text-gray-900 mb-1">ระบบแรงดันไฟฟ้า:</label>
-            <select id="voltageSystem" name="voltageSystem" value={formData.voltageSystem} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900">
+            <select id="voltageSystem" name="voltage_system" value={formData.voltage_system} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900">
                 <option value="">เลือกระบบแรงดัน</option>
                 <option value="22kV">22 kV</option>
                 <option value="33kV">33 kV</option>
@@ -360,7 +338,7 @@ export default function CondoInspectionForm() {
           </div>
           <div>
             <label htmlFor="estimatedLoad" className="block text-sm font-medium text-gray-900 mb-1">โหลดประมาณ (kVA):</label>
-            <input type="number" step="any" id="estimatedLoad" name="estimatedLoad" value={formData.estimatedLoad} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+            <input type="number" step="any" id="estimatedLoad" name="estimated_load" value={formData.estimated_load} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
           </div>
         </div>
       </section>
@@ -581,7 +559,7 @@ export default function CondoInspectionForm() {
                     name="disconnectingDeviceType"
                     value={device}
                     // ตรวจสอบว่าค่านี้มีอยู่ใน array หรือไม่
-                    checked={formData.disconnectingDeviceType.includes(device)}
+                    checked={(formData.disconnecting_device_type || []).includes(device)}
                     // เรียกใช้ handler ใหม่
                     onChange={handleDeviceTypeChange}
                     className="form-checkbox h-5 w-5 text-purple-600 rounded border-gray-300"
@@ -589,13 +567,13 @@ export default function CondoInspectionForm() {
                 <span className="ml-2 text-sm text-gray-700">{device}</span>
 
                 {/* แสดงช่อง input ถ้าเป็น 'สวิตช์ตัดตอน' และถูกเลือก */}
-                {device === 'สวิตช์ตัดตอน' && formData.disconnectingDeviceType.includes('สวิตช์ตัดตอน') && (
+                {device === 'สวิตช์ตัดตอน' && (formData.disconnecting_device_type || []).includes('สวิตช์ตัดตอน') && (
                      <div className="flex items-center ml-2">
                         <span className="text-sm mr-2">ชนิด:</span>
                         <input
                             type="text"
                             name="disconnectingDeviceSwitchType"
-                            value={formData.disconnectingDeviceSwitchType}
+                            value={formData.disconnecting_device_switch_type}
                             onChange={handleChange} // ใช้ handleChange ปกติ
                             className="p-1 border rounded-md text-sm w-40 border-gray-300"
                         />
@@ -733,7 +711,6 @@ export default function CondoInspectionForm() {
                   <label className="block text-sm font-semibold text-gray-800 mb-3">2.14.3 วิธีการเดินสายไฟฟ้า:</label>
                   
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3">
-                      
                       {/* สร้าง Checkbox สำหรับแต่ละตัวเลือกโดยอัตโนมัติ */}
                       {[
                           'บนลูกถ้วยฉนวนในอากาศ', 
@@ -748,7 +725,7 @@ export default function CondoInspectionForm() {
                                   type="checkbox"
                                   name="lvMainCable_wiring_method"
                                   value={method}
-                                  checked={formData.lvMainCable_wiring_method.includes(method)}
+                                  checked={(formData.lv_main_cable_wiring_method || []).includes(method)}
                                   onChange={handleWiringMethodChange}
                                   className="form-checkbox h-5 w-5 text-purple-600 rounded border-gray-300 focus:ring-purple-500"
                               />
@@ -762,7 +739,7 @@ export default function CondoInspectionForm() {
                               type="checkbox"
                               name="lvMainCable_wiring_method"
                               value="อื่นๆ"
-                              checked={formData.lvMainCable_wiring_method.includes('อื่นๆ')}
+                              checked={(formData.lv_main_cable_wiring_method || []).includes('อื่นๆ')}
                               onChange={handleWiringMethodChange}
                               className="form-checkbox h-5 w-5 text-purple-600 rounded border-gray-300 focus:ring-purple-500"
                           />
@@ -771,13 +748,13 @@ export default function CondoInspectionForm() {
                   </div>
 
                   {/* ช่องใส่ข้อความสำหรับ "อื่นๆ" จะแสดงเมื่อถูกเลือก */}
-                  {formData.lvMainCable_wiring_method.includes('อื่นๆ') && (
+                  {(formData.lv_main_cable_wiring_method || []).includes('อื่นๆ') && (
                       <div className="mt-3">
                           <input
                               type="text"
-                              name="lvMainCable_wiring_note" // ใช้ฟิลด์ note สำหรับเก็บค่า
-                              value={formData.lvMainCable_wiring_note || ''}
-                              onChange={handleChange} // ใช้ handleChange ปกติจาก useFormManager
+                              name="lv_main_cable_wiring_note"
+                              value={formData.lv_main_cable_wiring_note || ''}
+                              onChange={handleChange}
                               className="mt-1 block w-full p-2 border rounded-md text-sm border-gray-300 shadow-sm"
                               placeholder="โปรดระบุวิธีการเดินสายอื่นๆ"
                           />
@@ -789,7 +766,7 @@ export default function CondoInspectionForm() {
                       groupName="lvMainCable_wiring_correct"
                       label=""
                       currentValue={formData.lvMainCable_wiring_correct}
-                      currentNote={formData.lvMainCable_wiring_note} // หมายเหตุจะใช้ร่วมกับช่องอื่นๆ
+                      currentNote={formData.lvMainCable_wiring_note}
                       onStatusChange={handleRadioChange}
                       onNoteChange={handleChange}
                   />
@@ -805,9 +782,9 @@ export default function CondoInspectionForm() {
             <label className="inline-flex items-center">
                 <input
                     type="radio"
-                    name="mainBreaker_type"
+                    name="main_breaker_type"
                     value="เซอร์กิตเบรกเกอร์ ตามมาตรฐาน IEC60947-2"
-                    checked={formData.mainBreaker_type === "เซอร์กิตเบรกเกอร์ ตามมาตรฐาน IEC60947-2"}
+                    checked={formData.main_breaker_type === "เซอร์กิตเบรกเกอร์ ตามมาตรฐาน IEC60947-2"}
                     onChange={handleChange}
                     className="form-radio h-5 w-5 text-purple-600"
                 />
@@ -816,9 +793,9 @@ export default function CondoInspectionForm() {
             <label className="inline-flex items-center">
                 <input
                     type="radio"
-                    name="mainBreaker_type"
+                    name="main_breaker_type"
                     value="สวิตช์พร้อมฟิวส์"
-                    checked={formData.mainBreaker_type === "สวิตช์พร้อมฟิวส์"}
+                    checked={formData.main_breaker_type === "สวิตช์พร้อมฟิวส์"}
                     onChange={handleChange}
                     className="form-radio h-5 w-5 text-purple-600"
                 />
@@ -827,18 +804,18 @@ export default function CondoInspectionForm() {
             <label className="inline-flex items-center">
                 <input
                     type="radio"
-                    name="mainBreaker_type"
+                    name="main_breaker_type"
                     value="อื่นๆ"
-                    checked={formData.mainBreaker_type === "อื่นๆ"}
+                    checked={formData.main_breaker_type === "อื่นๆ"}
                     onChange={handleChange}
                     className="form-radio h-5 w-5 text-purple-600"
                 />
                 <span className="ml-2 text-sm text-gray-700">อื่นๆ:</span>
-                {formData.mainBreaker_type === "อื่นๆ" && (
+                {formData.main_breaker_type === "อื่นๆ" && (
                     <input
                         type="text"
-                        name="mainBreaker_standard" // ใช้ฟิลด์ standard เก็บค่า "อื่นๆ"
-                        value={formData.mainBreaker_standard || ''}
+                        name="main_breaker_standard" // ใช้ฟิลด์ standard เก็บค่า "อื่นๆ"
+                        value={formData.main_breaker_standard || ''}
                         onChange={handleChange}
                         className="ml-2 p-1 border rounded-md text-sm w-40 border-gray-300"
                         placeholder="ระบุมาตรฐานอื่นๆ"
@@ -852,31 +829,31 @@ export default function CondoInspectionForm() {
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
         <div>
             <label htmlFor="mainBreaker_in" className="block text-xs font-medium text-gray-600">In (A):</label>
-            <input type="number" name="mainBreaker_in" value={formData.mainBreaker_in} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
+            <input type="number" name="main_breaker_in" value={formData.main_breaker_in} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
         </div>
         <div>
             <label htmlFor="mainBreaker_ic" className="block text-xs font-medium text-gray-600">IC (kA):</label>
-            <input type="number" name="mainBreaker_ic" value={formData.mainBreaker_ic} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
+            <input type="number" name="main_breaker_ic" value={formData.main_breaker_ic} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
         </div>
         <div>
             <label htmlFor="mainBreaker_voltage" className="block text-xs font-medium text-gray-600">แรงดัน (V):</label>
-            <input type="number" name="mainBreaker_voltage" value={formData.mainBreaker_voltage} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-600"/>
+            <input type="number" name="main_breaker_voltage" value={formData.main_breaker_voltage} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-600"/>
         </div>
         <div>
             <label htmlFor="mainBreaker_at" className="block text-xs font-medium text-gray-600">AT (A):</label>
-            <input type="number" name="mainBreaker_at" value={formData.mainBreaker_at} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
+            <input type="number" name="main_breaker_at" value={formData.main_breaker_at} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
         </div>
         <div>
             <label htmlFor="mainBreaker_af" className="block text-xs font-medium text-gray-600">AF (A):</label>
-            <input type="number" name="mainBreaker_af" value={formData.mainBreaker_af} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
+            <input type="number" name="main_breaker_af" value={formData.main_breaker_af} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md text-sm border-gray-300 text-gray-700"/>
         </div>
     </div>
     {/* --- ผลการตรวจสอบ --- */}
     <CorrectiveRadio
         groupName="mainBreaker_correct"
         label="ผลการตรวจสอบ:"
-        currentValue={formData.mainBreaker_correct}
-        currentNote={formData.mainBreaker_note}
+        currentValue={formData.main_breaker_correct}
+        currentNote={formData.main_breaker_note}
         onStatusChange={handleRadioChange}
         onNoteChange={handleChange}
     />
@@ -1009,15 +986,15 @@ export default function CondoInspectionForm() {
             <div>
                 <label htmlFor="meterBreaker_at" className="block text-xs font-medium text-gray-600">AT (A):</label>
                 <input type="number" 
-                name="meterBreaker_at" 
-                value={formData.meterBreaker_at} 
+                name="meter_breaker_at" 
+                value={formData.meter_breaker_at} 
                 onChange={handleChange} 
                 className="mt-1 w-full p-2 border rounded-md text-gray-600"/>
             </div>
             <div>
                 <label htmlFor="meterBreaker_af" className="block text-xs font-medium text-gray-600">AF (A):</label>
-                <input type="number" name="meterBreaker_af" 
-                value={formData.meterBreaker_af} onChange={handleChange} 
+                <input type="number" name="meter_breaker_af" 
+                value={formData.meter_breaker_af} onChange={handleChange} 
                 className="mt-1 w-full p-2 border rounded-md text-gray-600"/>
             </div>
         </div>
@@ -1025,8 +1002,8 @@ export default function CondoInspectionForm() {
         <CorrectiveRadio
             groupName="meterBreaker_size_correct"
             label=""
-            currentValue={formData.meterBreaker_size_correct}
-            currentNote={formData.meterBreaker_size_note}
+            currentValue={formData.meter_breaker_size_correct}
+            currentNote={formData.meter_breaker_size_note}
             onStatusChange={handleRadioChange}
             onNoteChange={handleChange}
         />
@@ -1049,7 +1026,7 @@ export default function CondoInspectionForm() {
             <label htmlFor="roomFeeder_type" className="block text-xs font-medium text-gray-600">ชนิด:</label>
             <input type="text" 
             name="roomFeeder_type" 
-            value={formData.roomFeeder_type} 
+            value={formData.room_feeder_type} 
             onChange={handleChange} 
             className="mt-1 w-full p-2 border rounded-md border-gray-600 text-gray-600"/>
         </div>
@@ -1057,7 +1034,7 @@ export default function CondoInspectionForm() {
             <label htmlFor="roomFeeder_size" className="block text-xs font-medium text-gray-600">ขนาด (ตร.มม.):</label>
             <input type="number" 
             name="roomFeeder_size" 
-            value={formData.roomFeeder_size} 
+            value={formData.room_feeder_size} 
             onChange={handleChange} 
             className="mt-1 w-full p-2 border rounded-md border-gray-600 text-gray-600"/>
         </div>
@@ -1065,24 +1042,24 @@ export default function CondoInspectionForm() {
     <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2">
         <label className="inline-flex items-center">
             <input type="checkbox" name="roomFeeder_wiring" 
-            value="ท่อร้อยสาย" checked={formData.roomFeeder_wiring.includes('ท่อร้อยสาย')} 
-            onChange={handleWiringMethodChange} className="form-checkbox h-5 w-5"/>
+              value="ท่อร้อยสาย" checked={(formData.room_feeder_wiring || []).includes('ท่อร้อยสาย')} 
+              onChange={handleWiringMethodChange} className="form-checkbox h-5 w-5"/>
             <span className="ml-2 text-sm text-gray-700">เดินในท่อร้อยสาย</span>
         </label>
         <label className="inline-flex items-center">
             <input type="checkbox" name="roomFeeder_wiring" 
-            value="รางเดินสาย" 
-            checked={formData.roomFeeder_wiring.includes('รางเดินสาย')} 
-            onChange={handleWiringMethodChange} 
-            className="form-checkbox h-5 w-5"/>
+              value="รางเดินสาย" 
+              checked={(formData.room_feeder_wiring || []).includes('รางเดินสาย')} 
+              onChange={handleWiringMethodChange} 
+              className="form-checkbox h-5 w-5"/>
             <span className="ml-2 text-sm text-gray-700">เดินในรางเดินสาย</span>
         </label>
         <label className="inline-flex items-center">
             <input type="checkbox" name="roomFeeder_wiring" 
-            value="อื่นๆ" 
-            checked={formData.roomFeeder_wiring.includes('อื่นๆ')} 
-            onChange={handleWiringMethodChange} 
-            className="form-checkbox h-5 w-5"/>
+              value="อื่นๆ" 
+              checked={(formData.room_feeder_wiring || []).includes('อื่นๆ')} 
+              onChange={handleWiringMethodChange} 
+              className="form-checkbox h-5 w-5"/>
             <span className="ml-2 text-sm text-gray-700">อื่นๆ</span>
         </label>
     </div>
@@ -1094,8 +1071,8 @@ export default function CondoInspectionForm() {
     <CorrectiveRadio
         groupName="roomPanel_breakerStandard_correct"
         label="2.20.1 เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898"
-        currentValue={formData.roomPanel_breakerStandard_correct}
-        currentNote={formData.roomPanel_breakerStandard_note}
+        currentValue={formData.room_panel_breaker_standard_correct}
+        currentNote={formData.room_panel_breaker_standard_note}
         onStatusChange={handleRadioChange}
         onNoteChange={handleChange}
     />
@@ -1105,25 +1082,25 @@ export default function CondoInspectionForm() {
             <div>
                 <label htmlFor="roomPanel_breaker_at" className="block text-xs font-medium text-gray-600">AT (A):</label>
                 <input type="number" 
-                name="roomPanel_breaker_at" 
-                value={formData.roomPanel_breaker_at} 
+                name="room_panel_breaker_at" 
+                value={formData.room_panel_breaker_at} 
                 onChange={handleChange} 
                 className="mt-1 w-full p-2 border rounded-md border-gray-600 text-gray-700"/>
             </div>
             <div>
                 <label htmlFor="roomPanel_breaker_af" className="block text-xs font-medium text-gray-600">AF (A):</label>
                 <input type="number" 
-                name="roomPanel_breaker_af" 
-                value={formData.roomPanel_breaker_af} 
+                name="room_panel_breaker_af" 
+                value={formData.room_panel_breaker_af} 
                 onChange={handleChange} 
                 className="mt-1 w-full p-2 border rounded-md border-gray-600 text-gray-700"/>
             </div>
         </div>
         <CorrectiveRadio
-            groupName="roomPanel_breakerMeterMatch_correct"
+            groupName="room_panel_breaker_meter_match_correct"
             label=""
-            currentValue={formData.roomPanel_breakerMeterMatch_correct}
-            currentNote={formData.roomPanel_breakerMeterMatch_note}
+            currentValue={formData.room_panel_breaker_meter_match_correct}
+            currentNote={formData.room_panel_breaker_meter_match_note}
             onStatusChange={handleRadioChange}
             onNoteChange={handleChange}
             className="mt-4 text-sm font-semibold text-gray-800"
@@ -1132,8 +1109,8 @@ export default function CondoInspectionForm() {
     <CorrectiveRadio
         groupName="roomPanel_icRating_correct"
         label="2.20.3 พิกัดตัดกระแสลัดวงจร (IC) ไม่ต่ำกว่า 10 kA"
-        currentValue={formData.roomPanel_icRating_correct}
-        currentNote={formData.roomPanel_icRating_note}
+        currentValue={formData.room_panel_ic_rating_correct}
+        currentNote={formData.room_panel_ic_rating_note}
         onStatusChange={handleRadioChange}
         onNoteChange={handleChange}
         className="mb-4 text-sm font-semibold text-gray-800"
@@ -1146,8 +1123,8 @@ export default function CondoInspectionForm() {
     <CorrectiveRadio
         groupName="roomPanel_groundBus_correct"
         label="สำหรับต่อกับอุปกรณ์และเครื่องใช้ไฟฟ้า"
-        currentValue={formData.roomPanel_groundBus_correct}
-        currentNote={formData.roomPanel_groundBus_note}
+        currentValue={formData.room_panel_ground_bus_correct}
+        currentNote={formData.room_panel_ground_bus_note}
         onStatusChange={handleRadioChange}
         onNoteChange={handleChange}
         className="mb-4 text-sm font-semibold text-gray-800"
@@ -1159,8 +1136,8 @@ export default function CondoInspectionForm() {
     <label htmlFor="lvSystem_other_note" className="text-lg font-semibold text-gray-800">2.22 อื่นๆ</label>
     <textarea
         id="lvSystem_other_note"
-        name="lvSystem_other_note"
-        value={formData.lvSystem_other_note}
+        name="lv_system_other_note"
+        value={formData.lv_system_other_note}
         onChange={handleChange}
         rows="3"
         className="mt-1 block w-full p-2 border rounded-md text-sm border-gray-300 shadow-sm text-gray-700"
@@ -1175,24 +1152,24 @@ export default function CondoInspectionForm() {
       <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
         <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">สรุปผลและลงนาม</h3>
         <div className="flex flex-wrap gap-6 mb-4">
-          <label className="inline-flex items-center text-gray-900"><input type="radio" name="summaryResult" value="ติดตั้งมิเตอร์ถาวร" checked={formData.summaryResult === 'ติดตั้งมิเตอร์ถาวร'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"/><span className="ml-2">ติดตั้งมิเตอร์ถาวร</span></label>
-          <label className="inline-flex items-center text-gray-900"><input type="radio" name="summaryResult" value="ติดตั้งมิเตอร์ชั่วคราว" checked={formData.summaryResult === 'ติดตั้งมิเตอร์ชั่วคราว'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"/><span className="ml-2">ติดตั้งมิเตอร์ชั่วคราว</span></label>
-          <label className="inline-flex items-center text-gray-900"><input type="radio" name="summaryResult" value="ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์" checked={formData.summaryResult === 'ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"/><span className="ml-2">ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์</span></label>
+          <label className="inline-flex items-center text-gray-900"><input type="radio" name="summary_result" value="ติดตั้งมิเตอร์ถาวร" checked={formData.summary_result === 'ติดตั้งมิเตอร์ถาวร'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"/><span className="ml-2">ติดตั้งมิเตอร์ถาวร</span></label>
+          <label className="inline-flex items-center text-gray-900"><input type="radio" name="summary_result" value="ติดตั้งมิเตอร์ชั่วคราว" checked={formData.summary_result === 'ติดตั้งมิเตอร์ชั่วคราว'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"/><span className="ml-2">ติดตั้งมิเตอร์ชั่วคราว</span></label>
+          <label className="inline-flex items-center text-gray-900"><input type="radio" name="summary_result" value="ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์" checked={formData.summary_result === 'ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"/><span className="ml-2">ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์</span></label>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <SignaturePad 
             title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" 
             ref={userSigRef}
-            onSave={(dataUrl) => handleSignatureSave('applicantSignature', dataUrl)} 
-            onClear={() => handleSignatureClear('applicantSignature')}
-            initialValue={formData.applicantSignature}
+            onSave={(dataUrl) => handleSignatureSave('applicant_signature', dataUrl)} 
+            onClear={() => handleSignatureClear('applicant_signature')}
+            initialValue={formData.applicant_signature}
           />
           <SignaturePad 
             title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" 
             ref={inspectorSigRef} 
-            onSave={(dataUrl) => handleSignatureSave('peaOfficerSignature', dataUrl)} 
-            onClear={() => handleSignatureClear('peaOfficerSignature')}
-            initialValue={formData.peaOfficerSignature}
+            onSave={(dataUrl) => handleSignatureSave('pea_officer_signature', dataUrl)} 
+            onClear={() => handleSignatureClear('pea_officer_signature')}
+            initialValue={formData.pea_officer_signature}
           />
         </div>
       </section>
@@ -1201,7 +1178,7 @@ export default function CondoInspectionForm() {
       <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
         <PDFDownloadLink
           document={<CondoInspectionPDF formData={formData} />}
-          fileName={`condo-inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
+          fileName={`condo-inspection-form-${formData.inspection_number || 'form'}.pdf`}
           className="w-full sm:w-auto"
         >
           {({ loading }) => (

@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Font, Image } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Font, Image, Svg, Polyline } from '@react-pdf/renderer';
 
 // ลงทะเบียนฟอนต์ Sarabun
 Font.register({
@@ -54,7 +54,18 @@ const Field = ({ label, value = '', style }) => (
 );
 const Checkbox = ({ checked, label }) => (
   <View style={styles.checkboxContainer}>
-    <View style={styles.checkbox}><Text style={styles.checkMark}>{checked ? '✓' : ' '}</Text></View>
+    <View style={styles.checkbox}>
+      {checked && (
+        <Svg width="8" height="8" viewBox="0 0 8 8">
+          <Polyline
+            points="1,4 3,6 7,1"
+            stroke="#222"
+            strokeWidth={1}
+            fill="none"
+          />
+        </Svg>
+      )}
+    </View>
     <Text>{label}</Text>
   </View>
 );
@@ -131,29 +142,29 @@ const ResidentialInspectionPDF = ({ formData }) => {
                     <View style={styles.subItem}>
                         <Checkbox checked={!!formData.wiringMethodOverheadChecked} label="เดินสายบนลูกถ้วยฉนวนในอากาศ" />
                         {formData.wiringMethodOverheadChecked && <View style={styles.subItem}>
-                            <CorrectiveItem label="1) สูงจากพื้นไม่น้อยกว่า 2.9 เมตร หรือ 5.5 เมตร ถ้ามียานพาหนะลอดผ่าน" status={formData.overhead_height_correct} note={formData.overhead_height_note} />
-                            <CorrectiveItem label="2) สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล" status={formData.overhead_neutralMarked_correct} note={formData.overhead_neutralMarked_note} />
+                            <CorrectiveItem label="1) สูงจากพื้นไม่น้อยกว่า 2.9 เมตร หรือ 5.5 เมตร ถ้ามียานพาหนะลอดผ่าน" status={formData.overhead_height_correct} note={formData.overhead_height_correct_note} />
+                            <CorrectiveItem label="2) สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล" status={formData.overhead_neutralMarked_correct} note={formData.overhead_neutralMarked_correct_note} />
                         </View>}
                         <Checkbox checked={!!formData.wiringMethodUndergroundChecked} label="เดินสายฝังใต้ดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)" />
                         {formData.wiringMethodUndergroundChecked && <View style={styles.subItem}>
-                             <CorrectiveItem label="1) สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล" status={formData.underground_neutralMarked_correct} note={formData.underground_neutralMarked_note} />
+                             <CorrectiveItem label="1) สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล" status={formData.underground_neutralMarked_correct} note={formData.underground_neutralMarked_correct_note} />
                         </View>}
                      </View>
                      <Text style={{fontWeight: 'bold', marginTop: 8, marginBottom: 2}}>2.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์ (บริภัณฑ์ประธาน)</Text>
-                     <CorrectiveItem label="ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC60898" status={formData.breakerStandard_correct} note={formData.breakerStandard_note} />
-                     <CorrectiveItem label={`ข) เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์ ขนาด AT ${formData.breakerAmpRating || ''}`} status={formData.breakerMeterMatch_correct} note={formData.breakerMeterMatch_note} />
-                     <CorrectiveItem label="ค) ขนาดกระแสลัดวงจรสูงสุดไม่ต่ำกว่า 10 กิโลแอมแปร์ (KA)" status={formData.breakerShortCircuitRating_correct} note={formData.breakerShortCircuitRating_note} />
+                     <CorrectiveItem label="ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC60898" status={formData.breakerStandard_correct} note={formData.breakerStandard_correct_note} />
+                     <CorrectiveItem label={`ข) เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์ ขนาด AT ${formData.breakerAmpRating || ''}`} status={formData.breakerMeterMatch_correct} note={formData.breakerMeterMatch_correct_note} />
+                     <CorrectiveItem label="ค) ขนาดกระแสลัดวงจรสูงสุดไม่ต่ำกว่า 10 กิโลแอมแปร์ (KA)" status={formData.breakerShortCircuitRating_correct} note={formData.breakerShortCircuitRating_correct_note} />
                 </View>
                 {/* --- คอลัมน์ขวา --- */}
                 <View style={styles.gridColumn}>
                     <Text style={{fontWeight: 'bold', marginBottom: 2}}>2.3 ระบบการต่อลงดินที่แผงเมนสวิตช์</Text>
-                    <CorrectiveItem label={`ก) ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายตัวนำประธาน ขนาดสายต่อหลักดิน ${formData.groundWireSizeSqmm || ''} ตร.มม.`} status={formData.groundWireSize_correct} note={formData.groundWireSize_note} />
-                    <CorrectiveItem label="ข) ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม (มีข้อยกเว้น)" status={formData.groundResistance_correct} note={formData.groundResistance_note} />
-                    <CorrectiveItem label="ค) กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และต่อสายนิวทรัล (Neutral Wire) ของตัวนำประธาน (Main Conductor) เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน (Main Circuit Breaker) ตามที่ กฟภ. กำหนด" status={formData.onePhaseGroundConnection_correct} note={formData.onePhaseGroundConnection_note} />
-                    <CorrectiveItem label="ง) กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายดินบริภัณฑ์ ภายในแผงเมนสวิตช์ ตามที่ กฟภ. กำหนด" status={formData.threePhaseGroundConnection_correct} note={formData.threePhaseGroundConnection_note} />
+                    <CorrectiveItem label={`ก) ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายตัวนำประธาน ขนาดสายต่อหลักดิน ${formData.groundWireSizeSqmm || ''} ตร.มม.`} status={formData.groundWireSize_correct} note={formData.groundWireSize_correct_note} />
+                    <CorrectiveItem label="ข) ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม (มีข้อยกเว้น)" status={formData.groundResistance_correct} note={formData.groundResistance_correct_note} />
+                    <CorrectiveItem label="ค) กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และต่อสายนิวทรัล (Neutral Wire) ของตัวนำประธาน (Main Conductor) เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน (Main Circuit Breaker) ตามที่ กฟภ. กำหนด" status={formData.onePhaseGroundConnection_correct} note={formData.onePhaseGroundConnection_correct_note} />
+                    <CorrectiveItem label="ง) กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายดินบริภัณฑ์ ภายในแผงเมนสวิตช์ ตามที่ กฟภ. กำหนด" status={formData.threePhaseGroundConnection_correct} note={formData.threePhaseGroundConnection_correct_note} />
                     <Text style={{fontWeight: 'bold', marginTop: 8, marginBottom: 2}}>2.4 เครื่องตัดไฟรั่ว (RCD)</Text>
-                    <Checkbox checked={formData.rcdInstalledOption === 'installed'} label="ติดตั้งเครื่องตัดไฟรั่ว ขนาดพิกัดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง" />
-                    <Checkbox checked={formData.rcdInstalledOption === 'not_installed'} label="ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว และผู้ตรวจสอบมาตรฐานได้แจ้งให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนทราบถึงความเสี่ยงจากการไม่ติดตั้งเครื่องตัดไฟรั่วแล้ว" />
+                    <Checkbox checked={formData.rcdInstalledOption === 'ถูกต้อง'} label="ติดตั้งเครื่องตัดไฟรั่ว ขนาดพิกัดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง" />
+                    <Checkbox checked={formData.rcdInstalledOption === 'ไม่ประสงค์ติดตั้ง'} label="ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว และผู้ตรวจสอบมาตรฐานได้แจ้งให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนทราบถึงความเสี่ยงจากการไม่ติดตั้งเครื่องตัดไฟรั่วแล้ว" />
                 </View>
             </View>
         </View>
