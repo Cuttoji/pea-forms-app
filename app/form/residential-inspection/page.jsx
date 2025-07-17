@@ -280,7 +280,12 @@ export default function HomeForm() {
                   <label htmlFor="groundResistanceOhm" className="block text-sm font-medium text-gray-900 mb-1">ค่าความต้านทานการต่อลงดิน (โอห์ม):</label>
                   <input type="number" step="0.01" id="groundResistanceOhm" name="groundResistanceOhm" value={formData.groundResistanceOhm} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"/>
               </div>
-              <CorrectiveRadio groupName="groundResistance_correct" label="ข) ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม..." currentValue={formData.groundResistance_correct} currentNote={formData.groundResistance_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="groundResistance_correct" 
+              label="ข) ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม..."
+              currentValue={formData.groundResistance_correct} 
+              currentNote={formData.groundResistance_correct_note} 
+              onStatusChange={handleRadioChange} 
+              onNoteChange={handleChange}/>
               <CorrectiveRadio groupName="onePhaseGroundConnection_correct" label="ค) กรณีระบบไฟฟ้า 1 เฟส..." currentValue={formData.onePhaseGroundConnection_correct} currentNote={formData.onePhaseGroundConnection_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
               <CorrectiveRadio groupName="threePhaseGroundConnection_correct" label="ง) กรณีระบบไฟฟ้า 3 เฟส..." currentValue={formData.threePhaseGroundConnection_correct} currentNote={formData.threePhaseGroundConnection_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
             </div>
