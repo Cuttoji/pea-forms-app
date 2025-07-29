@@ -733,7 +733,7 @@ export default function EvChargerHvForm() {
                 onChange={handleChange}
                 className="text-[#5b2d90]"
               />
-              <span className="text-sm font-medium text-gray-700 ml-2">แผนผังระบบไฟฟ้า (Single Line Diagram) ระบุพิกัด...</span>
+              <span className="text-sm font-medium text-gray-700 ml-2">แผนผังระบบไฟฟ้า (Single Line Diagram) ระบุพิกัด</span>
             </label>
             <label className="block text-gray-700">
               <input
@@ -743,7 +743,7 @@ export default function EvChargerHvForm() {
                 onChange={handleChange}
                 className="text-[#5b2d90]"
               />
-              <span className="text-sm font-medium text-gray-700 ml-2">แบบติดตั้งระบบไฟฟ้า (As-built Drawing)...</span>
+              <span className="text-sm font-medium text-gray-700 ml-2">แบบติดตั้งระบบไฟฟ้า (As-built Drawing)</span>
             </label>
             <label className="block text-gray-700">
               <input
@@ -753,7 +753,7 @@ export default function EvChargerHvForm() {
                 onChange={handleChange}
                 className="text-[#5b2d90]"
               />
-              <span className="text-sm font-medium text-gray-700 ml-2">ตารางโหลด (Load Schedule) และรายการคำนวณทางไฟฟ้า...</span>
+              <span className="text-sm font-medium text-gray-700 ml-2">ตารางโหลด (Load Schedule) และรายการคำนวณทางไฟฟ้า</span>
             </label>
             <label className="block text-gray-700">
               <input
@@ -773,7 +773,7 @@ export default function EvChargerHvForm() {
                 onChange={handleChange}
                 className="text-[#5b2d90]"
               />
-              <span className="text-sm font-medium text-gray-700 ml-2">สเปคอุปกรณ์ (Specification) หรือ Data Sheet ของเครื่องอัดประจุยานยนต์ไฟฟ้า...</span>
+              <span className="text-sm font-medium text-gray-700 ml-2">สเปคอุปกรณ์ (Specification) หรือ Data Sheet ของเครื่องอัดประจุยานยนต์ไฟฟ้า</span>
             </label>
             <label className="block text-gray-700">
               <input
@@ -783,7 +783,7 @@ export default function EvChargerHvForm() {
                 onChange={handleChange}
                 className="text-[#5b2d90]"
               />
-              <span className="text-sm font-medium text-gray-700 ml-2">หนังสือจดแจ้ง (พิกัดน้อยกว่า 1,000 kVA) หรือใบอนุญาต...</span>
+              <span className="text-sm font-medium text-gray-700 ml-2">หนังสือจดแจ้ง (พิกัดน้อยกว่า 1,000 kVA) หรือใบอนุญาต</span>
             </label>
           </div>
           <div className="flex gap-4 items-center">

@@ -48,7 +48,15 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
         return 'residential-inspection';
       case 'condo_inspection_forms':
         return 'condo-inspection';
-      // เพิ่ม case อื่นๆ ตาม formTypes ของคุณ
+      case 'ev_charger_hv_inspection':
+        return 'ev-charger-inspection';
+      case 'ev_charger_lv_inspection':
+        return 'ev-charger-lv-inspection';
+      case 'commercial_inspection_forms': 
+        return 'commercial-inspection';
+      case 'construction_inspection_forms':
+        return 'construction-inspection';
+      // เพิ่มกรณีอื่นๆ ตามต้องการ
       default:
         return 'residential-inspection';
     }

@@ -36,68 +36,69 @@ const initialFormData = {
   // 2.1 ระบบจำหน่ายเหนือดิน
   overhead_cable_type: "",
   overhead_cable_type_correct: '',
-  overhead_cable_type_note: "",
+  overhead_cable_type_correct_note: "",
   overhead_cable_size_sqmm: "",
   overhead_cable_size_correct: '',
-  overhead_cable_size_note: "",
+  overhead_cable_size_correct_note: "",
   overhead_pole_condition_correct: '',
-  overhead_pole_condition_note: "",
+  overhead_pole_condition_correct_note: "",
   overhead_pole_top_equipment_correct: '',
-  overhead_pole_top_equipment_note: "",
+  overhead_pole_top_equipment_correct_note: "",
   overhead_guy_wire_assembly_correct: '',
-  overhead_guy_wire_assembly_note: "",
+  overhead_guy_wire_assembly_correct_note: "",
   overhead_insulator_type_correct: '',
-  overhead_insulator_type_note: "",
+  overhead_insulator_type_correct_note: "",
   overhead_cable_sagging_correct: '',
-  overhead_cable_sagging_note: "",
+  overhead_cable_sagging_correct_note: "",
   overhead_clearance_correct: '',
-  overhead_clearance_note: "",
+  overhead_clearance_correct_note: "",
   overhead_hv_surge_arrester_correct: '',
-  overhead_hv_surge_arrester_note: "",
+  overhead_hv_surge_arrester_correct_note: "",
   overhead_cable_joint_condition_correct: '',
-  overhead_cable_joint_condition_note: "",
+  overhead_cable_joint_condition_correct_note: "",
   overhead_grounding_correct: '',
-  overhead_grounding_note: "",
+  overhead_grounding_correct_note: "",
 
   // 2.2 ระบบจำหน่ายใต้ดิน
   underground_cable_type: "",
   underground_cable_type_correct: '',
-  underground_cable_type_note: "",
+  underground_cable_type_correct_note: "",
   underground_cable_size_sqmm: "",
   underground_cable_size_correct: '',
-  underground_cable_size_note: "",
+  underground_cable_size_correct_note: "",
   underground_visible_cable_condition_correct: '',
-  underground_visible_cable_condition_note: "",
+  underground_visible_cable_condition_correct_note: "",
   underground_cable_tension_correct: '',
-  underground_cable_tension_note: "",
+  underground_cable_tension_correct_note: "",
   underground_hv_surge_arrester_correct: '',
-  underground_hv_surge_arrester_note: "",
+  underground_hv_surge_arrester_correct_note: "",
   underground_cable_joint_condition_correct: '',
-  underground_cable_joint_condition_note: "",
+  underground_cable_joint_condition_correct_note: "",
   underground_grounding_correct: '',
-  underground_grounding_note: "",
+  underground_grounding_correct_note: "",
 
   // 2.3 เครื่องปลดวงจรต้นทาง
   disconnecting_device_status: '',
-  disconnecting_device_note: "",
+  disconnecting_device_correct_note: "",
   disconnecting_device_type: [],
   disconnecting_device_switch_type: "",
   hv_distribution_other: "",
+  hv_distribution_other_note: "",
 
   // หม้อแปลง (เก็บเป็น JSON Array of Objects)
   transformers: [], // ค่าเริ่มต้นเป็น Array ว่าง
 
   // 2.14 สายตัวนำประธานแรงต่ำ
   lv_main_cable_standard_correct: '',
-  lv_main_cable_standard_note: '',
+  lv_main_cable_standard_correct_note: '',
   lv_main_cable_type: '',
   lv_main_cable_other_type: '',
   lv_main_cable_size: '',
   lv_main_cable_type_size_correct: '',
-  lv_main_cable_type_size_note: '',
+  lv_main_cable_type_size_correct_note: '',
   lv_main_cable_wiring_method: [],
   lv_main_cable_wiring_correct: '',
-  lv_main_cable_wiring_note: '',
+  lv_main_cable_wiring_correct_note: '',
 
   // 2.15 เครื่องป้องกันกระแสเกินที่แผงเมนสวิตช์
   main_breaker_type: '',
@@ -115,54 +116,54 @@ const initialFormData = {
 
   // 2.16 การต่อลงดินของแผงเมนสวิตช์
   main_grounding_conductor_size_correct: '',
-  main_grounding_conductor_size_note: '',
+  main_grounding_conductor_size_correct_note: '',
   main_grounding_conductor_size_sqmm: '',
   main_grounding_resistance_correct: '',
-  main_grounding_resistance_note: '',
+  main_grounding_resistance_correct_note: '',
   main_grounding_test_point_correct: '',
-  main_grounding_test_point_note: '',
+  main_grounding_test_point_correct_note: '',
   main_grounding_bus_correct: '',
-  main_grounding_bus_note: '',
+  main_grounding_bus_correct_note: '',
 
   // 2.17 แผงจ่ายไฟประจำชั้น
   floor_panel_breaker_standard_correct: '',
-  floor_panel_breaker_standard_note: '',
+  floor_panel_breaker_standard_correct_note: '',
   floor_panel_breaker_size_correct: '',
-  floor_panel_breaker_size_note: '',
+  floor_panel_breaker_size_correct_note: '',
   floor_panel_breaker_at: '',
   floor_panel_breaker_af: '',
   floor_panel_breaker_ic: '',
   floor_panel_ground_bus_correct: '',
-  floor_panel_ground_bus_note: '',
+  floor_panel_ground_bus_correct_note: '',
 
   // 2.18 เซอร์กิตเบรกเกอร์ด้านไฟเข้าของมิเตอร์
   meter_breaker_size_correct: '',
-  meter_breaker_size_note: '',
+  meter_breaker_size_correct_note: '',
   meter_breaker_at: '',
   meter_breaker_af: '',
   meter_breaker_ic: '',
 
   // 2.19 สายตัวนำประธานเข้าห้องชุด
   room_feeder_standard_correct: '',
-  room_feeder_standard_note: '',
+  room_feeder_standard_correct_note: '',
   room_feeder_type: '',
   room_feeder_size: '',
   room_feeder_wiring: [],
 
   // 2.20 แผงจ่ายไฟในห้องชุด
   room_panel_breaker_standard_correct: '',
-  room_panel_breaker_standard_note: '',
+  room_panel_breaker_standard_correct_note: '',
   room_panel_breaker_meter_match_correct: '',
-  room_panel_breaker_meter_match_note: '',
+  room_panel_breaker_meter_match_correct_note: '',
   room_panel_breaker_at: '',
   room_panel_breaker_af: '',
   room_panel_ic_rating_correct: '',
-  room_panel_ic_rating_note: '',
+  room_panel_ic_rating_correct_note: '',
   room_panel_ground_bus_correct: '',
-  room_panel_ground_bus_note: '',
+  room_panel_ground_bus_correct_note: '',
 
   // 2.22 อื่นๆ
-  lv_system_other_note: '',
+  lv_system_other_correct_note: '',
 
   // สรุปและลงนาม
   summary_result: "",
@@ -194,10 +195,10 @@ export default function CondoInspectionForm() {
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
 
-  const handleRadioChange = (groupName, value, noteFieldName) => {
+ const handleRadioChange = (groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
-      [groupName]: value,
+      [groupName]: value, // รับค่า 'ถูกต้อง' หรือ 'ต้องแก้ไข' มาโดยตรง
       ...(value === 'ถูกต้อง' && { [noteFieldName]: '' }),
     }));
   };
@@ -361,7 +362,7 @@ export default function CondoInspectionForm() {
                 groupName="overhead_cable_type_correct"
                 label=""
                 currentValue={formData.overhead_cable_type_correct}
-                currentNote={formData.overhead_cable_type_note}
+                currentNote={formData.overhead_cable_type_correct_note}
                 onStatusChange={handleRadioChange}
                 onNoteChange={handleChange}
               />
@@ -382,7 +383,7 @@ export default function CondoInspectionForm() {
                 groupName="overhead_cable_size_correct"
                 label=""
                 currentValue={formData.overhead_cable_Size_correct}
-                currentNote={formData.overhead_cable_Size_note}
+                currentNote={formData.overhead_cable_Size_correct_note}
                 onStatusChange={handleRadioChange}
                 onNoteChange={handleChange}
               />
@@ -391,7 +392,7 @@ export default function CondoInspectionForm() {
               groupName="overhead_pole_condition_correct"
               label="2.1.3 สภาพเสาและระยะห่าง"
               currentValue={formData.overhead_pole_condition_correct}
-              currentNote={formData.overhead_pole_condition_note}
+              currentNote={formData.overhead_pole_condition_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
@@ -399,7 +400,7 @@ export default function CondoInspectionForm() {
               groupName="overhead_pole_top_equipment_correct"
               label="2.1.4 การประกอบอุปกรณ์หัวเสา"
               currentValue={formData.overhead_pole_top_equipment_correct}
-              currentNote={formData.overhead_pole_top_equipment_note}
+              currentNote={formData.overhead_pole_top_equipment_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
@@ -407,7 +408,7 @@ export default function CondoInspectionForm() {
               groupName="overhead_guy_wire_assembly_correct"
               label="2.1.5 การประกอบชุดยึดโยง"
               currentValue={formData.overhead_guy_wire_assembly_correct}
-              currentNote={formData.overhead_guy_wire_assembly_note}
+              currentNote={formData.overhead_guy_wire_assembly_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
@@ -415,7 +416,7 @@ export default function CondoInspectionForm() {
               groupName="overhead_insulator_type_correct"
               label="2.1.6 ลูกถ้วยและฉนวน"
               currentValue={formData.overhead_insulator_type_correct}
-              currentNote={formData.overhead_insulator_type_note}
+              currentNote={formData.overhead_insulator_type_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
@@ -423,7 +424,7 @@ export default function CondoInspectionForm() {
               groupName="overhead_cable_sagging_correct"
               label="2.1.7 การพาดสาย"
               currentValue={formData.overhead_cable_sagging_correct}
-              currentNote={formData.overhead_cable_sagging_note}
+              currentNote={formData.overhead_cable_sagging_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
@@ -431,7 +432,7 @@ export default function CondoInspectionForm() {
               groupName="overhead_clearance_correct"
               label="2.1.8 ระยะห่างของสาย"
               currentValue={formData.overhead_clearance_correct}
-              currentNote={formData.overhead_clearance_note}
+              currentNote={formData.overhead_clearance_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
@@ -439,7 +440,7 @@ export default function CondoInspectionForm() {
               groupName="overhead_hv_surge_arrester_correct"
               label="2.1.9 การติดตั้งกับดักเสิร์จ"
               currentValue={formData.overhead_hv_surge_arrester_correct}
-              currentNote={formData.overhead_hv_surge_arrester_note}
+              currentNote={formData.overhead_hv_surge_arrester_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
@@ -447,7 +448,7 @@ export default function CondoInspectionForm() {
               groupName="overhead_cable_joint_condition_correct"
               label="2.1.10 สภาพของจุดต่อสาย"
               currentValue={formData.overhead_cable_joint_condition_correct}
-              currentNote={formData.overhead_cable_joint_condition_note}
+              currentNote={formData.overhead_cable_joint_condition_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
@@ -455,7 +456,7 @@ export default function CondoInspectionForm() {
               groupName="overhead_grounding_correct"
               label="2.1.11 การต่อลงดิน"
               currentValue={formData.overhead_grounding_correct}
-              currentNote={formData.overhead_grounding_note}
+              currentNote={formData.overhead_grounding_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
@@ -476,7 +477,7 @@ export default function CondoInspectionForm() {
                   <CorrectiveRadio
                     groupName="underground_cable_type_correct"
                     currentValue={formData.underground_cable_type_correct}
-                    currentNote={formData.underground_cable_type_note}
+                    currentNote={formData.underground_cable_type_correct_note}
                     onStatusChange={handleRadioChange}
                     onNoteChange={handleChange}
                   />
@@ -493,7 +494,7 @@ export default function CondoInspectionForm() {
                     groupName="underground_cable_size_correct"
                     label="2.2.2 ขนาดสายตัวนำ"
                     currentValue={formData.underground_cable_size_correct}
-                    currentNote={formData.underground_cable_size_note}
+                    currentNote={formData.underground_cable_size_correct_note}
                     onStatusChange={handleRadioChange}
                     onNoteChange={handleChange}
                   />
@@ -501,7 +502,7 @@ export default function CondoInspectionForm() {
                     groupName="underground_visible_cable_condition_correct"
                     label="2.2.3 สภาพสายส่วนที่มองเห็นได้"
                     currentValue={formData.underground_visible_cable_condition_correct}
-                    currentNote={formData.underground_visible_cable_condition_note}
+                    currentNote={formData.underground_visible_cable_condition_correct_note}
                     onStatusChange={handleRadioChange}
                     onNoteChange={handleChange}
                   />
@@ -509,7 +510,7 @@ export default function CondoInspectionForm() {
                     groupName="underground_cable_tension_correct"
                     label="2.2.4 ความตึงของสาย"
                     currentValue={formData.underground_cable_tension_correct}
-                    currentNote={formData.underground_cable_tension_note}
+                    currentNote={formData.underground_cable_tension_correct_note}
                     onStatusChange={handleRadioChange}
                     onNoteChange={handleChange}
                   />
@@ -517,7 +518,7 @@ export default function CondoInspectionForm() {
                     groupName="underground_hv_surge_arrester_correct"
                     label="2.2.5 การติดตั้งกับดักเสิร์จ"
                     currentValue={formData.underground_hv_surge_arrester_correct}
-                    currentNote={formData.underground_hv_surge_arrester_note}
+                    currentNote={formData.underground_hv_surge_arrester_correct_note}
                     onStatusChange={handleRadioChange}
                     onNoteChange={handleChange}
                   />
@@ -525,7 +526,7 @@ export default function CondoInspectionForm() {
                     groupName="underground_cable_jointCondition_correct"
                     label="2.2.6 สภาพของจุดต่อสาย"
                     currentValue={formData.underground_cable_jointCondition_correct}
-                    currentNote={formData.underground_cable_jointCondition_note}
+                    currentNote={formData.underground_cable_jointCondition_correct_note}
                     onStatusChange={handleRadioChange}
                     onNoteChange={handleChange}
                   />
@@ -533,7 +534,7 @@ export default function CondoInspectionForm() {
                     groupName="underground_grounding_correct"
                     label="2.2.7 การต่อลงดิน"
                     currentValue={formData.underground_grounding_correct}
-                    currentNote={formData.underground_grounding_note}
+                    currentNote={formData.underground_grounding_correct_note}
                     onStatusChange={handleRadioChange}
                     onNoteChange={handleChange}
                   />
@@ -612,7 +613,7 @@ export default function CondoInspectionForm() {
               <CorrectiveRadio groupName="lv_main_cable_standard_correct" 
                 label="2.14.1 สายไฟฟ้าเป็นไปตามมาตรฐานมอก.11-2553, มอก. 293-2541 หรือ IEC 60502" 
                 currentValue={formData.lv_main_cable_standard_correct} 
-                currentNote={formData.lv_main_cable_standard_note} 
+                currentNote={formData.lv_main_cable_standard_correct_note} 
                 onStatusChange={handleRadioChange} onNoteChange={handleChange}
               />
               {/* 2.14.2 ชนิดและขนาดของสายไฟฟ้า */}
@@ -699,7 +700,7 @@ export default function CondoInspectionForm() {
                     groupName="lv_main_cable_type_size_correct"
                     label=""
                     currentValue={formData.lv_main_cable_type_size_correct}
-                    currentNote={formData.lv_main_cable_type_size_note}
+                    currentNote={formData.lv_main_cable_type_size_correct_note}
                     onStatusChange={handleRadioChange}
                     onNoteChange={handleChange}
                 />;
@@ -764,7 +765,7 @@ export default function CondoInspectionForm() {
                       groupName="lv_main_cable_wiring_correct"
                       label=""
                       currentValue={formData.lv_main_cable_wiring_correct}
-                      currentNote={formData.lv_main_cable_wiring_note}
+                      currentNote={formData.lv_main_cable_wiring_correct_note}
                       onStatusChange={handleRadioChange}
                       onNoteChange={handleChange}
                   />
@@ -851,7 +852,7 @@ export default function CondoInspectionForm() {
         groupName="main_breaker_correct"
         label="ผลการตรวจสอบ:"
         currentValue={formData.main_breaker_correct}
-        currentNote={formData.main_breaker_note}
+        currentNote={formData.main_breaker_correct_note}
         onStatusChange={handleRadioChange}
         onNoteChange={handleChange}
     />
@@ -882,7 +883,7 @@ export default function CondoInspectionForm() {
                 groupName="main_grounding_conductor_size_correct"
                 label=""
                 currentValue={formData.main_grounding_conductor_size_correct}
-                currentNote={formData.main_grounding_conductor_size_note}
+                currentNote={formData.main_grounding_conductor_size_correct_note}
                 onStatusChange={handleRadioChange}
                 onNoteChange={handleChange}
             />
@@ -893,7 +894,7 @@ export default function CondoInspectionForm() {
             groupName="main_grounding_resistance_correct"
             label="2.16.2 ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม (มีข้อยกเว้น)"
             currentValue={formData.main_grounding_resistance_correct}
-            currentNote={formData.main_grounding_resistance_note}
+            currentNote={formData.main_grounding_resistance_correct_note}
             onStatusChange={handleRadioChange}
             onNoteChange={handleChange}
         />
@@ -903,7 +904,7 @@ export default function CondoInspectionForm() {
             groupName="main_grounding_testPoint_correct"
             label="2.16.3 ต้องทำจุดทดสอบ สำหรับใช้วัดค่าความต้านทานการต่อลงดิน"
             currentValue={formData.main_grounding_testPoint_correct}
-            currentNote={formData.main_grounding_testPoint_note}
+            currentNote={formData.main_grounding_testPoint_correct_note}
             onStatusChange={handleRadioChange}
             onNoteChange={handleChange}
         />
@@ -913,7 +914,7 @@ export default function CondoInspectionForm() {
             groupName="main_grounding_bus_correct"
             label="2.16.4 แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) ตามที่ กฟภ. กำหนด"
             currentValue={formData.main_grounding_bus_correct}
-            currentNote={formData.main_grounding_bus_note}
+            currentNote={formData.main_grounding_bus_correct_note}
             onStatusChange={handleRadioChange}
             onNoteChange={handleChange}
         />
@@ -929,7 +930,7 @@ export default function CondoInspectionForm() {
             groupName="floor_panel_breaker_standard_correct"
             label="2.17.1 เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898 หรือ มอก. 909-2548"
             currentValue={formData.floor_panel_breaker_standard_correct}
-            currentNote={formData.floor_panel_breaker_standard_note}
+            currentNote={formData.floor_panel_breaker_standard_correct_note}
             onStatusChange={handleRadioChange}
             onNoteChange={handleChange}
         />
@@ -957,7 +958,7 @@ export default function CondoInspectionForm() {
                 groupName="floor_panel_breaker_size_correct"
                 label=""
                 currentValue={formData.floor_panel_breaker_size_correct}
-                currentNote={formData.floor_panel_breaker_size_note}
+                currentNote={formData.floor_panel_breaker_size_correct_note}
                 onStatusChange={handleRadioChange}
                 onNoteChange={handleChange}
             />
@@ -968,7 +969,7 @@ export default function CondoInspectionForm() {
             groupName="floor_panel_ground_bus_correct"
             label="2.17.3 แผงจ่ายไฟประจำชั้นต้องมีขั้วต่อสายดิน (Ground Bus) แยกจากขั้วต่อสายนิวทรัล (Neutral Bus)"
             currentValue={formData.floor_panel_ground_bus_correct}
-            currentNote={formData.floor_panel_ground_bus_note}
+            currentNote={formData.floor_panel_ground_bus_correct_note}
             onStatusChange={handleRadioChange}
             onNoteChange={handleChange}
         />
@@ -1001,7 +1002,7 @@ export default function CondoInspectionForm() {
             groupName="meter_breaker_size_correct"
             label=""
             currentValue={formData.meter_breaker_size_correct}
-            currentNote={formData.meter_breaker_size_note}
+            currentNote={formData.meter_breaker_size_correct_note}
             onStatusChange={handleRadioChange}
             onNoteChange={handleChange}
         />
@@ -1015,7 +1016,7 @@ export default function CondoInspectionForm() {
         groupName="room_feeder_standard_correct"
         label="สายไฟฟ้าเป็นไปตามมาตรฐาน มอก.11-2553 หรือ IEC 60502"
         currentValue={formData.room_feeder_standard_correct}
-        currentNote={formData.room_feeder_standard_note}
+        currentNote={formData.room_feeder_standard_correct_note}
         onStatusChange={handleRadioChange}
         onNoteChange={handleChange}
     />
@@ -1070,7 +1071,7 @@ export default function CondoInspectionForm() {
         groupName="room_panel_breaker_standard_correct"
         label="2.20.1 เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898"
         currentValue={formData.room_panel_breaker_standard_correct}
-        currentNote={formData.room_panel_breaker_standard_note}
+        currentNote={formData.room_panel_breaker_standard_correct_note}
         onStatusChange={handleRadioChange}
         onNoteChange={handleChange}
     />
@@ -1098,7 +1099,7 @@ export default function CondoInspectionForm() {
             groupName="room_panel_breaker_meter_match_correct"
             label=""
             currentValue={formData.room_panel_breaker_meter_match_correct}
-            currentNote={formData.room_panel_breaker_meter_match_note}
+            currentNote={formData.room_panel_breaker_meter_match_correct_note}
             onStatusChange={handleRadioChange}
             onNoteChange={handleChange}
             className="mt-4 text-sm font-semibold text-gray-800"
@@ -1108,7 +1109,7 @@ export default function CondoInspectionForm() {
         groupName="room_panel_ic_rating_correct"
         label="2.20.3 พิกัดตัดกระแสลัดวงจร (IC) ไม่ต่ำกว่า 10 kA"
         currentValue={formData.room_panel_ic_rating_correct}
-        currentNote={formData.room_panel_ic_rating_note}
+        currentNote={formData.room_panel_ic_rating_correct_note}
         onStatusChange={handleRadioChange}
         onNoteChange={handleChange}
         className="mb-4 text-sm font-semibold text-gray-800"
@@ -1122,7 +1123,7 @@ export default function CondoInspectionForm() {
         groupName="room_panel_ground_bus_correct"
         label="สำหรับต่อกับอุปกรณ์และเครื่องใช้ไฟฟ้า"
         currentValue={formData.room_panel_ground_bus_correct}
-        currentNote={formData.room_panel_ground_bus_note}
+        currentNote={formData.room_panel_ground_bus_correct_note}
         onStatusChange={handleRadioChange}
         onNoteChange={handleChange}
         className="mb-4 text-sm font-semibold text-gray-800"

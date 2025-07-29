@@ -5,14 +5,8 @@ import { useFormManager } from "@/lib/hooks/useFormManager";
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import InspectionPDF from "@/components/forms/InspectionPDF";
-// import CommercialInspectionPDF from '@/components/forms/CommercialInspectionPDF';
+import CommercialInspectionPDF from '@/components/forms/CommercialInspectionPDF';
 import { Download, Save } from "lucide-react";
-import dynamic from 'next/dynamic';
-
-const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStreetMapComponent'), { 
-  ssr: false 
-});
 
 // --- ค่าเริ่มต้นของข้อมูลในฟอร์ม ---
 const initialFormData = {
@@ -31,56 +25,54 @@ const initialFormData = {
   voltageSystem: "",
   estimatedLoad: "",
   hasDesignCertification: null,
-  asBuiltDrawingCertified: false,
-  engineerLicenseCopy: false,
 
   // 2.1 ระบบจำหน่ายเหนือดิน
   overhead_cableType: "",
   overhead_cableType_correct: null,
-  overhead_cableType_note: "",
+  overhead_cableType_correct_note: "",
   overhead_cableSizeSqmm: "",
   overhead_cableSize_correct: null,
-  overhead_cableSize_note: "",
+  overhead_cableSize_correct_note: "",
   overhead_poleCondition_correct: null,
-  overhead_poleCondition_note: "",
+  overhead_poleCondition_correct_note: "",
   overhead_poleTopEquipment_correct: null,
-  overhead_poleTopEquipment_note: "",
+  overhead_poleTopEquipment_correct_note: "",
   overhead_guyWireAssembly_correct: null,
-  overhead_guyWireAssembly_note: "",
+  overhead_guyWireAssembly_correct_note: "",
   overhead_insulatorType_correct: null,
-  overhead_insulatorType_note: "",
+  overhead_insulatorType_correct_note: "",
   overhead_cableSagging_correct: null,
-  overhead_cableSagging_note: "",
+  overhead_cableSagging_correct_note: "",
   overhead_clearance_correct: null,
-  overhead_clearance_note: "",
+  overhead_clearance_correct_note: "",
   overhead_hvSurgeArrester_correct: null,
-  overhead_hvSurgeArrester_note: "",
+  overhead_hvSurgeArrester_correct_note: "",
   overhead_cableJointCondition_correct: null,
-  overhead_cableJointCondition_note: "",
+  overhead_cableJointCondition_correct_note: "",
   overhead_grounding_correct: null,
-  overhead_grounding_note: "",
+  overhead_grounding_correct_note: "",
 
   // 2.2 ระบบจำหน่ายใต้ดิน
   underground_cableType: "",
   underground_cableType_correct: null,
-  underground_cableType_note: "",
+  underground_cableType_correct_note: "",
   underground_cableSizeSqmm: "",
   underground_cableSize_correct: null,
-  underground_cableSize_note: "",
+  underground_cableSize_correct_note: "",
   underground_visibleCableCondition_correct: null,
-  underground_visibleCableCondition_note: "",
+  underground_visibleCableCondition_correct_note: "",
   underground_cableTension_correct: null,
-  underground_cableTension_note: "",
+  underground_cableTension_correct_note: "",
   underground_hvSurgeArrester_correct: null,
-  underground_hvSurgeArrester_note: "",
+  underground_hvSurgeArrester_correct_note: "",
   underground_cableJointCondition_correct: null,
-  underground_cableJointCondition_note: "",
+  underground_cableJointCondition_correct_note: "",
   underground_grounding_correct: null,
-  underground_grounding_note: "",
+  underground_grounding_correct_note: "",
 
   // 2.3 เครื่องปลดวงจรต้นทาง
   disconnectingDeviceStatus: null,
-  disconnectingDeviceNote: "",
+  disconnectingDevice_note: "",
   disconnectingDeviceType: [],
   disconnectingDeviceSwitchType: "",
   hvDistributionOther: "",
@@ -96,37 +88,41 @@ const initialFormData = {
   transformer_type_other: "",
   transformer_vector_group: "",
   transformer_short_circuit_rating_correct: null,
-  transformer_short_circuit_rating_note: "",
+  transformer_short_circuit_rating_correct_note: "",
+  transformer_properties_correct: null, // เพิ่มบรรทัดนี้
+  transformer_properties_correct_note: "",
   transformer_installation_type: [],
+  transformer_installation_correct: null, // เพิ่มบรรทัดนี้
+  transformer_installation_correct_note: "",
   transformer_overcurrent_protection_type: [],
   transformer_overcurrent_protection_other: "",
   transformer_continuous_current_a: '',
   transformer_interrupting_capacity_ic: '',
   transformer_overcurrent_protection_correct: null,
-  transformer_overcurrent_protection_note: "",
+  transformer_overcurrent_protection_correct_note: "",
   transformer_hv_surge_arrester_correct: null,
-  transformer_hv_surge_arrester_note: "",
+  transformer_hv_surge_arrester_correct_note: "",
   transformer_grounding_assembly_correct: null,
-  transformer_grounding_assembly_note: "",
+  transformer_grounding_assembly_correct_note: "",
   transformer_hv_ground_resistance_correct: null,
-  transformer_hv_ground_resistance_note: "",
+  transformer_hv_ground_resistance_correct_note: "",
   transformer_silica_gel_correct: null,
-  transformer_silica_gel_note: "",
+  transformer_silica_gel_correct_note: "",
   transformer_bushing_condition_correct: null,
-  transformer_bushing_condition_note: "",
+  transformer_bushing_condition_correct_note: "",
   transformer_oil_level_correct: null,
-  transformer_oil_level_note: "",
+  transformer_oil_level_correct_note: "",
   transformer_oil_leak_correct: null,
-  transformer_oil_leak_note: "",
+  transformer_oil_leak_correct_note: "",
   transformer_warning_sign_correct: null,
-  transformer_warning_sign_note: "",
-  transformer_other_note: "",
+  transformer_warning_sign_correct_note: "",
+  transformer_other_correct_note: "",
 
   // สรุปผลและลงนาม
   summaryResult: "",
   scopeAndLimitations: "",
-  applicantSignature: "",
-  peaOfficerSignature: "",
+  userSignature: "",
+  inspectorSignature: "",
 };
 
 export default function CommercialInspectionForm() {
@@ -272,38 +268,48 @@ export default function CommercialInspectionForm() {
         </div>
       </section>
 
-      <section className="bg-gray-50 p-6 rounded-lg border">
-        <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">2. การตรวจสอบ</h2>
         {/* --- 2. การตรวจสอบ --- */}
 <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
     <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">2. การตรวจสอบ</h2>
 
-    {/* เอกสารรับรองการออกแบบ */}
-    <div className="border-b border-gray-200 pb-4 mb-6">
-        <label className="block text-sm font-semibold text-gray-800 mb-2">เอกสารรับรองการออกแบบระบบไฟฟ้า:</label>
-        <div className="flex flex-wrap gap-x-6 gap-y-2 mt-1">
-            <label className="inline-flex items-center cursor-pointer">
-                <input type="radio" name="hasDesignCertification" value="true" checked={formData.hasDesignCertification === true} onChange={() => setFormData(prev => ({...prev, hasDesignCertification: true}))} className="form-radio h-5 w-5 text-[#5b2d90]"/>
-                <span className="ml-2 text-sm text-gray-700">มี</span>
-            </label>
-            <label className="inline-flex items-center cursor-pointer">
-                <input type="radio" name="hasDesignCertification" value="false" checked={formData.hasDesignCertification === false} onChange={() => setFormData(prev => ({...prev, hasDesignCertification: false}))} className="form-radio h-5 w-5 text-[#5b2d90]"/>
-                <span className="ml-2 text-sm text-gray-700">ไม่มี</span>
-            </label>
-        </div>
-        {formData.hasDesignCertification && (
-            <div className="mt-3 pl-6 space-y-2">
-                <label className="flex items-center text-sm text-gray-700">
-                    <input type="checkbox" name="asBuiltDrawingCertified" checked={formData.asBuiltDrawingCertified} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 rounded"/>
-                    <span className="ml-2">1. วิศวกรลงนามรับรองในแบบ As-built Drawing</span>
-                </label>
-                <label className="flex items-center text-sm text-gray-700">
-                    <input type="checkbox" name="engineerLicenseCopy" checked={formData.engineerLicenseCopy} onChange={handleChange} className="form-checkbox h-4 w-4 text-purple-600 rounded"/>
-                    <span className="ml-2">2. สำเนาใบอนุญาตการประกอบวิชาชีพวิศวกรรม</span>
-                </label>
-            </div>
-        )}
+{/* เอกสารรับรองการออกแบบ */}
+<div className="border-b border-gray-200 pb-4 mb-6">
+    <label className="block text-xl font-bold text-[#3a1a5b] mb-4">เอกสารรับรองการออกแบบระบบไฟฟ้า:</label>
+    <div className="flex flex-col sm:flex-row gap-4 mt-3">
+        <label className="inline-flex items-start cursor-pointer p-4 rounded-lg border border-gray-300 transition-all duration-200 hover:border-[#a78bfa] flex-1">
+            <input
+                type="radio"
+                name="hasDesignCertification"
+                value="true"
+                checked={formData.hasDesignCertification === true}
+                onChange={() => setFormData(prev => ({ ...prev, hasDesignCertification: true }))}
+                className="form-radio h-5 w-5 text-[#5b2d90] ring-offset-2 focus:ring-2 focus:ring-[#a78bfa] cursor-pointer"
+            />
+            <span className="ml-3 text-base font-medium text-gray-800">มี</span>
+            {formData.hasDesignCertification === true && (
+                <div className="ml-6 space-y-2 text-sm text-gray-700">
+                    <p className="flex items-center">
+                        <span className="mr-2 text-[#5b2d90]">✓</span> 1. วิศวกรลงนามรับรองในแบบ As-built Drawing
+                    </p>
+                    <p className="flex items-center">
+                        <span className="mr-2 text-[#5b2d90]">✓</span> 2. สำเนาใบอนุญาตการประกอบวิชาชีพวิศวกรรม
+                    </p>
+                </div>
+            )}
+        </label>
+        <label className="inline-flex items-start cursor-pointer p-4 rounded-lg border border-gray-300 transition-all duration-200 hover:border-[#a78bfa] flex-1">
+            <input
+                type="radio"
+                name="hasDesignCertification"
+                value="false"
+                checked={formData.hasDesignCertification === false}
+                onChange={() => setFormData(prev => ({ ...prev, hasDesignCertification: false }))}
+                className="form-radio h-5 w-5 text-[#5b2d90] ring-offset-2 focus:ring-2 focus:ring-[#a78bfa] cursor-pointer"
+            />
+            <span className="ml-3 text-base font-medium text-gray-800">ไม่มี</span>
+        </label>
     </div>
+</div>
 
     <div className="space-y-4">
         <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b] mt-6">ระบบจำหน่ายแรงสูง</h3>
@@ -316,23 +322,23 @@ export default function CommercialInspectionForm() {
                     <div className="mb-4">
                         <label htmlFor="overhead_cableType" className="block text-sm font-semibold text-gray-800 mb-2">2.1.1 ชนิดสายตัวนำ:</label>
                         <input type="text" id="overhead_cableType" name="overhead_cableType" value={formData.overhead_cableType} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" placeholder="เช่น SAC, THW-A"/>
-                        <CorrectiveRadio groupName="overhead_cableType_correct" currentValue={formData.overhead_cableType_correct} currentNote={formData.overhead_cableType_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                        <CorrectiveRadio groupName="overhead_cableType_correct" currentValue={formData.overhead_cableType_correct} currentNote={formData.overhead_cableType_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
                     </div>
                     <div>
                         <label htmlFor="overhead_cableSizeSqmm" className="block text-sm font-semibold text-gray-800 mb-2">2.1.2 ขนาดสายตัวนำ (ตร.มม.):</label>
                         <input type="number" step="any" id="overhead_cableSizeSqmm" name="overhead_cableSizeSqmm" value={formData.overhead_cableSizeSqmm} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" placeholder="เช่น 50, 70"/>
-                        <CorrectiveRadio groupName="overhead_cableSize_correct" currentValue={formData.overhead_cableSize_correct} currentNote={formData.overhead_cableSize_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                        <CorrectiveRadio groupName="overhead_cableSize_correct" currentValue={formData.overhead_cableSize_correct} currentNote={formData.overhead_cableSize_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
                     </div>
                 </div>
-                <CorrectiveRadio groupName="overhead_poleCondition_correct" label="2.1.3 สภาพเสาและระยะห่าง" currentValue={formData.overhead_poleCondition_correct} currentNote={formData.overhead_poleCondition_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="overhead_poleTopEquipment_correct" label="2.1.4 การประกอบอุปกรณ์หัวเสา" currentValue={formData.overhead_poleTopEquipment_correct} currentNote={formData.overhead_poleTopEquipment_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="overhead_guyWireAssembly_correct" label="2.1.5 การประกอบชุดยึดโยง" currentValue={formData.overhead_guyWireAssembly_correct} currentNote={formData.overhead_guyWireAssembly_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="overhead_insulatorType_correct" label="2.1.6 ลูกถ้วยและฉนวน" currentValue={formData.overhead_insulatorType_correct} currentNote={formData.overhead_insulatorType_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="overhead_cableSagging_correct" label="2.1.7 การพาดสาย (สภาพสาย, ระยะหย่อนยาน)" currentValue={formData.overhead_cableSagging_correct} currentNote={formData.overhead_cableSagging_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="overhead_clearance_correct" label="2.1.8 ระยะห่างของสายกับอาคาร สิ่งก่อสร้าง หรือต้นไม้" currentValue={formData.overhead_clearance_correct} currentNote={formData.overhead_clearance_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="overhead_hvSurgeArrester_correct" label="2.1.9 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)" currentValue={formData.overhead_hvSurgeArrester_correct} currentNote={formData.overhead_hvSurgeArrester_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="overhead_cableJointCondition_correct" label="2.1.10 สภาพของจุดต่อสาย" currentValue={formData.overhead_cableJointCondition_correct} currentNote={formData.overhead_cableJointCondition_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="overhead_grounding_correct" label="2.1.11 การต่อลงดิน" currentValue={formData.overhead_grounding_correct} currentNote={formData.overhead_grounding_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="overhead_poleCondition_correct" label="2.1.3 สภาพเสาและระยะห่าง" currentValue={formData.overhead_poleCondition_correct} currentNote={formData.overhead_poleCondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="overhead_poleTopEquipment_correct" label="2.1.4 การประกอบอุปกรณ์หัวเสา" currentValue={formData.overhead_poleTopEquipment_correct} currentNote={formData.overhead_poleTopEquipment_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="overhead_guyWireAssembly_correct" label="2.1.5 การประกอบชุดยึดโยง" currentValue={formData.overhead_guyWireAssembly_correct} currentNote={formData.overhead_guyWireAssembly_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="overhead_insulatorType_correct" label="2.1.6 ลูกถ้วยและฉนวน" currentValue={formData.overhead_insulatorType_correct} currentNote={formData.overhead_insulatorType_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="overhead_cableSagging_correct" label="2.1.7 การพาดสาย (สภาพสาย, ระยะหย่อนยาน)" currentValue={formData.overhead_cableSagging_correct} currentNote={formData.overhead_cableSagging_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="overhead_clearance_correct" label="2.1.8 ระยะห่างของสายกับอาคาร สิ่งก่อสร้าง หรือต้นไม้" currentValue={formData.overhead_clearance_correct} currentNote={formData.overhead_clearance_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="overhead_hvSurgeArrester_correct" label="2.1.9 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)" currentValue={formData.overhead_hvSurgeArrester_correct} currentNote={formData.overhead_hvSurgeArrester_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="overhead_cableJointCondition_correct" label="2.1.10 สภาพของจุดต่อสาย" currentValue={formData.overhead_cableJointCondition_correct} currentNote={formData.overhead_cableJointCondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="overhead_grounding_correct" label="2.1.11 การต่อลงดิน" currentValue={formData.overhead_grounding_correct} currentNote={formData.overhead_grounding_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
             </div>
         </div>
 
@@ -344,19 +350,19 @@ export default function CommercialInspectionForm() {
                     <div className="mb-4">
                         <label htmlFor="underground_cableType" className="block text-sm font-semibold text-gray-800 mb-2">2.2.1 ชนิดสายตัวนำ:</label>
                         <input type="text" id="underground_cableType" name="underground_cableType" value={formData.underground_cableType} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm"/>
-                        <CorrectiveRadio groupName="underground_cableType_correct" currentValue={formData.underground_cableType_correct} currentNote={formData.underground_cableType_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                        <CorrectiveRadio groupName="underground_cableType_correct" currentValue={formData.underground_cableType_correct} currentNote={formData.underground_cableType_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
                     </div>
                     <div>
                         <label htmlFor="underground_cableSizeSqmm" className="block text-sm font-semibold text-gray-800 mb-2">2.2.2 ขนาดสายตัวนำ (ตร.มม.):</label>
                         <input type="number" step="any" id="underground_cableSizeSqmm" name="underground_cableSizeSqmm" value={formData.underground_cableSizeSqmm} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm"/>
-                        <CorrectiveRadio groupName="underground_cableSize_correct" currentValue={formData.underground_cableSize_correct} currentNote={formData.underground_cableSize_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                        <CorrectiveRadio groupName="underground_cableSize_correct" currentValue={formData.underground_cableSize_correct} currentNote={formData.underground_cableSize_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
                     </div>
                 </div>
-                <CorrectiveRadio groupName="underground_visibleCableCondition_correct" label="2.2.3 สภาพสายส่วนที่มองเห็นได้" currentValue={formData.underground_visibleCableCondition_correct} currentNote={formData.underground_visibleCableCondition_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="underground_cableTension_correct" label="2.2.4 ความตึงของสาย" currentValue={formData.underground_cableTension_correct} currentNote={formData.underground_cableTension_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="underground_hvSurgeArrester_correct" label="2.2.5 การติดตั้งกับดักเสิร์จ" currentValue={formData.underground_hvSurgeArrester_correct} currentNote={formData.underground_hvSurgeArrester_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="underground_cableJointCondition_correct" label="2.2.6 สภาพของจุดต่อสาย" currentValue={formData.underground_cableJointCondition_correct} currentNote={formData.underground_cableJointCondition_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-                <CorrectiveRadio groupName="underground_grounding_correct" label="2.2.7 การต่อลงดิน" currentValue={formData.underground_grounding_correct} currentNote={formData.underground_grounding_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="underground_visibleCableCondition_correct" label="2.2.3 สภาพสายส่วนที่มองเห็นได้" currentValue={formData.underground_visibleCableCondition_correct} currentNote={formData.underground_visibleCableCondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="underground_cableTension_correct" label="2.2.4 ความตึงของสาย" currentValue={formData.underground_cableTension_correct} currentNote={formData.underground_cableTension_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="underground_hvSurgeArrester_correct" label="2.2.5 การติดตั้งกับดักเสิร์จ" currentValue={formData.underground_hvSurgeArrester_correct} currentNote={formData.underground_hvSurgeArrester_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="underground_cableJointCondition_correct" label="2.2.6 สภาพของจุดต่อสาย" currentValue={formData.underground_cableJointCondition_correct} currentNote={formData.underground_cableJointCondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+                <CorrectiveRadio groupName="underground_grounding_correct" label="2.2.7 การต่อลงดิน" currentValue={formData.underground_grounding_correct} currentNote={formData.underground_grounding_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
             </div>
         </div>
 
@@ -417,7 +423,7 @@ export default function CommercialInspectionForm() {
             </div>
         </div>
     </div>
-</section>
+
 
 {/* --- หม้อแปลง (2.5 - 2.13) --- */}
 <div className="mt-6">
@@ -473,7 +479,7 @@ export default function CommercialInspectionForm() {
                     </label>
                 </div>
             </div>
-            <CorrectiveRadio groupName="transformer_properties_correct" label="ผลการตรวจสอบคุณสมบัติ" currentValue={formData.transformer_properties_correct} currentNote={formData.transformer_properties_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+            <CorrectiveRadio groupName="transformer_properties_correct" label="ผลการตรวจสอบคุณสมบัติ" currentValue={formData.transformer_properties_correct} currentNote={formData.transformer_properties_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
         </div>
 
         {/* --- 2.6 ลักษณะการติดตั้ง --- */}
@@ -494,7 +500,7 @@ export default function CommercialInspectionForm() {
                     )}
                 </label>
             </div>
-            <CorrectiveRadio groupName="transformer_installation_correct" label="" currentValue={formData.transformer_installation_correct} currentNote={formData.transformer_installation_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+            <CorrectiveRadio groupName="transformer_installation_correct" label="" currentValue={formData.transformer_installation_correct} currentNote={formData.transformer_installation_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
         </div>
 
         {/* --- 2.7 เครื่องป้องกันกระแสเกินด้านไฟเข้า --- */}
@@ -518,34 +524,34 @@ export default function CommercialInspectionForm() {
              <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700">พิกัดกระแสต่อเนื่อง (A)</label>
-                    <input type="number" name="transformer_continuous_current_a" value={formData.transformer_continuous_current_a || ''} onChange={handleChange} className="w-full p-2 border rounded-md"/>
+                    <input type="number" name="transformer_continuous_current_a" value={formData.transformer_continuous_current_a || ''} onChange={handleChange} className="w-full p-2 border rounded-md text-gray-700"/>
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">พิกัดตัดกระแสลัดวงจร (IC)</label>
-                    <input type="text" name="transformer_interrupting_capacity_ic" value={formData.transformer_interrupting_capacity_ic || ''} onChange={handleChange} className="w-full p-2 border rounded-md"/>
+                    <input type="text" name="transformer_interrupting_capacity_ic" value={formData.transformer_interrupting_capacity_ic || ''} onChange={handleChange} className="w-full p-2 border rounded-md text-gray-700"/>
                 </div>
             </div>
-            <CorrectiveRadio groupName="transformer_overcurrent_correct" label="" currentValue={formData.transformer_overcurrent_correct} currentNote={formData.transformer_overcurrent_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+            <CorrectiveRadio groupName="transformer_overcurrent_correct" label="" currentValue={formData.transformer_overcurrent_correct} currentNote={formData.transformer_overcurrent_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
         </div>
         
         {/* --- 2.8 - 2.13 --- */}
-        <CorrectiveRadio groupName="transformer_hv_surge_arrester_correct" label="2.8 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)" currentValue={formData.transformer_hv_surge_arrester_correct} currentNote={formData.transformer_hv_surge_arrester_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-        <CorrectiveRadio groupName="transformer_grounding_assembly_correct" label="2.9 การประกอบสายดินกับตัวถังหม้อแปลงและกับดักเสิร์จ" currentValue={formData.transformer_grounding_assembly_correct} currentNote={formData.transformer_grounding_assembly_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-        <CorrectiveRadio groupName="transformer_hv_ground_resistance_correct" label="2.10 ค่าความต้านทานดินของระบบแรงสูง" currentValue={formData.transformer_hv_ground_resistance_correct} currentNote={formData.transformer_hv_ground_resistance_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+        <CorrectiveRadio groupName="transformer_hv_surge_arrester_correct" label="2.8 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)" currentValue={formData.transformer_hv_surge_arrester_correct} currentNote={formData.transformer_hv_surge_arrester_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+        <CorrectiveRadio groupName="transformer_grounding_assembly_correct" label="2.9 การประกอบสายดินกับตัวถังหม้อแปลงและกับดักเสิร์จ" currentValue={formData.transformer_grounding_assembly_correct} currentNote={formData.transformer_grounding_assembly_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+        <CorrectiveRadio groupName="transformer_hv_ground_resistance_correct" label="2.10 ค่าความต้านทานดินของระบบแรงสูง" currentValue={formData.transformer_hv_ground_resistance_correct} currentNote={formData.transformer_hv_ground_resistance_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
         
         <h5 className="font-semibold text-gray-700 mt-4">2.11 สภาพภายนอกหม้อแปลง (เฉพาะชนิดน้ำมัน)</h5>
         <div className="pl-4">
-            <CorrectiveRadio groupName="transformer_silica_gel_correct" label="2.11.1 สารดูดความชื้น (Silica Gel)" currentValue={formData.transformer_silica_gel_correct} currentNote={formData.transformer_silica_gel_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-            <CorrectiveRadio groupName="transformer_bushing_condition_correct" label="2.11.2 สภาพบุชชิ่ง" currentValue={formData.transformer_bushing_condition_correct} currentNote={formData.transformer_bushing_condition_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-            <CorrectiveRadio groupName="transformer_oil_level_correct" label="2.11.3 ระดับน้ำมัน" currentValue={formData.transformer_oil_level_correct} currentNote={formData.transformer_oil_level_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
-            <CorrectiveRadio groupName="transformer_oil_leak_correct" label="2.11.4 การรั่วซึมของน้ำมัน" currentValue={formData.transformer_oil_leak_correct} currentNote={formData.transformer_oil_leak_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+            <CorrectiveRadio groupName="transformer_silica_gel_correct" label="2.11.1 สารดูดความชื้น (Silica Gel)" currentValue={formData.transformer_silica_gel_correct} currentNote={formData.transformer_silica_gel_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+            <CorrectiveRadio groupName="transformer_bushing_condition_correct" label="2.11.2 สภาพบุชชิ่ง" currentValue={formData.transformer_bushing_condition_correct} currentNote={formData.transformer_bushing_condition_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+            <CorrectiveRadio groupName="transformer_oil_level_correct" label="2.11.3 ระดับน้ำมัน" currentValue={formData.transformer_oil_level_correct} currentNote={formData.transformer_oil_level_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+            <CorrectiveRadio groupName="transformer_oil_leak_correct" label="2.11.4 การรั่วซึมของน้ำมัน" currentValue={formData.transformer_oil_leak_correct} currentNote={formData.transformer_oil_leak_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
         </div>
 
-        <CorrectiveRadio groupName="transformer_warning_sign_correct" label="2.12 ป้ายเตือนอันตรายไฟฟ้าแรงสูง" currentValue={formData.transformer_warning_sign_correct} currentNote={formData.transformer_warning_sign_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+        <CorrectiveRadio groupName="transformer_warning_sign_correct" label="2.12 ป้ายเตือนอันตรายไฟฟ้าแรงสูง" currentValue={formData.transformer_warning_sign_correct} currentNote={formData.transformer_warning_sign_correct_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
         
         <div>
-            <label htmlFor="transformer_other_note" className="text-lg font-semibold text-gray-800">2.13 อื่นๆ</label>
-            <textarea id="transformer_other_note" name="transformer_other_note" value={formData.transformer_other_note} onChange={handleChange} rows="3" className="mt-1 block w-full p-2 border rounded-md text-sm text-gray-700"></textarea>
+            <label htmlFor="transformer_other_correct_note" className="text-lg font-semibold text-gray-800">2.13 อื่นๆ</label>
+            <textarea id="transformer_other_correct_note" name="transformer_other_correct_note" value={formData.transformer_other_correct_note} onChange={handleChange} rows="3" className="mt-1 block w-full p-2 border rounded-md text-sm text-gray-700"></textarea>
         </div>
     </div>
 </div>
@@ -554,6 +560,15 @@ export default function CommercialInspectionForm() {
       {/* --- สรุปและลงนาม --- */}
       <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
         <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">สรุปผลและลงนาม</h3>
+        <textarea type="text"
+          name="summaryResult"
+          value={formData.summaryResult}
+          onChange={handleChange}
+          placeholder="สรุปผลการตรวจสอบ..."
+          className="w-full p-3 border border-gray-300 rounded-lg shadow-sm mb-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          rows="3"
+          as="textarea"
+        />
         {/* ... UI for Summary and Signatures ... */}
       </section>
       <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
@@ -562,16 +577,16 @@ export default function CommercialInspectionForm() {
                 <SignaturePad 
                   title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" 
                   ref={applicantSigRef}
-                  onSave={(dataUrl) => handleSignatureSave('applicantSignature', dataUrl)} 
-                  onClear={() => handleSignatureClear('applicantSignature')}
-                  initialValue={formData.applicantSignature}
+                  onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} 
+                  onClear={() => handleSignatureClear('userSignature')}
+                  initialValue={formData.userSignature}
                 />
                 <SignaturePad 
                   title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" 
                   ref={peaOfficerSigRef}
-                  onSave={(dataUrl) => handleSignatureSave('peaOfficerSignature', dataUrl)} 
-                  onClear={() => handleSignatureClear('peaOfficerSignature')}
-                  initialValue={formData.peaOfficerSignature}
+                  onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} 
+                  onClear={() => handleSignatureClear('inspectorSignature')}
+                  initialValue={formData.inspectorSignature}
                 />
               </div>
             </section>
@@ -579,8 +594,8 @@ export default function CommercialInspectionForm() {
             {/* --- Action Buttons --- */}
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
               <PDFDownloadLink
-                document={<InspectionPDF formData={formData} />}
-                fileName={`inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
+                document={<CommercialInspectionPDF formData={formData} />}
+                fileName={`commercial-inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
                 className="w-full sm:w-auto"
               >
                 {({ loading }) => (

@@ -1,11 +1,10 @@
-// app/dashboard/page.tsx
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import FormListTable from "./FormListTable";
-import { FilePlus, ListFilter, SlidersHorizontal } from "lucide-react";
+import { FilePlus, ListFilter, SlidersHorizontal, CalendarDays, BarChart4, ClipboardCheck, Clock, ChevronLeft, ChevronRight } from "lucide-react"; // เพิ่มไอคอน ChevronLeft, ChevronRight
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -23,11 +22,11 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const formTypes = [
   { value: 'inspection_forms', label: 'ฟอร์มที่อยู่อาศัย' },
   { value: 'condo_inspection_forms', label: 'ฟอร์มอาคารชุด' },
-  { value: 'ev_inspection_forms', label: 'ฟอร์ม EV Charger' },
-  { value: 'commercial_inspection_forms', label: 'ฟอร์มเชิงพาณิชย์' },
-  { value: 'industrial_inspection_forms', label: 'ฟอร์มอุตสาหกรรม' },
-  { value: 'solar_inspection_forms', label: 'ฟอร์ม Solar Inspection' },
-  { value: 'other_inspection_forms', label: 'ฟอร์มอื่นๆ' },
+  { value: 'ev_charger_lv_inspection', label: 'ฟอร์ม EV Charger (แรงต่ำ)' },
+  { value: 'ev_charger_hv_inspection', label: 'ฟอร์ม EV Charger (แรงสูง)' },
+  { value: 'commercial_inspection_forms', label: 'ฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)' },
+  { value: 'construction_inspection_forms', label: 'ฟอร์มตรวจสอบงานก่อสร้าง' },
+  // เพิ่มประเภทฟอร์มอื่นๆ ตามต้องการ
 ];
 
 export default function DashboardPage() {
@@ -35,62 +34,176 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFormType, setSelectedFormType] = useState(formTypes[0].value);
   const [sortBy, setSortBy] = useState('created_at');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  // States สำหรับ KPI Dashboard
+  const [totalForms, setTotalForms] = useState(0);
+  const [formsToday, setFormsToday] = useState(0);
+  const [formsThisWeek, setFormsThisWeek] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState(new Date()); // สำหรับแสดงเวลาที่อัปเดตล่าสุด
+
+  // States สำหรับ Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10); // จำนวนรายการต่อหน้า
+  const [totalRecordsCount, setTotalRecordsCount] = useState(0); // จำนวน Record ทั้งหมดที่ตรงตามเงื่อนไข
 
   const supabase = createClient();
 
+  // ฟังก์ชันสำหรับดึงข้อมูลสถิติ Dashboard (KPIs)
+  // ควรดึงจากตารางรวม หรือใช้ PostgREST Views/Functions เพื่อประสิทธิภาพที่ดีขึ้น
+  useEffect(() => {
+    async function fetchDashboardStats() {
+      // ดึงจำนวนฟอร์มทั้งหมด (จากตารางรวม หรือตารางใดตารางหนึ่งที่ใหญ่ที่สุด)
+      const { count: totalCount, error: totalError } = await supabase
+        .from('inspection_forms')
+        .select('*', { count: 'exact', head: true });
+      if (totalCount !== null) {
+        setTotalForms(totalCount);
+      } else if (totalError) {
+        console.error("Error fetching total forms:", totalError.message);
+      }
+
+      // ดึงฟอร์มที่สร้างวันนี้
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      const { count: todayCount, error: todayError } = await supabase
+        .from('inspection_forms')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', today.toISOString())
+        .lt('created_at', tomorrow.toISOString());
+      if (todayCount !== null) {
+        setFormsToday(todayCount);
+      } else if (todayError) {
+        console.error("Error fetching forms today:", todayError.message);
+      }
+
+      // ดึงฟอร์มที่สร้างสัปดาห์นี้ (จากวันจันทร์ของสัปดาห์ปัจจุบัน)
+      const now = new Date();
+      const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ...
+      const startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // ตั้งเป็นวันจันทร์
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+      const { count: weekCount, error: weekError } = await supabase
+        .from('inspection_forms')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', startOfWeek.toISOString())
+        .lt('created_at', endOfWeek.toISOString());
+      if (weekCount !== null) {
+        setFormsThisWeek(weekCount);
+      } else if (weekError) {
+        console.error("Error fetching forms this week:", weekError.message);
+      }
+      setLastUpdated(new Date()); // อัปเดตเวลาที่ดึงข้อมูลล่าสุด
+    }
+    fetchDashboardStats();
+    // เพิ่ม dependencies เพื่อให้ fetch stats เมื่อ component mount หรือมีการเปลี่ยนแปลงที่สำคัญ
+  }, [supabase]); 
+
+
+  // ฟังก์ชันสำหรับดึงข้อมูลฟอร์มหลัก พร้อม Pagination และ Filtering/Sorting
   const fetchForms = useCallback(async () => {
     setIsLoading(true);
-    
-    const columnsToSelect = '*';
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage - 1;
 
-    const { data, error } = await supabase
-      .from(selectedFormType)
-      .select(columnsToSelect)
-      .order(sortBy, { ascending: false });
+    // 1. ดึงจำนวนรวมทั้งหมดของ Record ก่อน (สำหรับคำนวณจำนวนหน้า)
+    let countQuery = supabase.from(selectedFormType).select('*', { count: 'exact', head: true });
+    if (searchTerm) {
+        countQuery = countQuery.or(`inspectionNumber.ilike.%${searchTerm}%,fullName.ilike.%${searchTerm}%,address.ilike.%${searchTerm}%`);
+    }
+    if (startDate) {
+        countQuery = countQuery.gte('inspectionDate', startDate);
+    }
+    if (endDate) {
+        countQuery = countQuery.lte('inspectionDate', endDate);
+    }
+    const { count: totalCount, error: countError } = await countQuery;
+    if (totalCount !== null) {
+        setTotalRecordsCount(totalCount);
+    } else if (countError) {
+        console.error("Error fetching total count for pagination:", countError.message);
+    }
+
+    // 2. ดึงข้อมูลจริงสำหรับหน้าปัจจุบัน
+    let dataQuery = supabase.from(selectedFormType).select('*');
+    if (searchTerm) {
+        dataQuery = dataQuery.or(`inspectionNumber.ilike.%${searchTerm}%,fullName.ilike.%${searchTerm}%,address.ilike.%${searchTerm}%`);
+    }
+    if (startDate) {
+        dataQuery = dataQuery.gte('inspectionDate', startDate);
+    }
+    if (endDate) {
+        dataQuery = dataQuery.lte('inspectionDate', endDate);
+    }
+
+    const { data, error } = await dataQuery
+      .order(sortBy, { ascending: false })
+      .range(startIndex, endIndex); // ใช้ .range() สำหรับ Pagination
 
     if (error) {
-      console.error("Error fetching forms:", error);
+      console.error("Error fetching forms:", error.message || error.details || error.hint || JSON.stringify(error));
       setForms([]);
     } else {
       setForms(data || []);
     }
     setIsLoading(false);
-  }, [selectedFormType, sortBy, supabase]);
+  }, [selectedFormType, sortBy, searchTerm, startDate, endDate, currentPage, itemsPerPage, supabase]);
 
+  // เมื่อมีการเปลี่ยนเงื่อนไขการกรอง/ค้นหา ให้กลับไปหน้าแรก
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedFormType, sortBy, searchTerm, startDate, endDate]);
+
+  // ดึงข้อมูลฟอร์มเมื่อมีการเปลี่ยนแปลง
   useEffect(() => {
     fetchForms();
   }, [fetchForms]);
 
   const selectedFormLabel = formTypes.find(type => type.value === selectedFormType)?.label || '';
+  const totalPages = Math.ceil(totalRecordsCount / itemsPerPage);
 
-  // State สำหรับเก็บจำนวนฟอร์มแต่ละประเภท
-  const [formCounts, setFormCounts] = useState<{ [key: string]: number }>({});
+  // Data for the Bar Chart - ควรปรับปรุงให้ดึงจำนวนจริงของแต่ละประเภทจาก DB หากต้องการ
+  // ตอนนี้จะแสดงแค่จำนวนฟอร์มของประเภทที่เลือก
+  const formCounts = {};
+  formTypes.forEach(type => {
+    formCounts[type.label] = 0;
+  });
+  formCounts[selectedFormLabel] = forms.length; // อันนี้คือจำนวนฟอร์มที่แสดงในตารางปัจจุบัน (หน้าเดียว)
 
-  // ดึงจำนวนฟอร์มแต่ละประเภท
-  useEffect(() => {
-    async function fetchCounts() {
-      const counts: { [key: string]: number } = {};
-      for (const type of formTypes) {
-        const { count, error } = await supabase
-          .from(type.value)
-          .select('*', { count: 'exact', head: true });
-        counts[type.value] = count || 0;
-      }
-      setFormCounts(counts);
-    }
-    fetchCounts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // เตรียมข้อมูลสำหรับ Bar Chart
   const chartData = {
-    labels: formTypes.map((t) => t.label),
+    labels: Object.keys(formCounts),
     datasets: [
       {
         label: 'จำนวนฟอร์ม',
-        data: formTypes.map((t) => formCounts[t.value] || 0),
-        backgroundColor: '#a78bfa',
-        borderRadius: 6,
+        data: Object.values(formCounts),
+        backgroundColor: [
+          'rgba(91, 45, 144, 0.6)', // pea-dark
+          'rgba(167, 139, 250, 0.6)', // pea-primary
+          'rgba(255, 99, 132, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(255, 206, 86, 0.6)',
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(153, 102, 255, 0.6)',
+        ],
+        borderColor: [
+          'rgba(91, 45, 144, 1)',
+          'rgba(167, 139, 250, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+        ],
+        borderWidth: 1,
       },
     ],
   };
@@ -98,81 +211,213 @@ export default function DashboardPage() {
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: { display: false },
-      title: { display: false },
-      tooltip: { enabled: true },
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'จำนวนฟอร์มตามประเภท (ที่เลือก)', // ปรับให้ชัดเจนขึ้น
+      },
     },
     scales: {
       y: {
         beginAtZero: true,
-        ticks: { stepSize: 1 },
+        ticks: {
+          stepSize: 1,
+        },
       },
     },
   };
 
   return (
-    <div className="space-y-6">
-      {/* กราฟแสดงจำนวนฟอร์มแต่ละประเภท */}
-      <div className="bg-white rounded-lg shadow-sm border p-4">
-        <h2 className="text-lg font-semibold mb-2 text-pea-dark">สถิติฟอร์มแต่ละประเภท</h2>
-        <div className="w-full max-w-2xl mx-auto">
-          <Bar data={chartData} options={chartOptions} height={120} />
-        </div>
-      </div>
-      
+    <div className="space-y-8 p-6 bg-gray-100 min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-              <h1 className="text-3xl font-bold text-pea-dark">Dashboard</h1>
-              <p className="text-gray-900 mt-1">ภาพรวมและจัดการฟอร์มทั้งหมด</p>
+              <h1 className="text-4xl font-extrabold text-[#3a1a5b]">Operational Dashboard</h1>
+              <p className="text-gray-700 mt-2 text-lg">ภาพรวมและจัดการฟอร์มการตรวจสอบระบบไฟฟ้า</p>
           </div>
+          <Link href="/form/new" className="px-6 py-3 bg-[#5b2d90] text-white rounded-lg shadow-md hover:bg-[#4a2575] flex items-center gap-2 transition-all duration-200">
+            <FilePlus size={20} />
+            สร้างฟอร์มใหม่
+          </Link>
       </div>
-      
-      <div className="flex flex-col sm:flex-row gap-4 p-4 bg-white rounded-lg shadow-sm border">
-          <div className='flex-1'>
-              <label htmlFor="formType" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                <ListFilter size={16}/>
-                เลือกประเภทฟอร์ม
-              </label>
-              <select
-                  id="formType"
-                  value={selectedFormType}
-                  onChange={(e) => setSelectedFormType(e.target.value)}
-                  className="text-gray-900 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-pea-primary focus:border-pea-primary"
-              >
-                  {formTypes.map(type => (
-                      <option key={type.value} value={type.value}>{type.label}</option>
-                  ))}
-              </select>
+
+      {/* แถบสรุปสถิติ (KPIs) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 flex items-center justify-between transition-transform transform hover:scale-105">
+          <div>
+            <p className="text-sm font-semibold text-gray-500 uppercase">ฟอร์มทั้งหมด</p>
+            <h3 className="text-4xl font-bold text-[#5b2d90] mt-2">{totalForms}</h3>
           </div>
-          <div className='flex-1'>
-              <label htmlFor="sortBy" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                <SlidersHorizontal size={16}/>
-                เรียงข้อมูลตาม
-              </label>
-              <select
-                  id="sortBy"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="text-gray-900 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-pea-primary focus:border-pea-primary"
-              >
-                  <option value="created_at">วันที่สร้างล่าสุด</option>
-                  <option value="fullName">ชื่อผู้ขอใช้ไฟ</option>
-                  <option value="inspectionNumber">เลขที่ฟอร์ม</option>
-                  <option value="inspectionDate">วันที่ตรวจสอบ</option>
-                  <option value="phaseType">ประเภทไฟ</option>
-                  <option value="estimatedLoad">โหลดประมาณการ</option>
-              </select>
+          <ClipboardCheck size={48} className="text-[#a78bfa] opacity-60"/>
+        </div>
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 flex items-center justify-between transition-transform transform hover:scale-105">
+          <div>
+            <p className="text-sm font-semibold text-gray-500 uppercase">ฟอร์มวันนี้</p>
+            <h3 className="text-4xl font-bold text-[#5b2d90] mt-2">{formsToday}</h3>
           </div>
+          <CalendarDays size={48} className="text-[#a78bfa] opacity-60"/>
+        </div>
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 flex items-center justify-between transition-transform transform hover:scale-105">
+          <div>
+            <p className="text-sm font-semibold text-gray-500 uppercase">ฟอร์มสัปดาห์นี้</p>
+            <h3 className="text-4xl font-bold text-[#5b2d90] mt-2">{formsThisWeek}</h3>
+          </div>
+          <BarChart4 size={48} className="text-[#a78bfa] opacity-60"/>
+        </div>
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 flex items-center justify-between transition-transform transform hover:scale-105">
+          <div>
+            <p className="text-sm font-semibold text-gray-500 uppercase">ฟอร์มที่เลือก (ณ ปัจจุบัน)</p>
+            <h3 className="text-4xl font-bold text-[#5b2d90] mt-2">{totalRecordsCount}</h3> {/* แสดง totalRecordCount ของประเภทที่เลือก */}
+          </div>
+          <ListFilter size={48} className="text-[#a78bfa] opacity-60"/>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* กราฟแสดงจำนวนฟอร์มแต่ละประเภท */}
+        <div className="lg:col-span-1 bg-white rounded-xl shadow-lg border p-6">
+          <Bar data={chartData} options={chartOptions} />
+        </div>
+
+        {/* ส่วนควบคุมการกรองและการค้นหา */}
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-lg border p-6 flex flex-col gap-6">
+          <h2 className="text-2xl font-bold text-[#3a1a5b] mb-4">การจัดการข้อมูลฟอร์ม</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                  <label htmlFor="formType" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <ListFilter size={16}/>
+                    เลือกประเภทฟอร์ม
+                  </label>
+                  <select
+                      id="formType"
+                      value={selectedFormType}
+                      onChange={(e) => setSelectedFormType(e.target.value)}
+                      className="text-gray-900 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#a78bfa] focus:border-[#a78bfa] transition-all duration-150"
+                  >
+                      {formTypes.map(type => (
+                          <option key={type.value} value={type.value}>{type.label}</option>
+                      ))}
+                  </select>
+              </div>
+              <div>
+                  <label htmlFor="sortBy" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <SlidersHorizontal size={16}/>
+                    เรียงข้อมูลตาม
+                  </label>
+                  <select
+                      id="sortBy"
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="text-gray-900 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#a78bfa] focus:border-[#a78bfa] transition-all duration-150"
+                  >
+                      <option value="created_at">วันที่สร้างล่าสุด</option>
+                      <option value="fullName">ชื่อผู้ขอใช้ไฟ</option>
+                      <option value="inspectionNumber">เลขที่ฟอร์ม</option>
+                      <option value="inspectionDate">วันที่ตรวจสอบ</option>
+                      <option value="phaseType">ประเภทไฟ</option>
+                      <option value="estimatedLoad">โหลดประมาณการ</option>
+                  </select>
+              </div>
+              <div>
+                  <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                    ค้นหา
+                  </label>
+                  <input
+                      type="text"
+                      id="search"
+                      placeholder="เลขที่ฟอร์ม, ชื่อ, ที่อยู่"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="text-gray-900 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#a78bfa] focus:border-[#a78bfa] transition-all duration-150"
+                  />
+              </div>
+              <div>
+                  <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5" />
+                    </svg>
+                    วันที่ตรวจสอบ (จาก)
+                  </label>
+                  <input
+                      type="date"
+                      id="startDate"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="text-gray-900 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#a78bfa] focus:border-[#a78bfa] transition-all duration-150"
+                  />
+              </div>
+              <div>
+                  <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5" />
+                    </svg>
+                    วันที่ตรวจสอบ (ถึง)
+                  </label>
+                  <input
+                      type="date"
+                      id="endDate"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="text-gray-900 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#a78bfa] focus:border-[#a78bfa] transition-all duration-150"
+                  />
+              </div>
+              <div className='flex-1'>
+                  <label htmlFor="itemsPerPage" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <ListFilter size={16}/>
+                    รายการต่อหน้า
+                  </label>
+                  <select
+                      id="itemsPerPage"
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                      className="text-gray-900 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#a78bfa] focus:border-[#a78bfa] transition-all duration-150"
+                  >
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
+                      <option value={100}>100</option>
+                  </select>
+              </div>
+          </div>
+        </div>
       </div>
 
       {isLoading ? (
           <div className="text-center py-10">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pea-primary mx-auto"></div>
-              <p className="mt-3 text-gray-500">กำลังโหลดข้อมูล...</p>
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#5b2d90] mx-auto"></div>
+              <p className="mt-3 text-lg text-gray-600">กำลังโหลดข้อมูล... โปรดรอสักครู่</p>
           </div>
       ) : (
-          // ✅ ส่ง prop 'formTypeLabel' เพิ่มเข้าไป
           <FormListTable forms={forms} selectedFormType={selectedFormType} formTypeLabel={selectedFormLabel} />
+      )}
+
+      {/* ส่วนควบคุม Pagination */}
+      {totalRecordsCount > 0 && totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 bg-white p-4 rounded-xl shadow-lg border mt-6">
+              <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-[#5b2d90] text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#4a2575] flex items-center gap-1 transition-all duration-200"
+              >
+                  <ChevronLeft size={20}/> ก่อนหน้า
+              </button>
+              
+              <span className="text-gray-700">
+                  หน้า {currentPage} จาก {totalPages} ({totalRecordsCount} รายการ)
+              </span>
+
+              <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-[#5b2d90] text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#4a2575] flex items-center gap-1 transition-all duration-200"
+              >
+                  ถัดไป <ChevronRight size={20}/>
+              </button>
+          </div>
       )}
     </div>
   );
