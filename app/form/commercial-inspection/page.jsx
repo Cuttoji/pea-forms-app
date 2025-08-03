@@ -72,7 +72,7 @@ const initialFormData = {
 
   // 2.3 เครื่องปลดวงจรต้นทาง
   disconnectingDeviceStatus: null,
-  disconnectingDevice_note: "",
+  disconnectingDeviceStatus_note: "",
   disconnectingDeviceType: [],
   disconnectingDeviceSwitchType: "",
   hvDistributionOther: "",
@@ -97,6 +97,8 @@ const initialFormData = {
   transformer_overcurrent_protection_type: [],
   transformer_overcurrent_protection_other: "",
   transformer_continuous_current_a: '',
+  transformer_overcurrent_correct: null,
+  transformer_overcurrent_correct_note: "",
   transformer_interrupting_capacity_ic: '',
   transformer_overcurrent_protection_correct: null,
   transformer_overcurrent_protection_correct_note: "",
@@ -416,7 +418,7 @@ export default function CommercialInspectionForm() {
                     <span className="ml-2 text-sm text-gray-700">RMU (ไม่รวมฟังก์ชั่น)</span>
                 </label>
             </div>
-            <CorrectiveRadio groupName="disconnectingDeviceStatus" label="" currentValue={formData.disconnectingDeviceStatus} currentNote={formData.disconnectingDeviceNote} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
+            <CorrectiveRadio groupName="disconnectingDeviceStatus" label="" currentValue={formData.disconnectingDeviceStatus} currentNote={formData.disconnectingDeviceStatus_note} onStatusChange={handleRadioChange} onNoteChange={(noteField, value) => handleRadioNoteChange(noteField, value)}/>
             <div className="mt-2">
                 <label htmlFor="hvDistributionOther" className="text-sm font-medium">อื่นๆ:</label>
                 <input type="text" id="hvDistributionOther" name="hvDistributionOther" value={formData.hvDistributionOther} onChange={handleChange} className="mt-1 block w-full p-2 border rounded-md text-sm"/>
