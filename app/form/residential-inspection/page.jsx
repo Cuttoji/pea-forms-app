@@ -32,6 +32,7 @@ const initialFormData = {
   address_photo_url: "",
   phaseType: "",
   estimatedLoad: "",
+  
   cableStandard_correct: '',
   cableStandard_correct_note: "",
   cableType: "",

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { RefreshCw, Check } from 'lucide-react';

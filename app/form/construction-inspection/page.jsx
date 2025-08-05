@@ -1,14 +1,22 @@
 "use client";
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
-import { Save } from "lucide-react";
-import { toast } from "sonner";
+import SignaturePad from "@/components/forms/SignaturePad";
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import constructioninspectionPDF from '@/components/forms/constructioninspectionPDF';
+import { Download, Save } from "lucide-react";
+import dynamic from 'next/dynamic';
+import { useFormManager } from "@/lib/hooks/useFormManager"; 
 
-export default function construction_inspection() {
+export default function ConstructionInspection() {
+    const inspectorSigRef = useRef(null);
+    const userSigRef = useRef(null);
     const [formData, setFormData] = useState({
         // Header Information
+        inspectionNumber: "",
         workName: "",
         approvalNumber: "",
         approvalDate: "",
@@ -146,6 +154,7 @@ export default function construction_inspection() {
         transformer_lvGrounding_note: "",
         transformer_groundResistancePerPoint: "",
         transformer_groundResistanceSystem: "",
+        transformer_groundResistanceSystem: "",
         transformer_other: "",
         transformer_other_note: "",
 
@@ -155,18 +164,8 @@ export default function construction_inspection() {
         correctedAndApproved: false,
 
         // Signatures
-        inspector1Name: "",
-        inspector1Position: "",
-        inspector1Date: "",
-        inspector2Name: "",
-        inspector2Position: "",
-        inspector2Date: "",
-        inspector3Name: "",
-        inspector3Position: "",
-        inspector3Date: "",
-        supervisorSignatureName: "",
-        supervisorSignaturePosition: "",
-        supervisorSignatureDate: "",
+        userSignature: "",
+        inspectorSignature: "",
     });
 
     const [isLoading, setIsLoading] = useState(true);
@@ -176,7 +175,6 @@ export default function construction_inspection() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
-
     useEffect(() => {
         const fetchForm = async () => {
             if (id) {
@@ -198,7 +196,10 @@ export default function construction_inspection() {
             } else {
                 const today = new Date();
                 const formattedDate = today.toISOString().split('T')[0];
-                setFormData(prev => ({ ...prev, inspectionDate: formattedDate }));
+                setFormData(prev => ({
+                    ...prev,
+                    inspectionDate: formattedDate
+                }));
                 setIsLoading(false);
             }
         };
@@ -218,53 +219,80 @@ export default function construction_inspection() {
         setFormData((prev) => ({
             ...prev,
             [groupName]: value,
-            ...(value === 'ถูกต้อง' && { [noteFieldName]: '' }),
+            ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
         }));
     };
 
+    // Helper: Validate form (add your own validation logic as needed)
+    const validateForm = (data) => {
+        // Example: require workName and supervisorName
+        if (!data.workName || !data.supervisorName) {
+            toast.error("กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน");
+            return false;
+        }
+        return true;
+    };
+
+    // Helper: Transform form data (numbers, dates, etc.)
+    const transformFormData = (data, userId, isUpdate) => {
+        const transformed = isUpdate ? { ...data } : { ...data, user_id: userId };
+        const numberFields = [
+            'hvWorkVolumeKm', 'hvWorkVolumePoles', 'hvTransformerKVA',
+            'lvWorkVolumeKm', 'lvWorkVolumePoles', 'hv_groundResistance',
+            'hv_groundResistanceSystem', 'lv_totalGroundResistance',
+            'transformerKVA', 'transformer_groundResistancePerPoint',
+            'transformer_groundResistanceSystem'
+        ];
+        numberFields.forEach(field => {
+            transformed[field] = transformed[field] ? Number(transformed[field]) : null;
+        });
+        const dateFields = [
+            'approvalDate', 'inspectionDate', 'inspector1Date',
+            'inspector2Date', 'inspector3Date', 'supervisorSignatureDate'
+        ];
+        dateFields.forEach(field => {
+            if (transformed[field] === '') {
+                transformed[field] = null;
+            }
+        });
+        return transformed;
+    };
+
+    // Helper: Submit to Supabase
+    const submitToSupabase = async (dataToSubmit, isUpdate, id) => {
+        if (isUpdate) {
+            return await supabase
+                .from('construction_inspection')
+                .update(dataToSubmit)
+                .eq('id', id);
+        } else {
+            return await supabase
+                .from('construction_inspection')
+                .insert([dataToSubmit]);
+        }
+    };
+
+    // Main submit handler
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-
         try {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: userData, error: userError } = await supabase.auth.getUser();
+            const user = userData?.user;
             if (!user) {
                 toast.error("กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูล");
                 setIsSubmitting(false);
                 return;
             }
-
-            const dataToSubmit = { ...formData, user_id: user.id };
-            const dateFields = [
-                'approvalDate', 'inspectionDate', 'inspector1Date',
-                'inspector2Date', 'inspector3Date', 'supervisorSignatureDate'
-            ];
-            for (const field of dateFields) {
-                if (dataToSubmit[field] === '') {
-                    dataToSubmit[field] = null;
-                }
+            if (!validateForm(formData)) {
+                setIsSubmitting(false);
+                return;
             }
-
-            let dbOperation;
-            if (id) {
-                dbOperation = supabase
-                    .from('construction_inspection')
-                    .update(dataToSubmit)
-                    .eq('id', id);
-            } else {
-                dbOperation = supabase
-                    .from('construction_inspection')
-                    .insert([dataToSubmit]);
-            }
-
-            const { error } = await dbOperation;
-            if (error) {
-                throw error;
-            }
-
+            const dataToSubmit = transformFormData(formData, user.id, !!id);
+            const { error } = await submitToSupabase(dataToSubmit, !!id, id);
+            if (error) throw error;
             toast.success('บันทึกข้อมูลเรียบร้อยแล้ว!');
             router.push('/dashboard');
-
         } catch (error) {
             console.error('Error submitting form:', error);
             toast.error(`เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${error.message}`);
@@ -373,13 +401,13 @@ export default function construction_inspection() {
                             <label htmlFor="hvWorkVolumeKm" className="block text-sm font-medium text-gray-700 mb-1">
                                 ปริมาณงานแรงสูง (วงจร-กม.):
                             </label>
-                            <input type="text" id="hvWorkVolumeKm" name="hvWorkVolumeKm" value={formData.hvWorkVolumeKm} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                            <input type="number" id="hvWorkVolumeKm" name="hvWorkVolumeKm" value={formData.hvWorkVolumeKm} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
                         </div>
                         <div>
                             <label htmlFor="hvWorkVolumePoles" className="block text-sm font-medium text-gray-700 mb-1">
                                 จำนวนเสา (ต้น):
                             </label>
-                            <input type="text" id="hvWorkVolumePoles" name="hvWorkVolumePoles" value={formData.hvWorkVolumePoles} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                            <input type="number" id="hvWorkVolumePoles" name="hvWorkVolumePoles" value={formData.hvWorkVolumePoles} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
                         </div>
                         <div>
                             <label htmlFor="hvStation" className="block text-sm font-medium text-gray-700 mb-1">
@@ -403,7 +431,7 @@ export default function construction_inspection() {
                             <label htmlFor="hvTransformerKVA" className="block text-sm font-medium text-gray-700 mb-1">
                                 หม้อแปลงรวม (KVA):
                             </label>
-                            <input type="text" id="hvTransformerKVA" name="hvTransformerKVA" value={formData.hvTransformerKVA} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                            <input type="number" id="hvTransformerKVA" name="hvTransformerKVA" value={formData.hvTransformerKVA} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
                         </div>
                     </div>
                     <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -411,13 +439,13 @@ export default function construction_inspection() {
                             <label htmlFor="lvWorkVolumeKm" className="block text-sm font-medium text-gray-700 mb-1">
                                 ปริมาณงานแรงต่ำ (วงจร-กม.):
                             </label>
-                            <input type="text" id="lvWorkVolumeKm" name="lvWorkVolumeKm" value={formData.lvWorkVolumeKm} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                            <input type="number" id="lvWorkVolumeKm" name="lvWorkVolumeKm" value={formData.lvWorkVolumeKm} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
                         </div>
                         <div>
                             <label htmlFor="lvWorkVolumePoles" className="block text-sm font-medium text-gray-700 mb-1">
                                 จำนวนเสา (ต้น):
                             </label>
-                            <input type="text" id="lvWorkVolumePoles" name="lvWorkVolumePoles" value={formData.lvWorkVolumePoles} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                            <input type="number" id="lvWorkVolumePoles" name="lvWorkVolumePoles" value={formData.lvWorkVolumePoles} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
                         </div>
                     </div>
                     <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1111,63 +1139,72 @@ export default function construction_inspection() {
             </section>
 
             {/* Signatures Section */}
-            <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
-                <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
-                    ลายเซ็น
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <label htmlFor="inspector1Name" className="block text-sm font-medium text-gray-700 mb-1">
-                            ผู้ตรวจสอบฯ:
-                        </label>
-                        <input type="text" id="inspector1Name" name="inspector1Name" value={formData.inspector1Name} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
-                    </div>
-                    <div>
-                        <label htmlFor="inspector1Position" className="block text-sm font-medium text-gray-700 mb-1">
-                            ตำแหน่ง:
-                        </label>
-                        <input type="text" id="inspector1Position" name="inspector1Position" value={formData.inspector1Position} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
-                    </div>
-                    <div>
-                        <label htmlFor="inspector1Date" className="block text-sm font-medium text-gray-700 mb-1">
-                            ลงวันที่:
-                        </label>
-                        <input type="date" id="inspector1Date" name="inspector1Date" value={formData.inspector1Date} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
-                    </div>
-                </div>
-                {/* You can duplicate the above block for inspector2Name, inspector3Name if needed */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label htmlFor="supervisorSignatureName" className="block text-sm font-medium text-gray-700 mb-1">
-                            ผู้ควบคุมงาน:
-                        </label>
-                        <input type="text" id="supervisorSignatureName" name="supervisorSignatureName" value={formData.supervisorSignatureName} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
-                    </div>
-                    <div>
-                        <label htmlFor="supervisorSignaturePosition" className="block text-sm font-medium text-gray-700 mb-1">
-                            ตำแหน่ง:
-                        </label>
-                        <input type="text" id="supervisorSignaturePosition" name="supervisorSignaturePosition" value={formData.supervisorSignaturePosition} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
-                    </div>
-                    <div>
-                        <label htmlFor="supervisorSignatureDate" className="block text-sm font-medium text-gray-700 mb-1">
-                            ลงวันที่:
-                        </label>
-                        <input type="date" id="supervisorSignatureDate" name="supervisorSignatureDate" value={formData.supervisorSignatureDate} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
-                    </div>
-                </div>
-            </section>
-
-            <div className="flex justify-center mt-10">
+<section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+          <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
+          <div className="text-gray-900 text-sm mb-6 space-y-3">
+              <p>6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจนสิ่งก่อสร้างอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงอยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว</p>
+              <p>6.2 ในกรณีที่การไฟฟ้าส่วนภูมิภาคเป็นผู้ดำเนินการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการเองในภายหลัง หรืออุปกรณ์ดังกล่าวเสื่อมคุณภาพไปตามสภาพ ทางผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
+              <p>6.3 สำหรับระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าในส่วนที่การไฟฟ้าส่วนภูมิภาคไม่สามารถตรวจสอบได้ ผู้ขอใช้ไฟฟ้าต้องติดตั้งตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) หากเกิดความเสียหายผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
+              <p>6.4 หากเกิดความเสียหายใดๆ ที่เกิดจากการที่ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว (RCD) ในวงจรที่มีความเสี่ยง ผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <SignaturePad 
+              title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" 
+              ref={userSigRef}
+              onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} 
+              onClear={() => handleSignatureClear('userSignature')}
+              initialValue={formData.userSignature}
+            />
+            <SignaturePad 
+              title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" 
+              ref={inspectorSigRef} 
+              onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} 
+              onClear={() => handleSignatureClear('inspectorSignature')}
+              initialValue={formData.inspectorSignature}
+            />
+          </div>
+        </section>
+        
+        {/* --- Action Buttons --- */}
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
+          <PDFDownloadLink
+            document={<constructioninspectionPDF formData={formData} />}
+            fileName={`inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
+            className="w-full sm:w-auto"
+          >
+            {({ loading }) => (
                 <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex items-center justify-center gap-2 px-8 py-4 bg-[#5b2d90] text-white font-semibold text-lg rounded-full shadow-lg hover:bg-[#3a1a5b] focus:outline-none focus:ring-4 focus:ring-[#a78bfa] focus:ring-offset-2 transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                    type="button"
+                    disabled={loading || isSubmitting}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
                 >
-                    <Save size={24} />
-                    {isSubmitting ? 'กำลังบันทึก...' : 'บันทึกข้อมูล'}
+                    <Download className="w-5 h-5"/>
+                    {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
                 </button>
-            </div>
+            )}
+          </PDFDownloadLink>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-white bg-[#5b2d90] rounded-lg shadow-lg hover:bg-[#4a2575] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a78bfa] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+          >
+            {isSubmitting ? (
+                <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    <span>กำลังบันทึก...</span>
+                </>
+            ) : (
+                <>
+                    <Save className="w-5 h-5"/>
+                    <span>บันทึกข้อมูล</span>
+                </>
+            )}
+          </button>
+        </div>
         </form>
     );
 }

@@ -52,7 +52,7 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
         return 'ev-charger-inspection';
       case 'ev_charger_lv_inspection':
         return 'ev-charger-lv-inspection';
-      case 'commercial_inspection_forms': 
+      case 'commercial_inspection':
         return 'commercial-inspection';
       case 'construction_inspection_forms':
         return 'construction-inspection';
