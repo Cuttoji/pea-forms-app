@@ -10,6 +10,8 @@ import constructioninspectionPDF from '@/components/forms/constructioninspection
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useFormManager } from "@/lib/hooks/useFormManager"; 
+import { useFormValidation } from '@/lib/hooks/useFormValidation';
+import { transformFormData, sanitizeFormData } from '@/lib/utils/formUtils';
 
 export default function ConstructionInspection() {
     const inspectorSigRef = useRef(null);
@@ -271,6 +273,33 @@ export default function ConstructionInspection() {
                 .insert([dataToSubmit]);
         }
     };
+
+    const validationRules = {
+        inspectionNumber: {
+          required: true,
+          pattern: /^\d{4}-\d{6}$/,
+          message: 'กรุณากรอกเลขที่บันทึกตรวจสอบในรูปแบบ YYYY-XXXXXX'
+        },
+        inspectionDate: {
+          required: true,
+          message: 'กรุณาเลือกวันที่ตรวจสอบ'
+        },
+        fullName: {
+          required: true,
+          minLength: 3,
+          message: 'กรุณากรอกชื่อให้ถูกต้อง'
+        },
+        phone: {
+          required: true,
+          pattern: /^[0-9]{9,10}$/,
+          message: 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง'
+        },
+        estimatedLoad: {
+          pattern: /^\d+(\.\d{1,2})?$/,
+          min: 0,
+          message: 'กรุณากรอกโหลดประมาณเป็นตัวเลขที่มากกว่า 0'
+        }
+      };
 
     // Main submit handler
     const handleSubmit = async (e) => {

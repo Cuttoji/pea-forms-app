@@ -140,6 +140,9 @@ const initialFormData = {
 };
 
 export default function CommercialInspectionForm() {
+  // --- เพิ่ม State สำหรับ errors ---
+  const [errors, setErrors] = useState({});
+
   const {
     formData,
     setFormData,
@@ -147,7 +150,7 @@ export default function CommercialInspectionForm() {
     isSubmitting,
     handleChange,
     handleImageUpload,
-    handleSubmit,
+    handleSubmit: baseHandleSubmit,
     handleSignatureSave,
     handleSignatureClear
   } = useFormManager('commercial_inspection', initialFormData, 'commercial');
@@ -213,6 +216,29 @@ export default function CommercialInspectionForm() {
     });
   };
 
+  // --- ฟังก์ชัน validate สำหรับตรวจสอบข้อมูล ---
+  const validate = () => {
+    const newErrors = {};
+    // ตัวอย่าง: ตรวจสอบค่าว่างในฟิลด์ที่จำเป็น
+    if (!formData.inspectionNumber) newErrors.inspectionNumber = "กรุณากรอกเลขที่บันทึกตรวจสอบ";
+    if (!formData.inspectionDate) newErrors.inspectionDate = "กรุณาเลือกวันที่ตรวจสอบ";
+    if (!formData.fullName) newErrors.fullName = "กรุณากรอกชื่อผู้ขอใช้ไฟฟ้า";
+    if (!formData.phone) newErrors.phone = "กรุณากรอกเบอร์โทรศัพท์";
+    if (!formData.address) newErrors.address = "กรุณากรอกที่อยู่";
+    if (!formData.voltageSystem) newErrors.voltageSystem = "กรุณาเลือกระบบแรงดันไฟฟ้า";
+    // เพิ่ม validation ตามต้องการ
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // --- handleSubmit ใหม่ ---
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+    await baseHandleSubmit(e);
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -229,6 +255,7 @@ export default function CommercialInspectionForm() {
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
+        .error-text { color: #dc2626; font-size: 0.95em; margin-top: 0.25rem; }
       `}</style>
       <h2 className="text-2xl font-bold mb-6 text-center text-[#5b2d90]">
         แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้า (สำหรับอาคารชุด)
@@ -240,10 +267,12 @@ export default function CommercialInspectionForm() {
           <div>
             <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่บันทึกตรวจสอบ:</label>
             <input type="text" id="inspectionNumber" name="inspectionNumber" value={formData.inspectionNumber} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+            {errors.inspectionNumber && <div className="error-text">{errors.inspectionNumber}</div>}
           </div>
           <div>
             <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ:</label>
             <input type="date" id="inspectionDate" name="inspectionDate" value={formData.inspectionDate} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900 bg-gray-100" />
+            {errors.inspectionDate && <div className="error-text">{errors.inspectionDate}</div>}
           </div>
           <div>
             <label htmlFor="requestNumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่คำร้องขอใช้ไฟฟ้า:</label>
@@ -263,14 +292,17 @@ export default function CommercialInspectionForm() {
           <div>
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-900 mb-1">ชื่อนิติบุคคล/ผู้ขอใช้ไฟฟ้า:</label>
             <input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+            {errors.fullName && <div className="error-text">{errors.fullName}</div>}
           </div>
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-900 mb-1">โทรศัพท์:</label>
             <input type="text" id="phone" name="phone" value={formData.phone} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+            {errors.phone && <div className="error-text">{errors.phone}</div>}
           </div>
           <div className="md:col-span-2">
             <label htmlFor="address" className="block text-sm font-medium text-gray-900 mb-1">ที่อยู่:</label>
             <textarea id="address" name="address" value={formData.address} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900"></textarea>
+            {errors.address && <div className="error-text">{errors.address}</div>}
           </div>
           <div className="md:col-span-2 bg-white p-4 rounded-lg shadow mt-4">
             <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
@@ -302,6 +334,7 @@ export default function CommercialInspectionForm() {
                 <option value="22kV">22 kV</option>
                 <option value="33kV">33 kV</option>
             </select>
+            {errors.voltageSystem && <div className="error-text">{errors.voltageSystem}</div>}
           </div>
           <div>
             <label htmlFor="estimatedLoad" className="block text-sm font-medium text-gray-900 mb-1">โหลดประมาณ (kVA):</label>
