@@ -299,8 +299,7 @@ export default function CondoInspectionForm() {
       // Validate yearMade
       if (name === 'yearMade') {
         const year = Number(value);
-        const currentYear = new Date().getFullYear();
-        if (isNaN(year) || year < 1980 || year > currentYear) {
+        if (isNaN(year) || year < 0) {
           newTransformers[index].yearMade = '';
         }
       }
@@ -698,7 +697,7 @@ export default function CondoInspectionForm() {
             )}
           </div>
           
-          {/* --- 2.4 - 2.13 หม้อแปลง --- */}
+{/* --- 2.4 - 2.13 หม้อแปลง --- */}
           <div className="pl-4 border-l-4 border-purple-300 mt-6">
             <h4 className="text-lg font-semibold mb-3 text-gray-800">2.4 - 2.13 หม้อแปลง (Transformers)</h4>
             <div className="p-4 border border-gray-200 rounded-md">
@@ -712,33 +711,34 @@ export default function CondoInspectionForm() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700">ขนาด (kVA):</label>
-                      <input type="number" name="kVA" value={transformer.kVA} onChange={(e) => handleTransformerChange(index, e)} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                      <input type="number" name="kVA" value={transformer.kVA} onChange={(e) => handleTransformerChange(index, e)} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">Merk:</label>
-                      <input type="text" name="merk" value={transformer.merk} onChange={(e) => handleTransformerChange(index, e)} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                      <input type="text" name="merk" value={transformer.merk} onChange={(e) => handleTransformerChange(index, e)} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700">เลขประจำเครื่อง:</label>
-                      <input type="text" name="serialNo" value={transformer.serialNo} onChange={(e) => handleTransformerChange(index, e)} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                      <input type="text" name="serialNo" value={transformer.serialNo} onChange={(e) => handleTransformerChange(index, e)} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700">ปีที่ผลิต:</label>
-                      <input type="number" name="yearMade" value={transformer.yearMade} onChange={(e) => handleTransformerChange(index, e)} min="1980" max={new Date().getFullYear()} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                      <input type="number" name="yearMade" value={transformer.yearMade} onChange={(e) => handleTransformerChange(index, e)} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">ตำแหน่งติดตั้ง:</label>
-                    <input type="text" name="location" value={transformer.location} onChange={(e) => handleTransformerChange(index, e)} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                    <input type="text" name="location" value={transformer.location} onChange={(e) => handleTransformerChange(index, e)} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                   </div>
+                  {/* --- ส่วนที่แก้ไข --- */}
                   <CorrectiveRadio
                     groupName={`transformers[${index}].correct`}
                     label="สถานะ"
                     currentValue={transformer.correct}
                     currentNote={transformer.correct_note}
-                    onStatusChange={(e) => handleTransformerCorrectiveChange(index, 'correct', e.target.value)}
+                    onStatusChange={(_, value) => handleTransformerCorrectiveChange(index, 'correct', value)}
                     onNoteChange={(e) => handleTransformerCorrectiveChange(index, 'correct_note', e.target.value)}
                   />
                   <CorrectiveRadio
@@ -746,7 +746,7 @@ export default function CondoInspectionForm() {
                     label="การติดตั้ง"
                     currentValue={transformer.mounting_correct}
                     currentNote={transformer.mounting_correct_note}
-                    onStatusChange={(value) => handleTransformerCorrectiveChange(index, 'mounting_correct', value)}
+                    onStatusChange={(_, value) => handleTransformerCorrectiveChange(index, 'mounting_correct', value)}
                     onNoteChange={(e) => handleTransformerCorrectiveChange(index, 'mounting_correct_note', e.target.value)}
                   />
                   <CorrectiveRadio
@@ -754,7 +754,7 @@ export default function CondoInspectionForm() {
                     label="การต่อสาย"
                     currentValue={transformer.connection_correct}
                     currentNote={transformer.connection_correct_note}
-                    onStatusChange={(value) => handleTransformerCorrectiveChange(index, 'connection_correct', value)}
+                    onStatusChange={(_, value) => handleTransformerCorrectiveChange(index, 'connection_correct', value)}
                     onNoteChange={(e) => handleTransformerCorrectiveChange(index, 'connection_correct_note', e.target.value)}
                   />
                   <CorrectiveRadio
@@ -762,7 +762,7 @@ export default function CondoInspectionForm() {
                     label="ระบบดิน"
                     currentValue={transformer.ground_correct}
                     currentNote={transformer.ground_correct_note}
-                    onStatusChange={(value) => handleTransformerCorrectiveChange(index, 'ground_correct', value)}
+                    onStatusChange={(_, value) => handleTransformerCorrectiveChange(index, 'ground_correct', value)}
                     onNoteChange={(e) => handleTransformerCorrectiveChange(index, 'ground_correct_note', e.target.value)}
                   />
                 </div>
@@ -837,35 +837,35 @@ export default function CondoInspectionForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                   <label htmlFor="main_breaker_type" className="block text-sm font-medium text-gray-700">ชนิด:</label>
-                  <input type="text" id="main_breaker_type" name="main_breaker_type" value={formData.main_breaker_type} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                  <input type="text" id="main_breaker_type" name="main_breaker_type" value={formData.main_breaker_type} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                 </div>
                 <div>
                   <label htmlFor="main_breaker_standard" className="block text-sm font-medium text-gray-700">มาตรฐาน:</label>
-                  <input type="text" id="main_breaker_standard" name="main_breaker_standard" value={formData.main_breaker_standard} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                  <input type="text" id="main_breaker_standard" name="main_breaker_standard" value={formData.main_breaker_standard} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                 </div>
                 <div>
                   <label htmlFor="main_breaker_product" className="block text-sm font-medium text-gray-700">ยี่ห้อ:</label>
-                  <input type="text" id="main_breaker_product" name="main_breaker_product" value={formData.main_breaker_product} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                  <input type="text" id="main_breaker_product" name="main_breaker_product" value={formData.main_breaker_product} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                 </div>
                 <div>
                   <label htmlFor="main_breaker_type_spec" className="block text-sm font-medium text-gray-700">พิกัดกระแส (In):</label>
-                  <input type="text" id="main_breaker_in" name="main_breaker_in" value={formData.main_breaker_in} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                  <input type="text" id="main_breaker_in" name="main_breaker_in" value={formData.main_breaker_in} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                 </div>
                 <div>
                   <label htmlFor="main_breaker_ic" className="block text-sm font-medium text-gray-700">พิกัดกระแสลัดวงจร (I.C.):</label>
-                  <input type="text" id="main_breaker_ic" name="main_breaker_ic" value={formData.main_breaker_ic} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                  <input type="text" id="main_breaker_ic" name="main_breaker_ic" value={formData.main_breaker_ic} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                 </div>
                 <div>
                   <label htmlFor="main_breaker_voltage" className="block text-sm font-medium text-gray-700">พิกัดแรงดัน:</label>
-                  <input type="text" id="main_breaker_voltage" name="main_breaker_voltage" value={formData.main_breaker_voltage} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                  <input type="text" id="main_breaker_voltage" name="main_breaker_voltage" value={formData.main_breaker_voltage} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                 </div>
                 <div>
                   <label htmlFor="main_breaker_at" className="block text-sm font-medium text-gray-700">พิกัดกระแสที่ตั้ง (AT):</label>
-                  <input type="text" id="main_breaker_at" name="main_breaker_at" value={formData.main_breaker_at} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                  <input type="text" id="main_breaker_at" name="main_breaker_at" value={formData.main_breaker_at} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                 </div>
                 <div>
                   <label htmlFor="main_breaker_af" className="block text-sm font-medium text-gray-700">พิกัดเฟรม (AF):</label>
-                  <input type="text" id="main_breaker_af" name="main_breaker_af" value={formData.main_breaker_af} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
+                  <input type="text" id="main_breaker_af" name="main_breaker_af" value={formData.main_breaker_af} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" />
                 </div>
             </div>
             <div className="flex items-center mt-3">
