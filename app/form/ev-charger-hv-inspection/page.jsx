@@ -456,16 +456,9 @@ export default function EvChargerHvForm() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">วันที่ตรวจสอบ</label>
-            <input
-              type="date"
-              name="inspectionDate"
-              value={formData.inspectionDate}
-              onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+              <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ: <span className="text-xs text-gray-500">(อัตโนมัติ)</span></label>
+              <input type="date" id="inspectionDate" name="inspectionDate" value={formData.inspectionDate} onChange={handleChange} readOnly className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100 text-gray-900" />
+            </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">เลขที่คำร้องขอใช้ไฟ</label>
             <input

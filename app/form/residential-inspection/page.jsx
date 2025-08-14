@@ -52,7 +52,7 @@ const initialFormData = {
   breakerStandard_correct_note: "",
   breakerMeterMatch_correct: '',
   breakerMeterMatch_correct_note: "",
-  breakerAmpRating: "",
+  breakeramprating: "",
   breakerShortCircuitRating_correct: '',
   breakerShortCircuitRating_correct_note: "",
   groundWireSize_correct: '',
@@ -102,13 +102,13 @@ export default function HomeForm() {
   };
 
   // **ใช้ฟังก์ชันนี้เพียงฟังก์ชันเดียวสำหรับ CorrectiveRadio**
-  const handleRadioChange = (groupName, value, noteFieldName) => {
-    setFormData((prev) => ({
-      ...prev,
-      [groupName]: value, // รับค่า 'ถูกต้อง' หรือ 'ต้องแก้ไข' มาโดยตรง
-      ...(value === 'ถูกต้อง' && { [noteFieldName]: '' }),
-    }));
-  };
+const handleRadioChange = (groupName, value, noteFieldName) => {
+        setFormData((prev) => ({
+            ...prev,
+            [groupName]: value,
+            ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
+        }));
+    };
   
   if (isLoading) {
     return (
@@ -261,10 +261,16 @@ export default function HomeForm() {
 
             <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">2.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์ (บริภัณฑ์ประธาน)</h3>
             <div className="mb-6 pl-4 border-l-4 border-purple-300 space-y-4">
-              <CorrectiveRadio groupName="breakerStandard_correct" label="ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC60898" currentValue={formData.breakerStandard_correct} currentNote={formData.breakerStandard_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio 
+              groupName="breakerStandard_correct" 
+              label="ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC60898" 
+              currentValue={formData.breakerStandard_correct} 
+              currentNote={formData.breakerStandard_correct_note} 
+              onStatusChange={handleRadioChange} 
+              onNoteChange={handleChange}/>
               <div className="border-b border-gray-200 pb-4">
-                  <label htmlFor="breakerAmpRating" className="block text-sm font-medium text-gray-900 mb-1">ขนาด AT:</label>
-                  <input type="number" step="any" id="breakerAmpRating" name="breakerAmpRating" value={formData.breakerAmpRating} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"/>
+                  <label htmlFor="breakeramprating" className="block text-sm font-medium text-gray-900 mb-1">ขนาด AT:</label>
+                  <input type="number" step="any" id="breakeramprating" name="breakeramprating" value={formData.breakeramprating} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"/>
               </div>
               <CorrectiveRadio groupName="breakerMeterMatch_correct" label="ข) เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์" currentValue={formData.breakerMeterMatch_correct} currentNote={formData.breakerMeterMatch_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
               <CorrectiveRadio groupName="breakerShortCircuitRating_correct" label="ค) ขนาดกระแสลัดวงจรสูงสุดไม่ต่ำกว่า 10 กิโลแอมแปร์ (kA)" currentValue={formData.breakerShortCircuitRating_correct} currentNote={formData.breakerShortCircuitRating_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>

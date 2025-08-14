@@ -176,8 +176,8 @@ const initialFormData = {
   // สรุปและลงนาม
   summary_result: "",
   scope_and_limitations: "",
-  applicant_signature: "",
-  pea_officer_signature: "",
+  userSignature: "",
+  inspectorSignature: "",
 };
 
 // เพิ่ม transformer template สำหรับการสร้าง transformer ใหม่
@@ -347,9 +347,9 @@ export default function CondoInspectionForm() {
             <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่บันทึกตรวจสอบ:</label>
             <input type="text" id="inspectionNumber" name="inspection_number" value={formData.inspection_number} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
           </div>
-          <div>
-            <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ:</label>
-            <input type="date" id="inspectionDate" name="inspection_date" value={formData.inspection_date} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900 bg-gray-100" />
+         <div>
+              <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ: <span className="text-xs text-gray-500">(อัตโนมัติ)</span></label>
+              <input type="date" id="inspectionDate" name="inspectionDate" value={formData.inspectionDate} onChange={handleChange} readOnly className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100 text-gray-900" />
           </div>
           <div>
             <label htmlFor="requestNumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่คำร้องขอใช้ไฟฟ้า:</label>
@@ -1099,9 +1099,9 @@ export default function CondoInspectionForm() {
             <label className="block text-sm font-medium text-gray-900 mb-1">ลายเซ็นผู้ขอใช้ไฟฟ้า:</label>
             <SignaturePad
               ref={userSigRef}
-              signature={formData.applicant_signature}
-              onSave={(data) => handleSignatureSave('applicant_signature', data)}
-              onClear={() => handleSignatureClear('applicant_signature', userSigRef)}
+              signature={formData.userSignature}
+              onSave={(data) => handleSignatureSave('userSignature', data)}
+              onClear={() => handleSignatureClear('userSignature', userSigRef)}
               disabled={isSubmitting}
             />
           </div>
@@ -1109,9 +1109,9 @@ export default function CondoInspectionForm() {
             <label className="block text-sm font-medium text-gray-900 mb-1">ลายเซ็นเจ้าหน้าที่ กฟภ.:</label>
             <SignaturePad
               ref={inspectorSigRef}
-              signature={formData.pea_officer_signature}
-              onSave={(data) => handleSignatureSave('pea_officer_signature', data)}
-              onClear={() => handleSignatureClear('pea_officer_signature', inspectorSigRef)}
+              signature={formData.inspectorSignature}
+              onSave={(data) => handleSignatureSave('inspectorSignature', data)}
+              onClear={() => handleSignatureClear('inspectorSignature', inspectorSigRef)}
               disabled={isSubmitting}
             />
           </div>

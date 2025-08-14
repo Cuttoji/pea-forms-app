@@ -26,6 +26,9 @@ export default function ElectricityInspectionForm() {
     // 1. ข้อมูลทั่วไป
     fullName: "",
     phone: "",
+    isCorporateApplicant: false,
+    corporateName: "",
+    corporatePhone: "",
     address: "",
     systemType: "", // เปลี่ยนจาก phaseType เป็น systemType เพื่อให้ตรงกับ PDF (3 เฟส / 1 เฟส)
     estimatedLoadAmp: "", // เปลี่ยนจาก estimatedLoad เป็น estimatedLoadAmp สำหรับแอมแปร์
@@ -490,6 +493,20 @@ export default function ElectricityInspectionForm() {
       [name]: type === "checkbox" ? checked : value, // กำหนดค่า checked สำหรับกล่องกาเครื่องหมาย, ค่าสำหรับอื่นๆ
     }));
   };
+  const handleSignatureSave = (name, dataUrl) => {
+  setFormData((prev) => ({
+    ...prev,
+    [name]: dataUrl,
+  }));
+};
+
+// จัดการการลบลายเซ็น
+const handleSignatureClear = (name) => {
+  setFormData((prev) => ({
+    ...prev,
+    [name]: "",
+  }));
+};
 
   // จัดการการเปลี่ยนแปลงเฉพาะสำหรับสถานะของส่วนประกอบ CorrectiveRadio
   const handleRadioChange = (groupName, value, noteFieldName) => {
@@ -535,64 +552,29 @@ export default function ElectricityInspectionForm() {
 
       {/* ส่วนข้อมูลส่วนหัว */}
       <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
-        <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
-          ข้อมูลส่วนหัว
-        </h2>
+        <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">ข้อมูลส่วนหัว</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* ช่องป้อนข้อมูลการไฟฟ้า */}
           <div className="md:col-span-2">
-            <label htmlFor="peaOffice" className="block text-sm font-medium text-gray-700 mb-1">
-              การไฟฟ้า:
-            </label>
-            <input
-              type="text"
-              id="peaOffice"
-              name="peaOffice"
-              value={formData.peaOffice}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
-            />
+            <label htmlFor="peaOffice" className="block text-sm font-medium text-gray-700 mb-1">การไฟฟ้า: </label>
+            <input type="text" id="peaOffice" name="peaOffice" value={formData.peaOffice} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
           </div>
           {/* ช่องป้อนข้อมูลเลขที่บันทึกตรวจสอบ */}
           <div>
-            <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-700 mb-1">
-              การตรวจสอบครั้งที่:
-            </label>
-            <input
-              type="text"
-              id="inspectionNumber"
-              name="inspectionNumber"
-              value={formData.inspectionNumber}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
-            />
+            <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-700 mb-1">การตรวจสอบครั้งที่: </label>
+            <input type="text" id="inspectionNumber" name="inspectionNumber" value={formData.inspectionNumber} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
           </div>
           {/* ช่องป้อนข้อมูลวันที่ตรวจสอบ */}
           <div>
-            <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-700 mb-1">
-              วันที่:
-            </label>
-            <input
-              type="date"
-              id="inspectionDate"
-              name="inspectionDate"
-              value={formData.inspectionDate}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
-            />
-          </div>
+              <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ: <span className="text-xs text-gray-500">(อัตโนมัติ)</span></label>
+              <input type="date" id="inspectionDate" name="inspectionDate" value={formData.inspectionDate} onChange={handleChange} readOnly className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100 text-gray-900" />
+            </div>
           {/* ช่องป้อนข้อมูลเลขที่คำร้องขอใช้ไฟฟ้า */}
           <div>
             <label htmlFor="requestNumber" className="block text-sm font-medium text-gray-700 mb-1">
               การตรวจสอบตามคำร้องขอใช้ไฟเลขที่:
             </label>
-            <input
-              type="text"
-              id="requestNumber"
-              name="requestNumber"
-              value={formData.requestNumber}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+            <input type="text" id="requestNumber" name="requestNumber" value={formData.requestNumber} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
           </div>
           {/* ช่องป้อนข้อมูลวันที่ยื่นคำร้อง */}
@@ -624,8 +606,8 @@ export default function ElectricityInspectionForm() {
               <input
                 type="checkbox"
                 name="isIndividualApplicant" // สมมติว่าเป็นกล่องกาเครื่องหมายเพื่อเลือกระหว่างบุคคลธรรมดาหรือนิติบุคคล
-                // checked={formData.isIndividualApplicant}
-                // onChange={handleChange}
+                checked={formData.isIndividualApplicant}
+                onChange={handleChange}
                 className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">ชื่อ-นามสกุล ผู้ขอใช้ไฟฟ้า (นาย/นาง/นางสาว):</span>
@@ -659,8 +641,8 @@ export default function ElectricityInspectionForm() {
               <input
                 type="checkbox"
                 name="isCorporateApplicant" // สมมติว่าเป็นกล่องกาเครื่องหมายเพื่อเลือกระหว่างบุคคลธรรมดาหรือนิติบุคคล
-                // checked={formData.isCorporateApplicant}
-                // onChange={handleChange}
+                checked={formData.isCorporateApplicant}
+                onChange={handleChange}
                 className="form-checkbox h-4 w-4 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">ชื่อนิติบุคคล ที่ขอใช้ไฟฟ้า:</span>
@@ -669,8 +651,8 @@ export default function ElectricityInspectionForm() {
               type="text"
               id="corporateName"
               name="corporateName"
-              // value={formData.corporateName}
-              // onChange={handleChange}
+              value={formData.corporateName}
+              onChange={handleChange}
               className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
           </div>
@@ -683,8 +665,8 @@ export default function ElectricityInspectionForm() {
               type="text"
               id="corporatePhone"
               name="corporatePhone"
-              // value={formData.corporatePhone}
-              // onChange={handleChange}
+              value={formData.corporatePhone}
+              onChange={handleChange}
               className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
             />
           </div>

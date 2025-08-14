@@ -22,11 +22,22 @@ export default function RegisterPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+  const isGmail = (email: string) => {
+  const gmailRegex = /^[^\s@]+@gmail\.com$/; // เช็คว่าเป็นอีเมล Gmail หรือไม่
+  return gmailRegex.test(email);
+};
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage('');
     setIsLoading(true);
+
+     if (form.email && !isGmail(form.email)) {
+    alert('กรุณากรอกเฉพาะอีเมลที่ลงท้ายด้วย @gmail.com เท่านั้น');
+    setIsLoading(false);
+    return; // หยุดการทำงานหากอีเมลไม่ถูกต้อง
+  }
+
 
     if (form.password !== form.confirmPassword) {
       setMessage('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน');
