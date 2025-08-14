@@ -107,23 +107,23 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
           {forms.map((form) => (
             <tr key={form.id} className="hover:bg-gray-50">
               <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-pea-dark text-gray-700">
-                {form.inspectionNumber || "-"}
+                {form.inspectionnumber || "-"}
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
-                {form.fullName || "-"}
+                {form.fullname || "-"}
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
-                {form.phaseType === "1_phase" ? "1 เฟส" : "3 เฟส"}
+                {form.phasetype === "1_phase" ? "1 เฟส" : "3 เฟส"}
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
-                {form.estimatedLoad || "-"}
+                {form.estimatedload || "-"}
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
                 {formatDate(form.created_at)}
               </td>
               {/* --- START: ข้อมูลที่เพิ่มเข้ามา --- */}
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
-                {formatDate(form.inspectionDate)}
+                {formatDate(form.inspectiondate)}
               </td>
               <td className="px-4 py-4 text-sm text-gray-700 max-w-xs truncate" title={form.address}>
                 {form.address || "-"}

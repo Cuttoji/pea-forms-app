@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { toast } from 'sonner';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
 import ImageUpload from "@/components/forms/ImageUpload";
@@ -71,12 +72,16 @@ const initialFormData = {
   rcdinstalled_correct_note: "",
   summaryresult: "",
   scopeofinspection: "",
-  usersignature: "",
-  inspectorsignature: "",
+  userSignature: "",
+  inspectorSignature: "",
   user_id: null,
 };
 
 function HomeForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
+
   const {
     formData,
     setFormData,
@@ -87,11 +92,27 @@ function HomeForm() {
     handleSubmit,
     handleSignatureSave,
     handleSignatureClear
-  } = useFormManager('inspection_forms', initialFormData, 'residential');
+  } = useFormManager('inspection_forms', initialFormData, [], '*', 'form-images'); // ใช้ '*' เพื่อดึงข้อมูลทั้งหมด
 
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
   const imageUploadRef = useRef(null);
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient();
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      if (error || !user) {
+        toast.error('กรุณาเข้าสู่ระบบก่อนใช้งาน');
+        // Uncomment the line below if you want to redirect to sign-in
+        // router.push('/auth/signin');
+      }
+    };
+    
+    checkAuth();
+  }, []);
 
   const handleLocationSelect = (location) => {
     setFormData(prevData => ({
@@ -119,18 +140,49 @@ const handleRadioChange = (groupName, value, noteFieldName) => {
     }));
   };
 
+  // Enhanced handleSubmit with proper error handling
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const result = await handleSubmit(e);
+      if (result && result.success) {
+        console.log('Form submitted successfully:', result);
+      } else if (result && !result.success) {
+        console.error('Form submission failed:', result.error);
+      }
+    } catch (error) {
+      console.error('Error in form submission:', error);
+      toast.error('เกิดข้อผิดพลาดในการส่งข้อมูล');
+    }
+  };
+
+  // เพิ่ม useEffect เพื่อ debug ข้อมูลที่โหลดมา
+  useEffect(() => {
+    if (!isLoading && formData) {
+      console.log('Current form data:', formData);
+      console.log('Form data keys:', Object.keys(formData));
+      console.log('Form data values:', Object.values(formData).filter(v => v !== '' && v !== null));
+    }
+  }, [isLoading, formData]);
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-pea-primary"></div>
-        <p className="ml-4 text-lg text-gray-600">กำลังโหลดข้อมูลฟอร์ม...</p>
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#5b2d90] mb-4"></div>
+        <div className="text-center">
+          <p className="text-lg text-gray-600 mb-2">กำลังโหลดข้อมูลฟอร์ม...</p>
+          {id && (
+            <p className="text-sm text-gray-500">กำลังดึงข้อมูลรายการ ID: {id}</p>
+          )}
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <form onSubmit={handleSubmit} id="pea-inspection-form" className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
+      <form onSubmit={handleFormSubmit} id="pea-inspection-form" className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
         <style jsx global>{`
           .sigCanvas { touch-action: none; }
           input[type=number]::-webkit-inner-spin-button, 
@@ -286,7 +338,7 @@ const handleRadioChange = (groupName, value, noteFieldName) => {
                         name="cablesizesqmm" 
                         value={formData.cablesizesqmm || ''} 
                         onChange={handleChange} 
-                        className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"
+                        className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent text-gray-900"
                       />
                     </div>
                   </div>
