@@ -16,6 +16,10 @@ module.exports = {
       },
       colors: {
         'pea-primary': '#5b2d90',
+        'pea-primary-dark': '#4a2575',
+        'pea-secondary': '#a78bfa',
+        'pea-secondary-dark': '#8b5cf6',
+        'pea-50': '#f5f3ff',
         'pea-dark': '#3a1a5b',
       },
       backgroundImage: {

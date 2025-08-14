@@ -8,9 +8,15 @@ const CorrectiveRadio = ({
   onStatusChange,
   onNoteChange,
   disabled = false,
-  alwaysShowNote = false, // เพิ่ม prop นี้
+  alwaysShowNote = false,
 }) => {
   const noteFieldName = `${groupName}_note`;
+
+  const handleStatusChange = (value) => {
+    if (onStatusChange) {
+      onStatusChange(groupName, value, noteFieldName);
+    }
+  };
 
   return (
     <div className="border-b border-gray-200 pb-4 mb-6"> 
@@ -22,7 +28,7 @@ const CorrectiveRadio = ({
             name={groupName}
             value="ถูกต้อง"
             checked={currentValue === 'ถูกต้อง'}
-            onChange={() => onStatusChange(groupName, 'ถูกต้อง', noteFieldName)}
+            onChange={() => handleStatusChange('ถูกต้อง')}
             disabled={disabled}
             className="form-radio h-5 w-5 text-[#5b2d90] focus:ring-2 focus:ring-purple-400 border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
           />
@@ -34,7 +40,7 @@ const CorrectiveRadio = ({
             name={groupName}
             value="ต้องแก้ไข"
             checked={currentValue === 'ต้องแก้ไข'}
-            onChange={() => onStatusChange(groupName, 'ต้องแก้ไข', noteFieldName)}
+            onChange={() => handleStatusChange('ต้องแก้ไข')}
             disabled={disabled}
             className="form-radio h-5 w-5 text-[#5b2d90] focus:ring-2 focus:ring-purple-400 border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
           />
