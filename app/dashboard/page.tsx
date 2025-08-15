@@ -24,7 +24,7 @@ const formTypes = [
   { value: 'condo_inspection_forms', label: 'ฟอร์มอาคารชุด' },
   { value: 'ev_charger_lv_inspection', label: 'ฟอร์ม EV Charger (แรงต่ำ)' },
   { value: 'ev_charger_hv_inspection', label: 'ฟอร์ม EV Charger (แรงสูง)' },
-  { value: 'commercial_inspection', label: 'ฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)' },
+  { value: 'commercial_inspection_forms', label: 'ฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)' },
   { value: 'construction_inspection', label: 'ฟอร์มตรวจสอบงานก่อสร้าง' },
   // เพิ่มประเภทฟอร์มอื่นๆ ตามต้องการ
 ];

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { toast } from 'sonner';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
 import ImageUpload from "@/components/forms/ImageUpload";
@@ -10,7 +11,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useFormManager } from "@/lib/hooks/useFormManager";
-import { toast } from "react-hot-toast";
+import { FormProvider } from '@/lib/contexts/FormContext';
 import CommercialInspectionPDF from "@/components/forms/CommercialInspectionPDF";
 
 const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStreetMapComponent'), {
@@ -23,73 +24,73 @@ const initialFormData = {
   user_id: null,
 
   // ข้อมูลทั่วไป
-  inspectionNumber: "",
-  inspectionDate: "",
-  requestNumber: "",
-  requestDate: "",
-  peaOffice: "",
-  fullName: "",
+  inspectionnumber: "",
+  inspectiondate: new Date().toISOString().split('T')[0],
+  requestnumber: "",
+  requestdate: null,
+  peaoffice: "",
+  fullname: "",
   phone: "",
   address: "",
   latitude: null,
   longitude: null,
   address_photo_url: "",
-  voltageSystem: "",
-  estimatedLoad: "",
-  hasDesignCertification: null,
+  voltagesystem: "",
+  estimatedload: "",
+  hasdesigncertification: null,
 
   // 2.1 ระบบจำหน่ายเหนือดิน
-  overhead_cableType: "",
-  overhead_cableType_correct: null,
-  overhead_cableType_correct_note: "",
-  overhead_cableSizeSqmm: "",
-  overhead_cableSize_correct: null,
-  overhead_cableSize_correct_note: "",
-  overhead_poleCondition_correct: null,
-  overhead_poleCondition_correct_note: "",
-  overhead_poleTopEquipment_correct: null,
-  overhead_poleTopEquipment_correct_note: "",
-  overhead_guyWireAssembly_correct: null,
-  overhead_guyWireAssembly_correct_note: "",
-  overhead_insulatorType_correct: null,
-  overhead_insulatorType_correct_note: "",
-  overhead_cableSagging_correct: null,
-  overhead_cableSagging_correct_note: "",
-  overhead_clearance_correct: null,
+  overhead_cabletype: "",
+  overhead_cabletype_correct: '',
+  overhead_cabletype_correct_note: "",
+  overhead_cablesizesqmm: "",
+  overhead_cablesize_correct: '',
+  overhead_cablesize_correct_note: "",
+  overhead_polecondition_correct: '',
+  overhead_polecondition_correct_note: "",
+  overhead_poletopequipment_correct: '',
+  overhead_poletopequipment_correct_note: "",
+  overhead_guywireassembly_correct: '',
+  overhead_guywireassembly_correct_note: "",
+  overhead_insulatortype_correct: '',
+  overhead_insulatortype_correct_note: "",
+  overhead_cablesagging_correct: '',
+  overhead_cablesagging_correct_note: "",
+  overhead_clearance_correct: '',
   overhead_clearance_correct_note: "",
-  overhead_hvSurgeArrester_correct: null,
-  overhead_hvSurgeArrester_correct_note: "",
-  overhead_cableJointCondition_correct: null,
-  overhead_cableJointCondition_correct_note: "",
-  overhead_grounding_correct: null,
+  overhead_hvsurgearrester_correct: '',
+  overhead_hvsurgearrester_correct_note: "",
+  overhead_cablejointcondition_correct: '',
+  overhead_cablejointcondition_correct_note: "",
+  overhead_grounding_correct: '',
   overhead_grounding_correct_note: "",
 
   // 2.2 ระบบจำหน่ายใต้ดิน
-  underground_cableType: "",
-  underground_cableType_correct: null,
-  underground_cableType_correct_note: "",
-  underground_cableSizeSqmm: "",
-  underground_cableSize_correct: null,
-  underground_cableSize_correct_note: "",
-  underground_visibleCableCondition_correct: null,
-  underground_visibleCableCondition_correct_note: "",
-  underground_cableTension_correct: null,
-  underground_cableTension_correct_note: "",
-  underground_hvSurgeArrester_correct: null,
-  underground_hvSurgeArrester_correct_note: "",
-  underground_cableJointCondition_correct: null,
-  underground_cableJointCondition_correct_note: "",
-  underground_grounding_correct: null,
+  underground_cabletype: "",
+  underground_cabletype_correct: '',
+  underground_cabletype_correct_note: "",
+  underground_cablesizesqmm: "",
+  underground_cablesize_correct: '',
+  underground_cablesize_correct_note: "",
+  underground_visiblecablecondition_correct: '',
+  underground_visiblecablecondition_correct_note: "",
+  underground_cabletension_correct: '',
+  underground_cabletension_correct_note: "",
+  underground_hvsurgearrester_correct: '',
+  underground_hvsurgearrester_correct_note: "",
+  underground_cablejointcondition_correct: '',
+  underground_cablejointcondition_correct_note: "",
+  underground_grounding_correct: '',
   underground_grounding_correct_note: "",
 
   // 2.3 เครื่องปลดวงจรต้นทาง
-  disconnectingDeviceStatus: null,
-  disconnectingDeviceStatus_note: "",
-  disconnectingDeviceType: [],
-  disconnectingDeviceSwitchType: "",
-  hvDistributionOther: "",
+  disconnectingdevicestatus: '',
+  disconnectingdevicestatus_note: "",
+  disconnectingdevicetype: [],
+  disconnectingdeviceswitchtype: "",
+  hvdistributionother: "",
 
-  // หม้อแปลง (ฟิลด์เดี่ยว)
+  // หม้อแปลง
   transformer_tested: null,
   transformer_number: "",
   transformer_size_kva: "",
@@ -99,49 +100,50 @@ const initialFormData = {
   transformer_type: "",
   transformer_type_other: "",
   transformer_vector_group: "",
-  transformer_short_circuit_rating_correct: null,
-  transformer_short_circuit_rating_correct_note: "",
-  transformer_properties_correct: null,
+  transformer_shortcircuitrating_correct: '',
+  transformer_shortcircuitrating_correct_note: "",
+  transformer_properties_correct: '',
   transformer_properties_correct_note: "",
-  transformer_installation_type: [],
-  transformer_installation_correct: null,
+  transformer_installationtype: [],
+  transformer_installation_correct: '',
   transformer_installation_correct_note: "",
-  transformer_overcurrent_protection_type: [],
-  transformer_overcurrent_protection_other: "",
-  transformer_continuous_current_a: '',
-  transformer_overcurrent_correct: null,
+  transformer_overcurrentprotectiontype: [],
+  transformer_overcurrentprotection_other: "",
+  transformer_continuouscurrent_a: '',
+  transformer_overcurrent_correct: '',
   transformer_overcurrent_correct_note: "",
-  transformer_interrupting_capacity_ic: '',
-  transformer_overcurrent_protection_correct: null,
-  transformer_overcurrent_protection_correct_note: "",
-  transformer_hv_surge_arrester_correct: null,
-  transformer_hv_surge_arrester_correct_note: "",
-  transformer_grounding_assembly_correct: null,
-  transformer_grounding_assembly_correct_note: "",
-  transformer_hv_ground_resistance_correct: null,
-  transformer_hv_ground_resistance_correct_note: "",
-  transformer_silica_gel_correct: null,
-  transformer_silica_gel_correct_note: "",
-  transformer_bushing_condition_correct: null,
-  transformer_bushing_condition_correct_note: "",
-  transformer_oil_level_correct: null,
-  transformer_oil_level_correct_note: "",
-  transformer_oil_leak_correct: null,
-  transformer_oil_leak_correct_note: "",
-  transformer_warning_sign_correct: null,
-  transformer_warning_sign_correct_note: "",
+  transformer_interruptingcapacity_ic: '',
+  transformer_overcurrentprotection_correct: '',
+  transformer_overcurrentprotection_correct_note: "",
+  transformer_hvsurgearrester_correct: '',
+  transformer_hvsurgearrester_correct_note: "",
+  transformer_groundingassembly_correct: '',
+  transformer_groundingassembly_correct_note: "",
+  transformer_hvgroundresistance_correct: '',
+  transformer_hvgroundresistance_correct_note: "",
+  transformer_silicagel_correct: '',
+  transformer_silicagel_correct_note: "",
+  transformer_bushingcondition_correct: '',
+  transformer_bushingcondition_correct_note: "",
+  transformer_oillevel_correct: '',
+  transformer_oillevel_correct_note: "",
+  transformer_oilleak_correct: '',
+  transformer_oilleak_correct_note: "",
+  transformer_warningsign_correct: '',
+  transformer_warningsign_correct_note: "",
   transformer_other_correct_note: "",
 
   // สรุปผลและลงนาม
-  summaryResult: "",
-  scopeAndLimitations: "",
-  userSignature: "",
-  inspectorSignature: "",
+  summaryresult: "",
+  scopeofinspection: "",
+  usersignature: "",
+  inspectorsignature: "",
 };
 
-export default function CommercialInspectionForm() {
-  // --- เพิ่ม State สำหรับ errors ---
-  const [errors, setErrors] = useState({});
+function CommercialInspectionForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
 
   const {
     formData,
@@ -150,14 +152,28 @@ export default function CommercialInspectionForm() {
     isSubmitting,
     handleChange,
     handleImageUpload,
-    handleSubmit: baseHandleSubmit,
+    handleSubmit,
     handleSignatureSave,
     handleSignatureClear
-  } = useFormManager('commercial_inspection', initialFormData, 'commercial');
+  } = useFormManager('commercial_inspection_forms', initialFormData, [], '*', 'form-images');
 
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
   const imageUploadRef = useRef(null);
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient();
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      if (error || !user) {
+        toast.error('กรุณาเข้าสู่ระบบก่อนใช้งาน');
+      }
+    };
+    
+    checkAuth();
+  }, []);
 
   const handleLocationSelect = (location) => {
     setFormData(prevData => ({
@@ -167,599 +183,463 @@ export default function CommercialInspectionForm() {
     }));
   };
 
-  // **ฟังก์ชันใหม่สำหรับจัดการ Radio Button ใน CorrectiveRadio**
   const handleRadioChange = (groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
       [groupName]: value,
-      ...(value === 'ถูกต้อง' && { [noteFieldName]: '' }),
+      ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
     }));
   };
 
-  // **ฟังก์ชันใหม่สำหรับจัดการการเปลี่ยนแปลงของ Checkbox**
-  const handleInstallationTypeChange = (e) => {
-    const { value, checked } = e.target;
-    setFormData((prev) => {
-      const newTypes = checked
-        ? [...prev.transformer_installation_type, value]
-        : prev.transformer_installation_type.filter((type) => type !== value);
-      return {
-        ...prev,
-        transformer_installation_type: newTypes,
-      };
-    });
+  // Enhanced handleChange to properly handle date fields
+  const handleDateChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value || null
+    }));
   };
 
-  const handleOvercurrentProtectionTypeChange = (e) => {
-    const { value, checked } = e.target;
-    setFormData((prev) => {
-      const newTypes = checked
-        ? [...prev.transformer_overcurrent_protection_type, value]
-        : prev.transformer_overcurrent_protection_type.filter((type) => type !== value);
-      return {
-        ...prev,
-        transformer_overcurrent_protection_type: newTypes,
-      };
-    });
-  };
-
-  const handleDisconnectingDeviceTypeChange = (e) => {
-    const { value, checked } = e.target;
-    setFormData((prev) => {
-      const newTypes = checked
-        ? [...prev.disconnectingDeviceType, value]
-        : prev.disconnectingDeviceType.filter((type) => type !== value);
-      return {
-        ...prev,
-        disconnectingDeviceType: newTypes,
-      };
-    });
-  };
-
-  // --- ฟังก์ชัน validate สำหรับตรวจสอบข้อมูล ---
-  const validate = () => {
-    const newErrors = {};
-    // ตัวอย่าง: ตรวจสอบค่าว่างในฟิลด์ที่จำเป็น
-    if (!formData.inspectionNumber) newErrors.inspectionNumber = "กรุณากรอกเลขที่บันทึกตรวจสอบ";
-    if (!formData.inspectionDate) newErrors.inspectionDate = "กรุณาเลือกวันที่ตรวจสอบ";
-    if (!formData.fullName) newErrors.fullName = "กรุณากรอกชื่อผู้ขอใช้ไฟฟ้า";
-    if (!formData.phone) newErrors.phone = "กรุณากรอกเบอร์โทรศัพท์";
-    if (!formData.address) newErrors.address = "กรุณากรอกที่อยู่";
-    if (!formData.voltageSystem) newErrors.voltageSystem = "กรุณาเลือกระบบแรงดันไฟฟ้า";
-    // เพิ่ม validation ตามต้องการ
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // --- handleSubmit ใหม่ ---
-  const handleSubmit = async (e) => {
+  // Enhanced handleSubmit with proper error handling
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
-    await baseHandleSubmit(e);
+    
+    try {
+      const result = await handleSubmit(e);
+      if (result && result.success) {
+        console.log('Form submitted successfully:', result);
+      } else if (result && !result.success) {
+        console.error('Form submission failed:', result.error);
+      }
+    } catch (error) {
+      console.error('Error in form submission:', error);
+      toast.error('เกิดข้อผิดพลาดในการส่งข้อมูล');
+    }
   };
+
+  // Enhanced checkbox handling for array fields
+  const handleCheckboxChange = (e) => {
+    const { name, value, checked } = e.target;
+    const arrayFields = ['disconnectingdevicetype', 'transformer_installationtype', 'transformer_overcurrentprotectiontype'];
+    
+    if (arrayFields.includes(name)) {
+      const currentArray = Array.isArray(formData[name]) ? formData[name] : [];
+      let newValue;
+      
+      if (checked) {
+        newValue = [...currentArray, value];
+      } else {
+        newValue = currentArray.filter((item) => item !== value);
+      }
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: newValue
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked
+      }));
+    }
+  };
+
+  // เพิ่ม useEffect เพื่อ debug ข้อมูลที่โหลดมา
+  useEffect(() => {
+    if (!isLoading && formData) {
+      console.log('Current form data:', formData);
+      console.log('Form data keys:', Object.keys(formData));
+      console.log('Form data values:', Object.values(formData).filter(v => v !== '' && v !== null));
+    }
+  }, [isLoading, formData]);
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-pea-primary"></div>
-        <p className="ml-4 text-lg text-gray-600">กำลังโหลดข้อมูลฟอร์ม...</p>
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#5b2d90] mb-4"></div>
+        <div className="text-center">
+          <p className="text-lg text-gray-600 mb-2">กำลังโหลดข้อมูลฟอร์ม...</p>
+          {id && (
+            <p className="text-sm text-gray-500">กำลังดึงข้อมูลรายการ ID: {id}</p>
+          )}
+        </div>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
-      <style jsx global>{`
-        .sigCanvas { touch-action: none; }
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
-        .error-text { color: #dc2626; font-size: 0.95em; margin-top: 0.25rem; }
-      `}</style>
-      <h2 className="text-2xl font-bold mb-6 text-center text-[#5b2d90]">
-        แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้า (สำหรับอาคารชุด)
-      </h2>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <form onSubmit={handleFormSubmit} id="pea-commercial-inspection-form" className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
+        <style jsx global>{`
+          .sigCanvas { touch-action: none; }
+          input[type=number]::-webkit-inner-spin-button,
+          input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+          input[type=number] { -moz-appearance: textfield; }
+        `}</style>
+        
+        <h2 className="text-2xl font-bold mb-6 text-center text-[#5b2d90]">
+          แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้า อื่นๆ
+        </h2>
 
-      {/* --- Header Section --- */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่บันทึกตรวจสอบ:</label>
-            <input type="text" id="inspectionNumber" name="inspectionNumber" value={formData.inspectionNumber} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-            {errors.inspectionNumber && <div className="error-text">{errors.inspectionNumber}</div>}
-          </div>
-          <div>
-              <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ: <span className="text-xs text-gray-500">(อัตโนมัติ)</span></label>
-              <input type="date" id="inspectionDate" name="inspectionDate" value={formData.inspectionDate} onChange={handleChange} readOnly className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100 text-gray-900" />
+        {/* Header Section */}
+        <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="inspectionnumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่บันทึกตรวจสอบ:</label>
+              <input type="text" id="inspectionnumber" name="inspectionnumber" value={formData.inspectionnumber || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" />
             </div>
-          <div>
-            <label htmlFor="requestNumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่คำร้องขอใช้ไฟฟ้า:</label>
-            <input type="text" id="requestNumber" name="requestNumber" value={formData.requestNumber} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-          </div>
-          <div>
-            <label htmlFor="requestDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ยื่นคำร้อง:</label>
-            <input type="date" id="requestDate" name="requestDate" value={formData.requestDate} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-          </div>
-        </div>
-      </section>
-
-      {/* --- 1. General Information --- */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-        <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">1. ข้อมูลทั่วไป</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="fullName" className="block text-sm font-medium text-gray-900 mb-1">ชื่อนิติบุคคล/ผู้ขอใช้ไฟฟ้า:</label>
-            <input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-            {errors.fullName && <div className="error-text">{errors.fullName}</div>}
-          </div>
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-900 mb-1">โทรศัพท์:</label>
-            <input type="text" id="phone" name="phone" value={formData.phone} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-            {errors.phone && <div className="error-text">{errors.phone}</div>}
-          </div>
-          <div className="md:col-span-2">
-            <label htmlFor="address" className="block text-sm font-medium text-gray-900 mb-1">ที่อยู่:</label>
-            <textarea id="address" name="address" value={formData.address} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900"></textarea>
-            {errors.address && <div className="error-text">{errors.address}</div>}
-          </div>
-          <div className="md:col-span-2 bg-white p-4 rounded-lg shadow mt-4">
-            <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
-            <p className="text-sm text-gray-500 mb-3">ค้นหาหรือลากแผนที่เพื่อเลือกตำแหน่ง จากนั้นพิกัดจะแสดงด้านล่าง</p>
-            <div className="relative z-0 h-80 rounded-lg overflow-hidden">
-              <OpenStreetMapComponent
-                onLocationSelect={handleLocationSelect}
-                initialLatitude={formData.latitude}
-                initialLongitude={formData.longitude}
+            <div>
+              <label htmlFor="inspectiondate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ:</label>
+              <input 
+                type="date" 
+                id="inspectiondate" 
+                name="inspectiondate" 
+                value={formData.inspectiondate || ''} 
+                onChange={handleDateChange} 
+                className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" 
               />
             </div>
-            <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
-              <p>ละติจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.latitude || 'N/A'}</span></p>
-              <p>ลองจิจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.longitude || 'N/A'}</span></p>
+            <div>
+              <label htmlFor="requestnumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่คำร้องขอใช้ไฟฟ้า:</label>
+              <input type="text" id="requestnumber" name="requestnumber" value={formData.requestnumber || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" />
+            </div>
+            <div>
+              <label htmlFor="requestdate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ยื่นคำร้อง:</label>
+              <input 
+                type="date" 
+                id="requestdate" 
+                name="requestdate" 
+                value={formData.requestdate || ''} 
+                onChange={handleDateChange} 
+                className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" 
+              />
             </div>
           </div>
-          <div className="md:col-span-2 mt-4">
-            <ImageUpload
-              ref={imageUploadRef}
-              onImageSelected={handleImageUpload}
-              disabled={isSubmitting}
-              currentImageUrl={formData.address_photo_url}
-            />
-          </div>
-          <div>
-            <label htmlFor="voltageSystem" className="block text-sm font-medium text-gray-900 mb-1">ระบบแรงดันไฟฟ้า:</label>
-            <select id="voltageSystem" name="voltageSystem" value={formData.voltageSystem} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900">
+        </section>
+
+        {/* 1. General Information */}
+        <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+          <h2 className="text-2xl font-bold mb-5 text-[#5b2d90]">1. ข้อมูลทั่วไป</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="fullname" className="block text-sm font-medium text-gray-900 mb-1">ชื่อนิติบุคคล/ผู้ขอใช้ไฟฟ้า:</label>
+              <input type="text" id="fullname" name="fullname" value={formData.fullname || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" />
+            </div>
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-900 mb-1">โทรศัพท์:</label>
+              <input type="text" id="phone" name="phone" value={formData.phone || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" />
+            </div>
+            <div className="md:col-span-2">
+              <label htmlFor="address" className="block text-sm font-medium text-gray-900 mb-1">ที่อยู่:</label>
+              <textarea id="address" name="address" value={formData.address || ''} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900"></textarea>
+            </div>
+            <div className="md:col-span-2 bg-white p-4 rounded-lg shadow mt-4">
+              <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
+              <p className="text-sm text-gray-500 mb-3">ค้นหาหรือลากแผนที่เพื่อเลือกตำแหน่ง จากนั้นพิกัดจะแสดงด้านล่าง</p>
+              <div className="relative z-0 h-80 rounded-lg overflow-hidden">
+                <OpenStreetMapComponent
+                  onLocationSelect={handleLocationSelect}
+                  initialLatitude={formData.latitude}
+                  initialLongitude={formData.longitude}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
+                <p>ละติจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.latitude || 'N/A'}</span></p>
+                <p>ลองจิจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.longitude || 'N/A'}</span></p>
+              </div>
+            </div>
+            <div className="md:col-span-2 mt-4">
+              <ImageUpload
+                ref={imageUploadRef}
+                onImageSelected={handleImageUpload}
+                disabled={isSubmitting}
+                initialImageUrl={formData.address_photo_url}
+              />
+            </div>
+            <div>
+              <label htmlFor="voltagesystem" className="block text-sm font-medium text-gray-900 mb-1">ระบบแรงดันไฟฟ้า:</label>
+              <select id="voltagesystem" name="voltagesystem" value={formData.voltagesystem || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] bg-white text-gray-900">
                 <option value="">เลือกระบบแรงดัน</option>
                 <option value="22kV">22 kV</option>
                 <option value="33kV">33 kV</option>
-            </select>
-            {errors.voltageSystem && <div className="error-text">{errors.voltageSystem}</div>}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="estimatedload" className="block text-sm font-medium text-gray-900 mb-1">โหลดประมาณ (kVA):</label>
+              <input type="number" step="any" id="estimatedload" name="estimatedload" value={formData.estimatedload || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" />
+            </div>
           </div>
-          <div>
-            <label htmlFor="estimatedLoad" className="block text-sm font-medium text-gray-900 mb-1">โหลดประมาณ (kVA):</label>
-            <input type="number" step="any" id="estimatedLoad" name="estimatedLoad" value={formData.estimatedLoad} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* --- 2. การตรวจสอบ --- */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-        <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">2. การตรวจสอบ</h2>
+        {/* 2. การตรวจสอบ */}
+        <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+          <h2 className="text-2xl font-bold mb-5 text-[#5b2d90]">2. การตรวจสอบ</h2>
 
-        {/* เอกสารรับรองการออกแบบ */}
-        <div className="border-b border-gray-200 pb-4 mb-6">
+          {/* เอกสารรับรองการออกแบบ */}
+          <div className="border-b border-gray-200 pb-4 mb-6">
             <label className="block text-xl font-bold text-[#3a1a5b] mb-4">เอกสารรับรองการออกแบบระบบไฟฟ้า:</label>
             <div className="flex flex-col sm:flex-row gap-4 mt-3">
-                <label className="inline-flex items-start cursor-pointer p-4 rounded-lg border border-gray-300 transition-all duration-200 hover:border-[#a78bfa] flex-1">
-                    <input
-                        type="radio"
-                        name="hasDesignCertification"
-                        value="true"
-                        checked={formData.hasDesignCertification === true}
-                        onChange={() => setFormData(prev => ({ ...prev, hasDesignCertification: true }))}
-                        className="form-radio h-5 w-5 text-[#5b2d90] ring-offset-2 focus:ring-2 focus:ring-[#a78bfa] cursor-pointer"
-                    />
-                    <span className="ml-3 text-base font-medium text-gray-800">มี</span>
-                    {formData.hasDesignCertification === true && (
-                        <div className="ml-6 space-y-2 text-sm text-gray-700">
-                            <p className="flex items-center">
-                                <span className="mr-2 text-[#5b2d90]">✓</span> 1. วิศวกรลงนามรับรองในแบบ As-built Drawing
-                            </p>
-                            <p className="flex items-center">
-                                <span className="mr-2 text-[#5b2d90]">✓</span> 2. สำเนาใบอนุญาตการประกอบวิชาชีพวิศวกรรม
-                            </p>
-                        </div>
-                    )}
-                </label>
-                <label className="inline-flex items-start cursor-pointer p-4 rounded-lg border border-gray-300 transition-all duration-200 hover:border-[#a78bfa] flex-1">
-                    <input
-                        type="radio"
-                        name="hasDesignCertification"
-                        value="false"
-                        checked={formData.hasDesignCertification === false}
-                        onChange={() => setFormData(prev => ({ ...prev, hasDesignCertification: false }))}
-                        className="form-radio h-5 w-5 text-[#5b2d90] ring-offset-2 focus:ring-2 focus:ring-[#a78bfa] cursor-pointer"
-                    />
-                    <span className="ml-3 text-base font-medium text-gray-800">ไม่มี</span>
-                </label>
-            </div>
-        </div>
-
-        <div className="space-y-4">
-            <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b] mt-6">ระบบจำหน่ายแรงสูง</h3>
-
-            {/* --- 2.1 ระบบจำหน่ายเหนือดิน --- */}
-            <div className="pl-4 border-l-4 border-purple-300">
-                <h4 className="text-lg font-semibold mb-3 text-gray-800">2.1 ระบบจำหน่ายเหนือดิน</h4>
-                <div className="space-y-6">
-                    <div className="border-b border-gray-200 pb-4">
-                        <div className="mb-4">
-                            <label htmlFor="overhead_cableType" className="block text-sm font-semibold text-gray-800 mb-2">2.1.1 ชนิดสายตัวนำ:</label>
-                            <input type="text" id="overhead_cableType" name="overhead_cableType" value={formData.overhead_cableType} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" placeholder="เช่น SAC, THW-A"/>
-                            <CorrectiveRadio
-                              groupName="overhead_cableType_correct"
-                              label="สถานะ"
-                              currentValue={formData.overhead_cableType_correct}
-                              currentNote={formData.overhead_cableType_correct_note}
-                              onStatusChange={handleRadioChange}
-                              onNoteChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="overhead_cableSizeSqmm" className="block text-sm font-semibold text-gray-800 mb-2">2.1.2 ขนาดสายตัวนำ (ตร.มม.):</label>
-                            <input type="number" step="any" id="overhead_cableSizeSqmm" name="overhead_cableSizeSqmm" value={formData.overhead_cableSizeSqmm} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-800" placeholder="เช่น 50, 70"/>
-                            <CorrectiveRadio
-                              groupName="overhead_cableSize_correct"
-                              label="สถานะ"
-                              currentValue={formData.overhead_cableSize_correct}
-                              currentNote={formData.overhead_cableSize_correct_note}
-                              onStatusChange={handleRadioChange}
-                              onNoteChange={handleChange}
-                            />
-                        </div>
-                    </div>
-                    <CorrectiveRadio groupName="overhead_poleCondition_correct" label="2.1.3 สภาพเสาและระยะห่าง" currentValue={formData.overhead_poleCondition_correct} currentNote={formData.overhead_poleCondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="overhead_poleTopEquipment_correct" label="2.1.4 การประกอบอุปกรณ์หัวเสา" currentValue={formData.overhead_poleTopEquipment_correct} currentNote={formData.overhead_poleTopEquipment_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="overhead_guyWireAssembly_correct" label="2.1.5 การประกอบชุดยึดโยง" currentValue={formData.overhead_guyWireAssembly_correct} currentNote={formData.overhead_guyWireAssembly_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="overhead_insulatorType_correct" label="2.1.6 ลูกถ้วยและฉนวน" currentValue={formData.overhead_insulatorType_correct} currentNote={formData.overhead_insulatorType_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="overhead_cableSagging_correct" label="2.1.7 การพาดสาย (สภาพสาย, ระยะหย่อนยาน)" currentValue={formData.overhead_cableSagging_correct} currentNote={formData.overhead_cableSagging_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="overhead_clearance_correct" label="2.1.8 ระยะห่างของสายกับอาคาร สิ่งก่อสร้าง หรือต้นไม้" currentValue={formData.overhead_clearance_correct} currentNote={formData.overhead_clearance_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="overhead_hvSurgeArrester_correct" label="2.1.9 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)" currentValue={formData.overhead_hvSurgeArrester_correct} currentNote={formData.overhead_hvSurgeArrester_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="overhead_cableJointCondition_correct" label="2.1.10 สภาพของจุดต่อสาย" currentValue={formData.overhead_cableJointCondition_correct} currentNote={formData.overhead_cableJointCondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="overhead_grounding_correct" label="2.1.11 การต่อลงดิน" currentValue={formData.overhead_grounding_correct} currentNote={formData.overhead_grounding_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                </div>
-            </div>
-
-            {/* --- 2.2 ระบบจำหน่ายใต้ดิน --- */}
-            <div className="pl-4 border-l-4 border-purple-300 mt-6">
-                <h4 className="text-lg font-semibold mb-3 text-gray-800">2.2 ระบบจำหน่ายใต้ดิน</h4>
-                <div className="space-y-6">
-                    <div className="border-b border-gray-200 pb-4">
-                        <div className="mb-4">
-                            <label htmlFor="underground_cableType" className="block text-sm font-semibold text-gray-800 mb-2">2.2.1 ชนิดสายตัวนำ:</label>
-                            <input type="text" id="underground_cableType" name="underground_cableType" value={formData.underground_cableType} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm"/>
-                            <CorrectiveRadio
-                              groupName="underground_cableType_correct"
-                              label="สถานะ"
-                              currentValue={formData.underground_cableType_correct}
-                              currentNote={formData.underground_cableType_correct_note}
-                              onStatusChange={handleRadioChange}
-                              onNoteChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="underground_cableSizeSqmm" className="block text-sm font-semibold text-gray-800 mb-2">2.2.2 ขนาดสายตัวนำ (ตร.มม.):</label>
-                            <input type="number" step="any" id="underground_cableSizeSqmm" name="underground_cableSizeSqmm" value={formData.underground_cableSizeSqmm} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm"/>
-                            <CorrectiveRadio
-                              groupName="underground_cableSize_correct"
-                              label="สถานะ"
-                              currentValue={formData.underground_cableSize_correct}
-                              currentNote={formData.underground_cableSize_correct_note}
-                              onStatusChange={handleRadioChange}
-                              onNoteChange={handleChange}
-                            />
-                        </div>
-                    </div>
-                    <CorrectiveRadio groupName="underground_visibleCableCondition_correct" label="2.2.3 สภาพสายส่วนที่มองเห็นได้" currentValue={formData.underground_visibleCableCondition_correct} currentNote={formData.underground_visibleCableCondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="underground_cableTension_correct" label="2.2.4 ความตึงของสาย" currentValue={formData.underground_cableTension_correct} currentNote={formData.underground_cableTension_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="underground_hvSurgeArrester_correct" label="2.2.5 การติดตั้งกับดักเสิร์จ" currentValue={formData.underground_hvSurgeArrester_correct} currentNote={formData.underground_hvSurgeArrester_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="underground_cableJointCondition_correct" label="2.2.6 สภาพของจุดต่อสาย" currentValue={formData.underground_cableJointCondition_correct} currentNote={formData.underground_cableJointCondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="underground_grounding_correct" label="2.2.7 การต่อลงดิน" currentValue={formData.underground_grounding_correct} currentNote={formData.underground_grounding_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                </div>
-            </div>
-
-            {/* --- 2.3 การติดตั้งเครื่องปลดวงจรต้นทาง --- */}
-            <div className="pl-4 border-l-4 border-purple-300 mt-6">
-                <h4 className="text-lg font-semibold mb-3 text-gray-800">2.3 การติดตั้งเครื่องปลดวงจรต้นทาง</h4>
-                <div className="space-y-3">
-                    <label className="flex items-center">
-                        <input
-                            type="checkbox"
-                            name="disconnectingDeviceType"
-                            value="ดรอพเอาท์ฟิวส์คัตเอาท์"
-                            checked={formData.disconnectingDeviceType.includes('ดรอพเอาท์ฟิวส์คัตเอาท์')}
-                            onChange={handleDisconnectingDeviceTypeChange}
-                            className="form-checkbox h-5 w-5 text-purple-600 rounded"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">ดรอพเอาท์ฟิวส์คัตเอาท์</span>
-                    </label>
-                    <label className="flex items-center">
-                        <input
-                            type="checkbox"
-                            name="disconnectingDeviceType"
-                            value="สวิตช์ตัดตอน"
-                            checked={formData.disconnectingDeviceType.includes('สวิตช์ตัดตอน')}
-                            onChange={handleDisconnectingDeviceTypeChange}
-                            className="form-checkbox h-5 w-5 text-purple-600 rounded"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">สวิตช์ตัดตอน</span>
-                        {formData.disconnectingDeviceType.includes('สวิตช์ตัดตอน') && (
-                            <div className="flex items-center ml-2">
-                                <span className="text-sm mr-2">ชนิด:</span>
-                                <input
-                                    type="text"
-                                    name="disconnectingDeviceSwitchType"
-                                    value={formData.disconnectingDeviceSwitchType}
-                                    onChange={handleChange}
-                                    className="p-1 border rounded-md text-sm w-40"
-                                />
-                            </div>
-                        )}
-                    </label>
-                    <label className="flex items-center">
-                        <input
-                            type="checkbox"
-                            name="disconnectingDeviceType"
-                            value="RMU (ไม่รวมฟังก์ชั่น)"
-                            checked={formData.disconnectingDeviceType.includes('RMU (ไม่รวมฟังก์ชั่น)')}
-                            onChange={handleDisconnectingDeviceTypeChange}
-                            className="form-checkbox h-5 w-5 text-purple-600 rounded"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">RMU (ไม่รวมฟังก์ชั่น)</span>
-                    </label>
-                </div>
-                <CorrectiveRadio
-                    groupName="disconnectingDeviceStatus"
-                    label=""
-                    currentValue={formData.disconnectingDeviceStatus}
-                    currentNote={formData.disconnectingDeviceStatus_note}
-                    onStatusChange={handleRadioChange}
-                    onNoteChange={handleChange}
+              <label className="inline-flex items-start cursor-pointer p-4 rounded-lg border border-gray-300 transition-all duration-200 hover:border-[#a78bfa] flex-1">
+                <input
+                  type="radio"
+                  name="hasdesigncertification"
+                  value="true"
+                  checked={formData.hasdesigncertification === true}
+                  onChange={() => setFormData(prev => ({ ...prev, hasdesigncertification: true }))
+                  }
+                  className="form-radio h-5 w-5 text-[#5b2d90] ring-offset-2 focus:ring-2 focus:ring-[#a78bfa] cursor-pointer"
                 />
-                <div className="mt-2">
-                    <label htmlFor="hvDistributionOther" className="text-sm font-medium">อื่นๆ:</label>
-                    <input type="text" id="hvDistributionOther" name="hvDistributionOther" value={formData.hvDistributionOther} onChange={handleChange} className="mt-1 block w-full p-2 border rounded-md text-sm"/>
-                </div>
+                <span className="ml-3 text-base font-medium text-gray-800">มี</span>
+              </label>
+              <label className="inline-flex items-start cursor-pointer p-4 rounded-lg border border-gray-300 transition-all duration-200 hover:border-[#a78bfa] flex-1">
+                <input
+                  type="radio"
+                  name="hasdesigncertification"
+                  value="false"
+                  checked={formData.hasdesigncertification === false}
+                  onChange={() => setFormData(prev => ({ ...prev, hasdesigncertification: false }))}
+                  className="form-radio h-5 w-5 text-[#5b2d90] ring-offset-2 focus:ring-2 focus:ring-[#a78bfa] cursor-pointer"
+                />
+                <span className="ml-3 text-base font-medium text-gray-800">ไม่มี</span>
+              </label>
             </div>
-        </div>
+          </div>
 
+          {/* Overhead Distribution System */}
+          <div className="pl-4 border-l-4 border-purple-300">
+            <h4 className="text-lg font-semibold mb-3 text-gray-800">2.1 ระบบจำหน่ายเหนือดิน</h4>
+            <div className="space-y-6">
+              <div className="mb-4">
+                <label htmlFor="overhead_cabletype" className="block text-sm font-semibold text-gray-800 mb-2">2.1.1 ชนิดสายตัวนำ:</label>
+                <input type="text" id="overhead_cabletype" name="overhead_cabletype" value={formData.overhead_cabletype || ''} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+                <CorrectiveRadio
+                  groupName="overhead_cabletype_correct"
+                  label=""
+                  currentValue={formData.overhead_cabletype_correct}
+                  currentNote={formData.overhead_cabletype_correct_note}
+                  onStatusChange={handleRadioChange}
+                  onNoteChange={handleChange}
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="overhead_cablesizesqmm" className="block text-sm font-semibold text-gray-800 mb-2">2.1.2 ขนาดสายตัวนำ (ตร.มม.):</label>
+                <input type="number" step="any" id="overhead_cablesizesqmm" name="overhead_cablesizesqmm" value={formData.overhead_cablesizesqmm || ''} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+                <CorrectiveRadio
+                  groupName="overhead_cablesize_correct"
+                  label=""
+                  currentValue={formData.overhead_cablesize_correct}
+                  currentNote={formData.overhead_cablesize_correct_note}
+                  onStatusChange={handleRadioChange}
+                  onNoteChange={handleChange}
+                />
+              </div>
+              <CorrectiveRadio groupName="overhead_polecondition_correct" label="2.1.3 สภาพเสาและระยะห่าง" currentValue={formData.overhead_polecondition_correct} currentNote={formData.overhead_polecondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="overhead_poletopequipment_correct" label="2.1.4 การประกอบอุปกรณ์หัวเสา" currentValue={formData.overhead_poletopequipment_correct} currentNote={formData.overhead_poletopequipment_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="overhead_guywireassembly_correct" label="2.1.5 การประกอบชุดยึดโยง" currentValue={formData.overhead_guywireassembly_correct} currentNote={formData.overhead_guywireassembly_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="overhead_insulatortype_correct" label="2.1.6 ลูกถ้วยและฉนวน" currentValue={formData.overhead_insulatortype_correct} currentNote={formData.overhead_insulatortype_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="overhead_cablesagging_correct" label="2.1.7 การพาดสาย (สภาพสาย, ระยะหย่อนยาน)" currentValue={formData.overhead_cablesagging_correct} currentNote={formData.overhead_cablesagging_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="overhead_clearance_correct" label="2.1.8 ระยะห่างของสายกับอาคาร สิ่งก่อสร้าง หรือต้นไม้" currentValue={formData.overhead_clearance_correct} currentNote={formData.overhead_clearance_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="overhead_hvsurgearrester_correct" label="2.1.9 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)" currentValue={formData.overhead_hvsurgearrester_correct} currentNote={formData.overhead_hvsurgearrester_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="overhead_cablejointcondition_correct" label="2.1.10 สภาพของจุดต่อสาย" currentValue={formData.overhead_cablejointcondition_correct} currentNote={formData.overhead_cablejointcondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="overhead_grounding_correct" label="2.1.11 การต่อลงดิน" currentValue={formData.overhead_grounding_correct} currentNote={formData.overhead_grounding_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+            </div>
+          </div>
 
-        {/* --- หม้อแปลง (2.5 - 2.13) --- */}
-        <div className="mt-6">
+          {/* Underground Distribution System */}
+          <div className="pl-4 border-l-4 border-purple-300 mt-6">
+            <h4 className="text-lg font-semibold mb-3 text-gray-800">2.2 ระบบจำหน่ายใต้ดิน</h4>
+            <div className="space-y-6">
+              <div className="mb-4">
+                <label htmlFor="underground_cabletype" className="block text-sm font-semibold text-gray-800 mb-2">2.2.1 ชนิดสายตัวนำ:</label>
+                <input type="text" id="underground_cabletype" name="underground_cabletype" value={formData.underground_cabletype || ''} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+                <CorrectiveRadio
+                  groupName="underground_cabletype_correct"
+                  label=""
+                  currentValue={formData.underground_cabletype_correct}
+                  currentNote={formData.underground_cabletype_correct_note}
+                  onStatusChange={handleRadioChange}
+                  onNoteChange={handleChange}
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="underground_cablesizesqmm" className="block text-sm font-semibold text-gray-800 mb-2">2.2.2 ขนาดสายตัวนำ (ตร.มม.):</label>
+                <input type="number" step="any" id="underground_cablesizesqmm" name="underground_cablesizesqmm" value={formData.underground_cablesizesqmm || ''} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+                <CorrectiveRadio
+                  groupName="underground_cablesize_correct"
+                  label=""
+                  currentValue={formData.underground_cablesize_correct}
+                  currentNote={formData.underground_cablesize_correct_note}
+                  onStatusChange={handleRadioChange}
+                  onNoteChange={handleChange}
+                />
+              </div>
+              <CorrectiveRadio groupName="underground_visiblecablecondition_correct" label="2.2.3 สภาพสายส่วนที่มองเห็นได้" currentValue={formData.underground_visiblecablecondition_correct} currentNote={formData.underground_visiblecablecondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="underground_cabletension_correct" label="2.2.4 ความตึงของสาย" currentValue={formData.underground_cabletension_correct} currentNote={formData.underground_cabletension_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="underground_hvsurgearrester_correct" label="2.2.5 การติดตั้งกับดักเสิร์จ" currentValue={formData.underground_hvsurgearrester_correct} currentNote={formData.underground_hvsurgearrester_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="underground_cablejointcondition_correct" label="2.2.6 สภาพของจุดต่อสาย" currentValue={formData.underground_cablejointcondition_correct} currentNote={formData.underground_cablejointcondition_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+              <CorrectiveRadio groupName="underground_grounding_correct" label="2.2.7 การต่อลงดิน" currentValue={formData.underground_grounding_correct} currentNote={formData.underground_grounding_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
+            </div>
+          </div>
+
+          {/* Disconnecting Device */}
+          <div className="pl-4 border-l-4 border-purple-300 mt-6">
+            <h4 className="text-lg font-semibold mb-3 text-gray-800">2.3 การติดตั้งเครื่องปลดวงจรต้นทาง</h4>
+            <div className="space-y-3">
+              {['ดรอพเอาท์ฟิวส์คัตเอาท์', 'สวิตช์ตัดตอน', 'RMU (ไม่รวมฟังก์ชั่น)'].map(type => (
+                <label key={type} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="disconnectingdevicetype"
+                    value={type}
+                    checked={Array.isArray(formData.disconnectingdevicetype) && formData.disconnectingdevicetype.includes(type)}
+                    onChange={handleCheckboxChange}
+                    className="form-checkbox h-5 w-5 text-purple-600 rounded"
+                  />
+                  <span className="ml-2 text-sm text-gray-700">{type}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Transformer Section */}
+          <div className="mt-6">
             <h3 className="text-xl font-semibold mb-3 text-[#3a1a5b]">หม้อแปลง</h3>
             <div className="space-y-4 pl-4 border-l-4 border-purple-300">
-
-                {/* --- 2.5 คุณสมบัติทั่วไปของหม้อแปลง --- */}
-                <div className="border-b border-gray-200 pb-4">
-                    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.5 คุณสมบัติทั่วไปของหม้อแปลง</h4>
-                    <div className="flex items-center space-x-4 mb-4">
-                        <label className="inline-flex items-center">
-                            <input type="radio" name="transformer_tested" value="true" checked={formData.transformer_tested === true} onChange={() => setFormData(prev => ({...prev, transformer_tested: true}))} className="form-radio h-5 w-5 text-purple-600"/>
-                            <span className="ml-2 text-sm">ผ่านการทดสอบ</span>
-                        </label>
-                        <label className="inline-flex items-center">
-                            <input type="radio" name="transformer_tested" value="false" checked={formData.transformer_tested === false} onChange={() => setFormData(prev => ({...prev, transformer_tested: false}))} className="form-radio h-5 w-5 text-purple-600"/>
-                            <span className="ml-2 text-sm">ไม่ผ่านการทดสอบ</span>
-                        </label>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">ขนาด (kVA)</label>
-                            <input type="number" name="transformer_size_kva" value={formData.transformer_size_kva || ''} onChange={handleChange} className="mt-1 w-full p-2 border border-gray-300 rounded-md"/>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">พิกัดแรงดัน (ด้านแรงสูง)</label>
-                            <input type="text" name="transformer_hv_voltage" value={formData.transformer_hv_voltage || ''} onChange={handleChange} className="mt-1 w-full p-2 border border-gray-300 rounded-md"/>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">พิกัดแรงดัน (ด้านแรงต่ำ)</label>
-                            <input type="text" name="transformer_lv_voltage" value={formData.transformer_lv_voltage || ''} onChange={handleChange} className="mt-1 w-full p-2 border border-gray-300 rounded-md"/>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">% Impedance</label>
-                            <input type="number" step="any" name="transformer_impedance" value={formData.transformer_impedance || ''} onChange={handleChange} className="mt-1 w-full p-2 border border-gray-300 rounded-md"/>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Vector Group</label>
-                            <input type="text" name="transformer_vector_group" value={formData.transformer_vector_group || ''} onChange={handleChange} className="mt-1 w-full p-2 border border-gray-300 rounded-md"/>
-                        </div>
-                    </div>
-                    <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">ชนิด:</label>
-                        <div className="flex items-center space-x-4">
-                            <label className="inline-flex items-center"><input type="radio" name="transformer_type" value="Oil" checked={formData.transformer_type === 'Oil'} onChange={handleChange} className="form-radio"/><span className="ml-2 text-sm">Oil</span></label>
-                            <label className="inline-flex items-center"><input type="radio" name="transformer_type" value="Dry" checked={formData.transformer_type === 'Dry'} onChange={handleChange} className="form-radio"/><span className="ml-2 text-sm">Dry</span></label>
-                            <label className="inline-flex items-center">
-                                <input type="radio" name="transformer_type" value="Other" checked={formData.transformer_type === 'Other'} onChange={handleChange} className="form-radio"/>
-                                <span className="ml-2 text-sm">อื่นๆ:</span>
-                                {formData.transformer_type === 'Other' && (
-                                    <input type="text" name="transformer_type_other" value={formData.transformer_type_other || ''} onChange={handleChange} className="ml-2 p-1 border rounded-md text-sm w-32"/>
-                                )}
-                            </label>
-                        </div>
-                    </div>
-                    <CorrectiveRadio
-                        groupName="transformer_properties_correct"
-                        label="ผลการตรวจสอบคุณสมบัติ"
-                        currentValue={formData.transformer_properties_correct}
-                        currentNote={formData.transformer_properties_correct_note}
-                        onStatusChange={handleRadioChange}
-                        onNoteChange={handleChange}
-                    />
-                </div>
-
-                {/* --- 2.6 ลักษณะการติดตั้ง --- */}
-                <div className="border-b border-gray-200 pb-4">
-                    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.6 ลักษณะการติดตั้ง</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-gray-700 mb-3">
-                        {['แขวน', 'นั่งร้าน', 'ตั้งพื้น', 'บนดาดฟ้า', 'ห้องหม้อแปลง'].map(type => (
-                            <label key={type} className="inline-flex items-center">
-                                <input type="checkbox" value={type} checked={formData.transformer_installation_type.includes(type)} onChange={handleInstallationTypeChange} className="form-checkbox"/>
-                                <span className="ml-2 text-sm">{type}</span>
-                            </label>
-                        ))}
-                        <label className="inline-flex items-center">
-                            <input type="checkbox" value="อื่นๆ" checked={formData.transformer_installation_type.includes('อื่นๆ')} onChange={handleInstallationTypeChange} className="form-checkbox"/>
-                            <span className="ml-2 text-sm">อื่นๆ:</span>
-                            {formData.transformer_installation_type.includes('อื่นๆ') && (
-                                <input type="text" name="transformer_installation_type_other" value={formData.transformer_installation_type_other || ''} onChange={handleChange} className="ml-2 p-1 border rounded-md text-sm w-32"/>
-                            )}
-                        </label>
-                    </div>
-                    <CorrectiveRadio
-                        groupName="transformer_installation_correct"
-                        label="สถานะ"
-                        currentValue={formData.transformer_installation_correct}
-                        currentNote={formData.transformer_installation_correct_note}
-                        onStatusChange={handleRadioChange}
-                        onNoteChange={handleChange}
-                    />
-                </div>
-
-                {/* --- 2.7 เครื่องป้องกันกระแสเกินด้านไฟเข้า --- */}
-                <div className="border-b border-gray-200 pb-4">
-                    <h4 className="text-lg font-semibold mb-3 text-gray-800">2.7 เครื่องป้องกันกระแสเกินด้านไฟเข้า</h4>
-                    <div className="flex flex-wrap gap-4 mb-3 text-gray-700">
-                        {['ดรอพเอาท์ฟิวส์คัตเอาท์', 'เซอร์กิตเบรกเกอร์'].map(type => (
-                             <label key={type} className="inline-flex items-center">
-                                <input type="checkbox" value={type} checked={formData.transformer_overcurrent_protection_type.includes(type)} onChange={handleOvercurrentProtectionTypeChange} className="form-checkbox"/>
-                                <span className="ml-2 text-sm">{type}</span>
-                            </label>
-                        ))}
-                        <label className="inline-flex items-center">
-                            <input type="checkbox" value="อื่นๆ" checked={formData.transformer_overcurrent_protection_type.includes('อื่นๆ')} onChange={handleOvercurrentProtectionTypeChange} className="form-checkbox"/>
-                            <span className="ml-2 text-sm">อื่นๆ:</span>
-                            {formData.transformer_overcurrent_protection_type.includes('อื่นๆ') && (
-                                <input type="text" name="transformer_overcurrent_protection_other" value={formData.transformer_overcurrent_protection_other || ''} onChange={handleChange} className="ml-2 p-1 border rounded-md text-sm w-32"/>
-                            )}
-                        </label>
-                    </div>
-                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">พิกัดกระแสต่อเนื่อง (A)</label>
-                            <input type="number" name="transformer_continuous_current_a" value={formData.transformer_continuous_current_a || ''} onChange={handleChange} className="w-full p-2 border rounded-md text-gray-700"/>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">พิกัดตัดกระแสลัดวงจร (IC)</label>
-                            <input type="text" name="transformer_interrupting_capacity_ic" value={formData.transformer_interrupting_capacity_ic || ''} onChange={handleChange} className="w-full p-2 border rounded-md text-gray-700"/>
-                        </div>
-                    </div>
-                    <CorrectiveRadio
-                        groupName="transformer_overcurrent_correct"
-                        label="สถานะ"
-                        currentValue={formData.transformer_overcurrent_correct}
-                        currentNote={formData.transformer_overcurrent_correct_note}
-                        onStatusChange={handleRadioChange}
-                        onNoteChange={handleChange}
-                    />
-                </div>
-
-                {/* --- 2.8 - 2.13 --- */}
-                <CorrectiveRadio groupName="transformer_hv_surge_arrester_correct" label="2.8 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)" currentValue={formData.transformer_hv_surge_arrester_correct} currentNote={formData.transformer_hv_surge_arrester_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                <CorrectiveRadio groupName="transformer_grounding_assembly_correct" label="2.9 การประกอบสายดินกับตัวถังหม้อแปลงและกับดักเสิร์จ" currentValue={formData.transformer_grounding_assembly_correct} currentNote={formData.transformer_grounding_assembly_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                <CorrectiveRadio groupName="transformer_hv_ground_resistance_correct" label="2.10 ค่าความต้านทานดินของระบบแรงสูง" currentValue={formData.transformer_hv_ground_resistance_correct} currentNote={formData.transformer_hv_ground_resistance_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-
-                <h5 className="font-semibold text-gray-700 mt-4">2.11 สภาพภายนอกหม้อแปลง (เฉพาะชนิดน้ำมัน)</h5>
-                <div className="pl-4">
-                    <CorrectiveRadio groupName="transformer_silica_gel_correct" label="2.11.1 สารดูดความชื้น (Silica Gel)" currentValue={formData.transformer_silica_gel_correct} currentNote={formData.transformer_silica_gel_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="transformer_bushing_condition_correct" label="2.11.2 สภาพบุชชิ่ง" currentValue={formData.transformer_bushing_condition_correct} currentNote={formData.transformer_bushing_condition_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="transformer_oil_level_correct" label="2.11.3 ระดับน้ำมัน" currentValue={formData.transformer_oil_level_correct} currentNote={formData.transformer_oil_level_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                    <CorrectiveRadio groupName="transformer_oil_leak_correct" label="2.11.4 การรั่วซึมของน้ำมัน" currentValue={formData.transformer_oil_leak_correct} currentNote={formData.transformer_oil_leak_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-                </div>
-
-                <CorrectiveRadio groupName="transformer_warning_sign_correct" label="2.12 ป้ายเตือนอันตรายไฟฟ้าแรงสูง" currentValue={formData.transformer_warning_sign_correct} currentNote={formData.transformer_warning_sign_correct_note} onStatusChange={handleRadioChange} onNoteChange={handleChange}/>
-
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                    <label htmlFor="transformer_other_correct_note" className="text-lg font-semibold text-gray-800">2.13 อื่นๆ</label>
-                    <textarea id="transformer_other_correct_note" name="transformer_other_correct_note" value={formData.transformer_other_correct_note} onChange={handleChange} rows="3" className="mt-1 block w-full p-2 border rounded-md text-sm text-gray-700"></textarea>
+                  <label className="block text-sm font-medium text-gray-700">ขนาด (kVA)</label>
+                  <input type="number" name="transformer_size_kva" value={formData.transformer_size_kva || ''} onChange={handleChange} className="mt-1 w-full p-2 border border-gray-300 rounded-md text-gray-700"/>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">พิกัดแรงดัน (ด้านแรงสูง)</label>
+                  <input type="text" name="transformer_hv_voltage" value={formData.transformer_hv_voltage || ''} onChange={handleChange} className="mt-1 w-full p-2 border border-gray-300 rounded-md text-gray-700"/>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">พิกัดแรงดัน (ด้านแรงต่ำ)</label>
+                  <input type="text" name="transformer_lv_voltage" value={formData.transformer_lv_voltage || ''} onChange={handleChange} className="mt-1 w-full p-2 border border-gray-300 rounded-md text-gray-700"/>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">% Impedance</label>
+                  <input type="number" step="any" name="transformer_impedance" value={formData.transformer_impedance || ''} onChange={handleChange} className="mt-1 w-full p-2 border border-gray-300 rounded-md text-gray-700"/>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Vector Group</label>
+                  <input type="text" name="transformer_vector_group" value={formData.transformer_vector_group || ''} onChange={handleChange} className="mt-1 w-full p-2 border border-gray-300 rounded-md text-gray-700"/>
+                </div>
+              </div>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">ชนิด:</label>
+                <div className="flex items-center space-x-4">
+                  <label className="inline-flex items-center"><input type="radio" name="transformer_type" value="Oil" checked={formData.transformer_type === 'Oil'} onChange={handleChange} className="form-radio"/><span className="ml-2 text-sm text-gray-700">Oil</span></label>
+                  <label className="inline-flex items-center"><input type="radio" name="transformer_type" value="Dry" checked={formData.transformer_type === 'Dry'} onChange={handleChange} className="form-radio"/><span className="ml-2 text-sm text-gray-700">Dry</span></label>
+                  <label className="inline-flex items-center">
+                    <input type="radio" name="transformer_type" value="Other" checked={formData.transformer_type === 'Other'} onChange={handleChange} className="form-radio"/>
+                    <span className="ml-2 text-sm text-gray-700">อื่นๆ:</span>
+                    {formData.transformer_type === 'Other' && (
+                      <input type="text" name="transformer_type_other" value={formData.transformer_type_other || ''} onChange={handleChange} className="ml-2 p-1 border rounded-md text-sm w-32 text-gray-700"/>
+                    )}
+                  </label>
+                </div>
+              </div>
+              <CorrectiveRadio
+                groupName="transformer_properties_correct"
+                label="ผลการตรวจสอบคุณสมบัติ"
+                currentValue={formData.transformer_properties_correct}
+                currentNote={formData.transformer_properties_correct_note}
+                onStatusChange={handleRadioChange}
+                onNoteChange={handleChange}
+              />
             </div>
-        </div>
+          </div>
+        </section>
 
-      </section>
+        {/* สรุปและลงนาม */}
+        <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+          <h2 className="text-2xl font-bold mb-5 text-[#5b2d90]">3. สรุปและลงนาม</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label htmlFor="summaryresult" className="block text-sm font-medium text-gray-900 mb-1">ผลการตรวจสอบสรุปโดยย่อ:</label>
+              <textarea id="summaryresult" name="summaryresult" value={formData.summaryresult || ''} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900"></textarea>
+            </div>
+            <div className="md:col-span-2">
+              <label htmlFor="scopeofinspection" className="block text-sm font-medium text-gray-900 mb-1">ขอบเขตและข้อจำกัด:</label>
+              <textarea id="scopeofinspection" name="scopeofinspection" value={formData.scopeofinspection || ''} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900"></textarea>
+            </div>
+            <div>
+              <SignaturePad
+                title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน"
+                ref={userSigRef}
+                onSave={(dataUrl) => handleSignatureSave('usersignature', dataUrl)}
+                onClear={() => handleSignatureClear('usersignature')}
+                initialValue={formData.usersignature}
+              />
+            </div>
+            <div>
+              <SignaturePad
+                title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค"
+                ref={inspectorSigRef}
+                onSave={(dataUrl) => handleSignatureSave('inspectorsignature', dataUrl)}
+                onClear={() => handleSignatureClear('inspectorsignature')}
+                initialValue={formData.inspectorsignature}
+              />
+            </div>
+          </div>
+        </section>
 
-      {/* --- สรุปและลงนาม --- */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-        <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">สรุปผลและลงนาม</h3>
-        <textarea
-          name="summaryResult"
-          value={formData.summaryResult}
-          onChange={handleChange}
-          placeholder="สรุปผลการตรวจสอบ..."
-          className="w-full p-3 border border-gray-300 rounded-lg shadow-sm mb-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          rows="3"
-        />
-      </section>
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-        <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">ลงชื่อ</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <SignaturePad
-            title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน"
-            ref={userSigRef}
-            onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)}
-            onClear={() => handleSignatureClear('userSignature')}
-            initialValue={formData.userSignature}
-          />
-          <SignaturePad
-            title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค"
-            ref={inspectorSigRef}
-            onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)}
-            onClear={() => handleSignatureClear('inspectorSignature')}
-            initialValue={formData.inspectorSignature}
-          />
-        </div>
-      </section>
-
-      {/* --- Action Buttons --- */}
-      <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
-        <PDFDownloadLink
-          document={<CommercialInspectionPDF formData={formData} />}
-          fileName={`commercial-inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
-          className="w-full sm:w-auto"
-        >
-          {({ loading }) => (
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
+          <PDFDownloadLink
+            document={<CommercialInspectionPDF formData={formData} />}
+            fileName={`commercial-inspection-form-${formData.inspectionnumber || 'form'}.pdf`}
+            className="w-full sm:w-auto"
+          >
+            {({ loading }) => (
               <button
-                  type="button"
-                  disabled={loading || isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+                type="button"
+                disabled={loading || isSubmitting}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
               >
-                  <Download className="w-5 h-5"/>
-                  {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
+                <Download className="w-5 h-5"/>
+                {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
               </button>
-          )}
-        </PDFDownloadLink>
+            )}
+          </PDFDownloadLink>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-white bg-[#5b2d90] rounded-lg shadow-lg hover:bg-[#4a2575] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a78bfa] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
-        >
-          {isSubmitting ? (
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-white bg-[#5b2d90] rounded-lg shadow-lg hover:bg-[#4a2575] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a78bfa] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+          >
+            {isSubmitting ? (
               <>
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                  </svg>
-                  <span>กำลังบันทึก...</span>
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span>กำลังบันทึก...</span>
               </>
-          ) : (
+            ) : (
               <>
-                  <Save className="w-5 h-5"/>
-                  <span>บันทึกข้อมูล</span>
+                <Save className="w-5 h-5"/>
+                <span>บันทึกข้อมูล</span>
               </>
-          )}
-        </button>
-      </div>
-    </form>
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
+
+// Wrap the component with FormProvider
+function FormWrapper() {
+  return (
+    <FormProvider>
+      <CommercialInspectionForm />
+    </FormProvider>
+  );
+}
+
+export default FormWrapper;

@@ -1281,7 +1281,7 @@ const handleSignatureClear = (name) => {
             />
             <CorrectiveRadio
               groupName="mainBreakerShortCircuitRating_correct"
-              label="ถูกต้องหรือไม่"
+              label="ถูกต้องหรือไม่
               currentValue={formData.mainBreakerShortCircuitRating_correct}
               currentNote={formData.mainBreakerShortCircuitRating_note}
               onStatusChange={handleRadioChange}

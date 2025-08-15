@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { toast } from 'sonner';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
 import ImageUpload from "@/components/forms/ImageUpload";
@@ -11,6 +12,7 @@ import CondoInspectionPDF from "@/components/forms/CondoInspectionPDF";
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useFormManager } from "@/lib/hooks/useFormManager";
+import { FormProvider } from '@/lib/contexts/FormContext';
 
 // Dynamic import for OpenStreetMapComponent to avoid SSR issues
 const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStreetMapComponent'), {
@@ -23,19 +25,18 @@ const initialFormData = {
   user_id: null,
 
   // ข้อมูลทั่วไป
-  inspection_number: "",
-  inspection_date: "",
-  request_number: "",
-  request_date: "",
-  pea_office: "",
-  full_name: "",
+  inspectionnumber: "",
+  inspectiondate: new Date().toISOString().split('T')[0], // Set current date as default
+  requestnumber: "",
+  requestdate: null, // Use null instead of empty string for optional dates
+  fullname: "",
   phone: "",
   address: "",
-  latitude: "",
-  longitude: "",
+  latitude: null,  
+  longitude: null,
   address_photo_url: "",
-  phaseType: "", // '22kV' หรือ '33kV'
-  estimated_load: "",
+  phasetype: "",
+  estimatedload: "",
 
   has_design_certification: null,
   as_built_drawing_certified: false,
@@ -174,10 +175,10 @@ const initialFormData = {
   lv_system_other_correct_note: '',
 
   // สรุปและลงนาม
-  summary_result: "",
-  scope_and_limitations: "",
-  userSignature: "",
-  inspectorSignature: "",
+  summaryresult: "",
+  scopeofinspection: "",
+  usersignature: "",
+  inspectorsignature: "",
 };
 
 // เพิ่ม transformer template สำหรับการสร้าง transformer ใหม่
@@ -197,7 +198,11 @@ const newTransformerTemplate = {
   ground_correct_note: ''
 };
 
-export default function CondoInspectionForm() {
+function CondoInspectionForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
+
   const {
     formData,
     setFormData,
@@ -208,48 +213,60 @@ export default function CondoInspectionForm() {
     handleSubmit,
     handleSignatureSave,
     handleSignatureClear
-  } = useFormManager('condo_inspection_forms', initialFormData, 'condo');
+  } = useFormManager('condo_inspection_forms', initialFormData, [], '*', 'form-images');
 
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
   const imageUploadRef = useRef(null);
 
-  // ปรับ handleRadioChange ให้รองรับทั้ง event, (groupName, value), และ (event.target == undefined)
-  const handleRadioChange = (arg1, arg2) => {
-    // กรณี CorrectiveRadio เรียก onStatusChange={(groupName, value) => handleRadioChange(groupName, value)}
-    if (typeof arg1 === 'string' && typeof arg2 !== 'undefined') {
-      setFormData((prevData) => ({
-        ...prevData,
-        [arg1]: arg2,
-      }));
-      return;
-    }
-    // กรณี event (input, radio, checkbox)
-    if (arg1 && typeof arg1 === 'object' && arg1.target) {
-      const { name, value, type, checked } = arg1.target;
-      let newValue = value;
-
-      if (type === 'number') {
-        newValue = value === '' ? null : Number(value);
-      } else if (type === 'checkbox') {
-        const isArray = Array.isArray(formData[name]);
-        if (isArray) {
-          const currentArray = formData[name] || [];
-          if (checked) {
-            newValue = [...currentArray, value];
-          } else {
-            newValue = currentArray.filter((item) => item !== value);
-          }
-        } else {
-          newValue = checked;
-        }
+  // Check authentication on component mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient();
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      if (error || !user) {
+        toast.error('กรุณาเข้าสู่ระบบก่อนใช้งาน');
+        // Uncomment the line below if you want to redirect to sign-in
+        // router.push('/auth/signin');
       }
+    };
+    
+    checkAuth();
+  }, []);
 
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: newValue,
-      }));
-      return;
+  // ปรับ handleRadioChange ให้รองรับทั้ง event, (groupName, value), และ (event.target == undefined)
+  const handleRadioChange = (groupName, value, noteFieldName) => {
+    setFormData((prev) => ({
+      ...prev,
+      [groupName]: value,
+      ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
+    }));
+  };
+
+  // Enhanced handleChange to properly handle date fields และ checkbox arrays
+  const handleDateChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value || null // Convert empty string to null for dates
+    }));
+  };
+
+  // Enhanced handleSubmit with proper error handling
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const result = await handleSubmit(e);
+      if (result && result.success) {
+        console.log('Form submitted successfully:', result);
+      } else if (result && !result.success) {
+        console.error('Form submission failed:', result.error);
+      }
+    } catch (error) {
+      console.error('Error in form submission:', error);
+      toast.error('เกิดข้อผิดพลาดในการส่งข้อมูล');
     }
   };
 
@@ -259,6 +276,34 @@ export default function CondoInspectionForm() {
       latitude: location.lat.toFixed(6),
       longitude: location.lng.toFixed(6),
     }));
+  };
+
+  // Enhanced checkbox handling for array fields
+  const handleCheckboxChange = (e) => {
+    const { name, value, checked } = e.target;
+    const arrayFields = ['disconnecting_device_type', 'lv_main_cable_wiring_method', 'room_feeder_wiring'];
+    
+    if (arrayFields.includes(name)) {
+      const currentArray = Array.isArray(formData[name]) ? formData[name] : [];
+      let newValue;
+      
+      if (checked) {
+        newValue = [...currentArray, value];
+      } else {
+        newValue = currentArray.filter((item) => item !== value);
+      }
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: newValue
+      }));
+    } else {
+      // Regular checkbox handling
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked
+      }));
+    }
   };
 
   // --- Functions to manage transformers ---
@@ -319,106 +364,136 @@ export default function CondoInspectionForm() {
     });
   };
 
+  // เพิ่ม useEffect เพื่อ debug ข้อมูลที่โหลดมา
+  useEffect(() => {
+    if (!isLoading && formData) {
+      console.log('Current form data:', formData);
+      console.log('Form data keys:', Object.keys(formData));
+      console.log('Form data values:', Object.values(formData).filter(v => v !== '' && v !== null));
+    }
+  }, [isLoading, formData]);
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-pea-primary"></div>
-        <p className="ml-4 text-lg text-gray-600">กำลังโหลดข้อมูลฟอร์ม...</p>
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#5b2d90] mb-4"></div>
+        <div className="text-center">
+          <p className="text-lg text-gray-600 mb-2">กำลังโหลดข้อมูลฟอร์ม...</p>
+          {id && (
+            <p className="text-sm text-gray-500">กำลังดึงข้อมูลรายการ ID: {id}</p>
+          )}
+        </div>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} id="pea-condo-inspection-form" className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
-      <style jsx global>{`
-        .sigCanvas { touch-action: none; }
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
-      `}</style>
-      <h2 className="text-2xl font-bold mb-6 text-center text-[#5b2d90]">
-        แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้า (สำหรับอาคารชุด)
-      </h2>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <form onSubmit={handleFormSubmit} id="pea-condo-inspection-form" className="space-y-8 max-w-5xl mx-auto p-4 md:p-8">
+        <style jsx global>{`
+          .sigCanvas { touch-action: none; }
+          input[type=number]::-webkit-inner-spin-button, 
+          input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+          input[type=number] { -moz-appearance: textfield; }
+        `}</style>
+        
+        <h2 className="text-2xl font-bold mb-6 text-center text-[#5b2d90]">
+          แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้า (สำหรับอาคารชุด)
+        </h2>
 
-      {/* --- Header Section --- */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่บันทึกตรวจสอบ:</label>
-            <input type="text" id="inspectionNumber" name="inspection_number" value={formData.inspection_number} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
+        {/* Header Section */}
+        <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="inspectionnumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่บันทึกตรวจสอบ:</label>
+              <input type="text" id="inspectionnumber" name="inspectionnumber" value={formData.inspectionnumber || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" />
+            </div>
+            <div>
+              <label htmlFor="inspectiondate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ:</label>
+              <input 
+                type="date" 
+                id="inspectiondate" 
+                name="inspectiondate" 
+                value={formData.inspectiondate || ''} 
+                onChange={handleDateChange} 
+                className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" 
+              />
+            </div>
+            <div>
+              <label htmlFor="requestnumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่คำร้องขอใช้ไฟฟ้า:</label>
+              <input type="text" id="requestnumber" name="requestnumber" value={formData.requestnumber || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" />
+            </div>
+            <div>
+              <label htmlFor="requestdate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ยื่นคำร้อง:</label>
+              <input 
+                type="date" 
+                id="requestdate" 
+                name="requestdate" 
+                value={formData.requestdate || ''} 
+                onChange={handleDateChange} 
+                className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" 
+              />
+            </div>
           </div>
-         <div>
-              <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ: <span className="text-xs text-gray-500">(อัตโนมัติ)</span></label>
-              <input type="date" id="inspectionDate" name="inspectionDate" value={formData.inspectionDate} onChange={handleChange} readOnly className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100 text-gray-900" />
-          </div>
-          <div>
-            <label htmlFor="requestNumber" className="block text-sm font-medium text-gray-900 mb-1">เลขที่คำร้องขอใช้ไฟฟ้า:</label>
-            <input type="text" id="requestNumber" name="request_number" value={formData.request_number} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-          </div>
-          <div>
-            <label htmlFor="requestDate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ยื่นคำร้อง:</label>
-            <input type="date" id="requestDate" name="request_date" value={formData.request_date} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* --- 1. General Information --- */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-        <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">1. ข้อมูลทั่วไป</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="fullName" className="block text-sm font-medium text-gray-900 mb-1">ชื่อนิติบุคคล/ผู้ขอใช้ไฟฟ้า:</label>
-            <input type="text" id="fullName" name="full_name" value={formData.full_name} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-          </div>
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-900 mb-1">โทรศัพท์:</label>
-            <input type="text" id="phone" name="phone" value={formData.phone} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-          </div>
-          <div className="md:col-span-2">
-            <label htmlFor="address" className="block text-sm font-medium text-gray-900 mb-1">ที่อยู่:</label>
-            <textarea id="address" name="address" value={formData.address} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900"></textarea>
-          </div>
-           <div className="md:col-span-2 bg-white p-4 rounded-lg shadow mt-4">
-                  <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
-                  <p className="text-sm text-gray-500 mb-3">ค้นหาหรือลากแผนที่เพื่อเลือกตำแหน่ง จากนั้นพิกัดจะแสดงด้านล่าง</p>
-                  <div className="relative z-0 h-80 rounded-lg overflow-hidden">
-                    <OpenStreetMapComponent
-                      onLocationSelect={handleLocationSelect}
-                      initialLatitude={formData.latitude}
-                      initialLongitude={formData.longitude}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
-                    <p>ละติจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.latitude || 'N/A'}</span></p>
-                    <p>ลองจิจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.longitude || 'N/A'}</span></p>
-                  </div>
-                </div>
-                <div className="md:col-span-2 mt-4">
-                    <ImageUpload
-                        ref={imageUploadRef}
-                        onImageSelected={handleImageUpload}
-                        disabled={isSubmitting}
-                        currentImageUrl={formData.address_photo_url}
-                    />
-                </div>
-          <div>
-            <label htmlFor="voltageSystem" className="block text-sm font-medium text-gray-900 mb-1">ระบบแรงดันไฟฟ้า:</label>
-            <select id="voltageSystem" name="phaseType" value={formData.phaseType} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900">
+        {/* --- 1. General Information --- */}
+        <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+          <h2 className="text-2xl font-bold mb-5 text-[#5b2d90]">1. ข้อมูลทั่วไป</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="fullname" className="block text-sm font-medium text-gray-900 mb-1">ชื่อนิติบุคคล/ผู้ขอใช้ไฟฟ้า:</label>
+              <input type="text" id="fullname" name="fullname" value={formData.fullname || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" />
+            </div>
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-900 mb-1">โทรศัพท์:</label>
+              <input type="text" id="phone" name="phone" value={formData.phone || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" />
+            </div>
+            <div className="md:col-span-2">
+              <label htmlFor="address" className="block text-sm font-medium text-gray-900 mb-1">ที่อยู่:</label>
+              <textarea id="address" name="address" value={formData.address || ''} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900"></textarea>
+            </div>
+            <div className="md:col-span-2 bg-white p-4 rounded-lg shadow mt-4">
+              <h3 className="text-lg font-semibold text-[#3a1a5b] mb-3">ค้นหาและปักหมุดที่อยู่</h3>
+              <p className="text-sm text-gray-500 mb-3">ค้นหาหรือลากแผนที่เพื่อเลือกตำแหน่ง จากนั้นพิกัดจะแสดงด้านล่าง</p>
+              <div className="relative z-0 h-80 rounded-lg overflow-hidden">
+                <OpenStreetMapComponent
+                  onLocationSelect={handleLocationSelect}
+                  initialLatitude={formData.latitude}
+                  initialLongitude={formData.longitude}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
+                <p>ละติจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.latitude || 'N/A'}</span></p>
+                <p>ลองจิจูด: <span className="font-mono text-gray-700 p-2 bg-gray-100 rounded">{formData.longitude || 'N/A'}</span></p>
+              </div>
+            </div>
+            <div className="md:col-span-2 mt-4">
+              <ImageUpload
+                ref={imageUploadRef}
+                onImageSelected={handleImageUpload}
+                disabled={isSubmitting}
+                initialImageUrl={formData.address_photo_url}
+              />
+            </div>
+            <div>
+              <label htmlFor="voltageSystem" className="block text-sm font-medium text-gray-900 mb-1">ระบบแรงดันไฟฟ้า:</label>
+              <select id="voltageSystem" name="phasetype" value={formData.phasetype || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] bg-white text-gray-900">
                 <option value="">เลือกระบบแรงดัน</option>
                 <option value="22kV">22 kV</option>
                 <option value="33kV">33 kV</option>
-            </select>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="estimatedLoad" className="block text-sm font-medium text-gray-900 mb-1">โหลดประมาณ (kVA):</label>
+              <input type="number" step="any" id="estimatedLoad" name="estimatedload" value={formData.estimatedload || ''} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900" />
+            </div>
           </div>
-          <div>
-            <label htmlFor="estimatedLoad" className="block text-sm font-medium text-gray-900 mb-1">โหลดประมาณ (kVA):</label>
-            <input type="number" step="any" id="estimatedLoad" name="estimated_load" value={formData.estimated_load} onChange={handleChange} className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900" />
-          </div>
-        </div>
-      </section>
-      
-      {/* --- 2. การตรวจสอบ --- */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-          <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">2. การตรวจสอบ</h2>
+        </section>
+        
+        {/* --- 2. การตรวจสอบ --- */}
+        <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+          <h2 className="text-2xl font-bold mb-5 text-[#5b2d90]">2. การตรวจสอบ</h2>
           <div className="mb-6 pl-4 border-l-4 border-purple-300 space-y-4">
             <label className="block text-lg font-semibold mb-3 text-gray-800">2.1 ระบบจำหน่ายเหนือดิน</label>
             {/* 2.1.1 ชนิดสายตัวนำ */}
@@ -660,8 +735,8 @@ export default function CondoInspectionForm() {
                       type="checkbox"
                       name="disconnecting_device_type"
                       value="Load Break Switch"
-                      checked={formData.disconnecting_device_type?.includes('Load Break Switch')}
-                      onChange={handleChange}
+                      checked={Array.isArray(formData.disconnecting_device_type) && formData.disconnecting_device_type.includes('Load Break Switch')}
+                      onChange={handleCheckboxChange}
                       className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]"
                     />
                     <label htmlFor="load-break-switch" className="ml-2 block text-sm text-gray-900">Load Break Switch</label>
@@ -672,8 +747,8 @@ export default function CondoInspectionForm() {
                       type="checkbox"
                       name="disconnecting_device_type"
                       value="Air Break Switch"
-                      checked={formData.disconnecting_device_type?.includes('Air Break Switch')}
-                      onChange={handleChange}
+                      checked={Array.isArray(formData.disconnecting_device_type) && formData.disconnecting_device_type.includes('Air Break Switch')}
+                      onChange={handleCheckboxChange}
                       className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]"
                     />
                     <label htmlFor="air-break-switch" className="ml-2 block text-sm text-gray-900">Air Break Switch</label>
@@ -684,8 +759,8 @@ export default function CondoInspectionForm() {
                       type="checkbox"
                       name="disconnecting_device_type"
                       value="Oil Switch"
-                      checked={formData.disconnecting_device_type?.includes('Oil Switch')}
-                      onChange={handleChange}
+                      checked={Array.isArray(formData.disconnecting_device_type) && formData.disconnecting_device_type.includes('Oil Switch')}
+                      onChange={handleCheckboxChange}
                       className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]"
                     />
                     <label htmlFor="oil-switch" className="ml-2 block text-sm text-gray-900">Oil Switch</label>
@@ -801,25 +876,57 @@ export default function CondoInspectionForm() {
               />
             </div>
             <div className="pl-4">
-                <p className="block text-sm font-semibold text-gray-800 mb-2">2.14.3 วิธีเดินสาย:</p>
-                <div className="flex flex-wrap gap-4">
-                    <div className="flex items-center">
-                        <input type="checkbox" id="wiring-conduit" name="lv_main_cable_wiring" value="ในท่อร้อยสาย" checked={formData.lv_main_cable_wiring?.includes('ในท่อร้อยสาย')} onChange={handleChange} className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" />
-                        <label htmlFor="wiring-conduit" className="ml-2 block text-sm text-gray-900">ในท่อร้อยสาย</label>
-                    </div>
-                    <div className="flex items-center">
-                        <input type="checkbox" id="wiring-cable-tray" name="lv_main_cable_wiring" value="รางเคเบิล" checked={formData.lv_main_cable_wiring?.includes('รางเคเบิล')} onChange={handleChange} className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" />
-                        <label htmlFor="wiring-cable-tray" className="ml-2 block text-sm text-gray-900">รางเคเบิล</label>
-                    </div>
-                    <div className="flex items-center">
-                        <input type="checkbox" id="wiring-open" name="lv_main_cable_wiring" value="ในที่เปิดโล่ง" checked={formData.lv_main_cable_wiring?.includes('ในที่เปิดโล่ง')} onChange={handleChange} className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" />
-                        <label htmlFor="wiring-open" className="ml-2 block text-sm text-gray-900">ในที่เปิดโล่ง</label>
-                    </div>
-                    <div className="flex items-center">
-                        <input type="checkbox" id="wiring-other" name="lv_main_cable_wiring" value="อื่นๆ" checked={formData.lv_main_cable_wiring?.includes('อื่นๆ')} onChange={handleChange} className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" />
-                        <label htmlFor="wiring-other" className="ml-2 block text-sm text-gray-900">อื่นๆ</label>
-                    </div>
+              <p className="block text-sm font-semibold text-gray-800 mb-2">2.14.3 วิธีเดินสาย:</p>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center">
+                  <input 
+                    type="checkbox" 
+                    id="wiring-conduit" 
+                    name="lv_main_cable_wiring_method" 
+                    value="ในท่อร้อยสาย" 
+                    checked={Array.isArray(formData.lv_main_cable_wiring_method) && formData.lv_main_cable_wiring_method.includes('ในท่อร้อยสาย')} 
+                    onChange={handleCheckboxChange} 
+                    className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" 
+                  />
+                  <label htmlFor="wiring-conduit" className="ml-2 block text-sm text-gray-900">ในท่อร้อยสาย</label>
                 </div>
+                <div className="flex items-center">
+                  <input 
+                    type="checkbox" 
+                    id="wiring-cable-tray" 
+                    name="lv_main_cable_wiring_method" 
+                    value="รางเคเบิล" 
+                    checked={Array.isArray(formData.lv_main_cable_wiring_method) && formData.lv_main_cable_wiring_method.includes('รางเคเบิล')} 
+                    onChange={handleCheckboxChange} 
+                    className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" 
+                  />
+                  <label htmlFor="wiring-cable-tray" className="ml-2 block text-sm text-gray-900">รางเคเบิล</label>
+                </div>
+                <div className="flex items-center">
+                  <input 
+                    type="checkbox" 
+                    id="wiring-open" 
+                    name="lv_main_cable_wiring_method" 
+                    value="ในที่เปิดโล่ง" 
+                    checked={Array.isArray(formData.lv_main_cable_wiring_method) && formData.lv_main_cable_wiring_method.includes('ในที่เปิดโล่ง')} 
+                    onChange={handleCheckboxChange} 
+                    className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" 
+                  />
+                  <label htmlFor="wiring-open" className="ml-2 block text-sm text-gray-900">ในที่เปิดโล่ง</label>
+                </div>
+                <div className="flex items-center">
+                  <input 
+                    type="checkbox" 
+                    id="wiring-other" 
+                    name="lv_main_cable_wiring_method" 
+                    value="อื่นๆ" 
+                    checked={Array.isArray(formData.lv_main_cable_wiring_method) && formData.lv_main_cable_wiring_method.includes('อื่นๆ')} 
+                    onChange={handleCheckboxChange} 
+                    className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" 
+                  />
+                  <label htmlFor="wiring-other" className="ml-2 block text-sm text-gray-900">อื่นๆ</label>
+                </div>
+              </div>
               <CorrectiveRadio
                 groupName="lv_main_cable_wiring_correct"
                 label="การเดินสาย"
@@ -1009,17 +1116,33 @@ export default function CondoInspectionForm() {
               <input type="text" id="room_feeder_size" name="room_feeder_size" value={formData.room_feeder_size} onChange={handleChange} className="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm" />
             </div>
             <div className="pl-4">
-                <p className="block text-sm font-semibold text-gray-800 mb-2">2.19.4 วิธีเดินสาย:</p>
-                <div className="flex flex-wrap gap-4">
-                    <div className="flex items-center">
-                        <input type="checkbox" id="room-wiring-conduit" name="room_feeder_wiring" value="ในท่อร้อยสาย" checked={formData.room_feeder_wiring?.includes('ในท่อร้อยสาย')} onChange={handleChange} className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" />
-                        <label htmlFor="room-wiring-conduit" className="ml-2 block text-sm text-gray-900">ในท่อร้อยสาย</label>
-                    </div>
-                    <div className="flex items-center">
-                        <input type="checkbox" id="room-wiring-other" name="room_feeder_wiring" value="อื่นๆ" checked={formData.room_feeder_wiring?.includes('อื่นๆ')} onChange={handleChange} className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" />
-                        <label htmlFor="room-wiring-other" className="ml-2 block text-sm text-gray-900">อื่นๆ</label>
-                    </div>
+              <p className="block text-sm font-semibold text-gray-800 mb-2">2.19.4 วิธีเดินสาย:</p>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center">
+                  <input 
+                    type="checkbox" 
+                    id="room-wiring-conduit" 
+                    name="room_feeder_wiring" 
+                    value="ในท่อร้อยสาย" 
+                    checked={Array.isArray(formData.room_feeder_wiring) && formData.room_feeder_wiring.includes('ในท่อร้อยสาย')} 
+                    onChange={handleCheckboxChange} 
+                    className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" 
+                  />
+                  <label htmlFor="room-wiring-conduit" className="ml-2 block text-sm text-gray-900">ในท่อร้อยสาย</label>
                 </div>
+                <div className="flex items-center">
+                  <input 
+                    type="checkbox" 
+                    id="room-wiring-other" 
+                    name="room_feeder_wiring" 
+                    value="อื่นๆ" 
+                    checked={Array.isArray(formData.room_feeder_wiring) && formData.room_feeder_wiring.includes('อื่นๆ')} 
+                    onChange={handleCheckboxChange} 
+                    className="h-4 w-4 text-[#5b2d90] border-gray-300 rounded focus:ring-[#5b2d90]" 
+                  />
+                  <label htmlFor="room-wiring-other" className="ml-2 block text-sm text-gray-900">อื่นๆ</label>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1084,80 +1207,92 @@ export default function CondoInspectionForm() {
       </section>
 
       {/* --- 3. สรุปและลงนาม --- */}
-      <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-        <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">3. สรุปและลงนาม</h2>
+      <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+        <h2 className="text-2xl font-bold mb-5 text-[#5b2d90]">3. สรุปและลงนาม</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
             <label htmlFor="summaryResult" className="block text-sm font-medium text-gray-900 mb-1">ผลการตรวจสอบสรุปโดยย่อ:</label>
-            <textarea id="summaryResult" name="summary_result" value={formData.summary_result} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900"></textarea>
+            <textarea id="summaryResult" name="summaryresult" value={formData.summaryresult || ''} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900"></textarea>
           </div>
           <div className="md:col-span-2">
             <label htmlFor="scopeAndLimitations" className="block text-sm font-medium text-gray-900 mb-1">ขอบเขตและข้อจำกัด:</label>
-            <textarea id="scopeAndLimitations" name="scope_and_limitations" value={formData.scope_and_limitations} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm text-gray-900"></textarea>
+            <textarea id="scopeAndLimitations" name="scopeofinspection" value={formData.scopeofinspection || ''} onChange={handleChange} rows="3" className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#5b2d90] focus:ring-[#5b2d90] text-gray-900"></textarea>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-1">ลายเซ็นผู้ขอใช้ไฟฟ้า:</label>
             <SignaturePad
+              title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน"
               ref={userSigRef}
-              signature={formData.userSignature}
-              onSave={(data) => handleSignatureSave('userSignature', data)}
-              onClear={() => handleSignatureClear('userSignature', userSigRef)}
-              disabled={isSubmitting}
+              onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)}
+              onClear={() => handleSignatureClear('userSignature')}
+              initialValue={formData.userSignature}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-1">ลายเซ็นเจ้าหน้าที่ กฟภ.:</label>
             <SignaturePad
+              title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค"
               ref={inspectorSigRef}
-              signature={formData.inspectorSignature}
-              onSave={(data) => handleSignatureSave('inspectorSignature', data)}
-              onClear={() => handleSignatureClear('inspectorSignature', inspectorSigRef)}
-              disabled={isSubmitting}
+              onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)}
+              onClear={() => handleSignatureClear('inspectorSignature')}
+              initialValue={formData.inspectorsignature}
             />
           </div>
         </div>
       </section>
 
-{/* --- Action Buttons --- */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
-          <PDFDownloadLink
-            document={<CondoInspectionPDF formData={formData} />}
-            fileName={`inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
-            className="w-full sm:w-auto"
-          >
-            {({ loading }) => (
-                <button
-                    type="button"
-                    disabled={loading || isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
-                >
-                    <Download className="w-5 h-5"/>
-                    {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
-                </button>
-            )}
-          </PDFDownloadLink>
+      {/* --- Action Buttons --- */}
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
+        <PDFDownloadLink
+          document={<CondoInspectionPDF formData={formData} />}
+          fileName={`condo-inspection-form-${formData.inspectionnumber || 'form'}.pdf`}
+          className="w-full sm:w-auto"
+        >
+          {({ loading }) => (
+              <button
+                  type="button"
+                  disabled={loading || isSubmitting}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                  <Download className="w-5 h-5"/>
+                  {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
+              </button>
+          )}
+        </PDFDownloadLink>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-white bg-[#5b2d90] rounded-lg shadow-lg hover:bg-[#4a2575] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a78bfa] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
-          >
-            {isSubmitting ? (
-                <>
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                    </svg>
-                    <span>กำลังบันทึก...</span>
-                </>
-            ) : (
-                <>
-                    <Save className="w-5 h-5"/>
-                    <span>บันทึกข้อมูล</span>
-                </>
-            )}
-          </button>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-white bg-[#5b2d90] rounded-lg shadow-lg hover:bg-[#4a2575] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a78bfa] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+        >
+          {isSubmitting ? (
+              <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373  0 12h4z"></path>
+                  </svg>
+                  <span>กำลังบันทึก...</span>
+              </>
+          ) : (
+              <>
+                  <Save className="w-5 h-5"/>
+                  <span>บันทึกข้อมูล</span>
+              </>
+          )}
+        </button>
       </div>
     </form>
+    </div>
   );
 }
+
+// Wrap the component with FormProvider
+function FormWrapper() {
+  return (
+    <FormProvider>
+      <CondoInspectionForm />
+    </FormProvider>
+  );
+}
+
+export default FormWrapper;
