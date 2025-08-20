@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import constructioninspectionPDF from '@/components/forms/constructioninspectionPDF';
+import constructioninspectionPDF from '@/components/pdf/constructioninspectionPDF';
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useFormManager } from "@/lib/hooks/useFormManager"; 

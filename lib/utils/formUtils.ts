@@ -1,27 +1,43 @@
 export const transformFormData = (data: Record<string, any>) => {
-  const transformed = { ...data };
+  const transformed: Record<string, any> = {};
   
-  // Transform empty strings to null
-  Object.entries(transformed).forEach(([key, value]) => {
-    if (value === '') transformed[key] = null;
-  });
-
-  // Convert string numbers to actual numbers
-  const numberFields = ['estimatedLoad', 'transformer_size_kva', 'transformer_impedance'];
-  numberFields.forEach(field => {
-    if (transformed[field]) {
-      transformed[field] = Number(transformed[field]);
+  Object.entries(data).forEach(([key, value]) => {
+    // Keep original field names (don't convert to camelCase)
+    const dbKey = key;
+    
+    // Handle different value types
+    if (value === null || value === undefined || value === '') {
+      transformed[dbKey] = null;
+    } else if (typeof value === 'boolean') {
+      transformed[dbKey] = value;
+    } else if (Array.isArray(value)) {
+      // Convert arrays to JSON strings for database storage
+      transformed[dbKey] = value.length > 0 ? JSON.stringify(value) : null;
+    } else if (typeof value === 'object' && value !== null) {
+      // Convert objects to JSON strings
+      transformed[dbKey] = JSON.stringify(value);
+    } else if (typeof value === 'string') {
+      // Handle string values
+      const trimmed = value.trim();
+      if (trimmed === '') {
+        transformed[dbKey] = null;
+      } else {
+        // Handle specific string formats
+        if (key.includes('date') && trimmed) {
+          // Ensure date format is valid
+          const date = new Date(trimmed);
+          transformed[dbKey] = isNaN(date.getTime()) ? null : trimmed;
+        } else {
+          transformed[dbKey] = trimmed;
+        }
+      }
+    } else if (typeof value === 'number') {
+      transformed[dbKey] = isNaN(value) ? null : value;
+    } else {
+      transformed[dbKey] = value;
     }
   });
-
-  // Format dates to ISO string
-  const dateFields = ['inspectionDate', 'requestDate'];
-  dateFields.forEach(field => {
-    if (transformed[field]) {
-      transformed[field] = new Date(transformed[field]).toISOString();
-    }
-  });
-
+  
   return transformed;
 };
 

@@ -8,7 +8,7 @@ import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
 import ImageUpload from "@/components/forms/ImageUpload";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import InspectionPDF from '@/components/forms/InspectionPDF';
+import InspectionPDF from '@/components/pdf/EvChargerHvFormPDF';
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useFormManager } from "@/lib/hooks/useFormManager";
@@ -42,19 +42,18 @@ const initialFormData = {
   phasetype: "",
   estimatedload: "",
   address_photo_url: "",
-  voltagesystem: "", // "22 kV" or "33 kV"
   totalloadamp: "",
   numchargers: "",
   totalchargerpowerkw: "",
 
-  // 2. Document Checklist - Individual
+  // 2.1 Document Checklist - Individual
   docspecevcharger: false,
   docsinglelinediagram: false,
   docloadschedule: false,
   docindividualcomplete: null,
   docindividual_note: "",
 
-  // 2. Document Checklist - Public
+  // 2.2 Document Checklist - Public
   docpublicsinglelinediagram: false,
   docpublicasbuiltdrawing: false,
   docpublicloadschedule: false,
@@ -110,8 +109,9 @@ const initialFormData = {
   groundingunderground_correct_note: "",
 
   // 3.3 Upstream Disconnecting Device
-  disconnectingdevicetype: "", // dropdown: "dropout-fuse-cutout", "switch-disconnect", "rmu"
+  disconnectingdevicetype: [], // Changed to array for multiple selections
   disconnectingdeviceswitchtype: "", // for switch-disconnect
+  disconnectingdevicermu: "",
   disconnectingdevice_correct: '',
   disconnectingdevice_correct_note: "",
 
@@ -387,7 +387,8 @@ function EvChargerHvForm() {
     const { name, value, checked } = e.target;
     const arrayFields = [
       'installationtype', 'wiringmethod', 'conduitmetaltype', 'conduitnonmetaltype',
-      'feederwiringmethod', 'feederconduitmetaltype', 'feederconduitnonmetaltype'
+      'feederwiringmethod', 'feederconduitmetaltype', 'feederconduitnonmetaltype',
+      'disconnectingdevicetype' // Added disconnectingdevicetype to array fields
     ];
     
     if (arrayFields.includes(name)) {
@@ -502,12 +503,12 @@ function EvChargerHvForm() {
               />
             </div>
             <div>
-              <label htmlFor="inspectiondate" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ: <span className="text-xs text-gray-500">(อัตโนมัติ)</span></label>
+              <label htmlFor="inspection_date" className="block text-sm font-medium text-gray-900 mb-1">วันที่ตรวจสอบ: <span className="text-xs text-gray-500">(อัตโนมัติ)</span></label>
               <input 
                 type="date" 
-                id="inspectiondate" 
-                name="inspectiondate" 
-                value={formData.inspectiondate} 
+                id="inspection_date" 
+                name="inspection_date" 
+                value={formData.inspection_date} 
                 onChange={handleChange} 
                 readOnly 
                 className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100 text-gray-700" 
@@ -1082,6 +1083,63 @@ function EvChargerHvForm() {
           {/* 3.3 Upstream Disconnecting Device */}
           <h4 className="text-lg font-semibold mb-2 text-gray-700">3.3 การติดตั้งเครื่องปลดวงจรต้นทาง (ส่วนของผู้ขอใช้ไฟฟ้า)</h4>
           <div className="mb-6 pl-4 border-l-4 border-purple-400 space-y-4">
+            <div className="flex flex-wrap gap-4 mt-2">
+              <label className="block text-sm font-medium text-gray-700">
+                <input 
+                  type="checkbox" 
+                  name="disconnectingdevicetype" 
+                  value="ดรอพเอาท์ฟิวส์คัตเอาท์" 
+                  checked={Array.isArray(formData.disconnectingdevicetype) && formData.disconnectingdevicetype.includes("ดรอพเอาท์ฟิวส์คัตเอาท์")} 
+                  onChange={handleCheckboxChange} 
+                  className="text-[#5b2d90]" 
+                />
+                <span className="text-sm font-medium text-gray-700 ml-2">ดรอพเอาท์ฟิวส์คัตเอาท์</span>
+              </label>
+              {Array.isArray(formData.disconnectingdevicetype) && formData.disconnectingdevicetype.includes("สวิตช์ตัดตอน") ? (
+                <label className="block text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <input 
+                    type="checkbox" 
+                    name="disconnectingdevicetype" 
+                    value="สวิตช์ตัดตอน" 
+                    checked={true}
+                    onChange={handleCheckboxChange} 
+                    className="text-[#5b2d90]" 
+                  />
+                  <span className="text-sm font-medium text-gray-700">สวิตช์ตัดตอน ชนิด</span>
+                  <input
+                    type="text"
+                    name="disconnectingdeviceswitchtype"
+                    value={formData.disconnectingdeviceswitchtype}
+                    onChange={handleChange}
+                    className="p-2 border border-gray-300 rounded-md text-gray-700 ml-2"
+                    placeholder="ระบุชนิด"
+                  />
+                </label>
+              ) : (
+                <label className="block text-sm font-medium text-gray-700">
+                  <input 
+                    type="checkbox" 
+                    name="disconnectingdevicetype" 
+                    value="สวิตช์ตัดตอน" 
+                    checked={false}
+                    onChange={handleCheckboxChange} 
+                    className="text-[#5b2d90]" 
+                  />
+                  <span className="text-sm font-medium text-gray-700 ml-2">สวิตช์ตัดตอน ชนิด</span>
+                </label>
+              )}
+              <label className="block text-sm font-medium text-gray-700">
+                <input 
+                  type="checkbox" 
+                  name="disconnectingdevicetype" 
+                  value="RMU" 
+                  checked={Array.isArray(formData.disconnectingdevicetype) && formData.disconnectingdevicetype.includes("RMU")} 
+                  onChange={handleCheckboxChange} 
+                  className="text-[#5b2d90]" 
+                />
+                <span className="text-sm font-medium text-gray-700 ml-2">RMU (ไม่รวมถึงฟังก์ชันการทำงาน)</span>
+              </label>
+            </div>
             <CorrectiveRadio
               groupName="disconnectingdevice_correct"
               label="สถานะการติดตั้งเครื่องปลดวงจรต้นทาง"
@@ -1090,30 +1148,6 @@ function EvChargerHvForm() {
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
-            <div className="flex flex-wrap gap-4 mt-2">
-              <label className="block text-sm font-medium text-gray-700">
-                <input type="radio" name="disconnectingdevicetype" value="ดรอพเอาท์ฟิวส์คัตเอาท์" checked={formData.disconnectingdevicetype === "ดรอพเอาท์ฟิวส์คัตเอาท์"} onChange={handleChange} className="text-[#5b2d90]" />
-                <span className="text-sm font-medium text-gray-700 ml-2">ดรอพเอาท์ฟิวส์คัตเอาท์</span>
-              </label>
-              <label className="block text-sm font-medium text-gray-700">
-                <input type="radio" name="disconnectingdevicetype" value="สวิตช์ตัดตอน" checked={formData.disconnectingdevicetype === "สวิตช์ตัดตอน"} onChange={handleChange} className="text-[#5b2d90]" />
-                <span className="text-sm font-medium text-gray-700 ml-2">สวิตช์ตัดตอน ชนิด</span>
-              </label>
-              {formData.disconnectingdevicetype === "สวิตช์ตัดตอน" && (
-                <input
-                  type="text"
-                  name="disconnectingdeviceswitchtype"
-                  value={formData.disconnectingdeviceswitchtype}
-                  onChange={handleChange}
-                  className="p-2 border border-gray-300 rounded-md text-gray-700"
-                  placeholder="ระบุชนิด"
-                />
-              )}
-              <label className="block text-sm font-medium text-gray-700">
-                <input type="radio" name="disconnectingdevicetype" value="RMU" checked={formData.disconnectingdevicetype === "RMU"} onChange={handleChange} className="text-[#5b2d90]" />
-                <span className="text-sm font-medium text-gray-700 ml-2">RMU (ไม่รวมถึงฟังก์ชันการทำงาน)</span>
-              </label>
-            </div>
           </div>
 
           {/* 3.4 Others */}
@@ -1416,14 +1450,6 @@ function EvChargerHvForm() {
           <h4 className="text-lg font-semibold mb-2 text-gray-700">5.1 วงจรประธานแรงต่ำ</h4>
           <div className="mb-6 pl-4 border-l-4 border-purple-400 space-y-4">
             {/* 5.1.1 Main Cable Standard */}
-            <CorrectiveRadio
-              groupName="maincablestandard_correct"
-              label="5.1.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน"
-              currentValue={formData.maincablestandard_correct}
-              currentNote={formData.maincablestandard_correct_note}
-              onStatusChange={handleRadioChange}
-              onNoteChange={handleChange}
-            />
             <div className="flex flex-wrap gap-4 mt-2">
               <label className="block text-sm font-medium text-gray-700">
                 <input type="radio" name="maincablestandard" value="มอก. 11-2553" checked={formData.maincablestandard === "มอก. 11-2553"} onChange={handleChange} className="text-[#5b2d90]" />
@@ -1438,16 +1464,16 @@ function EvChargerHvForm() {
                 <span className="text-sm font-medium text-gray-700 ml-2">IEC 60502</span>
               </label>
             </div>
-
-            {/* 5.1.2 Main Cable Type */}
             <CorrectiveRadio
-              groupName="maincabletype_correct"
-              label="5.1.2 ชนิดสายตัวนำ"
-              currentValue={formData.maincabletype_correct}
-              currentNote={formData.maincabletype_correct_note}
+              groupName="maincablestandard_correct"
+              label="5.1.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน"
+              currentValue={formData.maincablestandard_correct}
+              currentNote={formData.maincablestandard_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
+
+            {/* 5.1.2 Main Cable Type */}
             <div className="flex flex-wrap gap-4 mt-2">
               <label className="block text-sm font-medium text-gray-700">
                 <input type="radio" name="maincabletype" value="IEC01" checked={formData.maincabletype === "IEC01"} onChange={handleChange} className="text-[#5b2d90]" />
@@ -1469,16 +1495,17 @@ function EvChargerHvForm() {
                 <input type="text" name="maincabletypeother" value={formData.maincabletypeother} onChange={handleChange} className="p-2 border border-gray-300 rounded-md text-gray-700" placeholder="ระบุ" />
               )}
             </div>
-
-            {/* 5.1.3 Main Phase Cable Size */}
             <CorrectiveRadio
-              groupName="mainphasecablesize_correct"
-              label="5.1.3 ขนาดสายเฟส..........................ตร.มม. (พิกัดกระแสสายตัวนำประธานต้องไม่น้อยกว่าขนาดปรับตั้งของเมนเซอร์กิตเบรกเกอร์ และสอดคล้องกับขนาดมิเตอร์ตามที่การไฟฟ้าส่วนภูมิภาคกำหนด)"
-              currentValue={formData.mainphasecablesize_correct}
-              currentNote={formData.mainphasecablesize_correct_note}
+              groupName="maincabletype_correct"
+              label="5.1.2 ชนิดสายตัวนำ"
+              currentValue={formData.maincabletype_correct}
+              currentNote={formData.maincabletype_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
+
+            {/* 5.1.3 Main Phase Cable Size */}
+            <h4 className="text-md font-semibold mb-2 text-gray-700">5.1.3 ขนาดสายเฟส......................ตร.มม.</h4>
             <input
               type="text"
               name="mainphasecablesizesqmm"
@@ -1487,16 +1514,17 @@ function EvChargerHvForm() {
               className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
               placeholder="ขนาดสายเฟส (ตร.มม.)"
             />
-
-            {/* 5.1.4 Main Neutral Cable Size */}
             <CorrectiveRadio
-              groupName="mainneutralcablesize_correct"
-              label="5.1.4 ขนาดสายนิวทรัล......................ตร.มม."
-              currentValue={formData.mainneutralcablesize_correct}
-              currentNote={formData.mainneutralcablesize_correct_note}
+              groupName="mainphasecablesize_correct"
+              label="5.1.3 ขนาดสายเฟส"
+              currentValue={formData.mainphasecablesize_correct}
+              currentNote={formData.mainphasecablesize_correct_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
+
+            {/* 5.1.4 Main Neutral Cable Size */}
+              <h4 className="text-md font-semibold mb-2 text-gray-700">5.1.4 ขนาดสายนิวทรัล......................ตร.มม.</h4>
             <input
               type="text"
               name="mainneutralcablesizesqmm"
@@ -1504,6 +1532,14 @@ function EvChargerHvForm() {
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
               placeholder="ขนาดสายนิวทรัล (ตร.มม.)"
+            />
+            <CorrectiveRadio
+              groupName="mainneutralcablesize_correct"
+              label="5.1.4 ขนาดสายนิวทรัล"
+              currentValue={formData.mainneutralcablesize_correct}
+              currentNote={formData.mainneutralcablesize_correct_note}
+              onStatusChange={handleRadioChange}
+              onNoteChange={handleChange}
             />
 
             {/* 5.1.5 Phase Marking */}
@@ -1921,7 +1957,7 @@ function EvChargerHvForm() {
               <span className="text-sm font-medium text-gray-700 ml-2">IEC 60502</span>
             </label>
           </div>
-          </div>
+          
 
           <CorrectiveRadio
             groupName="feedercabletype_correct"
@@ -2030,6 +2066,7 @@ function EvChargerHvForm() {
             onStatusChange={handleRadioChange}
             onNoteChange={handleChange}
           />
+          
 
           {/* 5.5.3 Conduit Type (Feeder) */}
             <h4 className="text-md font-semibold mb-2">5.5.3 ประเภทท่อร้อยสาย</h4>
@@ -2071,11 +2108,9 @@ function EvChargerHvForm() {
               {Array.isArray(formData.feederconduitnonmetaltype) && formData.feederconduitnonmetaltype.includes("อื่นๆ") && (
                 <input type="text" name="feederConduitOtherTypeNote" value={formData.feederConduitOtherTypeNote} onChange={handleChange} className="p-2 border border-gray-300 rounded-md text-gray-700" placeholder="ระบุ" />
               )}
-            </div>
 
           {/* 5.5.4 Feeder Circuit Breaker */}
           <h4 className="text-md font-semibold mb-2">5.5.4 เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน</h4>
-          <div className="mb-6 pl-4 border-l-4 border-purple-400 space-y-4">
             <CorrectiveRadio
               groupName="feederbreakerstandard_correct"
               label="ก) เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อนเป็นไปตามมาตรฐาน IEC 60898 หรือ IEC 60947-2"
@@ -2092,6 +2127,7 @@ function EvChargerHvForm() {
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
+            </div>
             <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                       <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">4. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</h3>
                       <div className="flex flex-wrap gap-6 mb-4">
@@ -2135,16 +2171,16 @@ function EvChargerHvForm() {
                         <SignaturePad 
                           title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" 
                           ref={userSigRef}
-                          onSave={(dataUrl) => handleSignatureSave('userSignature', dataUrl)} 
-                          onClear={() => handleSignatureClear('userSignature')}
-                          initialValue={formData.userSignature}
+                          onSave={(dataUrl) => handleSignatureSave('usersignature', dataUrl)} 
+                          onClear={() => handleSignatureClear('usersignature')}
+                          initialValue={formData.usersignature}
                         />
                         <SignaturePad 
                           title="ลงชื่อเจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค" 
                           ref={inspectorSigRef} 
-                          onSave={(dataUrl) => handleSignatureSave('inspectorSignature', dataUrl)} 
-                          onClear={() => handleSignatureClear('inspectorSignature')}
-                          initialValue={formData.inspectorSignature}
+                          onSave={(dataUrl) => handleSignatureSave('inspectorsignature', dataUrl)} 
+                          onClear={() => handleSignatureClear('inspectorsignature')}
+                          initialValue={formData.inspectorsignature}
                         />
                       </div>
                     </section>

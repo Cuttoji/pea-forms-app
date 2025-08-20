@@ -8,7 +8,7 @@ import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
 import ImageUpload from "@/components/forms/ImageUpload";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import InspectionPDF from '@/components/forms/InspectionPDF'; // ตรวจสอบว่า path ไปยัง PDF component ถูกต้อง
+import InspectionPDF from '@/components/pdf/InspectionPDF';
 import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useFormManager } from "@/lib/hooks/useFormManager"; 
