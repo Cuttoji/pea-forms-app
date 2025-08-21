@@ -92,4 +92,4 @@ const eslintConfig = [
   // Add other specific configurations or overrides as needed
 ];
 
-export default eslintConfig;
+module.exports = config;
