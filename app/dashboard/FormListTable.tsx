@@ -22,7 +22,13 @@ const formatDate = (dateString: string) => {
   }
 };
 
-export default function FormListTable({ forms, selectedFormType, formTypeLabel }) {
+interface FormListTableProps {
+  forms: any[];
+  selectedFormType: string;
+  formTypeLabel: string;
+}
+
+export default function FormListTable({ forms, selectedFormType, formTypeLabel }: FormListTableProps) {
   const router = useRouter();
   const supabase = createClient();
 
