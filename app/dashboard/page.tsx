@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import FormListTable from "./FormListTable";
-import { FilePlus, ListFilter, SlidersHorizontal, CalendarDays, BarChart4, ClipboardCheck, Clock, ChevronLeft, ChevronRight } from "lucide-react"; // เพิ่มไอคอน ChevronLeft, ChevronRight
+import { FilePlus, ListFilter, SlidersHorizontal, CalendarDays, BarChart4, ClipboardCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -29,7 +29,7 @@ interface FormData {
   created_at?: Date;
   inspectiondate?: Date;
   address?: string;
-  [key: string]: any; // Allow additional properties
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 const formTypes = [
@@ -55,7 +55,6 @@ export default function DashboardPage() {
   const [totalForms, setTotalForms] = useState(0);
   const [formsToday, setFormsToday] = useState(0);
   const [formsThisWeek, setFormsThisWeek] = useState(0);
-  const [lastUpdated, setLastUpdated] = useState(new Date()); // สำหรับแสดงเวลาที่อัปเดตล่าสุด
 
   // States สำหรับ Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -115,7 +114,6 @@ export default function DashboardPage() {
       } else if (weekError) {
         console.error("Error fetching forms this week:", weekError.message);
       }
-      setLastUpdated(new Date()); // อัปเดตเวลาที่ดึงข้อมูลล่าสุด
     }
     fetchDashboardStats();
     // เพิ่ม dependencies เพื่อให้ fetch stats เมื่อ component mount หรือมีการเปลี่ยนแปลงที่สำคัญ

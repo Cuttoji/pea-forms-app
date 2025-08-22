@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams, useRouter } from 'next/navigation';
+import React, { useEffect, useRef, Suspense } from "react";
+import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
@@ -13,7 +13,6 @@ import dynamic from 'next/dynamic';
 import { useFormManager } from "@/lib/hooks/useFormManager";
 import { FormProvider } from '@/lib/contexts/FormContext';
 import CommercialInspectionPDF from "@/components/pdf/CommercialInspectionPDF";
-import { Suspense } from 'react';
 
 const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStreetMapComponent'), {
   ssr: false
@@ -142,7 +141,6 @@ const initialFormData = {
 };
 
 function CommercialInspectionForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 

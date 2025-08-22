@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { Eye, FileText, Trash2 } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 
 // ฟังก์ชันสำหรับจัดรูปแบบวันที่
 const formatDate = (dateString: string) => {
@@ -23,9 +23,20 @@ const formatDate = (dateString: string) => {
 };
 
 interface FormListTableProps {
-  forms: any[];
+  forms: FormData[];
   selectedFormType: string;
   formTypeLabel: string;
+}
+
+interface FormData {
+  id: string;
+  inspectionnumber?: string;
+  fullname?: string;
+  phasetype?: string;
+  estimatedload?: string;
+  created_at?: string;
+  inspectiondate?: string;
+  address?: string;
 }
 
 export default function FormListTable({ forms, selectedFormType, formTypeLabel }: FormListTableProps) {
