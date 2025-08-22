@@ -1,6 +1,7 @@
 import React from 'react';
-import { Control, Controller } from 'react-hook-form';
-import { FieldType } from '@/types/forms';
+import { Control, Controller, ControllerRenderProps, FieldError } from 'react-hook-form';
+
+type FieldType = 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'date' | 'time' | 'datetime-local' | 'select' | 'radio' | 'checkbox' | 'textarea';
 
 interface FormFieldProps {
   label: string;
@@ -33,7 +34,7 @@ export const FormField = ({
     <Controller
       name={name}
       control={control}
-      render={({ field, fieldState: { error } }) => (
+      render={({ field, fieldState: { error } }: { field: ControllerRenderProps<any, string>; fieldState: { error?: FieldError } }) => (
         <div className="form-control">
           <label className="block text-sm font-medium text-gray-700">
             {label}
@@ -61,8 +62,8 @@ export const FormField = ({
                     type="radio"
                     {...field}
                     value={option.value}
-                    checked={value === option.value}
-                    onChange={onChange}
+                    checked={field.value === option.value}
+                    onChange={field.onChange}
                     className="form-radio h-4 w-4 text-[#5b2d90]"
                   />
                   <span className="ml-2">{option.label}</span>
@@ -83,12 +84,5 @@ export const FormField = ({
         </div>
       )}
     />
-  );
-};
-      {renderInput()}
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
-    </div>
   );
 };
