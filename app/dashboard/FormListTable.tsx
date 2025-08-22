@@ -41,7 +41,7 @@ interface FormData {
 }
 
 export default function FormListTable({ forms, selectedFormType, formTypeLabel }: FormListTableProps) {
-  const router = useRouter();
+  const _router = useRouter();
   
   // Add error handling for Supabase client creation
   let supabase;
@@ -68,7 +68,7 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
         toast.error("เกิดข้อผิดพลาดในการลบฟอร์ม: " + error.message);
       } else {
         toast.success("ลบฟอร์มสำเร็จแล้ว");
-        router.refresh();
+        _router.refresh();
       }
     }
   };
@@ -150,11 +150,11 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
                 {form.estimatedload || "-"}
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
-                {formatDate(form.created_at)}
+                {formatDate(form.created_at || "")}
               </td>
               {/* --- START: ข้อมูลที่เพิ่มเข้ามา --- */}
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
-                {formatDate(form.inspectiondate)}
+                {formatDate(form.inspectiondate || "")}
               </td>
               <td className="px-4 py-4 text-sm text-gray-700 max-w-xs truncate" title={form.address}>
                 {form.address || "-"}

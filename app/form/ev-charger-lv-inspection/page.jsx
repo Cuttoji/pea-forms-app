@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams, useRouter } from 'next/navigation';
+import React, { useEffect, useRef } from "react";
+import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
@@ -466,14 +466,6 @@ const initialFormData = {
       }));
     };
     
-    // Enhanced handleChange to properly handle date fields
-    const handleDateChange = (e) => {
-      const { name, value } = e.target;
-      setFormData(prev => ({
-        ...prev,
-        [name]: value || null // Convert empty string to null for dates
-      }));
-    };
   
     // Enhanced handleSubmit with proper error handling
     const handleFormSubmit = async (e) => {

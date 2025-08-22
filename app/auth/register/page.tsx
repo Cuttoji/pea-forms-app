@@ -1,9 +1,8 @@
 // app/auth/register/page.tsx
 "use client"; // This component uses client-side interactivity
 
-import React, { useState } from 'react'; // ไม่จำเป็นต้องใช้ useEffect ที่นี่แล้ว
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // ยังคงเก็บไว้เผื่อต้องการ redirect ในอนาคต
 
 // ไม่จำเป็นต้องมีการตั้งค่า Supabase URL/Key หรือ SupabaseClientType ที่นี่
 // หากการทำงานทั้งหมดสำหรับการสมัครสมาชิกผ่าน API route
@@ -17,12 +16,16 @@ export default function RegisterPage() {
   });
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-  const isGmail = (email: string) => {
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  setForm(prev => ({
+    ...prev,
+    [name]: value
+  }));
+};
+
+const isGmail = (email: string) => {
   const gmailRegex = /^[^\s@]+@gmail\.com$/; // เช็คว่าเป็นอีเมล Gmail หรือไม่
   return gmailRegex.test(email);
 };
@@ -73,9 +76,10 @@ export default function RegisterPage() {
         setMessage(result.message || 'สมัครสมาชิกสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันบัญชี');
         console.log('Registration API success:', result.user);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('API call error:', err);
-      setMessage(err.message || 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์');
+      const errorMessage = err instanceof Error ? err.message : 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์';
+      setMessage(errorMessage);
     } finally {
       setIsLoading(false);
     }

@@ -26,8 +26,8 @@ interface FormData {
   fullname?: string;
   phasetype?: string;
   estimatedload?: string;
-  created_at?: Date;
-  inspectiondate?: Date;
+  created_at?: string;
+  inspectiondate?: string;
   address?: string;
   [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }

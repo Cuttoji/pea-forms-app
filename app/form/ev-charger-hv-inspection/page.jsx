@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams, useRouter } from 'next/navigation';
+import React, { useEffect, useRef } from "react";
+import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
@@ -329,7 +329,6 @@ const initialFormData = {
 };
 
 function EvChargerHvForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 

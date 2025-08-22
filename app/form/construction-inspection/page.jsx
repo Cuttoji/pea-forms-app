@@ -6,12 +6,8 @@ import { createClient } from '@/lib/supabase/client';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import constructioninspectionPDF from '@/components/pdf/constructioninspectionPDF';
+import ConstructionInspectionPDF from '@/components/pdf/constructioninspectionPDF';
 import { Download, Save } from "lucide-react";
-import dynamic from 'next/dynamic';
-import { useFormManager } from "@/lib/hooks/useFormManager"; 
-import { useFormValidation } from '@/lib/hooks/useFormValidation';
-import { transformFormData, sanitizeFormData } from '@/lib/utils/formUtils';
 
 export default function ConstructionInspection() {
     const inspectorSigRef = useRef(null);
@@ -274,39 +270,12 @@ export default function ConstructionInspection() {
         }
     };
 
-    const validationRules = {
-        inspectionNumber: {
-          required: true,
-          pattern: /^\d{4}-\d{6}$/,
-          message: 'กรุณากรอกเลขที่บันทึกตรวจสอบในรูปแบบ YYYY-XXXXXX'
-        },
-        inspectionDate: {
-          required: true,
-          message: 'กรุณาเลือกวันที่ตรวจสอบ'
-        },
-        fullName: {
-          required: true,
-          minLength: 3,
-          message: 'กรุณากรอกชื่อให้ถูกต้อง'
-        },
-        phone: {
-          required: true,
-          pattern: /^[0-9]{9,10}$/,
-          message: 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง'
-        },
-        estimatedLoad: {
-          pattern: /^\d+(\.\d{1,2})?$/,
-          min: 0,
-          message: 'กรุณากรอกโหลดประมาณเป็นตัวเลขที่มากกว่า 0'
-        }
-      };
-
     // Main submit handler
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const { data: userData, error: userError } = await supabase.auth.getUser();
+            const { data: userData } = await supabase.auth.getUser();
             const user = userData?.user;
             if (!user) {
                 toast.error("กรุณาเข้าสู่ระบบก่อนบันทึกข้อมูล");
@@ -1197,19 +1166,18 @@ export default function ConstructionInspection() {
         {/* --- Action Buttons --- */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
           <PDFDownloadLink
-            document={<constructioninspectionPDF formData={formData} />}
+            document={<ConstructionInspectionPDF formData={formData} />}
             fileName={`inspection-form-${formData.inspectionNumber || 'form'}.pdf`}
             className="w-full sm:w-auto"
           >
             {({ loading }) => (
-                <button
-                    type="button"
-                    disabled={loading || isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
-                >
-                    <Download className="w-5 h-5"/>
-                    {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
-                </button>
+              <button
+                disabled={loading || isSubmitting}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 font-semibold text-base text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-lg shadow-sm hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                <Download className="w-5 h-5"/>
+                {loading ? 'กำลังสร้าง...' : 'ดาวน์โหลด PDF'}
+              </button>
             )}
           </PDFDownloadLink>
 

@@ -199,7 +199,7 @@ const newTransformerTemplate = {
 };
 
 function CondoInspectionForm() {
-  const router = useRouter();
+  const _router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 
