@@ -13,8 +13,6 @@ import { Download, Save } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useFormManager } from "@/lib/hooks/useFormManager";
 import { FormProvider } from '@/lib/contexts/FormContext';
-import { publicDecrypt } from "crypto";
-import { on } from "events";
 
 const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStreetMapComponent'), {
   ssr: false
