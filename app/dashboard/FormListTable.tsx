@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 import { Eye, FileText, Trash2 } from "lucide-react";
 
 // ฟังก์ชันสำหรับจัดรูปแบบวันที่
-const formatDate = (dateString) => {
+const formatDate = (dateString: string) => {
   if (!dateString) return "-";
   try {
     const date = new Date(dateString);
