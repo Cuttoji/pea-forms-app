@@ -414,7 +414,6 @@ const initialFormData = {
 }
 
   function EvChargerLvForm() {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
   
