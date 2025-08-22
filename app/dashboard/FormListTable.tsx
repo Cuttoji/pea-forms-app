@@ -48,7 +48,7 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
     }
   };
 
-  const getFormPath = (formType) => {
+  const getFormPath = (formType: string) => {
     switch (formType) {
       case 'inspection_forms':
         return 'residential-inspection';
