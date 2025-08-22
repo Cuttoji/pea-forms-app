@@ -186,7 +186,7 @@ export default function DashboardPage() {
 
   // Data for the Bar Chart - ควรปรับปรุงให้ดึงจำนวนจริงของแต่ละประเภทจาก DB หากต้องการ
   // ตอนนี้จะแสดงแค่จำนวนฟอร์มของประเภทที่เลือก
-  const formCounts = {};
+  const formCounts: Record<string, number> = {};
   formTypes.forEach(type => {
     formCounts[type.label] = 0;
   });
@@ -225,7 +225,7 @@ export default function DashboardPage() {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        position: 'top' as const,
       },
       title: {
         display: true,
