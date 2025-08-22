@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
 // กำหนด styles สำหรับ PDF
 const styles = StyleSheet.create({
@@ -29,11 +29,11 @@ const styles = StyleSheet.create({
 });
 
 // Component สำหรับสร้าง PDF Document
-const ConstructionInspectionPDF = ({ data }) => (
+const EvChargerHvFormPDFViewer = ({ data }) => (
     <Document>
         <Page size="A4" style={styles.page}>
             <View style={styles.section}>
-                <Text style={styles.title}>รายงานการตรวจสอบงานก่อสร้าง</Text>
+                <Text style={styles.title}>รายงานการตรวจสอบ EV Charger (แรงสูง)</Text>
                 <Text style={styles.subtitle}>ข้อมูลทั่วไป</Text>
                 <Text style={styles.text}>โครงการ: {data?.projectName || ''}</Text>
                 <Text style={styles.text}>วันที่ตรวจสอบ: {data?.inspectionDate || ''}</Text>
@@ -47,13 +47,6 @@ const ConstructionInspectionPDF = ({ data }) => (
             </View>
         </Page>
     </Document>
-);
-
-// Component สำหรับแสดง PDF Viewer
-const ConstructionInspectionPDFViewer = ({ data }) => (
-    <PDFViewer style={{ width: '100%', height: '600px' }}>
-        <ConstructionInspectionPDF data={data} />
-    </PDFViewer>
 );
 
 export default EvChargerHvFormPDFViewer;

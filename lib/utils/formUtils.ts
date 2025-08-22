@@ -1,5 +1,5 @@
-export const transformFormData = (data: Record<string, any>) => {
-  const transformed: Record<string, any> = {};
+export const transformFormData = (data: Record<string, unknown>) => {
+  const transformed: Record<string, unknown> = {};
   
   Object.entries(data).forEach(([key, value]) => {
     // Keep original field names (don't convert to camelCase)
@@ -41,7 +41,7 @@ export const transformFormData = (data: Record<string, any>) => {
   return transformed;
 };
 
-export const sanitizeFormData = (data: Record<string, any>) => {
+export const sanitizeFormData = (data: Record<string, unknown>) => {
   const sanitized = { ...data };
   
   Object.entries(sanitized).forEach(([key, value]) => {
@@ -66,9 +66,9 @@ export const sanitizeFormData = (data: Record<string, any>) => {
  * @returns Object with validation results
  */
 export const validateFormData = (
-  data: Record<string, any>,
+  data: Record<string, unknown>,
   requiredFields: string[] = [],
-  customValidators: Record<string, (value: any) => string | null> = {}
+  customValidators: Record<string, (value: unknown) => string | null> = {}
 ): { isValid: boolean; errors: Record<string, string> } => {
   const errors: Record<string, string> = {};
   

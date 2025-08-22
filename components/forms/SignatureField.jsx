@@ -3,15 +3,12 @@ import SignaturePad from 'react-signature-canvas';
 
 const SignatureField = ({ 
   title, 
-  onSave, 
-  initialValue,
+  onSave,
   requireName = true,
-  requireTitle = true,
-  requireCertificate = false
+  requireTitle = true
 }) => {
   const [name, setName] = useState('');
   const [position, setPosition] = useState('');
-  const [timestamp, setTimestamp] = useState('');
   const sigPad = useRef(null);
 
   const handleSave = () => {

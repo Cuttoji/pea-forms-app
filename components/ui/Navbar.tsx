@@ -6,7 +6,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Menu, Transition, Dialog } from '@headlessui/react';
-import { ChevronDown, Globe, Search, Menu as MenuIcon, X, FileText, Building, Zap, LogOut, User as UserIcon } from 'lucide-react';
+import { ChevronDown, Globe, Menu as MenuIcon, X, FileText, Building, Zap, LogOut, User as UserIcon } from 'lucide-react';
 
 
 // รายการฟอร์มสำหรับเมนู
@@ -21,8 +21,7 @@ const formLinks = [
 
 
 export default function SiteNavbar() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const router = useRouter();
