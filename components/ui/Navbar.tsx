@@ -5,8 +5,9 @@ import Image from 'next/image';
 import { useState, useEffect, Fragment } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { type User } from '@supabase/supabase-js';
 import { Menu, Transition, Dialog } from '@headlessui/react';
-import { ChevronDown, Globe, Search, Menu as MenuIcon, X, FileText, Building, Zap, LogOut, User as UserIcon } from 'lucide-react';
+import { ChevronDown, Globe, Menu as MenuIcon, X, FileText, Building, Zap, LogOut, User as UserIcon } from 'lucide-react';
 
 
 // รายการฟอร์มสำหรับเมนู
@@ -21,8 +22,7 @@ const formLinks = [
 
 
 export default function SiteNavbar() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const router = useRouter();
@@ -33,14 +33,12 @@ export default function SiteNavbar() {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
-      setLoading(false);
     };
     
     getSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      setLoading(false);
       if (event === 'SIGNED_OUT' || event === 'SIGNED_IN') {
         router.refresh();
       }
