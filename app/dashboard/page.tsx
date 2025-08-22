@@ -19,6 +19,19 @@ import {
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+// Add interface for form data
+interface FormData {
+  id: string;
+  inspectionnumber?: string;
+  fullname?: string;
+  phasetype?: string;
+  estimatedload?: string;
+  created_at?: Date;
+  inspectiondate?: Date;
+  address?: string;
+  [key: string]: any; // Allow additional properties
+}
+
 const formTypes = [
   { value: 'inspection_forms', label: 'ฟอร์มที่อยู่อาศัย' },
   { value: 'condo_inspection_forms', label: 'ฟอร์มอาคารชุด' },
@@ -30,7 +43,7 @@ const formTypes = [
 ];
 
 export default function DashboardPage() {
-  const [forms, setForms] = useState([]);
+  const [forms, setForms] = useState<FormData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFormType, setSelectedFormType] = useState(formTypes[0].value);
   const [sortBy, setSortBy] = useState('created_at');
