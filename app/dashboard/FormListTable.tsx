@@ -30,9 +30,22 @@ interface FormListTableProps {
 
 export default function FormListTable({ forms, selectedFormType, formTypeLabel }: FormListTableProps) {
   const router = useRouter();
-  const supabase = createClient();
+  
+  // Add error handling for Supabase client creation
+  let supabase;
+  try {
+    supabase = createClient();
+  } catch (error) {
+    console.error('Failed to create Supabase client:', error);
+    supabase = null;
+  }
 
   const handleDelete = async (id: string) => {
+    if (!supabase) {
+      toast.error("ไม่สามารถเชื่อมต่อฐานข้อมูลได้");
+      return;
+    }
+    
     if (window.confirm(`คุณต้องการลบฟอร์มนี้ (${id}) ใช่หรือไม่?`)) {
       const { error } = await supabase
         .from(selectedFormType)
