@@ -1,5 +1,9 @@
 import { useState, useCallback } from 'react';
-import { ValidationState } from '@/types/forms';
+
+interface ValidationState {
+  isValid: boolean;
+  errors: Record<string, string>;
+}
 
 type ValidationRules = {
   [key: string]: {
