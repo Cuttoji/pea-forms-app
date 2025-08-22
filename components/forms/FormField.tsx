@@ -38,6 +38,7 @@ export const FormField = ({
           {type === 'select' ? (
             <select
               {...field}
+              value={field.value as string || ''}
               className={`${baseInputClasses} ${className}`}
               required={required}
             >
@@ -66,18 +67,11 @@ export const FormField = ({
             <input
               type={type}
               {...field}
+              value={field.value as string || ''}
               className={`${baseInputClasses} ${className}`}
             />
           )}
           
-          {error && (
-            <p className="mt-1 text-sm text-red-600">{error.message}</p>
-          )}
-        </div>
-      )}
-    />
-  );
-};
           {error && (
             <p className="mt-1 text-sm text-red-600">{error.message}</p>
           )}

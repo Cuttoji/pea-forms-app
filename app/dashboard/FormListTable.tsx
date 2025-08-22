@@ -17,7 +17,8 @@ const formatDate = (dateString: string) => {
       month: "short",
       day: "numeric",
     });
-  } catch (error) {
+  } catch (err) {
+    console.error('Date formatting error:', err);
     return "-";
   }
 };
