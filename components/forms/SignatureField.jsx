@@ -1,23 +1,30 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import SignaturePad from 'react-signature-canvas';
 
 const SignatureField = ({ 
-  title, 
-  onSave, 
-  initialValue,
-  requireName = true,
-  requireTitle = true,
-  requireCertificate = false
+  formData, 
+  updateFormData, 
+  _initialValue, 
+  fieldName = 'signature', 
+  required = false,
+  _requireCertificate = false
 }) => {
-  const [name, setName] = useState('');
-  const [position, setPosition] = useState('');
-  const [timestamp, setTimestamp] = useState('');
-  const sigPad = useRef(null);
+  const canvasRef = useRef(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [_timestamp, _setTimestamp] = useState(null);
+
+
+  // Use _initialValue to set the signature if provided
+  React.useEffect(() => {
+    if (_initialValue && canvasRef.current) {
+      canvasRef.current.fromDataURL(_initialValue);
+    }
+  }, [_initialValue]);
 
   const handleSave = () => {
-    if (!sigPad.current.isEmpty()) {
+    if (!canvasRef.current.isEmpty()) {
       const signatureData = {
-        image: sigPad.current.toDataURL(),
+        image: canvasRef.current.toDataURL(),
         name,
         position,
         timestamp: new Date().toISOString(),

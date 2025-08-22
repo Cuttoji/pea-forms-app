@@ -5,6 +5,8 @@ interface ValidationState {
   errors: Record<string, string>;
 }
 
+type ValidationValue = string | number | boolean | null | undefined;
+
 type ValidationRules = {
   [key: string]: {
     required?: boolean;
@@ -13,7 +15,7 @@ type ValidationRules = {
     maxLength?: number;
     min?: number;
     max?: number;
-    custom?: (value: any) => boolean;
+    custom?: (value: ValidationValue) => boolean;
     message: string;
   };
 };
@@ -21,7 +23,7 @@ type ValidationRules = {
 export const useFormValidation = (rules: ValidationRules) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const validateField = useCallback((name: string, value: any) => {
+  const validateField = useCallback((name: string, value: ValidationValue) => {
     const rule = rules[name];
     if (!rule) return '';
 
@@ -30,15 +32,15 @@ export const useFormValidation = (rules: ValidationRules) => {
     }
 
     if (value) {
-      if (rule.pattern && !rule.pattern.test(value)) {
+      if (rule.pattern && typeof value === 'string' && !rule.pattern.test(value)) {
         return rule.message;
       }
 
-      if (rule.minLength && value.length < rule.minLength) {
+      if (rule.minLength && typeof value === 'string' && value.length < rule.minLength) {
         return `ต้องมีความยาวอย่างน้อย ${rule.minLength} ตัวอักษร`;
       }
 
-      if (rule.maxLength && value.length > rule.maxLength) {
+      if (rule.maxLength && typeof value === 'string' && value.length > rule.maxLength) {
         return `ต้องมีความยาวไม่เกิน ${rule.maxLength} ตัวอักษร`;
       }
 
@@ -59,7 +61,7 @@ export const useFormValidation = (rules: ValidationRules) => {
     return '';
   }, [rules]);
 
-  const validateForm = useCallback((data: Record<string, any>): ValidationState => {
+  const validateForm = useCallback((data: Record<string, ValidationValue>): ValidationState => {
     const newErrors: Record<string, string> = {};
     let isValid = true;
 
