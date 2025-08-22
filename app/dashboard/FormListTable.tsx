@@ -46,8 +46,8 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
   let supabase;
   try {
     supabase = createClient();
-  } catch (error) {
-    console.error('Failed to create Supabase client:', error);
+  } catch (err) {
+    console.error('Failed to create Supabase client:', err);
     supabase = null;
   }
 

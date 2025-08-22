@@ -1,16 +1,13 @@
 import React from 'react';
-import { Control, Controller, ControllerRenderProps, FieldError } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 
-type FieldType = 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'date' | 'time' | 'datetime-local' | 'select' | 'radio' | 'checkbox' | 'textarea';
+type FieldType = 'text' | 'email' | 'password' | 'number' | 'date' | 'select' | 'radio' | 'textarea';
 
 interface FormFieldProps {
   label: string;
   name: string;
-  control: Control<any>;
+  control: Control<Record<string, unknown>>;
   type?: FieldType;
-  value?: any;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  error?: string;
   options?: { label: string; value: string | number }[];
   required?: boolean;
   className?: string;
@@ -21,9 +18,6 @@ export const FormField = ({
   name,
   control,
   type = 'text',
-  value,
-  onChange,
-  error,
   options = [],
   required = false,
   className = '',
@@ -34,7 +28,7 @@ export const FormField = ({
     <Controller
       name={name}
       control={control}
-      render={({ field, fieldState: { error } }: { field: ControllerRenderProps<any, string>; fieldState: { error?: FieldError } }) => (
+      render={({ field, fieldState: { error } }) => (
         <div className="form-control">
           <label className="block text-sm font-medium text-gray-700">
             {label}
@@ -62,8 +56,6 @@ export const FormField = ({
                     type="radio"
                     {...field}
                     value={option.value}
-                    checked={field.value === option.value}
-                    onChange={field.onChange}
                     className="form-radio h-4 w-4 text-[#5b2d90]"
                   />
                   <span className="ml-2">{option.label}</span>
@@ -78,6 +70,14 @@ export const FormField = ({
             />
           )}
           
+          {error && (
+            <p className="mt-1 text-sm text-red-600">{error.message}</p>
+          )}
+        </div>
+      )}
+    />
+  );
+};
           {error && (
             <p className="mt-1 text-sm text-red-600">{error.message}</p>
           )}
