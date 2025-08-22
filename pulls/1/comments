@@ -1,0 +1,11 @@
+เปลี่ยนแปลงแนวทาง: แก้ไข ESLint errors แบบระยะยาวทันที โดยไม่ปิด ESLint ชั่วคราว เพื่อให้โค้ดมีคุณภาพและตรงตาม linting standards อย่างถาวร
+
+กรุณาเน้นไปที่:
+1. แก้ไข unused variables ทั้งหมด
+2. เปลี่ยน any types เป็น proper TypeScript types
+3. แก้ไข unescaped quotes ใน JSX
+4. เพิ่ม missing dependencies ใน React hooks
+5. เปลี่ยน require() imports เป็น ES6 imports
+6. เพิ่ม alt attributes ให้ img elements
+
+ไม่ต้องเพิ่ม eslint: { ignoreDuringBuilds: true } ใน next.config.js
