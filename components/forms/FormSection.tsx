@@ -1,5 +1,10 @@
 import React from 'react';
-import { FormSectionProps } from '@/types/forms';
+
+interface FormSectionProps {
+  title: string;
+  children: React.ReactNode;
+  className?: string;
+}
 
 export const FormSection: React.FC<FormSectionProps> = ({ 
   title, 
