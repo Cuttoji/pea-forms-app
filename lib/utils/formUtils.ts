@@ -1,5 +1,9 @@
-export const transformFormData = (data: Record<string, any>) => {
-  const transformed: Record<string, any> = {};
+// Define types for form data values
+type FormDataValue = string | number | boolean | null | undefined | string[] | File;
+type FormDataRecord = Record<string, FormDataValue>;
+
+export const transformFormData = (data: FormDataRecord) => {
+  const transformed: FormDataRecord = {};
   
   Object.entries(data).forEach(([key, value]) => {
     // Keep original field names (don't convert to camelCase)
@@ -41,7 +45,7 @@ export const transformFormData = (data: Record<string, any>) => {
   return transformed;
 };
 
-export const sanitizeFormData = (data: Record<string, any>) => {
+export const sanitizeFormData = (data: FormDataRecord) => {
   const sanitized = { ...data };
   
   Object.entries(sanitized).forEach(([key, value]) => {
@@ -66,9 +70,9 @@ export const sanitizeFormData = (data: Record<string, any>) => {
  * @returns Object with validation results
  */
 export const validateFormData = (
-  data: Record<string, any>,
+  data: FormDataRecord,
   requiredFields: string[] = [],
-  customValidators: Record<string, (value: any) => string | null> = {}
+  customValidators: Record<string, (value: FormDataValue) => string | null> = {}
 ): { isValid: boolean; errors: Record<string, string> } => {
   const errors: Record<string, string> = {};
   

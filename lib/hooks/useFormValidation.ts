@@ -5,6 +5,8 @@ interface ValidationState {
   errors: Record<string, string>;
 }
 
+type FormValue = string | number | boolean | null | undefined;
+
 type ValidationRules = {
   [key: string]: {
     required?: boolean;
@@ -13,7 +15,7 @@ type ValidationRules = {
     maxLength?: number;
     min?: number;
     max?: number;
-    custom?: (value: any) => boolean;
+    custom?: (value: FormValue) => boolean;
     message: string;
   };
 };
@@ -21,7 +23,7 @@ type ValidationRules = {
 export const useFormValidation = (rules: ValidationRules) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const validateField = useCallback((name: string, value: any) => {
+  const validateField = useCallback((name: string, value: FormValue) => {
     const rule = rules[name];
     if (!rule) return '';
 
@@ -59,7 +61,7 @@ export const useFormValidation = (rules: ValidationRules) => {
     return '';
   }, [rules]);
 
-  const validateForm = useCallback((data: Record<string, any>): ValidationState => {
+  const validateForm = useCallback((data: Record<string, FormValue>): ValidationState => {
     const newErrors: Record<string, string> = {};
     let isValid = true;
 

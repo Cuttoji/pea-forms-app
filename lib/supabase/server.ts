@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { type ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -10,10 +11,10 @@ export async function createClient() {
     {
       cookies: {
         get: (name: string) => cookieStore.get(name)?.value,
-        set: (name: string, value: string, options: any) => {
+        set: (name: string, value: string, options: Partial<ResponseCookie>) => {
           cookieStore.set(name, value, options);
         },
-        remove: (name: string, options: any) => {
+        remove: (name: string) => {
           cookieStore.delete(name);
         },
       },

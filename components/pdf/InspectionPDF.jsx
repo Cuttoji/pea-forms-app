@@ -78,7 +78,7 @@ const ResidentialInspectionPDF = ({ formData }) => {
       {/* --- หน้า 1 --- */}
       <Page size="A4" style={styles.page}>
         <View style={styles.headerContainer} fixed>
-          <Image src="/pea_logo.png" style={{ width: 40, height: 40 }} />
+          <Image src="/pea_logo.png" style={{ width: 40, height: 40 }} alt="PEA Logo" />
           <View style={styles.headerText}>
               <Text style={styles.headerPEA}>การไฟฟ้าส่วนภูมิภาค</Text>
               <Text style={styles.headerEN}>PROVINCIAL ELECTRICITY AUTHORITY</Text>
@@ -188,12 +188,12 @@ const ResidentialInspectionPDF = ({ formData }) => {
             </View>
             <View style={styles.signatureSection}>
                 <View style={styles.signatureBox}>
-                    {formData.userSignature && <Image style={styles.signatureImage} src={formData.userSignature} />}
+                    {formData.userSignature && <Image style={styles.signatureImage} src={formData.userSignature} alt="ลายมือชื่อผู้ขอใช้ไฟฟ้า" />}
                     <Text style={styles.signatureLine}>(..................................................)</Text>
                     <Text style={{fontSize: 8}}>ผู้ขอใช้ไฟฟ้าหรือผู้แทน</Text>
                 </View>
                 <View style={styles.signatureBox}>
-                    {formData.inspectorSignature && <Image style={styles.signatureImage} src={formData.inspectorSignature} />}
+                    {formData.inspectorSignature && <Image style={styles.signatureImage} src={formData.inspectorSignature} alt="ลายมือชื่อเจ้าหน้าที่ตรวจสอบ" />}
                     <Text style={styles.signatureLine}>(..................................................)</Text>
                     <Text style={{fontSize: 8}}>เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค</Text>
                 </View>
@@ -212,7 +212,7 @@ const ResidentialInspectionPDF = ({ formData }) => {
        <Page size="A4" style={styles.page}>
          <Text style={{...styles.formTitle, marginBottom: 15}}>รูปแบบการรับไฟฟ้าผ่านระบบจำหน่ายแรงต่ำ (400/230 โวลต์)</Text>
          <Text style={styles.formSubtitle}>สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน</Text>
-         <Image src="/diagram_home.png" style={{width: '100%', height: 'auto', marginBottom: 15}}/>
+         <Image src="/diagram_home.png" style={{width: '100%', height: 'auto', marginBottom: 15}} alt="แผนภาพการรับไฟฟ้าผ่านระบบจำหน่ายแรงต่ำ" />
          <View style={styles.section}>
             <Text style={styles.sectionTitle}>ข้อกำหนด</Text>
             <Text style={styles.acknowledgementText}>1. สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกันให้พิจารณาตรวจสอบระบบไฟฟ้าตามหมายเลข 1-4</Text>
