@@ -58,4 +58,3 @@ const ConstructionInspectionPDFViewer = ({ data }) => (
 );
 
 export default EvChargerLvFormPDFViewer;
-export { EvChargerLvFormPDF };
