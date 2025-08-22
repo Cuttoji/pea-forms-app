@@ -1,8 +1,8 @@
-// middleware.js (ที่ root ของโปรเจกต์)
-import { NextResponse } from 'next/server';
+// middleware.ts (ที่ root ของโปรเจกต์)
+import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
-export async function middleware(request) {
+export async function middleware(request: NextRequest) {
   // สร้าง response เริ่มต้น
   let response = NextResponse.next({
     request: {
