@@ -32,7 +32,7 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
   const router = useRouter();
   const supabase = createClient();
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm(`คุณต้องการลบฟอร์มนี้ (${id}) ใช่หรือไม่?`)) {
       const { error } = await supabase
         .from(selectedFormType)
