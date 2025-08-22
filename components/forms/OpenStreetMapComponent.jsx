@@ -4,14 +4,17 @@ import L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
 import { Search, MapPin } from 'lucide-react';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 // แก้ปัญหา Marker Icon ไม่แสดงผลในบาง bundler เช่น Webpack/Next.js
-// โดยการกำหนด URL ของ icon ด้วย require()
+// โดยการกำหนด URL ของ icon ด้วย ES6 imports
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
 });
 
 // คอมโพเนนต์ MapEvents: สำหรับดักจับ Event ของแผนที่และส่งค่าพิกัดกลับ

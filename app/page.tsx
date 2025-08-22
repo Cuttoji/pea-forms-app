@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FileText, Zap, Building, Construction, Home, Factory } from 'lucide-react';
+import { Zap, Building, Construction, Home, Factory } from 'lucide-react';
 
 export const metadata = {
   title: 'หน้าหลัก | ระบบฟอร์มตรวจสอบ PEA',

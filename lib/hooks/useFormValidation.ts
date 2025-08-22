@@ -13,7 +13,7 @@ type ValidationRules = {
     maxLength?: number;
     min?: number;
     max?: number;
-    custom?: (value: any) => boolean;
+    custom?: (value: unknown) => boolean;
     message: string;
   };
 };
@@ -21,7 +21,7 @@ type ValidationRules = {
 export const useFormValidation = (rules: ValidationRules) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const validateField = useCallback((name: string, value: any) => {
+  const validateField = useCallback((name: string, value: unknown) => {
     const rule = rules[name];
     if (!rule) return '';
 
@@ -59,7 +59,7 @@ export const useFormValidation = (rules: ValidationRules) => {
     return '';
   }, [rules]);
 
-  const validateForm = useCallback((data: Record<string, any>): ValidationState => {
+  const validateForm = useCallback((data: Record<string, unknown>): ValidationState => {
     const newErrors: Record<string, string> = {};
     let isValid = true;
 

@@ -20,7 +20,7 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
       setImageError(false);
       setIsImageLoading(true);
     }
-  }, [initialImageUrl]);
+  }, [initialImageUrl, preview]);
 
   // Cleanup object URL เมื่อ preview เปลี่ยนหรือ component unmount
   useEffect(() => {
@@ -313,7 +313,7 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
             <div className="text-sm text-blue-700 bg-gradient-to-r from-blue-100 to-blue-200 p-3 rounded-xl shadow-inner border border-blue-300">
               <div className="flex items-center gap-2">
                 <span className="text-lg animate-pulse">📹</span>
-                <span className="font-medium">กล้องเปิดอยู่ - กดปุ่ม "ถ่าย" เพื่อจับภาพ</span>
+                <span className="font-medium">กล้องเปิดอยู่ - กดปุ่ม &quot;ถ่าย&quot; เพื่อจับภาพ</span>
               </div>
             </div>
           )}
@@ -322,7 +322,7 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
             <div className="text-sm text-green-700 bg-gradient-to-r from-green-100 to-green-200 p-3 rounded-xl shadow-inner border border-green-300">
               <div className="flex items-center gap-2">
                 <span className="text-lg">✅</span>
-                <span className="font-medium">มีรูปภาพแล้ว - คลิกที่รูปหรือปุ่ม "ดูรูปขนาดเต็ม" เพื่อดูรายละเอียด</span>
+                <span className="font-medium">มีรูปภาพแล้ว - คลิกที่รูปหรือปุ่ม &quot;ดูรูปขนาดเต็ม&quot; เพื่อดูรายละเอียด</span>
               </div>
             </div>
           )}
