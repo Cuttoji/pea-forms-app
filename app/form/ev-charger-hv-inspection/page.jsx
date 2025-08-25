@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from 'react';
 import React, { useEffect, useRef } from "react";
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -328,7 +329,7 @@ const initialFormData = {
   inspectorsignature: "",
 };
 
-function EvChargerHvForm() {
+function EVChargerHVInspectionFormContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 
@@ -2234,9 +2235,26 @@ function EvChargerHvForm() {
 function FormWrapper() {
   return (
     <FormProvider>
-      <EvChargerHvForm />
+      <EVChargerHVInspectionFormContent />
     </FormProvider>
   );
 }
 
-export default FormWrapper;
+function LoadingFallback() {
+  return (
+    <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#5b2d90] mb-4"></div>
+      <div className="text-center">
+        <p className="text-lg text-gray-600 mb-2">กำลังโหลดข้อมูลฟอร์ม...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function EVChargerHVInspectionPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <FormWrapper />
+    </Suspense>
+  );
+}

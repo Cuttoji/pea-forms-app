@@ -1,9 +1,9 @@
-
 import './globals.css';
 import { Kanit, Inter } from 'next/font/google';
 import ClientLayout from '@/components/layout/ClientLayout';
 import { Toaster } from "sonner";
 import React from 'react';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export const metadata = {
   title: 'ระบบฟอร์มตรวจสอบ PEA',
@@ -32,8 +32,10 @@ export default function RootLayout({
   return (
     <html lang="th" className={`${kanit.variable} ${inter.variable}`}>
       <body className="font-kanit bg-gradient-to-br from-purple-100 via-purple-50 to-indigo-100 text-gray-800 min-h-screen flex flex-col">
-        <ClientLayout>{children}</ClientLayout>
-        <Toaster richColors position="top-right" />
+        <ErrorBoundary>
+          <ClientLayout>{children}</ClientLayout>
+          <Toaster richColors position="top-right" />
+        </ErrorBoundary>
       </body>
     </html>
   );

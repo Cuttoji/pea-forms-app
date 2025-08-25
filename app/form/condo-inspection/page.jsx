@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, Suspense } from "react";
+import React, { useEffect, useRef, Suspense, useCallback } from "react";
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
@@ -211,7 +211,7 @@ function CondoInspectionFormContent() {
     handleSubmit,
     handleSignatureSave,
     handleSignatureClear
-  } = useFormManager('condo_inspection_forms', initialFormData, [], '*', 'form-images');
+  } = useFormManager('condo_inspection_forms', initialFormData, ['disconnecting_device_type', 'lv_main_cable_wiring_method', 'room_feeder_wiring', 'transformers'], '*', 'form-images');
 
   const userSigRef = useRef(null);
   const inspectorSigRef = useRef(null);
@@ -231,26 +231,24 @@ function CondoInspectionFormContent() {
     checkAuth();
   }, []);
 
-  // ปรับ handleRadioChange ให้รองรับทั้ง event, (groupName, value), และ (event.target == undefined)
-  const handleRadioChange = (groupName, value, noteFieldName) => {
+  // Use useCallback for stable function references
+  const handleRadioChange = useCallback((groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
       [groupName]: value,
       ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
     }));
-  };
+  }, [setFormData]);
 
-  // Enhanced handleChange to properly handle date fields และ checkbox arrays
-  const handleDateChange = (e) => {
+  const handleDateChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value || null // Convert empty string to null for dates
+      [name]: value || null
     }));
-  };
+  }, [setFormData]);
 
-  // Enhanced handleSubmit with proper error handling
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = useCallback(async (e) => {
     e.preventDefault();
     
     try {
@@ -264,18 +262,17 @@ function CondoInspectionFormContent() {
       console.error('Error in form submission:', error);
       toast.error('เกิดข้อผิดพลาดในการส่งข้อมูล');
     }
-  };
+  }, [handleSubmit]);
 
-  const handleLocationSelect = (location) => {
+  const handleLocationSelect = useCallback((location) => {
     setFormData(prevData => ({
       ...prevData,
       latitude: location.lat.toFixed(6),
       longitude: location.lng.toFixed(6),
     }));
-  };
+  }, [setFormData]);
 
-  // Enhanced checkbox handling for array fields
-  const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = useCallback((e) => {
     const { name, value, checked } = e.target;
     const arrayFields = ['disconnecting_device_type', 'lv_main_cable_wiring_method', 'room_feeder_wiring'];
     
@@ -294,16 +291,15 @@ function CondoInspectionFormContent() {
         [name]: newValue
       }));
     } else {
-      // Regular checkbox handling
       setFormData(prev => ({
         ...prev,
         [name]: checked
       }));
     }
-  };
+  }, [formData, setFormData]);
 
-  // --- Functions to manage transformers ---
-  const handleAddTransformer = () => {
+  // Transformer management functions with useCallback
+  const handleAddTransformer = useCallback(() => {
     setFormData(prevData => ({
       ...prevData,
       transformers: [
@@ -311,16 +307,16 @@ function CondoInspectionFormContent() {
         { ...newTransformerTemplate }
       ]
     }));
-  };
+  }, [setFormData]);
 
-  const handleRemoveTransformer = (index) => {
+  const handleRemoveTransformer = useCallback((index) => {
     setFormData(prevData => ({
       ...prevData,
       transformers: prevData.transformers.filter((_, i) => i !== index)
     }));
-  };
+  }, [setFormData]);
 
-  const handleTransformerChange = (index, e) => {
+  const handleTransformerChange = useCallback((index, e) => {
     const { name, value, type } = e.target;
     setFormData(prevData => {
       const newTransformers = [...prevData.transformers];
@@ -329,7 +325,7 @@ function CondoInspectionFormContent() {
         [name]: type === 'number' ? (value === '' ? '' : Number(value)) : value
       };
       
-      // Validate kVA value
+      // Validation logic
       if (name === 'kVA') {
         const kva = Number(value);
         if (isNaN(kva) || kva < 0) {
@@ -337,7 +333,6 @@ function CondoInspectionFormContent() {
         }
       }
       
-      // Validate yearMade
       if (name === 'yearMade') {
         const year = Number(value);
         if (isNaN(year) || year < 0) {
@@ -347,9 +342,9 @@ function CondoInspectionFormContent() {
 
       return { ...prevData, transformers: newTransformers };
     });
-  };
+  }, [setFormData]);
 
-  const handleTransformerCorrectiveChange = (index, field, value) => {
+  const handleTransformerCorrectiveChange = useCallback((index, field, value) => {
     setFormData(prevData => {
       const newTransformers = [...prevData.transformers];
       newTransformers[index] = { ...newTransformers[index], [field]: value };
@@ -358,16 +353,7 @@ function CondoInspectionFormContent() {
       }
       return { ...prevData, transformers: newTransformers };
     });
-  };
-
-  // เพิ่ม useEffect เพื่อ debug ข้อมูลที่โหลดมา
-  useEffect(() => {
-    if (!isLoading && formData) {
-      console.log('Current form data:', formData);
-      console.log('Form data keys:', Object.keys(formData));
-      console.log('Form data values:', Object.values(formData).filter(v => v !== '' && v !== null));
-    }
-  }, [isLoading, formData]);
+  }, [setFormData]);
 
   if (isLoading) {
     return (

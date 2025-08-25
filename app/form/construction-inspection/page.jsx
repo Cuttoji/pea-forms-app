@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, Suspense } from "react";
+import React, { useRef, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
 import SignaturePad from "@/components/forms/SignaturePad";
@@ -20,7 +19,7 @@ const initialFormData = {
   inspectionNumber: "",
   workName: "",
   approvalNumber: "",
-  approvalDate: new Date().toISOString().split('T')[0],
+  approvalDate: "",
   workId: "",
   peaOperation: false,
   contractorWork: false,
@@ -185,21 +184,8 @@ function ConstructionInspectionFormContent() {
 
   const inspectorSigRef = useRef(null);
   const userSigRef = useRef(null);
-
-  // Check authentication on component mount
-  useEffect(() => {
-    const checkAuth = async () => {
-      const supabase = createClient();
-      const { data: { user }, error } = await supabase.auth.getUser();
-      
-      if (error || !user) {
-        toast.error('กรุณาเข้าสู่ระบบก่อนใช้งาน');
-      }
-    };
-    
-    checkAuth();
-  }, []);
-
+  
+  // **ใช้ฟังก์ชันนี้เพียงฟังก์ชันเดียวสำหรับ CorrectiveRadio**
   const handleRadioChange = (groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
@@ -207,8 +193,8 @@ function ConstructionInspectionFormContent() {
       ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
     }));
   };
-
-
+  
+  // Enhanced handleSubmit with proper error handling
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     
@@ -248,61 +234,78 @@ function ConstructionInspectionFormContent() {
           แบบฟอร์มตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจำหน่าย ของ กฟภ.
         </h2>
 
-        <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-10">
-          <h2 className="text-2xl font-bold mb-5 text-[#3a1a5b]">
-            ข้อมูลส่วนหัว
-          </h2>
+        {/* Header Information */}
+        <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+          <h2 className="text-2xl font-bold mb-5 text-[#5b2d90]">ข้อมูลส่วนหัว</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label htmlFor="workName" className="block text-sm font-medium text-gray-700 mb-1">
-                ชื่องาน:
-              </label>
+            <div>
+              <label htmlFor="inspectionNumber" className="block text-sm font-medium text-gray-700 mb-1">เลขที่บันทึกตรวจสอบ:</label>
+              <input 
+                type="text" 
+                id="inspectionNumber" 
+                name="inspectionNumber" 
+                value={formData.inspectionNumber || ''} 
+                onChange={handleChange} 
+                className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm" 
+                placeholder="กรอกเลขที่บันทึก"
+              />
+            </div>
+            <div>
+              <label htmlFor="workName" className="block text-sm font-medium text-gray-700 mb-1">ชื่องาน:</label>
               <input
                 type="text"
                 id="workName"
                 name="workName"
-                value={formData.workName}
+                value={formData.workName || ''}
                 onChange={handleChange}
-                className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+                className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                placeholder="กรอกชื่องาน"
               />
             </div>
             <div>
-              <label htmlFor="approvalNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                อนุมัติเลขที่:
-              </label>
+              <label htmlFor="approvalNumber" className="block text-sm font-medium text-gray-700 mb-1">อนุมัติเลขที่:</label>
               <input
                 type="text"
                 id="approvalNumber"
                 name="approvalNumber"
-                value={formData.approvalNumber}
+                value={formData.approvalNumber || ''}
                 onChange={handleChange}
-                className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+                className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                placeholder="กรอกเลขอนุมัติ"
               />
             </div>
             <div>
-              <label htmlFor="approvalDate" className="block text-sm font-medium text-gray-700 mb-1">
-                ลงวันที่:
-              </label>
+              <label htmlFor="approvalDate" className="block text-sm font-medium text-gray-700 mb-1">ลงวันที่:</label>
               <input
                 type="date"
                 id="approvalDate"
                 name="approvalDate"
-                value={formData.approvalDate}
+                value={formData.approvalDate || ''}
                 onChange={handleChange}
-                className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+                className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
               />
             </div>
             <div>
-              <label htmlFor="workId" className="block text-sm font-medium text-gray-700 mb-1">
-                หมายเลขงาน:
-              </label>
+              <label htmlFor="workId" className="block text-sm font-medium text-gray-700 mb-1">หมายเลขงาน:</label>
               <input
                 type="text"
                 id="workId"
                 name="workId"
-                value={formData.workId}
+                value={formData.workId || ''}
                 onChange={handleChange}
-                className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+                className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                placeholder="กรอกหมายเลขงาน"
+              />
+            </div>
+            <div>
+              <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-700 mb-1">วัน/เดือน/ปี ที่ดำเนินการตรวจ:</label>
+              <input
+                type="date"
+                id="inspectionDate"
+                name="inspectionDate"
+                value={formData.inspectionDate || ''}
+                onChange={handleChange}
+                className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
               />
             </div>
             <div className="md:col-span-2 flex flex-wrap gap-4">
@@ -329,86 +332,139 @@ function ConstructionInspectionFormContent() {
             </div>
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="hvWorkVolumeKm" className="block text-sm font-medium text-gray-700 mb-1">
-                  ปริมาณงานแรงสูง (วงจร-กม.):
-                </label>
-                <input type="number" id="hvWorkVolumeKm" name="hvWorkVolumeKm" value={formData.hvWorkVolumeKm} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                <label htmlFor="hvWorkVolumeKm" className="block text-sm font-medium text-gray-700 mb-1">ปริมาณงานแรงสูง (วงจร-กม.):</label>
+                <input 
+                  type="number" 
+                  id="hvWorkVolumeKm" 
+                  name="hvWorkVolumeKm" 
+                  value={formData.hvWorkVolumeKm || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกจำนวน"
+                />
               </div>
               <div>
-                <label htmlFor="hvWorkVolumePoles" className="block text-sm font-medium text-gray-700 mb-1">
-                  จำนวนเสา (ต้น):
-                </label>
-                <input type="number" id="hvWorkVolumePoles" name="hvWorkVolumePoles" value={formData.hvWorkVolumePoles} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                <label htmlFor="hvWorkVolumePoles" className="block text-sm font-medium text-gray-700 mb-1">จำนวนเสา (ต้น):</label>
+                <input 
+                  type="number" 
+                  id="hvWorkVolumePoles" 
+                  name="hvWorkVolumePoles" 
+                  value={formData.hvWorkVolumePoles || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกจำนวนเสา"
+                />
               </div>
               <div>
-                <label htmlFor="hvStation" className="block text-sm font-medium text-gray-700 mb-1">
-                  รับไฟจากสถานี:
-                </label>
-                <input type="text" id="hvStation" name="hvStation" value={formData.hvStation} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                <label htmlFor="hvStation" className="block text-sm font-medium text-gray-700 mb-1">รับไฟจากสถานี:</label>
+                <input 
+                  type="text" 
+                  id="hvStation" 
+                  name="hvStation" 
+                  value={formData.hvStation || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกชื่อสถานี"
+                />
               </div>
               <div>
-                <label htmlFor="hvFeeder" className="block text-sm font-medium text-gray-700 mb-1">
-                  ฟีดเดอร์:
-                </label>
-                <input type="text" id="hvFeeder" name="hvFeeder" value={formData.hvFeeder} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                <label htmlFor="hvFeeder" className="block text-sm font-medium text-gray-700 mb-1">ฟีดเดอร์:</label>
+                <input 
+                  type="text" 
+                  id="hvFeeder" 
+                  name="hvFeeder" 
+                  value={formData.hvFeeder || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกชื่อฟีดเดอร์"
+                />
               </div>
               <div>
-                <label htmlFor="hvPhase" className="block text-sm font-medium text-gray-700 mb-1">
-                  เฟสที่ต่อ:
-                </label>
-                <input type="text" id="hvPhase" name="hvPhase" value={formData.hvPhase} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                <label htmlFor="hvPhase" className="block text-sm font-medium text-gray-700 mb-1">เฟสที่ต่อ:</label>
+                <input 
+                  type="text" 
+                  id="hvPhase" 
+                  name="hvPhase" 
+                  value={formData.hvPhase || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกเฟส"
+                />
               </div>
               <div>
-                <label htmlFor="hvTransformerKVA" className="block text-sm font-medium text-gray-700 mb-1">
-                  หม้อแปลงรวม (KVA):
-                </label>
-                <input type="number" id="hvTransformerKVA" name="hvTransformerKVA" value={formData.hvTransformerKVA} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                <label htmlFor="hvTransformerKVA" className="block text-sm font-medium text-gray-700 mb-1">หม้อแปลงรวม (KVA):</label>
+                <input 
+                  type="number" 
+                  id="hvTransformerKVA" 
+                  name="hvTransformerKVA" 
+                  value={formData.hvTransformerKVA || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอก KVA"
+                />
               </div>
             </div>
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="lvWorkVolumeKm" className="block text-sm font-medium text-gray-700 mb-1">
-                  ปริมาณงานแรงต่ำ (วงจร-กม.):
-                </label>
-                <input type="number" id="lvWorkVolumeKm" name="lvWorkVolumeKm" value={formData.lvWorkVolumeKm} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                <label htmlFor="lvWorkVolumeKm" className="block text-sm font-medium text-gray-700 mb-1">ปริมาณงานแรงต่ำ (วงจร-กม.):</label>
+                <input 
+                  type="number" 
+                  id="lvWorkVolumeKm" 
+                  name="lvWorkVolumeKm" 
+                  value={formData.lvWorkVolumeKm || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกจำนวน"
+                />
               </div>
               <div>
-                <label htmlFor="lvWorkVolumePoles" className="block text-sm font-medium text-gray-700 mb-1">
-                  จำนวนเสา (ต้น):
-                </label>
-                <input type="number" id="lvWorkVolumePoles" name="lvWorkVolumePoles" value={formData.lvWorkVolumePoles} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                <label htmlFor="lvWorkVolumePoles" className="block text-sm font-medium text-gray-700 mb-1">จำนวนเสา (ต้น):</label>
+                <input 
+                  type="number" 
+                  id="lvWorkVolumePoles" 
+                  name="lvWorkVolumePoles" 
+                  value={formData.lvWorkVolumePoles || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกจำนวนเสา"
+                />
               </div>
             </div>
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="supervisorName" className="block text-sm font-medium text-gray-700 mb-1">
-                  ผู้ควบคุมงาน:
-                </label>
-                <input type="text" id="supervisorName" name="supervisorName" value={formData.supervisorName} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                <label htmlFor="supervisorName" className="block text-sm font-medium text-gray-700 mb-1">ผู้ควบคุมงาน:</label>
+                <input 
+                  type="text" 
+                  id="supervisorName" 
+                  name="supervisorName" 
+                  value={formData.supervisorName || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกชื่อผู้ควบคุมงาน"
+                />
               </div>
               <div>
-                <label htmlFor="supervisorPosition" className="block text-sm font-medium text-gray-700 mb-1">
-                  ตำแหน่ง:
-                </label>
-                <input type="text" id="supervisorPosition" name="supervisorPosition" value={formData.supervisorPosition} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
+                <label htmlFor="supervisorPosition" className="block text-sm font-medium text-gray-700 mb-1">ตำแหน่ง:</label>
+                <input 
+                  type="text" 
+                  id="supervisorPosition" 
+                  name="supervisorPosition" 
+                  value={formData.supervisorPosition || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกตำแหน่ง"
+                />
               </div>
               <div>
-                <label htmlFor="supervisorAffiliation" className="block text-sm font-medium text-gray-700 mb-1">
-                  สังกัด:
-                </label>
-                <input type="text" id="supervisorAffiliation" name="supervisorAffiliation" value={formData.supervisorAffiliation} onChange={handleChange} className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]" />
-              </div>
-              <div>
-                <label htmlFor="inspectionDate" className="block text-sm font-medium text-gray-700 mb-1">
-                  วัน/เดือน/ปี ที่ดำเนินการตรวจ:
-                </label>
-                <input
-                  type="date"
-                  id="inspectionDate"
-                  name="inspectionDate"
-                  value={formData.inspectionDate}
-                  onChange={handleChange}
-                  className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
+                <label htmlFor="supervisorAffiliation" className="block text-sm font-medium text-gray-700 mb-1">สังกัด:</label>
+                <input 
+                  type="text" 
+                  id="supervisorAffiliation" 
+                  name="supervisorAffiliation" 
+                  value={formData.supervisorAffiliation || ''} 
+                  onChange={handleChange} 
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกสังกัด"
                 />
               </div>
             </div>
@@ -424,7 +480,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_poleInstallation"
               label="1.1 การปักเสา, เสาตอม่อ (ความลึก, แนวเสา, หน้าเสา)"
-              currentValue={formData.hv_poleInstallation}
+              currentValue={formData.hv_poleInstallation || "-"}
               currentNote={formData.hv_poleInstallation_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -432,7 +488,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_insulatorInstallation"
               label="1.2 การติดตั้งคอน ลูกถ้วย และประกอบบอนด์ไวร์"
-              currentValue={formData.hv_insulatorInstallation}
+              currentValue={formData.hv_insulatorInstallation || "-"}
               currentNote={formData.hv_insulatorInstallation_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -440,7 +496,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_lightningRodInstallation"
               label="1.3 การติดตั้งเหล็กรับสายล่อฟ้า (เหล็กฉาก, เหล็กรูปรางน้ำ)"
-              currentValue={formData.hv_lightningRodInstallation}
+              currentValue={formData.hv_lightningRodInstallation || "-"}
               currentNote={formData.hv_lightningRodInstallation_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -448,7 +504,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_anchorInstallationDistribution"
               label="1.4 การฝังสมอบก และประกอบยึดโยงระบบจำหน่าย"
-              currentValue={formData.hv_anchorInstallationDistribution}
+              currentValue={formData.hv_anchorInstallationDistribution || "-"}
               currentNote={formData.hv_anchorInstallationDistribution_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -456,7 +512,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_anchorInstallationLightning"
               label="1.5 การฝังสมอบก และประกอบยึดโยงสายล่อฟ้า"
-              currentValue={formData.hv_anchorInstallationLightning}
+              currentValue={formData.hv_anchorInstallationLightning || "-"}
               currentNote={formData.hv_anchorInstallationLightning_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -464,7 +520,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_wireSagging"
               label="1.6 การพาดสายไฟ ระยะหย่อนยาน"
-              currentValue={formData.hv_wireSagging}
+              currentValue={formData.hv_wireSagging || "-"}
               currentNote={formData.hv_wireSagging_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -472,35 +528,23 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_lightningRodSagging"
               label="1.7 การพาดสายล่อฟ้า ระยะหย่อนยาน"
-              currentValue={formData.hv_lightningRodSagging}
+              currentValue={formData.hv_lightningRodSagging || "-"}
               currentNote={formData.hv_lightningRodSagging_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
-            <div className="border-b border-gray-200 pb-4 mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                1.8 ระยะห่าง, ความสูงของสายไฟ
-              </label>
-              <ul className="list-disc pl-5 text-gray-700 text-sm mb-2">
-                <li>ข้ามถนน &gt; 6.1 ม., ข้ามทางหลวง 22 kV &gt; 7.51 ม., ข้ามทางหลวง 33 kV &gt; 9 ม.</li>
-                <li>ข้ามทางรถไฟ &gt; 9 ม.</li>
-                <li>ระยะห่างสายด้านข้างกับสิ่งก่อสร้างต่างๆ</li>
-                <li>ระยะห่างระบบจำหน่ายแรงสูง กับสายส่ง</li>
-                <li>ระยะห่างระบบจำหน่ายแรงสูง กับแรงต่ำ</li>
-              </ul>
-              <CorrectiveRadio
-                groupName="hv_wireClearanceHeight"
-                label="ถูกต้องหรือไม่"
-                currentValue={formData.hv_wireClearanceHeight}
-                currentNote={formData.hv_wireClearanceHeight_note}
-                onStatusChange={handleRadioChange}
-                onNoteChange={handleChange}
-              />
-            </div>
+            <CorrectiveRadio
+              groupName="hv_wireClearanceHeight"
+              label="1.8 ระยะห่าง, ความสูงของสายไฟ (ข้ามถนน > 6.1 ม., ข้ามทางหลวง 22 kV > 7.51 ม., ข้ามทางหลวง 33 kV > 9 ม., ข้ามทางรถไฟ > 9 ม.)"
+              currentValue={formData.hv_wireClearanceHeight || "-"}
+              currentNote={formData.hv_wireClearanceHeight_note}
+              onStatusChange={handleRadioChange}
+              onNoteChange={handleChange}
+            />
             <CorrectiveRadio
               groupName="hv_insulatorTying"
               label="1.9 การพันและผูกลูกถ้วย"
-              currentValue={formData.hv_insulatorTying}
+              currentValue={formData.hv_insulatorTying || "-"}
               currentNote={formData.hv_insulatorTying_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -508,7 +552,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_insulatedWireSplicing"
               label="1.10 การต่อสาย พันเทป (สายหุ้มฉนวน)"
-              currentValue={formData.hv_insulatedWireSplicing}
+              currentValue={formData.hv_insulatedWireSplicing || "-"}
               currentNote={formData.hv_insulatedWireSplicing_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -516,7 +560,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_insulatedWireBranching"
               label="1.11 การเชื่อมสาย, สายแยก พันเทป (สายหุ้มฉนวน)"
-              currentValue={formData.hv_insulatedWireBranching}
+              currentValue={formData.hv_insulatedWireBranching || "-"}
               currentNote={formData.hv_insulatedWireBranching_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -524,7 +568,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_wireTermination"
               label="1.12 การเข้าปลายสาย"
-              currentValue={formData.hv_wireTermination}
+              currentValue={formData.hv_wireTermination || "-"}
               currentNote={formData.hv_wireTermination_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -532,7 +576,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_treeTrimming"
               label="1.13 การตัดต้นไม้"
-              currentValue={formData.hv_treeTrimming}
+              currentValue={formData.hv_treeTrimming || "-"}
               currentNote={formData.hv_treeTrimming_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -540,7 +584,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_polePainting"
               label="1.14 การทาสีเสา"
-              currentValue={formData.hv_polePainting}
+              currentValue={formData.hv_polePainting || "-"}
               currentNote={formData.hv_polePainting_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -548,7 +592,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_poleNumbering"
               label="1.15 การพ่นสี หมายเลขเสา"
-              currentValue={formData.hv_poleNumbering}
+              currentValue={formData.hv_poleNumbering || "-"}
               currentNote={formData.hv_poleNumbering_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -556,7 +600,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_guying"
               label="1.16 การยึดโยง (storm guy, line guy, fix guy, etc.)"
-              currentValue={formData.hv_guying}
+              currentValue={formData.hv_guying || "-"}
               currentNote={formData.hv_guying_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -574,9 +618,10 @@ function ConstructionInspectionFormContent() {
                   step="0.01"
                   id="hv_groundResistance"
                   name="hv_groundResistance"
-                  value={formData.hv_groundResistance}
+                  value={formData.hv_groundResistance || ''}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกค่าความต้านทาน"
                 />
               </div>
               <div className="mb-2">
@@ -588,25 +633,25 @@ function ConstructionInspectionFormContent() {
                   step="0.01"
                   id="hv_groundResistanceSystem"
                   name="hv_groundResistanceSystem"
-                  value={formData.hv_groundResistanceSystem}
+                  value={formData.hv_groundResistanceSystem || ''}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                  className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                  placeholder="กรอกค่าระบบ"
                 />
               </div>
               <CorrectiveRadio
                 groupName="hv_grounding"
-                label="ถูกต้องหรือไม่"
-                currentValue={formData.hv_grounding}
+                label="ผลการตรวจสอบการต่อลงดิน"
+                currentValue={formData.hv_grounding || "-"}
                 currentNote={formData.hv_grounding_note}
                 onStatusChange={handleRadioChange}
                 onNoteChange={handleChange}
               />
-
             </div>
             <CorrectiveRadio
               groupName="hv_surgeArresterInstallation"
               label="1.18 การติดตั้งกับดักเสิร์จแรงสูง"
-              currentValue={formData.hv_surgeArresterInstallation}
+              currentValue={formData.hv_surgeArresterInstallation || "-"}
               currentNote={formData.hv_surgeArresterInstallation_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -614,7 +659,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="hv_other"
               label="1.19 อื่นๆ"
-              currentValue={formData.hv_other}
+              currentValue={formData.hv_other || "-"}
               currentNote={formData.hv_other_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -631,90 +676,63 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="lv_poleInstallation"
               label="2.1 การปักเสา, เสาตอม่อ (ความลึก, แนวเสา, หน้าเสา)"
-              currentValue={formData.lv_poleInstallation}
+              currentValue={formData.lv_poleInstallation || "-"}
               currentNote={formData.lv_poleInstallation_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
-            <div className="border-b border-gray-200 pb-4 mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                2.2 การติดตั้งคอน แร็ค
-              </label>
-              <ul className="list-disc pl-5 text-gray-700 text-sm mb-2">
-                <li>แนวนอน สำหรับทางตรง</li>
-                <li>แนวตั้ง สำหรับทางโค้ง</li>
-              </ul>
-              <CorrectiveRadio
-                groupName="lv_rackInstallationHorizontal"
-                label="แนวนอน สำหรับทางตรง ถูกต้องหรือไม่"
-                currentValue={formData.lv_rackInstallationHorizontal}
-                currentNote={formData.lv_rackInstallationHorizontal_note}
-                onStatusChange={handleRadioChange}
-                onNoteChange={handleChange}
-              />
-              <CorrectiveRadio
-                groupName="lv_rackInstallationVertical"
-                label="แนวตั้ง สำหรับทางโค้ง ถูกต้องหรือไม่"
-                currentValue={formData.lv_rackInstallationVertical}
-                currentNote={formData.lv_rackInstallationVertical_note}
-                onStatusChange={handleRadioChange}
-                onNoteChange={handleChange}
-              />
-            </div>
+            <CorrectiveRadio
+              groupName="lv_rackInstallationHorizontal"
+              label="2.2.1 การติดตั้งคอน แร็ค - แนวนอน สำหรับทางตรง"
+              currentValue={formData.lv_rackInstallationHorizontal || "-"}
+              currentNote={formData.lv_rackInstallationHorizontal_note}
+              onStatusChange={handleRadioChange}
+              onNoteChange={handleChange}
+            />
+            <CorrectiveRadio
+              groupName="lv_rackInstallationVertical"
+              label="2.2.2 การติดตั้งคอน แร็ค - แนวตั้ง สำหรับทางโค้ง"
+              currentValue={formData.lv_rackInstallationVertical || "-"}
+              currentNote={formData.lv_rackInstallationVertical_note}
+              onStatusChange={handleRadioChange}
+              onNoteChange={handleChange}
+            />
             <CorrectiveRadio
               groupName="lv_anchorInstallation"
               label="2.3 การฝังสมอบก และประกอบยึดโยง"
-              currentValue={formData.lv_anchorInstallation}
+              currentValue={formData.lv_anchorInstallation || "-"}
               currentNote={formData.lv_anchorInstallation_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
-            <div className="border-b border-gray-200 pb-4 mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                2.4 การพาดสายไฟ ระยะหย่อนยาน
-              </label>
-              <CorrectiveRadio
-                groupName="lv_wireSagging"
-                label="ถูกต้องหรือไม่"
-                currentValue={formData.lv_wireSagging}
-                currentNote={formData.lv_wireSagging_note}
-                onStatusChange={handleRadioChange}
-                onNoteChange={handleChange}
-              />
-              <label className="block text-gray-700 text-sm font-bold mt-4 mb-2">
-                ระยะห่างสายสื่อสาร
-              </label>
-              <CorrectiveRadio
-                groupName="lv_communicationWireClearance"
-                label="ถูกต้องหรือไม่"
-                currentValue={formData.lv_communicationWireClearance}
-                currentNote={formData.lv_communicationWireClearance_note}
-                onStatusChange={handleRadioChange}
-                onNoteChange={handleChange}
-              />
-            </div>
-            <div className="border-b border-gray-200 pb-4 mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                2.5 ระยะห่าง, ความสูงของสายไฟ
-              </label>
-              <ul className="list-disc pl-5 text-gray-700 text-sm mb-2">
-                <li>ข้ามถนน &gt; 5.5 ม., ข้ามทางหลวง &gt; 6.0 ม.</li>
-                <li>ข้ามทางรถไฟ &gt; 7 ม.</li>
-                <li>ระยะห่างสายด้านข้างกับสิ่งก่อสร้างต่างๆ</li>
-              </ul>
-              <CorrectiveRadio
-                groupName="lv_wireClearanceHeight"
-                label="ถูกต้องหรือไม่"
-                currentValue={formData.lv_wireClearanceHeight}
-                currentNote={formData.lv_wireClearanceHeight_note}
-                onStatusChange={handleRadioChange}
-                onNoteChange={handleChange}
-              />
-            </div>
+            <CorrectiveRadio
+              groupName="lv_wireSagging"
+              label="2.4 การพาดสายไฟ ระยะหย่อนยาน"
+              currentValue={formData.lv_wireSagging || "-"}
+              currentNote={formData.lv_wireSagging_note}
+              onStatusChange={handleRadioChange}
+              onNoteChange={handleChange}
+            />
+            <CorrectiveRadio
+              groupName="lv_communicationWireClearance"
+              label="2.4.1 ระยะห่างสายสื่อสาร"
+              currentValue={formData.lv_communicationWireClearance || "-"}
+              currentNote={formData.lv_communicationWireClearance_note}
+              onStatusChange={handleRadioChange}
+              onNoteChange={handleChange}
+            />
+            <CorrectiveRadio
+              groupName="lv_wireClearanceHeight"
+              label="2.5 ระยะห่าง, ความสูงของสายไฟ (ข้ามถนน > 5.5 ม., ข้ามทางหลวง > 6.0 ม., ข้ามทางรถไฟ > 7 ม.)"
+              currentValue={formData.lv_wireClearanceHeight || "-"}
+              currentNote={formData.lv_wireClearanceHeight_note}
+              onStatusChange={handleRadioChange}
+              onNoteChange={handleChange}
+            />
             <CorrectiveRadio
               groupName="lv_rollerTying"
               label="2.6 การผูกสายไฟกับลูกรอกแรงต่ำ"
-              currentValue={formData.lv_rollerTying}
+              currentValue={formData.lv_rollerTying || "-"}
               currentNote={formData.lv_rollerTying_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -722,7 +740,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="lv_wireSplicingSingleEnd"
               label="2.7 การต่อสาย พันเทป การเข้าปลายสายข้างเดียว"
-              currentValue={formData.lv_wireSplicingSingleEnd}
+              currentValue={formData.lv_wireSplicingSingleEnd || "-"}
               currentNote={formData.lv_wireSplicingSingleEnd_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -730,7 +748,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="lv_wireBranchingSingleEnd"
               label="2.8 การเชื่อมสาย, สายแยก พันเทป การเข้าปลายสายข้างเดียว"
-              currentValue={formData.lv_wireBranchingSingleEnd}
+              currentValue={formData.lv_wireBranchingSingleEnd || "-"}
               currentNote={formData.lv_wireBranchingSingleEnd_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -738,7 +756,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="lv_wireTerminationDoubleEnd"
               label="2.9 การเข้าปลายสาย-พันเทป การเข้าปลายสายสองข้าง"
-              currentValue={formData.lv_wireTerminationDoubleEnd}
+              currentValue={formData.lv_wireTerminationDoubleEnd || "-"}
               currentNote={formData.lv_wireTerminationDoubleEnd_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -746,7 +764,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="lv_surgeArresterInstallation"
               label="2.10 การติดตั้งกับดักเสิร์จแรงต่ำ พันเทป"
-              currentValue={formData.lv_surgeArresterInstallation}
+              currentValue={formData.lv_surgeArresterInstallation || "-"}
               currentNote={formData.lv_surgeArresterInstallation_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -754,7 +772,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="lv_polePainting"
               label="2.11 การทาสีเสา"
-              currentValue={formData.lv_polePainting}
+              currentValue={formData.lv_polePainting || "-"}
               currentNote={formData.lv_polePainting_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -762,7 +780,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="lv_poleNumbering"
               label="2.12 การพ่นสี หมายเลขเสา"
-              currentValue={formData.lv_poleNumbering}
+              currentValue={formData.lv_poleNumbering || "-"}
               currentNote={formData.lv_poleNumbering_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -770,39 +788,38 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="lv_guying"
               label="2.13 การยึดโยง (storm guy, line guy, fix guy)"
-              currentValue={formData.lv_guying}
+              currentValue={formData.lv_guying || "-"}
               currentNote={formData.lv_guying_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
+            <CorrectiveRadio
+              groupName="lv_grounding"
+              label="2.14 การต่อลงดิน"
+              currentValue={formData.lv_grounding || "-"}
+              currentNote={formData.lv_grounding_note}
+              onStatusChange={handleRadioChange}
+              onNoteChange={handleChange}
+            />
             <div className="border-b border-gray-200 pb-4 mb-4">
-              <CorrectiveRadio
-                groupName="lv_grounding"
-                label="2.14 การต่อลงดิน"
-                currentValue={formData.lv_grounding}
-                currentNote={formData.lv_grounding_note}
-                onStatusChange={handleRadioChange}
-                onNoteChange={handleChange}
+              <label htmlFor="lv_totalGroundResistance" className="block text-sm font-medium text-gray-700 mb-1">
+                2.15 ค่าความต้านทานดินรวม (โอห์ม):
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                id="lv_totalGroundResistance"
+                name="lv_totalGroundResistance"
+                value={formData.lv_totalGroundResistance || ''}
+                onChange={handleChange}
+                className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                placeholder="กรอกค่าความต้านทาน"
               />
-              <div className="mb-2">
-                <label htmlFor="lv_totalGroundResistance" className="block text-sm font-medium text-gray-700 mb-1">
-                  2.15 ค่าความต้านทานดินรวม (โอห์ม):
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  id="lv_totalGroundResistance"
-                  name="lv_totalGroundResistance"
-                  value={formData.lv_totalGroundResistance}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-                />
-              </div>
             </div>
             <CorrectiveRadio
               groupName="lv_other"
               label="2.16 อื่นๆ"
-              currentValue={formData.lv_other}
+              currentValue={formData.lv_other || "-"}
               currentNote={formData.lv_other_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -832,9 +849,10 @@ function ConstructionInspectionFormContent() {
                 type="number"
                 id="transformerKVA"
                 name="transformerKVA"
-                value={formData.transformerKVA}
+                value={formData.transformerKVA || ''}
                 onChange={handleChange}
-                className="w-24 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                className="w-32 p-3 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                placeholder="กรอก KVA"
               />
             </div>
           </div>
@@ -843,7 +861,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_installation"
               label="3.1 การติดตั้งหม้อแปลง (ระยะความสูง, ทิศทาง)"
-              currentValue={formData.transformer_installation}
+              currentValue={formData.transformer_installation || "-"}
               currentNote={formData.transformer_installation_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -851,7 +869,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_insulatorBondwire"
               label="3.2 การติดตั้งคอน ลูกถ้วย และประกอบบอนด์ไวร์"
-              currentValue={formData.transformer_insulatorBondwire}
+              currentValue={formData.transformer_insulatorBondwire || "-"}
               currentNote={formData.transformer_insulatorBondwire_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -859,7 +877,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_hvWireRoutingPhase"
               label="3.3 การพาดสายแรงสูงเข้าหม้อแปลง และลำดับเฟส"
-              currentValue={formData.transformer_hvWireRoutingPhase}
+              currentValue={formData.transformer_hvWireRoutingPhase || "-"}
               currentNote={formData.transformer_hvWireRoutingPhase_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -867,7 +885,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_wireTyingInsulator"
               label="3.4 การผูกสายไฟกับลูกถ้วย"
-              currentValue={formData.transformer_wireTyingInsulator}
+              currentValue={formData.transformer_wireTyingInsulator || "-"}
               currentNote={formData.transformer_wireTyingInsulator_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -875,7 +893,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_hvSurgeArrester"
               label="3.5 การติดตั้งกับดักเสิร์จแรงสูง, หางปลา"
-              currentValue={formData.transformer_hvSurgeArrester}
+              currentValue={formData.transformer_hvSurgeArrester || "-"}
               currentNote={formData.transformer_hvSurgeArrester_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -883,7 +901,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_dropoutPinTerminalFuseLink"
               label="3.6 การติดตั้งดร็อปเอาต์, พินเทอร์มินอล และฟิวส์ลิงก์"
-              currentValue={formData.transformer_dropoutPinTerminalFuseLink}
+              currentValue={formData.transformer_dropoutPinTerminalFuseLink || "-"}
               currentNote={formData.transformer_dropoutPinTerminalFuseLink_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -891,7 +909,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_conspanInstallation"
               label="3.7 การติดตั้งคอนสปัน 3,200 มม. ระยะความสูง"
-              currentValue={formData.transformer_conspanInstallation}
+              currentValue={formData.transformer_conspanInstallation || "-"}
               currentNote={formData.transformer_conspanInstallation_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -899,7 +917,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_bushingTermination"
               label="3.8 การเข้าสายที่บุชชิ่งหม้อแปลง, หางปลา, ฉนวนครอบบุชชิ่ง"
-              currentValue={formData.transformer_bushingTermination}
+              currentValue={formData.transformer_bushingTermination || "-"}
               currentNote={formData.transformer_bushingTermination_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -907,7 +925,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_lvWireRoutingPhase"
               label="3.9 การติดตั้งสายแรงต่ำ และลำดับเฟส"
-              currentValue={formData.transformer_lvWireRoutingPhase}
+              currentValue={formData.transformer_lvWireRoutingPhase || "-"}
               currentNote={formData.transformer_lvWireRoutingPhase_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -915,7 +933,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_lvSurgeArrester"
               label="3.10 การติดตั้งกับดักเสิร์จแรงต่ำ พันเทป"
-              currentValue={formData.transformer_lvSurgeArrester}
+              currentValue={formData.transformer_lvSurgeArrester || "-"}
               currentNote={formData.transformer_lvSurgeArrester_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -923,7 +941,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_ltSwitchFuse"
               label="3.11 การติดตั้งคอนสำหรับ LT, LT สวิตช์ และ ฟิวส์แรงต่ำ"
-              currentValue={formData.transformer_ltSwitchFuse}
+              currentValue={formData.transformer_ltSwitchFuse || "-"}
               currentNote={formData.transformer_ltSwitchFuse_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -931,7 +949,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_tankHandleHangerConduit"
               label="3.12 การติดตั้งที่จับขอบถัง, เหล็กแขวน ท่อร้อยสายแรงต่ำ"
-              currentValue={formData.transformer_tankHandleHangerConduit}
+              currentValue={formData.transformer_tankHandleHangerConduit || "-"}
               currentNote={formData.transformer_tankHandleHangerConduit_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -939,7 +957,7 @@ function ConstructionInspectionFormContent() {
             <CorrectiveRadio
               groupName="transformer_concreteBeamPoleBase"
               label="3.13 เทคอนกรีตที่คาน, โคนเสา"
-              currentValue={formData.transformer_concreteBeamPoleBase}
+              currentValue={formData.transformer_concreteBeamPoleBase || "-"}
               currentNote={formData.transformer_concreteBeamPoleBase_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
@@ -948,31 +966,26 @@ function ConstructionInspectionFormContent() {
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 3.14 การต่อลงดิน
               </label>
-              <ul className="list-disc pl-5 text-gray-700 text-sm mb-2">
-                <li>ตัวถังหม้อแปลง</li>
-                <li>สายกราวด์ด้านแรงสูง</li>
-                <li>สายกราวด์ด้านแรงต่ำ</li>
-              </ul>
               <CorrectiveRadio
                 groupName="transformer_tankGrounding"
-                label="ตัวถังหม้อแปลง ถูกต้องหรือไม่"
-                currentValue={formData.transformer_tankGrounding}
+                label="ตัวถังหม้อแปลง"
+                currentValue={formData.transformer_tankGrounding || "-"}
                 currentNote={formData.transformer_tankGrounding_note}
                 onStatusChange={handleRadioChange}
                 onNoteChange={handleChange}
               />
               <CorrectiveRadio
                 groupName="transformer_hvGrounding"
-                label="สายกราวด์ด้านแรงสูง ถูกต้องหรือไม่"
-                currentValue={formData.transformer_hvGrounding}
+                label="สายกราวด์ด้านแรงสูง"
+                currentValue={formData.transformer_hvGrounding || "-"}
                 currentNote={formData.transformer_hvGrounding_note}
                 onStatusChange={handleRadioChange}
                 onNoteChange={handleChange}
               />
               <CorrectiveRadio
                 groupName="transformer_lvGrounding"
-                label="สายกราวด์ด้านแรงต่ำ ถูกต้องหรือไม่"
-                currentValue={formData.transformer_lvGrounding}
+                label="สายกราวด์ด้านแรงต่ำ"
+                currentValue={formData.transformer_lvGrounding || "-"}
                 currentNote={formData.transformer_lvGrounding_note}
                 onStatusChange={handleRadioChange}
                 onNoteChange={handleChange}
@@ -987,9 +1000,10 @@ function ConstructionInspectionFormContent() {
                 step="0.01"
                 id="transformer_groundResistancePerPoint"
                 name="transformer_groundResistancePerPoint"
-                value={formData.transformer_groundResistancePerPoint}
+                value={formData.transformer_groundResistancePerPoint || ''}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                placeholder="กรอกค่าความต้านทาน"
               />
               <label htmlFor="transformer_groundResistanceSystem" className="block text-sm font-medium text-gray-700 mt-2 mb-1">
                 ระบบ (โอห์ม):
@@ -999,20 +1013,20 @@ function ConstructionInspectionFormContent() {
                 step="0.01"
                 id="transformer_groundResistanceSystem"
                 name="transformer_groundResistanceSystem"
-                value={formData.transformer_groundResistanceSystem}
+                value={formData.transformer_groundResistanceSystem || ''}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-md mt-1 shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-200 text-gray-900 shadow-sm"
+                placeholder="กรอกค่าระบบ"
               />
             </div>
             <CorrectiveRadio
               groupName="transformer_other"
               label="3.16 อื่นๆ"
-              currentValue={formData.transformer_other}
+              currentValue={formData.transformer_other || "-"}
               currentNote={formData.transformer_other_note}
               onStatusChange={handleRadioChange}
               onNoteChange={handleChange}
             />
-
           </div>
         </section>
 
@@ -1048,7 +1062,7 @@ function ConstructionInspectionFormContent() {
           {formData.inspectionResult === 'เห็นควรแก้ไข' && (
             <textarea
               name="correctionDetails"
-              value={formData.correctionDetails}
+              value={formData.correctionDetails || ''}
               onChange={handleChange}
               rows="4"
               className="mt-1 text-gray-900 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa]"
@@ -1071,13 +1085,7 @@ function ConstructionInspectionFormContent() {
 
         {/* Signatures Section */}
         <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-          <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
-          <div className="text-gray-900 text-sm mb-6 space-y-3">
-              <p>6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจนสิ่งก่อสร้างอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงอยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว</p>
-              <p>6.2 ในกรณีที่การไฟฟ้าส่วนภูมิภาคเป็นผู้ดำเนินการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการเองในภายหลัง หรืออุปกรณ์ดังกล่าวเสื่อมคุณภาพไปตามสภาพ ทางผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
-              <p>6.3 สำหรับระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าในส่วนที่การไฟฟ้าส่วนภูมิภาคไม่สามารถตรวจสอบได้ ผู้ขอใช้ไฟฟ้าต้องติดตั้งตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) หากเกิดความเสียหายผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
-              <p>6.4 หากเกิดความเสียหายใดๆ ที่เกิดจากการที่ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว (RCD) ในวงจรที่มีความเสี่ยง ผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</p>
-          </div>
+          <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">ลายเซ็น</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <SignaturePad 
               title="ลงชื่อผู้ขอใช้ไฟฟ้าหรือผู้แทน" 
@@ -1096,7 +1104,7 @@ function ConstructionInspectionFormContent() {
           </div>
         </section>
         
-        {/* --- Action Buttons --- */}
+        {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 mt-8 border-t border-gray-200">
           <PDFDownloadLink
             document={<ConstructionInspectionPDF formData={formData} />}
@@ -1154,8 +1162,10 @@ function LoadingFallback() {
 
 export default function ConstructionInspectionPage() {
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <ConstructionInspectionFormContent />
-    </Suspense>
+    <div className="min-h-screen bg-gray-50">
+      <Suspense fallback={<LoadingFallback />}>
+        <ConstructionInspectionFormContent />
+      </Suspense>
+    </div>
   );
 }
