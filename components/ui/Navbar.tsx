@@ -21,7 +21,6 @@ const formLinks = [
 
 export default function SiteNavbar() {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const router = useRouter();
@@ -32,14 +31,12 @@ export default function SiteNavbar() {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
-      setLoading(false);
     };
     
     getSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      setLoading(false);
       if (event === 'SIGNED_OUT' || event === 'SIGNED_IN') {
         router.refresh();
       }
@@ -47,7 +44,6 @@ export default function SiteNavbar() {
 
     return () => authListener?.subscription.unsubscribe();
   }, [router, supabase]);
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
   };

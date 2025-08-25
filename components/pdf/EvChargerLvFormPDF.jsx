@@ -1,6 +1,5 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer';
-import EvChargerHvFormPDFViewer from './EvChargerHvFormPDF';
 
 // กำหนด styles สำหรับ PDF
 const styles = StyleSheet.create({
@@ -57,4 +56,4 @@ const ConstructionInspectionPDFViewer = ({ data }) => (
     </PDFViewer>
 );
 
-export default EvChargerLvFormPDFViewer;
+export default ConstructionInspectionPDFViewer;

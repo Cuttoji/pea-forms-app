@@ -1,17 +1,10 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import SignaturePad from 'react-signature-canvas';
 
 const SignatureField = ({ 
-  formData, 
-  updateFormData, 
-  _initialValue, 
-  fieldName = 'signature', 
-  required = false,
-  _requireCertificate = false
+  _initialValue
 }) => {
   const canvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [_timestamp, _setTimestamp] = useState(null);
 
 
   // Use _initialValue to set the signature if provided

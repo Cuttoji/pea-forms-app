@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
@@ -708,7 +708,7 @@ function CondoInspectionForm() {
                 </div>
               </div>
               <p className="text-sm text-gray-500 italic">
-                  หากเลือก "ติดตั้งแล้ว" ให้ทำการตรวจสอบในหัวข้อถัดไป
+                หากเลือก ติดตั้งแล้ว ให้ทำการตรวจสอบในหัวข้อถัดไป
               </p>
               {formData.disconnecting_device_status === 'not-installed' && (
                   <div className="mt-4">
