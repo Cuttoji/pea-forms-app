@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, Suspense, useCallback } from "react";
+import React, { useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
@@ -231,24 +231,24 @@ function CondoInspectionFormContent() {
     checkAuth();
   }, []);
 
-  // Use useCallback for stable function references
-  const handleRadioChange = useCallback((groupName, value, noteFieldName) => {
+  // Simple functions without useCallback
+  const handleRadioChange = (groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
       [groupName]: value,
       ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
     }));
-  }, [setFormData]);
+  };
 
-  const handleDateChange = useCallback((e) => {
+  const handleDateChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value || null
     }));
-  }, [setFormData]);
+  };
 
-  const handleFormSubmit = useCallback(async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     
     try {
@@ -262,17 +262,17 @@ function CondoInspectionFormContent() {
       console.error('Error in form submission:', error);
       toast.error('เกิดข้อผิดพลาดในการส่งข้อมูล');
     }
-  }, [handleSubmit]);
+  };
 
-  const handleLocationSelect = useCallback((location) => {
+  const handleLocationSelect = (location) => {
     setFormData(prevData => ({
       ...prevData,
       latitude: location.lat.toFixed(6),
       longitude: location.lng.toFixed(6),
     }));
-  }, [setFormData]);
+  };
 
-  const handleCheckboxChange = useCallback((e) => {
+  const handleCheckboxChange = (e) => {
     const { name, value, checked } = e.target;
     const arrayFields = ['disconnecting_device_type', 'lv_main_cable_wiring_method', 'room_feeder_wiring'];
     
@@ -296,10 +296,10 @@ function CondoInspectionFormContent() {
         [name]: checked
       }));
     }
-  }, [formData, setFormData]);
+  };
 
-  // Transformer management functions with useCallback
-  const handleAddTransformer = useCallback(() => {
+  // Transformer management functions
+  const handleAddTransformer = () => {
     setFormData(prevData => ({
       ...prevData,
       transformers: [
@@ -307,16 +307,16 @@ function CondoInspectionFormContent() {
         { ...newTransformerTemplate }
       ]
     }));
-  }, [setFormData]);
+  };
 
-  const handleRemoveTransformer = useCallback((index) => {
+  const handleRemoveTransformer = (index) => {
     setFormData(prevData => ({
       ...prevData,
       transformers: prevData.transformers.filter((_, i) => i !== index)
     }));
-  }, [setFormData]);
+  };
 
-  const handleTransformerChange = useCallback((index, e) => {
+  const handleTransformerChange = (index, e) => {
     const { name, value, type } = e.target;
     setFormData(prevData => {
       const newTransformers = [...prevData.transformers];
@@ -342,9 +342,9 @@ function CondoInspectionFormContent() {
 
       return { ...prevData, transformers: newTransformers };
     });
-  }, [setFormData]);
+  };
 
-  const handleTransformerCorrectiveChange = useCallback((index, field, value) => {
+  const handleTransformerCorrectiveChange = (index, field, value) => {
     setFormData(prevData => {
       const newTransformers = [...prevData.transformers];
       newTransformers[index] = { ...newTransformers[index], [field]: value };
@@ -353,7 +353,7 @@ function CondoInspectionFormContent() {
       }
       return { ...prevData, transformers: newTransformers };
     });
-  }, [setFormData]);
+  };
 
   if (isLoading) {
     return (

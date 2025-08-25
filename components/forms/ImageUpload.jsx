@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 
 const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false }) => {
@@ -13,13 +13,13 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
   const [showCamera, setShowCamera] = useState(false);
   const [videoStream, setVideoStream] = useState(null);
 
-  const stopCamera = useCallback(() => {
+  const stopCamera = () => {
     if (videoStream) {
       videoStream.getTracks().forEach(track => track.stop());
       setVideoStream(null);
     }
     setShowCamera(false);
-  }, [videoStream]);
+  };
 
   // อัปเดต preview เมื่อ initialImageUrl เปลี่ยน
   useEffect(() => {
