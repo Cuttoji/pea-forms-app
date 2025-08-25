@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from 'react';
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
@@ -373,14 +373,14 @@ function EVChargerHVInspectionFormContent() {
       }));
     };
   
-    // **ใช้ฟังก์ชันนี้เพียงฟังก์ชันเดียวสำหรับ CorrectiveRadio**
-  const handleRadioChange = (groupName, value, noteFieldName) => {
+    // **ใช้ฟังก์ชันนี้เพียงฟังก์ชันเดียวสำหรับ CorrectiveRadio - Memoized to prevent infinite re-renders**
+  const handleRadioChange = useCallback((groupName, value, noteFieldName) => {
           setFormData((prev) => ({
               ...prev,
               [groupName]: value,
               ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
           }));
-      };
+      }, [setFormData]);
     
   // Enhanced checkbox handling for array fields
   const handleCheckboxChange = (e) => {
