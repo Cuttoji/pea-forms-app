@@ -71,7 +71,7 @@ const commercialInspectionPDF = ({ formData }) => {
         {/* หน้า 1 */}
         <Page size="A4" style={styles.page}>
           <View style={styles.headerContainer} fixed>
-            <Image src="/pea_logo.png" style={{ width: 40, height: 40 }} />
+            <Image src="/pea_logo.png" style={{ width: 40, height: 40 }} alt="PEA Logo" />
             <View style={styles.headerText}>
                 <Text style={styles.headerPEA}>การไฟฟ้าส่วนภูมิภาค</Text>
                 <Text style={styles.headerEN}>PROVINCIAL ELECTRICITY AUTHORITY</Text>
