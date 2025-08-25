@@ -118,6 +118,3 @@ const CorrectiveRadio = ({
 };
 
 export default CorrectiveRadio;
-};
-
-export default CorrectiveRadio;
