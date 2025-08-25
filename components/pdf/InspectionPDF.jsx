@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     acknowledgementText: { fontSize: 7.5, fontWeight: 'light', lineHeight: 1.4, marginBottom: 5, textAlign: 'justify' },
     signatureSection: { marginTop: 15, flexDirection: 'row', justifyContent: 'space-around' },
     signatureBox: { width: '45%', textAlign: 'center' },
-    signatureImage: { width: 100, height: 40, alignSelf: 'center', marginBottom: 5, border: '1px solid #e0e0e0' },
+    signatureImage: { width: 100, height: 40, alignSelf: 'center', marginBottom: 5, borderColor: '#e0e0e0', borderWidth: 1 },
     signatureLine: { borderTop: '0.5px dotted #999', marginTop: 5, marginBottom: 3, fontSize: 8 },
     pageNumber: { position: 'absolute', fontSize: 8, bottom: 20, left: 0, right: 35, textAlign: 'right', color: 'grey' },
     docIdFooter: { position: 'absolute', fontSize: 7, bottom: 20, left: 35, color: 'grey' },
@@ -61,9 +61,9 @@ const Checkbox = ({ checked, label }) => (
 const CorrectiveItem = ({ label, status, note }) => (
     <View style={styles.checklistItem}>
         <Text style={styles.itemText}>{label}</Text>
-        <Checkbox checked={status === 'ถูกต้อง'} label="ถูกต้อง" />
-        <Checkbox checked={status === 'ต้องแก้ไข'} label="ต้องแก้ไข" />
-        <Text style={{...styles.value, flexGrow: 0, minWidth: '50%', display: status === 'ต้องแก้ไข' ? 'block' : 'none'}}> {note || ''} </Text>
+        <Checkbox checked={status === 1 || status === '1'} label="ถูกต้อง" />
+        <Checkbox checked={status === 0 || status === '0'} label="ต้องแก้ไข" />
+        <Text style={{...styles.value, flexGrow: 0, minWidth: '50%', display: (status === 0 || status === '0') ? 'block' : 'none'}}> {note || ''} </Text>
     </View>
 );
 
@@ -78,34 +78,34 @@ const ResidentialInspectionPDF = ({ formData }) => {
       {/* --- หน้า 1 --- */}
       <Page size="A4" style={styles.page}>
         <View style={styles.headerContainer} fixed>
-          <Image src="/pea_logo.png" style={{ width: 40, height: 40 }} />
+          <Image src="/pea_logo.png" style={{ width: 40, height: 40 }} alt="" />
           <View style={styles.headerText}>
               <Text style={styles.headerPEA}>การไฟฟ้าส่วนภูมิภาค</Text>
               <Text style={styles.headerEN}>PROVINCIAL ELECTRICITY AUTHORITY</Text>
           </View>
-          <Text style={{fontSize: 9, textAlign: 'right'}}>การไฟฟ้า: {formData.peaOffice || '........................'}</Text>
+          <Text style={{fontSize: 9, textAlign: 'right'}}>การไฟฟ้า: {formData.peaoffice || '........................'}</Text>
         </View>
         <Text style={styles.formTitle} fixed>แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์</Text>
         <Text style={styles.formSubtitle} fixed>สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน</Text>
 
         <View style={styles.headerInfoRow}>
-           <Field label="การตรวจสอบครั้งที่:" value={formData.inspectionNumber || ''} style={{width: '48%'}} />
-           <Field label="วันที่:" value={formData.inspectionDate || ''} style={{width: '48%'}}/>
+           <Field label="การตรวจสอบครั้งที่:" value={formData.inspectionnumber || ''} style={{width: '48%'}} />
+           <Field label="วันที่:" value={formData.inspectiondate || ''} style={{width: '48%'}}/>
         </View>
         <View style={styles.headerInfoRow}>
-           <Field label="การตรวจสอบตามคำร้องขอใช้ไฟเลขที่:" value={formData.requestNumber || ''} style={{width: '48%'}} />
-           <Field label="วันที่:" value={formData.requestDate || ''} style={{width: '48%'}} />
+           <Field label="การตรวจสอบตามคำร้องขอใช้ไฟเลขที่:" value={formData.requestnumber || ''} style={{width: '48%'}} />
+           <Field label="วันที่:" value={formData.requestdate || ''} style={{width: '48%'}} />
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>1. ข้อมูลทั่วไป</Text>
-          <Field label="ชื่อ-นามสกุลผู้ขอใช้ไฟฟ้า (นาย/นาง/น.ส.):" value={formData.fullName || ''} />
+          <Field label="ชื่อ-นามสกุลผู้ขอใช้ไฟฟ้า (นาย/นาง/น.ส.):" value={formData.fullname || ''} />
           <Field label="โทรศัพท์:" value={formData.phone || ''} />
           <Field label="ที่อยู่:" value={formData.address || ''} />
           <View style={{...styles.row, marginTop: 5}}>
-            <Checkbox checked={formData.phaseType === '3_phase'} label="ระบบไฟฟ้า 3 เฟส (400/230 V)" />
-            <Checkbox checked={formData.phaseType === '1_phase'} label="1 เฟส (230 V)" />
-            <Field label="โหลดประมาณ:" value={`${formData.estimatedLoad || ''} แอมแปร์`} style={{marginLeft: 20, flexGrow: 1}}/>
+            <Checkbox checked={formData.phasetype === '3_phase'} label="ระบบไฟฟ้า 3 เฟส (400/230 V)" />
+            <Checkbox checked={formData.phasetype === '1_phase'} label="1 เฟส (230 V)" />
+            <Field label="โหลดประมาณ:" value={`${formData.estimatedload || ''} แอมแปร์`} style={{marginLeft: 20, flexGrow: 1}}/>
           </View>
         </View>
         
@@ -115,45 +115,45 @@ const ResidentialInspectionPDF = ({ formData }) => {
                 {/* --- คอลัมน์ซ้าย --- */}
                 <View style={styles.gridColumn}>
                     <Text style={{fontWeight: 'bold', marginBottom: 2}}>2.1 สายตัวนำประธานเข้าอาคาร</Text>
-                    <CorrectiveItem label="ก) สายไฟฟ้าเป็นไปตามมาตรฐาน มอก. 11-2553 หรือ มอก. 293-2541 หรือ IEC 60502" status={formData.cableStandard_correct} note={formData.cableStandard_correct_note} />
+                    <CorrectiveItem label="ก) สายไฟฟ้าเป็นไปตามมาตรฐาน มอก. 11-2553 หรือ มอก. 293-2541 หรือ IEC 60502" status={formData.cablestandard_correct} note={formData.cablestandard_correct_note} />
                     <Text style={{fontSize: 8, paddingLeft: 5, marginTop: 4}}>ข) ชนิดและขนาด</Text>
                     <View style={styles.subItem}>
                         <View style={{...styles.row, flexWrap: 'nowrap', paddingLeft: 5, marginBottom: 1}}>
-                           <Checkbox checked={formData.cableType === 'IEC 01'} label="IEC 01" />
-                           <Checkbox checked={formData.cableType === 'NYY'} label="NYY" />
-                           <Checkbox checked={formData.cableType === 'CV'} label="CV" />
+                           <Checkbox checked={formData.cabletype === 'IEC 01'} label="IEC 01" />
+                           <Checkbox checked={formData.cabletype === 'NYY'} label="NYY" />
+                           <Checkbox checked={formData.cabletype === 'CV'} label="CV" />
                         </View>
-                         <Field label="อื่นๆ:" value={formData.cableType === 'อื่นๆ' ? formData.cableOtherType : ''} style={{paddingLeft: 5}}/>
-                         <Field label="ขนาด:" value={`${formData.cableSizeSqmm || ''} ตร.มม.`} style={{paddingLeft: 5}}/>
-                        <CorrectiveItem status={formData.cableTypeSize_correct} note={formData.cableTypeSize_correct_note} />
+                         <Field label="อื่นๆ:" value={formData.cabletype === 'อื่นๆ' ? formData.cableothertype : ''} style={{paddingLeft: 5}}/>
+                         <Field label="ขนาด:" value={`${formData.cablesizesqmm || ''} ตร.มม.`} style={{paddingLeft: 5}}/>
+                        <CorrectiveItem status={formData.cabletypesize_correct} note={formData.cabletypesize_correct_note} />
                     </View>
                     <Text style={{fontSize: 8, paddingLeft: 5, marginTop: 4}}>ค) วิธีการเดินสาย</Text>
                     <View style={styles.subItem}>
-                        <Checkbox checked={!!formData.wiringMethodOverheadChecked} label="เดินสายบนลูกถ้วยฉนวนในอากาศ" />
-                        {formData.wiringMethodOverheadChecked && <View style={styles.subItem}>
+                        <Checkbox checked={!!formData.wiringmethodoverheadchecked} label="เดินสายบนลูกถ้วยฉนวนในอากาศ" />
+                        {formData.wiringmethodoverheadchecked && <View style={styles.subItem}>
                             <CorrectiveItem label="1) สูงจากพื้นไม่น้อยกว่า 2.9 เมตร หรือ 5.5 เมตร ถ้ามียานพาหนะลอดผ่าน" status={formData.overhead_height_correct} note={formData.overhead_height_note} />
-                            <CorrectiveItem label="2) สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล" status={formData.overhead_neutralMarked_correct} note={formData.overhead_neutralMarked_note} />
+                            <CorrectiveItem label="2) สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล" status={formData.overhead_neutralmarked_correct} note={formData.overhead_neutralmarked_note} />
                         </View>}
-                        <Checkbox checked={!!formData.wiringMethodUndergroundChecked} label="เดินสายฝังใต้ดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)" />
-                        {formData.wiringMethodUndergroundChecked && <View style={styles.subItem}>
-                             <CorrectiveItem label="1) สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล" status={formData.underground_neutralMarked_correct} note={formData.underground_neutralMarked_note} />
+                        <Checkbox checked={!!formData.wiringmethodundergroundchecked} label="เดินสายฝังใต้ดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)" />
+                        {formData.wiringmethodundergroundchecked && <View style={styles.subItem}>
+                             <CorrectiveItem label="1) สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล" status={formData.underground_neutralmarked_correct} note={formData.underground_neutralmarked_note} />
                         </View>}
                      </View>
                      <Text style={{fontWeight: 'bold', marginTop: 8, marginBottom: 2}}>2.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์ (บริภัณฑ์ประธาน)</Text>
-                     <CorrectiveItem label="ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC60898" status={formData.breakerStandard_correct} note={formData.breakerStandard_note} />
-                     <CorrectiveItem label={`ข) เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์ ขนาด AT ${formData.breakerAmpRating || ''}`} status={formData.breakerMeterMatch_correct} note={formData.breakerMeterMatch_note} />
-                     <CorrectiveItem label="ค) ขนาดกระแสลัดวงจรสูงสุดไม่ต่ำกว่า 10 กิโลแอมแปร์ (KA)" status={formData.breakerShortCircuitRating_correct} note={formData.breakerShortCircuitRating_note} />
+                     <CorrectiveItem label="ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC60898" status={formData.breakerstandard_correct} note={formData.breakerstandard_note} />
+                     <CorrectiveItem label={`ข) เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์ ขนาด AT ${formData.breakeramprating || ''}`} status={formData.breakermetermatch_correct} note={formData.breakermetermatch_note} />
+                     <CorrectiveItem label="ค) ขนาดกระแสลัดวงจรสูงสุดไม่ต่ำกว่า 10 กิโลแอมแปร์ (KA)" status={formData.breakershortcircuitrating_correct} note={formData.breakershortcircuitrating_note} />
                 </View>
                 {/* --- คอลัมน์ขวา --- */}
                 <View style={styles.gridColumn}>
                     <Text style={{fontWeight: 'bold', marginBottom: 2}}>2.3 ระบบการต่อลงดินที่แผงเมนสวิตช์</Text>
-                    <CorrectiveItem label={`ก) ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายตัวนำประธาน ขนาดสายต่อหลักดิน ${formData.groundWireSizeSqmm || ''} ตร.มม.`} status={formData.groundWireSize_correct} note={formData.groundWireSize_note} />
-                    <CorrectiveItem label="ข) ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม (มีข้อยกเว้น)" status={formData.groundResistance_correct} note={formData.groundResistance_note} />
-                    <CorrectiveItem label="ค) กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และต่อสายนิวทรัล (Neutral Wire) ของตัวนำประธาน (Main Conductor) เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน (Main Circuit Breaker) ตามที่ กฟภ. กำหนด" status={formData.onePhaseGroundConnection_correct} note={formData.onePhaseGroundConnection_note} />
-                    <CorrectiveItem label="ง) กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายดินบริภัณฑ์ ภายในแผงเมนสวิตช์ ตามที่ กฟภ. กำหนด" status={formData.threePhaseGroundConnection_correct} note={formData.threePhaseGroundConnection_note} />
+                    <CorrectiveItem label={`ก) ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายตัวนำประธาน ขนาดสายต่อหลักดิน ${formData.groundwiresizesqmm || ''} ตร.มม.`} status={formData.groundwiresize_correct} note={formData.groundwiresize_note} />
+                    <CorrectiveItem label="ข) ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม (มีข้อยกเว้น)" status={formData.groundresistance_correct} note={formData.groundresistance_note} />
+                    <CorrectiveItem label="ค) กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และต่อสายนิวทรัล (Neutral Wire) ของตัวนำประธาน (Main Conductor) เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน (Main Circuit Breaker) ตามที่ กฟภ. กำหนด" status={formData.onephasegroundconnection_correct} note={formData.onephasegroundconnection_note} />
+                    <CorrectiveItem label="ง) กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายดินบริภัณฑ์ ภายในแผงเมนสวิตช์ ตามที่ กฟภ. กำหนด" status={formData.threephasegroundconnection_correct} note={formData.threephasegroundconnection_note} />
                     <Text style={{fontWeight: 'bold', marginTop: 8, marginBottom: 2}}>2.4 เครื่องตัดไฟรั่ว (RCD)</Text>
-                    <Checkbox checked={formData.rcdInstalledOption === 'installed'} label="ติดตั้งเครื่องตัดไฟรั่ว ขนาดพิกัดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง" />
-                    <Checkbox checked={formData.rcdInstalledOption === 'not_installed'} label="ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว และผู้ตรวจสอบมาตรฐานได้แจ้งให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนทราบถึงความเสี่ยงจากการไม่ติดตั้งเครื่องตัดไฟรั่วแล้ว" />
+                    <Checkbox checked={formData.rcdinstalledoption === 1 || formData.rcdinstalledoption === '1'} label="ติดตั้งเครื่องตัดไฟรั่ว ขนาดพิกัดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง" />
+                    <Checkbox checked={formData.rcdinstalledoption === 0 || formData.rcdinstalledoption === '0'} label="ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว และผู้ตรวจสอบมาตรฐานได้แจ้งให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนทราบถึงความเสี่ยงจากการไม่ติดตั้งเครื่องตัดไฟรั่วแล้ว" />
                 </View>
             </View>
         </View>
@@ -170,14 +170,14 @@ const ResidentialInspectionPDF = ({ formData }) => {
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>4. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</Text>
                 <View style={{...styles.row, paddingLeft: 10}}>
-                    <Checkbox checked={formData.summaryResult === 'ติดตั้งมิเตอร์ถาวร'} label="ติดตั้งมิเตอร์ถาวร" />
-                    <Checkbox checked={formData.summaryResult === 'ติดตั้งมิเตอร์ชั่วคราว'} label="ติดตั้งมิเตอร์ชั่วคราว" />
-                    <Checkbox checked={formData.summaryResult === 'ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์'} label="ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์" />
+                    <Checkbox checked={formData.summaryresult === 2 || formData.summaryresult === '2'} label="ติดตั้งมิเตอร์ถาวร" />
+                    <Checkbox checked={formData.summaryresult === 1 || formData.summaryresult === '1'} label="ติดตั้งมิเตอร์ชั่วคราว" />
+                    <Checkbox checked={formData.summaryresult === 0 || formData.summaryresult === '0'} label="ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์" />
                 </View>
             </View>
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>5. ขอบเขตและข้อจำกัดในการตรวจสอบ</Text>
-                <Text style={{paddingLeft: 10, fontSize: 8}}>{formData.scopeOfInspection || ''}</Text>
+                <Text style={{paddingLeft: 10, fontSize: 8}}>{formData.scopeofinspection || ''}</Text>
             </View>
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</Text>
@@ -188,12 +188,12 @@ const ResidentialInspectionPDF = ({ formData }) => {
             </View>
             <View style={styles.signatureSection}>
                 <View style={styles.signatureBox}>
-                    {formData.userSignature && <Image style={styles.signatureImage} src={formData.userSignature} />}
+                    {formData.userSignature && <Image style={styles.signatureImage} src={formData.userSignature} alt="" />}
                     <Text style={styles.signatureLine}>(..................................................)</Text>
                     <Text style={{fontSize: 8}}>ผู้ขอใช้ไฟฟ้าหรือผู้แทน</Text>
                 </View>
                 <View style={styles.signatureBox}>
-                    {formData.inspectorSignature && <Image style={styles.signatureImage} src={formData.inspectorSignature} />}
+                    {formData.inspectorSignature && <Image style={styles.signatureImage} src={formData.inspectorSignature} alt="" />}
                     <Text style={styles.signatureLine}>(..................................................)</Text>
                     <Text style={{fontSize: 8}}>เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค</Text>
                 </View>
@@ -212,7 +212,7 @@ const ResidentialInspectionPDF = ({ formData }) => {
        <Page size="A4" style={styles.page}>
          <Text style={{...styles.formTitle, marginBottom: 15}}>รูปแบบการรับไฟฟ้าผ่านระบบจำหน่ายแรงต่ำ (400/230 โวลต์)</Text>
          <Text style={styles.formSubtitle}>สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน</Text>
-         <Image src="/diagram_home.png" style={{width: '100%', height: 'auto', marginBottom: 15}}/>
+         <Image src="/diagram_home.png" style={{width: '100%', height: 'auto', marginBottom: 15}} alt=""/>
          <View style={styles.section}>
             <Text style={styles.sectionTitle}>ข้อกำหนด</Text>
             <Text style={styles.acknowledgementText}>1. สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกันให้พิจารณาตรวจสอบระบบไฟฟ้าตามหมายเลข 1-4</Text>

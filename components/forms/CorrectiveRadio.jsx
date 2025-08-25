@@ -18,6 +18,9 @@ const CorrectiveRadio = ({
     }
   };
 
+  // Convert to number for comparison, since values might come as strings
+  const numericValue = Number(currentValue);
+
   return (
     <div className="relative border border-gray-200 rounded-xl p-6 mb-6 bg-gradient-to-br from-white to-gray-50/50 shadow-lg hover:shadow-xl transition-all duration-300 group"> 
       <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-blue-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -29,14 +32,14 @@ const CorrectiveRadio = ({
           <input
             type="radio"
             name={groupName}
-            value="ถูกต้อง"
-            checked={currentValue === 'ถูกต้อง'}
-            onChange={() => handleStatusChange('ถูกต้อง')}
+            value="1"
+            checked={numericValue === 1}
+            onChange={() => handleStatusChange(1)}
             disabled={disabled}
             className="form-radio h-5 w-5 text-green-600 focus:ring-2 focus:ring-green-400 border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
           />
           <span className={`ml-3 text-sm font-semibold flex items-center gap-2 transition-colors duration-200 ${
-            currentValue === 'ถูกต้อง' 
+            numericValue === 1 
               ? 'text-green-700' 
               : 'text-gray-700 group-hover/correct:text-green-600'
           } ${disabled ? 'text-gray-400' : ''}`}>
@@ -49,14 +52,14 @@ const CorrectiveRadio = ({
           <input
             type="radio"
             name={groupName}
-            value="ต้องแก้ไข"
-            checked={currentValue === 'ต้องแก้ไข'}
-            onChange={() => handleStatusChange('ต้องแก้ไข')}
+            value="0"
+            checked={numericValue === 0}
+            onChange={() => handleStatusChange(0)}
             disabled={disabled}
             className="form-radio h-5 w-5 text-red-600 focus:ring-2 focus:ring-red-400 border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
           />
           <span className={`ml-3 text-sm font-semibold flex items-center gap-2 transition-colors duration-200 ${
-            currentValue === 'ต้องแก้ไข' 
+            numericValue === 0 
               ? 'text-red-700' 
               : 'text-gray-700 group-hover/incorrect:text-red-600'
           } ${disabled ? 'text-gray-400' : ''}`}>
@@ -66,24 +69,24 @@ const CorrectiveRadio = ({
         </label>
       </div>
       
-      {(alwaysShowNote || currentValue === 'ต้องแก้ไข') && (
+      {(alwaysShowNote || numericValue === 0) && (
         <div className={`transition-all duration-500 transform ${
-          currentValue === 'ต้องแก้ไข' 
+          numericValue === 0 
             ? 'bg-gradient-to-br from-red-50 to-red-100/50 border-l-4 border-red-400 shadow-inner' 
             : 'bg-gradient-to-br from-gray-50 to-gray-100/50 border-l-4 border-gray-300'
         } p-4 rounded-lg relative overflow-hidden`}>
           
           <div className={`absolute inset-0 ${
-            currentValue === 'ต้องแก้ไข' 
+            numericValue === 0 
               ? 'bg-gradient-to-r from-red-400/10 to-transparent' 
               : 'bg-gradient-to-r from-gray-400/10 to-transparent'
           }`}></div>
           
           <label htmlFor={noteFieldName} className={`relative block text-sm font-semibold mb-3 flex items-center gap-2 ${
-            currentValue === 'ต้องแก้ไข' ? 'text-red-800' : 'text-gray-800'
+            numericValue === 0 ? 'text-red-800' : 'text-gray-800'
           }`}>
             <span className="text-lg">📝</span>
-            {currentValue === 'ต้องแก้ไข' ? 'รายละเอียดการแก้ไข (จำเป็น):' : 'รายละเอียดเพิ่มเติม:'}
+            {numericValue === 0 ? 'รายละเอียดการแก้ไข (จำเป็น):' : 'รายละเอียดเพิ่มเติม:'}
           </label>
           
           <textarea
@@ -91,7 +94,7 @@ const CorrectiveRadio = ({
             name={noteFieldName}
             rows={3}
             className={`relative w-full p-4 border-2 rounded-lg shadow-sm transition-all duration-200 text-sm resize-none ${
-              currentValue === 'ต้องแก้ไข'
+              numericValue === 0
                 ? 'border-red-200 focus:border-red-400 focus:ring-4 focus:ring-red-100 bg-white/80'
                 : 'border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 bg-white/60'
             } ${disabled ? 'bg-gray-50 cursor-not-allowed opacity-75' : 'hover:border-gray-300'}`}
@@ -99,13 +102,13 @@ const CorrectiveRadio = ({
             onChange={onNoteChange}
             disabled={disabled}
             placeholder={
-              currentValue === 'ต้องแก้ไข' 
+              numericValue === 0 
                 ? 'โปรดระบุรายละเอียดการแก้ไขที่จำเป็น...' 
                 : 'รายละเอียดเพิ่มเติม (ไม่บังคับ)...'
             }
           />
           
-          {currentValue === 'ต้องแก้ไข' && (
+          {numericValue === 0 && (
             <div className="relative flex items-center gap-2 text-sm text-red-700 mt-2 font-medium">
               <span className="text-base">⚠️</span>
               กรุณาระบุรายละเอียดการแก้ไขให้ชัดเจน

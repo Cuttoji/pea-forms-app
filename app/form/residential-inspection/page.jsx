@@ -123,13 +123,13 @@ function HomeForm() {
   };
 
   // **ใช้ฟังก์ชันนี้เพียงฟังก์ชันเดียวสำหรับ CorrectiveRadio**
-const handleRadioChange = (groupName, value, noteFieldName) => {
-        setFormData((prev) => ({
-            ...prev,
-            [groupName]: value,
-            ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
-        }));
-    };
+  const handleRadioChange = (groupName, value, noteFieldName) => {
+    setFormData((prev) => ({
+        ...prev,
+        [groupName]: value,
+        ...(noteFieldName && value === 1 ? { [noteFieldName]: '' } : {}),
+    }));
+  };
   
   // Enhanced handleChange to properly handle date fields
   const handleDateChange = (e) => {
@@ -639,15 +639,15 @@ const handleRadioChange = (groupName, value, noteFieldName) => {
               <label className="block text-sm font-medium text-gray-900 mb-1">ติดตั้งเครื่องตัดไฟรั่ว (RCD) ขนาดพิกัดกระแสรั่ว (I∆n) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง</label>
               <div className="flex flex-wrap gap-4 mt-2">
                   <label className="inline-flex items-center text-gray-900">
-                      <input type="radio" name="rcdinstalledoption" value="ถูกต้อง" checked={formData.rcdinstalledoption === 'ถูกต้อง'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"/>
+                      <input type="radio" name="rcdinstalledoption" value="1" checked={Number(formData.rcdinstalledoption) === 1} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"/>
                       <span className="ml-2">ถูกต้อง</span>
                   </label>
                   <label className="inline-flex items-center text-gray-900">
-                      <input type="radio" name="rcdinstalledoption" value="ไม่ประสงค์ติดตั้ง" checked={formData.rcdinstalledoption === 'ไม่ประสงค์ติดตั้ง'} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"/>
+                      <input type="radio" name="rcdinstalledoption" value="0" checked={Number(formData.rcdinstalledoption) === 0} onChange={handleChange} className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"/>
                       <span className="ml-2">ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว...</span>
                   </label>
               </div>
-              {formData.rcdinstalledoption === 'ถูกต้อง' && (
+              {Number(formData.rcdinstalledoption) === 1 && (
                 <div className="mt-4">
                   <CorrectiveRadio 
                     groupName="rcdinstalled_correct" 
@@ -672,19 +672,39 @@ const handleRadioChange = (groupName, value, noteFieldName) => {
         <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
           <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">4. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</h3>
           <div className="flex flex-wrap gap-6 mb-4">
-            {['ติดตั้งมิเตอร์ถาวร', 'ติดตั้งมิเตอร์ชั่วคราว', 'ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์'].map(option => (
-              <label key={option} className="inline-flex items-center text-gray-900">
-                <input 
-                  type="radio" 
-                  name="summaryresult" 
-                  value={option} 
-                  checked={formData.summaryresult === option} 
-                  onChange={handleChange} 
-                  className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"
-                />
-                <span className="ml-2">{option}</span>
-              </label>
-            ))}
+            <label className="inline-flex items-center text-gray-900">
+              <input 
+                type="radio" 
+                name="summaryresult" 
+                value="2" 
+                checked={Number(formData.summaryresult) === 2} 
+                onChange={handleChange} 
+                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"
+              />
+              <span className="ml-2">ติดตั้งมิเตอร์ถาวร</span>
+            </label>
+            <label className="inline-flex items-center text-gray-900">
+              <input 
+                type="radio" 
+                name="summaryresult" 
+                value="1" 
+                checked={Number(formData.summaryresult) === 1} 
+                onChange={handleChange} 
+                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"
+              />
+              <span className="ml-2">ติดตั้งมิเตอร์ชั่วคราว</span>
+            </label>
+            <label className="inline-flex items-center text-gray-900">
+              <input 
+                type="radio" 
+                name="summaryresult" 
+                value="0" 
+                checked={Number(formData.summaryresult) === 0} 
+                onChange={handleChange} 
+                className="form-radio text-[#5b2d90] focus:ring-2 focus:ring-purple-400 h-5 w-5"
+              />
+              <span className="ml-2">ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์</span>
+            </label>
           </div>
         </section>
 
