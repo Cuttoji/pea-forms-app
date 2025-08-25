@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
@@ -140,7 +140,7 @@ const initialFormData = {
   inspectorsignature: "",
 };
 
-function CommercialInspectionForm() {
+function CommercialInspectionFormContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 
@@ -636,9 +636,26 @@ function CommercialInspectionForm() {
 function FormWrapper() {
   return (
     <FormProvider>
-      <CommercialInspectionForm />
+      <CommercialInspectionFormContent />
     </FormProvider>
   );
 }
 
-export default FormWrapper;
+export default function CommercialInspectionPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <FormWrapper />
+    </Suspense>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">กำลังโหลดฟอร์ม...</p>
+      </div>
+    </div>
+  );
+}
