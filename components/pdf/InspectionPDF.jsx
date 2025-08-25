@@ -61,9 +61,9 @@ const Checkbox = ({ checked, label }) => (
 const CorrectiveItem = ({ label, status, note }) => (
     <View style={styles.checklistItem}>
         <Text style={styles.itemText}>{label}</Text>
-        <Checkbox checked={status === 1 || status === '1'} label="ถูกต้อง" />
-        <Checkbox checked={status === 0 || status === '0'} label="ต้องแก้ไข" />
-        <Text style={{...styles.value, flexGrow: 0, minWidth: '50%', display: (status === 0 || status === '0') ? 'block' : 'none'}}> {note || ''} </Text>
+        <Checkbox checked={status === 'ถูกต้อง'} label="ถูกต้อง" />
+        <Checkbox checked={status === 'ต้องแก้ไข'} label="ต้องแก้ไข" />
+        <Text style={{...styles.value, flexGrow: 0, minWidth: '50%', display: status === 'ต้องแก้ไข' ? 'block' : 'none'}}> {note || ''} </Text>
     </View>
 );
 
@@ -152,8 +152,8 @@ const ResidentialInspectionPDF = ({ formData }) => {
                     <CorrectiveItem label="ค) กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และต่อสายนิวทรัล (Neutral Wire) ของตัวนำประธาน (Main Conductor) เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน (Main Circuit Breaker) ตามที่ กฟภ. กำหนด" status={formData.onephasegroundconnection_correct} note={formData.onephasegroundconnection_note} />
                     <CorrectiveItem label="ง) กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายดินบริภัณฑ์ ภายในแผงเมนสวิตช์ ตามที่ กฟภ. กำหนด" status={formData.threephasegroundconnection_correct} note={formData.threephasegroundconnection_note} />
                     <Text style={{fontWeight: 'bold', marginTop: 8, marginBottom: 2}}>2.4 เครื่องตัดไฟรั่ว (RCD)</Text>
-                    <Checkbox checked={formData.rcdinstalledoption === 1 || formData.rcdinstalledoption === '1'} label="ติดตั้งเครื่องตัดไฟรั่ว ขนาดพิกัดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง" />
-                    <Checkbox checked={formData.rcdinstalledoption === 0 || formData.rcdinstalledoption === '0'} label="ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว และผู้ตรวจสอบมาตรฐานได้แจ้งให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนทราบถึงความเสี่ยงจากการไม่ติดตั้งเครื่องตัดไฟรั่วแล้ว" />
+                    <Checkbox checked={formData.rcdinstalledoption === 'ถูกต้อง'} label="ติดตั้งเครื่องตัดไฟรั่ว ขนาดพิกัดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง" />
+                    <Checkbox checked={formData.rcdinstalledoption === 'ไม่ประสงค์ติดตั้ง'} label="ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว และผู้ตรวจสอบมาตรฐานได้แจ้งให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนทราบถึงความเสี่ยงจากการไม่ติดตั้งเครื่องตัดไฟรั่วแล้ว" />
                 </View>
             </View>
         </View>
@@ -170,9 +170,9 @@ const ResidentialInspectionPDF = ({ formData }) => {
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>4. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</Text>
                 <View style={{...styles.row, paddingLeft: 10}}>
-                    <Checkbox checked={formData.summaryresult === 2 || formData.summaryresult === '2'} label="ติดตั้งมิเตอร์ถาวร" />
-                    <Checkbox checked={formData.summaryresult === 1 || formData.summaryresult === '1'} label="ติดตั้งมิเตอร์ชั่วคราว" />
-                    <Checkbox checked={formData.summaryresult === 0 || formData.summaryresult === '0'} label="ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์" />
+                    <Checkbox checked={formData.summaryresult === 'ติดตั้งมิเตอร์ถาวร'} label="ติดตั้งมิเตอร์ถาวร" />
+                    <Checkbox checked={formData.summaryresult === 'ติดตั้งมิเตอร์ชั่วคราว'} label="ติดตั้งมิเตอร์ชั่วคราว" />
+                    <Checkbox checked={formData.summaryresult === 'ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์'} label="ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์" />
                 </View>
             </View>
             <View style={styles.section}>

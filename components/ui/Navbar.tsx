@@ -7,7 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Menu, Transition, Dialog } from '@headlessui/react';
 import { ChevronDown, Globe, Menu as MenuIcon, X, FileText, Building, Zap, LogOut, User as UserIcon } from 'lucide-react';
-
+import type { User } from '@supabase/supabase-js';
 
 // รายการฟอร์มสำหรับเมนู
 const formLinks = [
@@ -19,10 +19,9 @@ const formLinks = [
   { href: "/form/construction-inspection", label: "ฟอร์มตรวจสอบงานก่อสร้าง", icon: <Building size={16} /> },
 ];
 
-
 export default function SiteNavbar() {
-  const [user, setUser] = useState<any>(null);
-  const [_loading, setLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const router = useRouter();
