@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
@@ -791,11 +791,27 @@ function HomeForm() {
   );
 }
 
+// Wrap the component in Suspense
+function HomeFormWithSuspense() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#5b2d90] mb-4"></div>
+        <div className="text-center">
+          <p className="text-lg text-gray-600 mb-2">กำลังโหลด...</p>
+        </div>
+      </div>
+    }>
+      <HomeForm />
+    </Suspense>
+  );
+}
+
 // Wrap the component with FormProvider
 export default function FormWrapper() {
   return (
     <FormProvider>
-      <HomeForm />
+      <HomeFormWithSuspense />
     </FormProvider>
   );
 }
