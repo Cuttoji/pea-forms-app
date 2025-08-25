@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Menu, Transition, Dialog } from '@headlessui/react';
@@ -27,6 +27,13 @@ export default function SiteNavbar() {
   const pathname = usePathname();
   const supabase = createClient();
 
+  const handleAuthStateChange = useCallback((event: string, session: unknown) => {
+    setUser((session as { user: User | null })?.user ?? null);
+    if (event === 'SIGNED_OUT' || event === 'SIGNED_IN') {
+      router.refresh();
+    }
+  }, [router]);
+
   useEffect(() => {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -35,15 +42,10 @@ export default function SiteNavbar() {
     
     getSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      if (event === 'SIGNED_OUT' || event === 'SIGNED_IN') {
-        router.refresh();
-      }
-    });
+    const { data: authListener } = supabase.auth.onAuthStateChange(handleAuthStateChange);
 
     return () => authListener?.subscription.unsubscribe();
-  }, [router, supabase]);
+  }, [supabase, handleAuthStateChange]);
   const handleLogout = async () => {
     await supabase.auth.signOut();
   };

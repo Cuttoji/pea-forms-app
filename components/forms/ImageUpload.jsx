@@ -1,5 +1,6 @@
 "use client";
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 
 const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false }) => {
   const [preview, setPreview] = useState(initialImageUrl);
@@ -12,6 +13,14 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
   const [showCamera, setShowCamera] = useState(false);
   const [videoStream, setVideoStream] = useState(null);
 
+  const stopCamera = useCallback(() => {
+    if (videoStream) {
+      videoStream.getTracks().forEach(track => track.stop());
+      setVideoStream(null);
+    }
+    setShowCamera(false);
+  }, [videoStream]);
+
   // อัปเดต preview เมื่อ initialImageUrl เปลี่ยน
   useEffect(() => {
     if (initialImageUrl && initialImageUrl !== preview) {
@@ -20,7 +29,7 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
       setImageError(false);
       setIsImageLoading(true);
     }
-  }, [initialImageUrl]);
+  }, [initialImageUrl, preview]);
 
   // Cleanup object URL เมื่อ preview เปลี่ยนหรือ component unmount
   useEffect(() => {
@@ -43,7 +52,7 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      if (showCamera) stopCamera(); // ถ้ากล้องเปิดอยู่ ให้หยุดกล้องก่อน
+      if (showCamera) stopCamera();
       if (objectUrl) {
         URL.revokeObjectURL(objectUrl);
         setObjectUrl(null);
@@ -102,14 +111,6 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
       alert("ไม่สามารถเข้าถึงกล้องได้: " + err.message);
       setShowCamera(false);
     }
-  };
-
-  const stopCamera = () => {
-    if (videoStream) {
-      videoStream.getTracks().forEach(track => track.stop()); // หยุด track ทั้งหมดใน stream
-      setVideoStream(null);
-    }
-    setShowCamera(false);
   };
 
   const takePhoto = () => {
@@ -197,14 +198,16 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
                   <span className="text-xs text-center font-medium">ไม่สามารถ<br />โหลดรูป</span>
                 </div>
               ) : (
-                <img 
+                <Image 
                   src={preview} 
                   alt="Preview" 
-                  className={`w-full h-full object-cover cursor-pointer hover:scale-105 transition-all duration-300 rounded-xl ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
+                  fill
+                  className={`object-cover cursor-pointer hover:scale-105 transition-all duration-300 rounded-xl ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
                   onLoad={handleImageLoad}
                   onError={handleImageError}
                   onClick={openImageInNewTab}
                   title="คลิกเพื่อดูรูปภาพขนาดเต็ม"
+                  unoptimized
                 />
               )}
             </div>
@@ -313,7 +316,7 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
             <div className="text-sm text-blue-700 bg-gradient-to-r from-blue-100 to-blue-200 p-3 rounded-xl shadow-inner border border-blue-300">
               <div className="flex items-center gap-2">
                 <span className="text-lg animate-pulse">📹</span>
-                <span className="font-medium">กล้องเปิดอยู่ - กดปุ่ม "ถ่าย" เพื่อจับภาพ</span>
+                <span className="font-medium">กล้องเปิดอยู่ - กดปุ่ม ถ่าย เพื่อจับภาพ</span>
               </div>
             </div>
           )}
@@ -322,7 +325,7 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
             <div className="text-sm text-green-700 bg-gradient-to-r from-green-100 to-green-200 p-3 rounded-xl shadow-inner border border-green-300">
               <div className="flex items-center gap-2">
                 <span className="text-lg">✅</span>
-                <span className="font-medium">มีรูปภาพแล้ว - คลิกที่รูปหรือปุ่ม "ดูรูปขนาดเต็ม" เพื่อดูรายละเอียด</span>
+                <span className="font-medium">มีรูปภาพแล้ว - คลิกที่รูปหรือปุ่ม ดูรูปขนาดเต็ม เพื่อดูรายละเอียด</span>
               </div>
             </div>
           )}
