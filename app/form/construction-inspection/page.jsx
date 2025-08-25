@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, Suspense } from "react";
+import React, { useRef, Suspense, useCallback } from "react";
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
@@ -185,14 +185,14 @@ function ConstructionInspectionFormContent() {
   const inspectorSigRef = useRef(null);
   const userSigRef = useRef(null);
   
-  // **ใช้ฟังก์ชันนี้เพียงฟังก์ชันเดียวสำหรับ CorrectiveRadio**
-  const handleRadioChange = (groupName, value, noteFieldName) => {
+  // **ใช้ฟังก์ชันนี้เพียงฟังก์ชันเดียวสำหรับ CorrectiveRadio - Memoized to prevent infinite re-renders**
+  const handleRadioChange = useCallback((groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
       [groupName]: value,
       ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
     }));
-  };
+  }, [setFormData]);
   
   // Enhanced handleSubmit with proper error handling
   const handleFormSubmit = async (e) => {

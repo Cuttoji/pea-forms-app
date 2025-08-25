@@ -231,14 +231,14 @@ function CondoInspectionFormContent() {
     checkAuth();
   }, []);
 
-  // Simple functions without useCallback
-  const handleRadioChange = (groupName, value, noteFieldName) => {
+  // Memoized functions to prevent infinite re-renders
+  const handleRadioChange = useCallback((groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
       [groupName]: value,
       ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
     }));
-  };
+  }, [setFormData]);
 
   const handleDateChange = (e) => {
     const { name, value } = e.target;

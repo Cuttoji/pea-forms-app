@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, Suspense } from "react";
+import React, { useEffect, useRef, Suspense, useCallback } from "react";
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
@@ -182,13 +182,13 @@ function CommercialInspectionFormContent() {
     }));
   };
 
-  const handleRadioChange = (groupName, value, noteFieldName) => {
+  const handleRadioChange = useCallback((groupName, value, noteFieldName) => {
     setFormData((prev) => ({
       ...prev,
       [groupName]: value,
       ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
     }));
-  };
+  }, [setFormData]);
 
   // Enhanced handleChange to properly handle date fields
   const handleDateChange = (e) => {
