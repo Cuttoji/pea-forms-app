@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
@@ -511,243 +511,243 @@ const initialFormData = {
     <FormProvider>
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 py-8">
-              <form onSubmit={handleFormSubmit} id="pea-ev-charger-hv-inspection-form" className="space-y-8 max-w-6xl mx-auto p-4 md:p-8">
-                <style jsx global>{`
-                .sigCanvas { touch-action: none; }
-                input[type=number]::-webkit-inner-spin-button,
-                input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-                input[type=number] { -moz-appearance: textfield; }
-              `}</style>
-              
-              <div className="text-center mb-12">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl mb-6 shadow-xl">
-                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 mb-4">
-                  แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
-                </h1>
-                <p className="text-lg text-gray-700 max-w-4xl mx-auto leading-relaxed">
-                  สำหรับผู้ใช้ไฟฟ้าที่รับไฟฟ้าแรงต่ำโดยติดตั้งหม้อแปลงเฉพาะราย
-                </p>
+          <form onSubmit={handleFormSubmit} id="pea-ev-charger-hv-inspection-form" className="space-y-8 max-w-6xl mx-auto p-4 md:p-8">
+            <style jsx global>{`
+            .sigCanvas { touch-action: none; }
+            input[type=number]::-webkit-inner-spin-button,
+            input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+            input[type=number] { -moz-appearance: textfield; }
+          `}</style>
+          
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl mb-6 shadow-xl">
+              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 mb-4">
+              แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
+            </h1>
+            <p className="text-lg text-gray-700 max-w-4xl mx-auto leading-relaxed">
+              สำหรับผู้ใช้ไฟฟ้าที่รับไฟฟ้าแรงต่ำโดยติดตั้งหม้อแปลงเฉพาะราย
+            </p>
+          </div>
+  
+          {/* Header Info */}
+          <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
+            <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">ข้อมูลการตรวจสอบ</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">การไฟฟ้า</label>
+                <input
+                  type="text"
+                  name="peaoffice"
+                  value={formData.peaoffice}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
+                />
               </div>
-      
-              {/* Header Info */}
-              <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
-                <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">ข้อมูลการตรวจสอบ</h3>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">การตรวจสอบครั้งที่</label>
+                <input
+                  type="text"
+                  name="inspectioncount"
+                  value={formData.inspectioncount}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
+                />
+              </div>
+              <div>
+                <label htmlFor="inspection_date" className="block text-sm font-medium text-gray-700 mb-1">วันที่ตรวจสอบ: <span className="text-xs text-gray-500">(อัตโนมัติ)</span></label>
+                <input 
+                  type="date" 
+                  id="inspection_date" 
+                  name="inspection_date" 
+                  value={formData.inspection_date} 
+                  onChange={handleChange} 
+                  readOnly 
+                  className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100 text-gray-700" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">เลขที่คำร้องขอใช้ไฟ</label>
+                <input
+                  type="text"
+                  name="requestnumber"
+                  value={formData.requestnumber}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">วันที่คำร้อง</label>
+                <input
+                  type="date"
+                  name="requestdate"
+                  value={formData.requestdate || ""}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+  
+          {/* 1. General Information */}
+          <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
+            <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">1. ข้อมูลทั่วไป</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">ประเภทผู้ขอใช้ไฟฟ้า</label>
+                <div className="flex gap-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    <input
+                      type="radio"
+                      name="usertype"
+                      value="individual"
+                      checked={formData.usertype === "individual"}
+                      onChange={handleChange}
+                      className="text-[#5b2d90]"
+                    />
+                    <span className="text-sm font-medium text-gray-700 ml-2">ชื่อ-นามสกุล ผู้ขอใช้ไฟฟ้า</span>
+                  </label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    <input
+                      type="radio"
+                      name="usertype"
+                      value="juristic"
+                      checked={formData.usertype === "juristic"}
+                      onChange={handleChange}
+                      className="text-[#5b2d90]"
+                    />
+                    <span className="text-sm font-medium text-gray-700 ml-2">ชื่อนิติบุคคล ที่ขอใช้ไฟฟ้า</span>
+                  </label>
+                </div>
+              </div>
+  
+              {formData.usertype === "individual" && (
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">การไฟฟ้า</label>
+                    <label className="block text-sm font-medium text-gray-700">ชื่อ-นามสกุล</label>
                     <input
                       type="text"
-                      name="peaoffice"
-                      value={formData.peaoffice}
+                      name="individualname"
+                      value={formData.individualname || ""}
                       onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">การตรวจสอบครั้งที่</label>
+                    <label className="block text-sm font-medium text-gray-700">โทรศัพท์</label>
                     <input
                       type="text"
-                      name="inspectioncount"
-                      value={formData.inspectioncount}
+                      name="individualphone"
+                      value={formData.individualphone || ""}
                       onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="inspection_date" className="block text-sm font-medium text-gray-700 mb-1">วันที่ตรวจสอบ: <span className="text-xs text-gray-500">(อัตโนมัติ)</span></label>
-                    <input 
-                      type="date" 
-                      id="inspection_date" 
-                      name="inspection_date" 
-                      value={formData.inspection_date} 
-                      onChange={handleChange} 
-                      readOnly 
-                      className="mt-1 block w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-[#a78bfa] focus:ring-[#a78bfa] bg-gray-100 text-gray-700" 
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">เลขที่คำร้องขอใช้ไฟ</label>
-                    <input
-                      type="text"
-                      name="requestnumber"
-                      value={formData.requestnumber}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">วันที่คำร้อง</label>
-                    <input
-                      type="date"
-                      name="requestdate"
-                      value={formData.requestdate || ""}
-                      onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-                      required
                     />
                   </div>
                 </div>
-              </div>
-      
-              {/* 1. General Information */}
-              <section className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm mt-5">
-                <h3 className="text-xl font-bold mb-4 text-[#5b2d90]">1. ข้อมูลทั่วไป</h3>
-                <div className="space-y-4">
+              )}
+  
+              {formData.usertype === "juristic" && (
+                <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">ประเภทผู้ขอใช้ไฟฟ้า</label>
-                    <div className="flex gap-4">
-                      <label className="block text-sm font-medium text-gray-700">
-                        <input
-                          type="radio"
-                          name="usertype"
-                          value="individual"
-                          checked={formData.usertype === "individual"}
-                          onChange={handleChange}
-                          className="text-[#5b2d90]"
-                        />
-                        <span className="text-sm font-medium text-gray-700 ml-2">ชื่อ-นามสกุล ผู้ขอใช้ไฟฟ้า</span>
-                      </label>
-                      <label className="block text-sm font-medium text-gray-700">
-                        <input
-                          type="radio"
-                          name="usertype"
-                          value="juristic"
-                          checked={formData.usertype === "juristic"}
-                          onChange={handleChange}
-                          className="text-[#5b2d90]"
-                        />
-                        <span className="text-sm font-medium text-gray-700 ml-2">ชื่อนิติบุคคล ที่ขอใช้ไฟฟ้า</span>
-                      </label>
-                    </div>
-                  </div>
-      
-                  {formData.usertype === "individual" && (
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">ชื่อ-นามสกุล</label>
-                        <input
-                          type="text"
-                          name="individualname"
-                          value={formData.individualname || ""}
-                          onChange={handleChange}
-                          className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-                        />
-                        <label className="block text-sm font-medium text-gray-700">โทรศัพท์</label>
-                        <input
-                          type="text"
-                          name="individualphone"
-                          value={formData.individualphone || ""}
-                          onChange={handleChange}
-                          className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-                        />
-                      </div>
-                    </div>
-                  )}
-      
-                  {formData.usertype === "juristic" && (
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">ชื่อนิติบุคคล</label>
-                        <input
-                          type="text"
-                          name="juristicname"
-                          value={formData.juristicname || ""}
-                          onChange={handleChange}
-                          className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">โทรศัพท์</label>
-                        <input
-                          type="text"
-                          name="juristicphone"
-                          value={formData.juristicphone || ""}
-                          onChange={handleChange}
-                          className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
-                        />
-                      </div>
-                    </div>
-                  )}
-      
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">ที่อยู่</label>
-                    <textarea
-                      name="address"
-                      value={formData.address || ""}
+                    <label className="block text-sm font-medium text-gray-700">ชื่อนิติบุคคล</label>
+                    <input
+                      type="text"
+                      name="juristicname"
+                      value={formData.juristicname || ""}
                       onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-md min-h-[80px] text-gray-700"
-                    ></textarea>
+                      className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
+                    />
                   </div>
-      
-                   {/* Map Section */}
-                  <div className="md:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-2xl shadow-inner">
-                    <h3 className="text-lg font-bold text-gray-700 mb-3 flex items-center gap-2">
-                      <span className="text-xl">🗺️</span>
-                      ค้นหาและปักหมุดที่อยู่
-                    </h3>
-                    <p className="text-sm text-gray-700 mb-4">ค้นหาหรือลากแผนที่เพื่อเลือกตำแหน่ง จากนั้นพิกัดจะแสดงด้านล่าง</p>
-                    <div className="relative z-0 h-80 rounded-xl overflow-hidden shadow-lg border-2 border-white"> 
-                      <OpenStreetMapComponent 
-                        onLocationSelect={handleLocationSelect} 
-                        initialLatitude={formData.latitude}
-                        initialLongitude={formData.longitude}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mt-4">
-                      <div className="bg-white/70 backdrop-blur p-3 rounded-lg">
-                        <span className="text-sm font-semibold text-gray-700">ละติจูด:</span>
-                        <div className="font-mono text-gray-700 bg-gray-100 p-2 rounded mt-1">{formData.latitude || 'N/A'}</div>
-                      </div>
-                      <div className="bg-white/70 backdrop-blur p-3 rounded-lg">
-                        <span className="text-sm font-semibold text-gray-700">ลองจิจูด:</span>
-                        <div className="font-mono text-gray-700 bg-gray-100 p-2 rounded mt-1">{formData.longitude || 'N/A'}</div>
-                      </div>
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">โทรศัพท์</label>
+                    <input
+                      type="text"
+                      name="juristicphone"
+                      value={formData.juristicphone || ""}
+                      onChange={handleChange}
+                      className="w-full p-3 border border-gray-300 rounded-md text-gray-700"
+                    />
                   </div>
-                  {/* Image Upload */}
-                             <div className="md:col-span-2">
-                               <ImageUpload 
-                                 ref={imageUploadRef}
-                                 onImageSelected={handleImageUpload} 
-                                 disabled={isSubmitting}
-                                 initialImageUrl={formData.address_photo_url}
-                               />
-                             </div>
-                             
-                             <div className="space-y-2">
-                               <label htmlFor="phasetype" className="block text-sm font-semibold text-gray-700">ชนิดของระบบไฟฟ้า:</label>
-                               <select 
-                                 id="phasetype" 
-                                 name="phasetype" 
-                                 value={formData.phasetype || ''} 
-                                 onChange={handleChange} 
-                                 className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-green-400 focus:ring-4 focus:ring-green-100 transition-all duration-200 text-gray-700 shadow-sm bg-white"
-                               >
-                                 <option value="">เลือกชนิด</option>
-                                 <option value="1_phase">1 เฟส</option>
-                                 <option value="3_phase">3 เฟส</option>
-                               </select>
-                             </div>
-                             <div className="space-y-2">
-                               <label htmlFor="estimatedload" className="block text-sm font-semibold text-gray-700">ประมาณการโหลด (แอมแปร์):</label>
-                               <input 
-                                 type="number" 
-                                 step="any" 
-                                 id="estimatedload" 
-                                 name="estimatedload" 
-                                 value={formData.estimatedload || ''} 
-                                 onChange={handleChange} 
-                                 className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-green-400 focus:ring-4 focus:ring-green-100 transition-all duration-200 text-gray-700 shadow-sm" 
-                                 placeholder="กรอกค่าโหลด"
-                               />
-                             </div>
-                           </div>
-                         </section>
+                </div>
+              )}
+  
+              <div>
+                <label className="block text-sm font-medium text-gray-700">ที่อยู่</label>
+                <textarea
+                  name="address"
+                  value={formData.address || ""}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-md min-h-[80px] text-gray-700"
+                ></textarea>
+              </div>
+  
+               {/* Map Section */}
+              <div className="md:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-2xl shadow-inner">
+                <h3 className="text-lg font-bold text-gray-700 mb-3 flex items-center gap-2">
+                  <span className="text-xl">🗺️</span>
+                  ค้นหาและปักหมุดที่อยู่
+                </h3>
+                <p className="text-sm text-gray-700 mb-4">ค้นหาหรือลากแผนที่เพื่อเลือกตำแหน่ง จากนั้นพิกัดจะแสดงด้านล่าง</p>
+                <div className="relative z-0 h-80 rounded-xl overflow-hidden shadow-lg border-2 border-white"> 
+                  <OpenStreetMapComponent 
+                    onLocationSelect={handleLocationSelect} 
+                    initialLatitude={formData.latitude}
+                    initialLongitude={formData.longitude}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="bg-white/70 backdrop-blur p-3 rounded-lg">
+                    <span className="text-sm font-semibold text-gray-700">ละติจูด:</span>
+                    <div className="font-mono text-gray-700 bg-gray-100 p-2 rounded mt-1">{formData.latitude || 'N/A'}</div>
+                  </div>
+                  <div className="bg-white/70 backdrop-blur p-3 rounded-lg">
+                    <span className="text-sm font-semibold text-gray-700">ลองจิจูด:</span>
+                    <div className="font-mono text-gray-700 bg-gray-100 p-2 rounded mt-1">{formData.longitude || 'N/A'}</div>
+                  </div>
+                </div>
+              </div>
+              {/* Image Upload */}
+                       <div className="md:col-span-2">
+                         <ImageUpload 
+                           ref={imageUploadRef}
+                           onImageSelected={handleImageUpload} 
+                           disabled={isSubmitting}
+                           initialImageUrl={formData.address_photo_url}
+                         />
+                       </div>
+                       
+                       <div className="space-y-2">
+                         <label htmlFor="phasetype" className="block text-sm font-semibold text-gray-700">ชนิดของระบบไฟฟ้า:</label>
+                         <select 
+                           id="phasetype" 
+                           name="phasetype" 
+                           value={formData.phasetype || ''} 
+                           onChange={handleChange} 
+                           className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-green-400 focus:ring-4 focus:ring-green-100 transition-all duration-200 text-gray-700 shadow-sm bg-white"
+                         >
+                           <option value="">เลือกชนิด</option>
+                           <option value="1_phase">1 เฟส</option>
+                           <option value="3_phase">3 เฟส</option>
+                         </select>
+                       </div>
+                       <div className="space-y-2">
+                         <label htmlFor="estimatedload" className="block text-sm font-semibold text-gray-700">ประมาณการโหลด (แอมแปร์):</label>
+                         <input 
+                           type="number" 
+                           step="any" 
+                           id="estimatedload" 
+                           name="estimatedload" 
+                           value={formData.estimatedload || ''} 
+                           onChange={handleChange} 
+                           className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-green-400 focus:ring-4 focus:ring-green-100 transition-all duration-200 text-gray-700 shadow-sm" 
+                           placeholder="กรอกค่าโหลด"
+                         />
+                       </div>
+                     </div>
+                   </section>
 
           {/* Section 2: เอกสารประกอบการตรวจสอบ */}
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
@@ -888,7 +888,7 @@ const initialFormData = {
                 className="mt-4"
               />
             </div>
-          </div>
+            </div>
 
           {/* Section 3: ระบบไฟฟ้าแรงต่ำ */}
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
@@ -1255,7 +1255,7 @@ const initialFormData = {
                           value="หนา (RMC)"
                           checked={formData.main_conduit_metal === "หนา (RMC)"}
                           onChange={handleChange}
-                          className="text-gray-700 mr-2"
+                          className="mr-2"
                         />
                         หนา (RMC)
                       </label>
@@ -1266,7 +1266,7 @@ const initialFormData = {
                           value="หนาปานกลาง (IMC)"
                           checked={formData.main_conduit_metal === "หนาปานกลาง (IMC)"}
                           onChange={handleChange}
-                          className="text-gray-700 mr-2"
+                          className="mr-2"
                         />
                         หนาปานกลาง (IMC)
                       </label>
@@ -1277,7 +1277,7 @@ const initialFormData = {
                           value="บาง (EMT)"
                           checked={formData.main_conduit_metal === "บาง (EMT)"}
                           onChange={handleChange}
-                          className="text-gray-700 mr-2"
+                          className="mr-2"
                         />
                         บาง (EMT)
                       </label>
@@ -1294,7 +1294,7 @@ const initialFormData = {
                           value="แข็ง (RNC)"
                           checked={formData.main_conduit_nonmetal_rnc === "แข็ง (RNC)"}
                           onChange={handleChange}
-                          className="text-gray-700 mr-2"
+                          className="mr-2"
                         />
                         แข็ง (RNC)
                       </label>
@@ -1305,20 +1305,20 @@ const initialFormData = {
                           value="อ่อน (ENT)"
                           checked={formData.main_conduit_nonmetal_rnc === "อ่อน (ENT)"}
                           onChange={handleChange}
-                          className="text-gray-700 mr-2"
+                          className="mr-2"
                         />
                         อ่อน (ENT)
                       </label>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-2 text-gray-700">
+                  <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       name="main_conduit_other"
                       checked={formData.main_conduit_other}
                       onChange={(e) => handleChange({ target: { name: 'main_conduit_other', value: e.target.checked } })}
-                      className="text-gray-700 mr-2"
+                      className="mr-2"
                     />
                     <span>อื่นๆ ระบุ</span>
                     <input
@@ -1391,7 +1391,7 @@ const initialFormData = {
                   noteValue={formData.main_breaker_amp_correct_note}
                   noteName="main_breaker_amp_correct_note"
                   onChange={handleRadioChange}
-                  className="mt-2 text-gray-700"
+                  className="mt-2"
                 />
               </div>
 
@@ -1413,7 +1413,7 @@ const initialFormData = {
                   noteValue={formData.main_breaker_ic_correct_note}
                   noteName="main_breaker_ic_correct_note"
                   onChange={handleRadioChange}
-                  className="mt-2 text-gray-700"
+                  className="mt-2"
                 />
               </div>
             </div>
@@ -1443,7 +1443,7 @@ const initialFormData = {
                   noteValue={formData.ground_copper_size_correct_note}
                   noteName="ground_copper_size_correct_note"
                   onChange={handleRadioChange}
-                  className="mt-2 text-gray-700"
+                  className="mt-2"
                 />
               </div>
 
@@ -2413,7 +2413,6 @@ const initialFormData = {
             </div>
           </div>
           </div>
-          
 
           <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
             <h3 className="text-xl font-semibold text-[#5b2d90] mb-4">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h3>
@@ -2469,11 +2468,27 @@ const initialFormData = {
               )}
             </div>
           </div>
-        </form>
+          </form>
         </div>
       </div>
     </FormProvider>
   )
 }
 
-export default EvChargerLvForm;
+// Wrap the component in Suspense
+function EvChargerLvFormWithSuspense() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#5b2d90] mb-4"></div>
+        <div className="text-center">
+          <p className="text-lg text-gray-600 mb-2">กำลังโหลด...</p>
+        </div>
+      </div>
+    }>
+      <EvChargerLvForm />
+    </Suspense>
+  );
+}
+
+export default EvChargerLvFormWithSuspense;
