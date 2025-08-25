@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
@@ -9,7 +9,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import ConstructionInspectionPDF from '@/components/pdf/constructioninspectionPDF';
 import { Download, Save } from "lucide-react";
 
-export default function ConstructionInspection() {
+function ConstructionInspection() {
     const inspectorSigRef = useRef(null);
     const userSigRef = useRef(null);
     const [formData, setFormData] = useState({
@@ -1204,4 +1204,23 @@ export default function ConstructionInspection() {
         </div>
         </form>
     );
+}
+
+export default function ConstructionInspectionPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ConstructionInspection />
+    </Suspense>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">กำลังโหลดฟอร์ม...</p>
+      </div>
+    </div>
+  );
 }

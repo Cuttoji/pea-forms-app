@@ -71,7 +71,7 @@ const InspectionPDF = ({ formData }) => {
       {/* หน้า 1 */}
       <Page size="A4" style={styles.page}>
         <View style={styles.headerContainer} fixed>
-          <Image src="/pea_logo.png" style={{ width: 40, height: 40 }} />
+          <Image src="/pea_logo.png" style={{ width: 40, height: 40 }} alt="PEA Logo" />
           <View style={styles.headerText}>
               <Text style={styles.headerPEA}>การไฟฟ้าส่วนภูมิภาค</Text>
               <Text style={styles.headerEN}>PROVINCIAL ELECTRICITY AUTHORITY</Text>
@@ -806,12 +806,12 @@ const InspectionPDF = ({ formData }) => {
 
         <View style={styles.signatureSection} fixed>
           <View style={styles.signatureBox}>
-            {formData.userSignature && <Image style={styles.signatureImage} src={formData.userSignature} />}
+            {formData.userSignature && <Image style={styles.signatureImage} src={formData.userSignature} alt="User Signature" />}
             <Text style={styles.signatureLine}>(..................................................)</Text>
             <Text style={{fontSize: 8}}>ผู้ขอใช้ไฟฟ้าหรือผู้แทน</Text>
           </View>
           <View style={styles.signatureBox}>
-            {formData.inspectorSignature && <Image style={styles.signatureImage} src={formData.inspectorSignature} />}
+            {formData.inspectorSignature && <Image style={styles.signatureImage} src={formData.inspectorSignature} alt="Inspector Signature" />}
             <Text style={styles.signatureLine}>(..................................................)</Text>
             <Text style={{fontSize: 8}}>เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค</Text>
           </View>
