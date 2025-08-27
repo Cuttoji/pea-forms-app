@@ -118,46 +118,6 @@ export default function HomePage() {
             gradient="bg-gradient-to-br from-gray-600 to-slate-700"
           />
         </div>
-
-        {/* Additional Information Section */}
-        <div className="mt-16 bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">ข้อมูลเพิ่มเติม</h2>
-            <p className="text-gray-600">แบบฟอร์มทั้งหมดได้รับการออกแบบตามมาตรฐานการไฟฟ้าส่วนภูมิภาค</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-500 text-white rounded-xl mb-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">ตรวจสอบอย่างละเอียด</h3>
-              <p className="text-gray-600 text-sm">ครอบคลุมทุกมาตรฐานความปลอดภัย</p>
-            </div>
-            
-            <div className="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-green-500 text-white rounded-xl mb-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">ประหยัดเวลา</h3>
-              <p className="text-gray-600 text-sm">ระบบออนไลน์ที่รวดเร็วและสะดวก</p>
-            </div>
-            
-            <div className="text-center p-6 bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl border border-purple-200">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-500 text-white rounded-xl mb-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">รายงานมาตรฐาน</h3>
-              <p className="text-gray-600 text-sm">สร้างรายงานได้ทันทีหลังตรวจสอบ</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
