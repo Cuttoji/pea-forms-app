@@ -25,9 +25,9 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   }));
 };
 
-const isGmail = (email: string) => {
-  const gmailRegex = /^[^\s@]+@gmail\.com$/; // เช็คว่าเป็นอีเมล Gmail หรือไม่
-  return gmailRegex.test(email);
+const isPEAEmail = (email: string) => {
+  const peaEmailRegex = /^[^\s@]+@pea\.co\.th$/; // เช็คว่าเป็นอีเมล PEA หรือไม่
+  return peaEmailRegex.test(email);
 };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,8 +35,8 @@ const isGmail = (email: string) => {
     setMessage('');
     setIsLoading(true);
 
-     if (form.email && !isGmail(form.email)) {
-    alert('กรุณากรอกเฉพาะอีเมลที่ลงท้ายด้วย @gmail.com เท่านั้น');
+     if (form.email && !isPEAEmail(form.email)) {
+    alert('กรุณากรอกเฉพาะอีเมลที่ลงท้ายด้วย @pea.co.th เท่านั้น');
     setIsLoading(false);
     return; // หยุดการทำงานหากอีเมลไม่ถูกต้อง
   }
