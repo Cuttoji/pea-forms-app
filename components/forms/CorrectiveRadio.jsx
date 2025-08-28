@@ -115,7 +115,7 @@ const CorrectiveRadio = memo(({
             id={noteFieldName}
             name={noteFieldName}
             rows={3}
-            className={`relative w-full p-4 border-2 rounded-lg shadow-sm transition-all duration-200 text-sm resize-none ${
+            className={`relative w-full p-4 border-2 rounded-lg shadow-sm transition-all duration-200 text-sm resize-none text-gray-700 ${
               currentValue === 'ไม่ถูกต้อง'
                 ? 'border-red-200 focus:border-red-400 focus:ring-4 focus:ring-red-100 bg-white/80'
                 : 'border-gray-200 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 bg-white/60'

@@ -26,7 +26,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
 const isPEAEmail = (email: string) => {
-  const peaEmailRegex = /^[^\s@]+@pea\.co\.th$/; // เช็คว่าเป็นอีเมล PEA หรือไม่
+  const peaEmailRegex = /^[^\s@]+@(gmail\.com|pea\.co\.th)$/; // เช็คว่าเป็นอีเมล PEA หรือไม่
   return peaEmailRegex.test(email);
 };
 

@@ -165,12 +165,10 @@ function CommercialInspectionFormContent() {
     const checkAuth = async () => {
       const supabase = createClient();
       const { data: { user }, error } = await supabase.auth.getUser();
-      
       if (error || !user) {
         toast.error('กรุณาเข้าสู่ระบบก่อนใช้งาน');
       }
     };
-    
     checkAuth();
   }, []);
 
