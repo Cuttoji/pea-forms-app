@@ -4,9 +4,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-// ไม่จำเป็นต้องมีการตั้งค่า Supabase URL/Key หรือ SupabaseClientType ที่นี่
-// หากการทำงานทั้งหมดสำหรับการสมัครสมาชิกผ่าน API route
-
 export default function RegisterPage() {
   const [form, setForm] = useState({
     username: '',

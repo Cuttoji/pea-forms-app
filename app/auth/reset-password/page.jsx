@@ -1,17 +1,28 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function ResetPasswordPage() {
+    const router = useRouter();
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // สมมติว่ามี token และ email ใน query string เช่น /reset-password?token=xxxx&email=someone@pea.co.th
+    // อ่าน email และ token จาก query string เมื่อ component mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const searchParams = new URLSearchParams(window.location.search);
+            setEmail(searchParams.get('email') || '');
+            // ถ้าต้องการ setToken ด้วยก็สามารถเพิ่ม state และ set ได้
+        }
+    }, []);
+
+    // อ่าน token จาก query string ทุกครั้ง (ไม่ต้องแก้ไข)
     const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const token = searchParams ? searchParams.get('token') : '';
-    const email = searchParams ? searchParams.get('email') : '';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,7 +50,10 @@ export default function ResetPasswordPage() {
             });
             const data = await res.json();
             if (res.ok) {
-                setMessage('รีเซ็ตรหัสผ่านสำเร็จ! กรุณาเข้าสู่ระบบใหม่');
+                setMessage('รีเซ็ตรหัสผ่านสำเร็จ! กำลังนำคุณไปยังหน้าเข้าสู่ระบบ...');
+                setTimeout(() => {
+                    router.push('/auth/login');
+                }, 1500);
             } else {
                 setMessage(data.message || 'เกิดข้อผิดพลาด');
             }
@@ -54,14 +68,6 @@ export default function ResetPasswordPage() {
         <div className="min-h-screen flex items-center justify-center">
             <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
                 <div className="text-center mb-8">
-                    {email && (
-                        <div className="mb-4">
-                            <span className="text-base font-semibold text-[#5b2d90]">
-                                อีเมลที่ต้องการรีเซ็ตรหัสผ่าน:
-                            </span>
-                            <div className="mt-1 text-lg font-bold text-[#3a1a5b] break-all">{email}</div>
-                        </div>
-                    )}
                     <h2 className="text-3xl font-bold text-[#3a1a5b] mb-2">
                         รีเซ็ตรหัสผ่าน
                     </h2>
@@ -70,6 +76,19 @@ export default function ResetPasswordPage() {
                     </p>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            อีเมล
+                        </label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5b2d90] focus:border-[#5b2d90] sm:text-sm text-gray-900 bg-gray-50"
+                            placeholder="กรอกอีเมล"
+                            required
+                        />
+                    </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             รหัสผ่านใหม่
