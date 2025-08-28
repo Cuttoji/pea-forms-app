@@ -82,13 +82,18 @@ export async function POST(request) {
     // การใช้ service_role key ช่วยให้สามารถเขียนข้อมูลลงตาราง profiles ได้โดยตรงจากเซิร์ฟเวอร์
     let profileMessage = 'กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันบัญชี';
 
+    console.log('Insert profile payload:', {
+      id: signUpData.user.id,
+      username,
+      email,
+    });
+
     const { error: profileError } = await supabaseAdmin
       .from('profiles') // ตรวจสอบว่าชื่อตาราง 'profiles' ถูกต้อง
       .insert({
-        id: signUpData.user.id, // ใช้ user ID จาก auth.users เป็น khóaหลัก/foreign key
-        username: username,
-        email: email, // อาจจะเก็บ email ซ้ำใน profiles หรือไม่ก็ได้ ขึ้นอยู่กับการออกแบบของคุณ
-        // updated_at: new Date().toISOString(), // (ถ้ามีคอลัมน์ updated_at)
+      id: signUpData.user.id, // ใช้ user ID จาก auth.users เป็น หลัก/foreign key
+      username: username,
+      // updated_at: new Date().toISOString(), // (ถ้ามีคอลัมน์ updated_at)
       });
 
     if (profileError) {
