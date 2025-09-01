@@ -126,47 +126,69 @@ export default function DashboardPage() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage - 1;
 
-    // 1. ดึงจำนวนรวมทั้งหมดของ Record ก่อน (สำหรับคำนวณจำนวนหน้า)
-    let countQuery = supabase.from(selectedFormType).select('*', { count: 'exact', head: true });
-    if (searchTerm) {
-        countQuery = countQuery.or(`inspectionNumber.ilike.%${searchTerm}%,fullName.ilike.%${searchTerm}%,address.ilike.%${searchTerm}%`);
-    }
-    if (startDate) {
-        countQuery = countQuery.gte('inspectionDate', startDate);
-    }
-    if (endDate) {
-        countQuery = countQuery.lte('inspectionDate', endDate);
-    }
-    const { count: totalCount, error: countError } = await countQuery;
-    if (totalCount !== null) {
-        setTotalRecordsCount(totalCount);
-    } else if (countError) {
-        console.error("Error fetching total count for pagination:", countError.message);
-    }
+    try {
+      // ปรับชื่อ column ให้ตรงกับฐานข้อมูล (snake_case)
+      const columnMappings = {
+        'inspectionNumber': 'inspectionnumber',
+        'fullName': 'fullname',
+        'phaseType': 'phasetype',
+        'estimatedLoad': 'estimatedload',
+        'inspectionDate': 'inspectiondate'
+      };
 
-    // 2. ดึงข้อมูลจริงสำหรับหน้าปัจจุบัน
-    let dataQuery = supabase.from(selectedFormType).select('*');
-    if (searchTerm) {
-        dataQuery = dataQuery.or(`inspectionNumber.ilike.%${searchTerm}%,fullName.ilike.%${searchTerm}%,address.ilike.%${searchTerm}%`);
-    }
-    if (startDate) {
-        dataQuery = dataQuery.gte('inspectionDate', startDate);
-    }
-    if (endDate) {
-        dataQuery = dataQuery.lte('inspectionDate', endDate);
-    }
+      const sortColumn = columnMappings[sortBy as keyof typeof columnMappings] || sortBy;
 
-    const { data, error } = await dataQuery
-      .order(sortBy, { ascending: false })
-      .range(startIndex, endIndex); // ใช้ .range() สำหรับ Pagination
+      // 1. ดึงจำนวนรวมทั้งหมดของ Record ก่อน (สำหรับคำนวณจำนวนหน้า)
+      let countQuery = supabase.from(selectedFormType).select('*', { count: 'exact', head: true });
+      
+      if (searchTerm) {
+          countQuery = countQuery.or(`inspectionnumber.ilike.%${searchTerm}%,fullname.ilike.%${searchTerm}%,address.ilike.%${searchTerm}%`);
+      }
+      if (startDate) {
+          countQuery = countQuery.gte('inspectiondate', startDate);
+      }
+      if (endDate) {
+          countQuery = countQuery.lte('inspectiondate', endDate);
+      }
+      
+      const { count: totalCount, error: countError } = await countQuery;
+      
+      if (countError) {
+          console.error("Error fetching total count for pagination:", countError);
+          setTotalRecordsCount(0);
+      } else if (totalCount !== null) {
+          setTotalRecordsCount(totalCount);
+      }
 
-    if (error) {
-      console.error("Error fetching forms:", error.message || error.details || error.hint || JSON.stringify(error));
+      // 2. ดึงข้อมูลจริงสำหรับหน้าปัจจุบัน
+      let dataQuery = supabase.from(selectedFormType).select('*');
+      
+      if (searchTerm) {
+          dataQuery = dataQuery.or(`inspectionnumber.ilike.%${searchTerm}%,fullname.ilike.%${searchTerm}%,address.ilike.%${searchTerm}%`);
+      }
+      if (startDate) {
+          dataQuery = dataQuery.gte('inspectiondate', startDate);
+      }
+      if (endDate) {
+          dataQuery = dataQuery.lte('inspectiondate', endDate);
+      }
+
+      const { data, error } = await dataQuery
+        .order(sortColumn, { ascending: false })
+        .range(startIndex, endIndex);
+
+      if (error) {
+        console.error("Error fetching forms:", error);
+        setForms([]);
+      } else {
+        setForms(data || []);
+      }
+    } catch (err) {
+      console.error("Exception in fetchForms:", err);
       setForms([]);
-    } else {
-      setForms(data || []);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, [selectedFormType, sortBy, searchTerm, startDate, endDate, currentPage, itemsPerPage, supabase]);
 
   // เมื่อมีการเปลี่ยนเงื่อนไขการกรอง/ค้นหา ให้กลับไปหน้าแรก
@@ -323,11 +345,11 @@ export default function DashboardPage() {
                       className="text-gray-900 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#a78bfa] focus:border-[#a78bfa] transition-all duration-150"
                   >
                       <option value="created_at">วันที่สร้างล่าสุด</option>
-                      <option value="fullName">ชื่อผู้ขอใช้ไฟ</option>
-                      <option value="inspectionNumber">เลขที่ฟอร์ม</option>
-                      <option value="inspectionDate">วันที่ตรวจสอบ</option>
-                      <option value="phaseType">ประเภทไฟ</option>
-                      <option value="estimatedLoad">โหลดประมาณการ</option>
+                      <option value="fullname">ชื่อผู้ขอใช้ไฟ</option>
+                      <option value="inspectionnumber">เลขที่ฟอร์ม</option>
+                      <option value="inspectiondate">วันที่ตรวจสอบ</option>
+                      <option value="phasetype">ประเภทไฟ</option>
+                      <option value="estimatedload">โหลดประมาณการ</option>
                   </select>
               </div>
               <div>

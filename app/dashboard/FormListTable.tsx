@@ -1,7 +1,6 @@
 // app/dashboard/FormListTable.tsx
 "use client";
 
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -41,7 +40,7 @@ interface FormData {
 }
 
 export default function FormListTable({ forms, selectedFormType, formTypeLabel }: FormListTableProps) {
-  const _router = useRouter();
+  const router = useRouter();
   
   // Add error handling for Supabase client creation
   let supabase;
@@ -68,32 +67,72 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
         toast.error("เกิดข้อผิดพลาดในการลบฟอร์ม: " + error.message);
       } else {
         toast.success("ลบฟอร์มสำเร็จแล้ว");
-        _router.refresh();
+        router.refresh();
       }
     }
   };
 
   const getFormPath = (formType: string) => {
-    switch (formType) {
-      case 'inspection_forms':
-        return 'residential-inspection';
-      case 'condo_inspection_forms':
-        return 'condo-inspection';
-      case 'ev_charger_hv_inspection':
-        return 'ev-charger-inspection';
-      case 'ev_charger_lv_inspection':
-        return 'ev-charger-lv-inspection';
-      case 'commercial_inspection':
-        return 'commercial-inspection';
-      case 'construction_inspection_forms':
-        return 'construction-inspection';
-      // เพิ่มกรณีอื่นๆ ตามต้องการ
-      default:
-        return 'residential-inspection';
+    const pathMap = {
+      'inspection_forms': 'residential-inspection',
+      'condo_inspection_forms': 'condo-inspection',
+      'ev_charger_hv_inspection': 'ev-charger-inspection',
+      'ev_charger_lv_inspection': 'ev-charger-lv-inspection',
+      'commercial_inspection': 'commercial-inspection',
+      'commercial_inspection_forms': 'commercial-inspection',
+      'construction_inspection_forms': 'construction-inspection',
+      'construction_inspection': 'construction-inspection'
+    };
+    
+    const path = pathMap[formType as keyof typeof pathMap];
+    if (!path) {
+      console.warn(`Unknown form type: ${formType}, defaulting to residential-inspection`);
+      return 'residential-inspection';
     }
+    return path;
   };
 
-  const formPath = getFormPath(selectedFormType);
+  const handleEditClick = (formId: string) => {
+    try {
+      if (!formId) {
+        toast.error("ไม่พบรหัสฟอร์ม");
+        return;
+      }
+      
+      // Find the form in the already loaded forms array
+      const selectedForm = forms.find(form => form.id === formId);
+      if (!selectedForm) {
+        console.error('Form not found in local data:', { formId });
+        toast.error("ไม่พบข้อมูลฟอร์มในรายการ");
+        return;
+      }
+      
+      // Simple approach - just use the form path and ID
+      const formPath = getFormPath(selectedFormType);
+      
+      // Try-catch for sessionStorage in case of private browsing mode
+      try {
+        sessionStorage.setItem('selectedFormType', selectedFormType);
+        sessionStorage.setItem('formId', formId);
+        console.log('Stored in sessionStorage:', { selectedFormType, formId });
+      } catch (storageError) {
+        console.warn('Failed to use sessionStorage:', storageError);
+        // Continue anyway - this is just a backup
+      }
+      
+      // Simplified URL with minimal parameters
+      const editUrl = `/form/${formPath}?id=${formId}`;
+      
+      console.log('Navigating to:', editUrl);
+      
+      // Direct navigation without async/await
+      window.location.href = editUrl;
+      
+    } catch (error) {
+      console.error('Error in handleEditClick:', error);
+      toast.error("เกิดข้อผิดพลาดในการเปิดฟอร์ม");
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm border overflow-x-auto">
@@ -162,10 +201,18 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
               {/* --- END: ข้อมูลที่เพิ่มเข้ามา --- */}
               <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium">
                 <div className="flex items-center justify-center gap-3">
-                  <Link href={`/form/${formPath}?id=${form.id}`} title="ดู/แก้ไข" className="text-blue-600 hover:text-blue-900">
+                  <button 
+                    onClick={() => handleEditClick(form.id)}
+                    title="ดู/แก้ไข" 
+                    className="text-blue-600 hover:text-blue-900 transition-colors"
+                  >
                     <Eye size={18} />
-                  </Link>
-                  <button onClick={() => handleDelete(form.id)} title="ลบ" className="text-red-600 hover:text-red-900">
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(form.id)} 
+                    title="ลบ" 
+                    className="text-red-600 hover:text-red-900 transition-colors"
+                  >
                     <Trash2 size={18} />
                   </button>
                 </div>
