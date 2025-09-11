@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import CorrectiveRadio from "@/components/forms/CorrectiveRadio";
+
 import SignaturePad from "@/components/forms/SignaturePad";
 import ImageUpload from "@/components/forms/ImageUpload";
 import { PDFDownloadLink } from '@react-pdf/renderer';
@@ -456,16 +457,6 @@ const initialFormData = {
         longitude: location.lng.toFixed(6),
       }));
     };
-  
-    // **ใช้ฟังก์ชันนี้เพียงฟังก์ชันเดียวสำหรับ CorrectiveRadio**
-    const handleRadioChange = (groupName, value, noteFieldName) => {
-      setFormData((prev) => ({
-        ...prev,
-        [groupName]: value,
-        ...(noteFieldName && value === 'ถูกต้อง' ? { [noteFieldName]: '' } : {}),
-      }));
-    };
-    
   
     // Enhanced handleSubmit with proper error handling
     const handleFormSubmit = async (e) => {
@@ -1752,15 +1743,15 @@ const initialFormData = {
             )}
           </div>
 
-          {/* 3.5 วงจรสายป้อน/แผงวงจรย่อย */}
-          <div className="mb-8">
+          {/* 5.5 วงจรสายป้อน/แผงวงจรย่อย */}
+          <div className="mb-1">
             <h3 className="text-lg font-medium text-gray-700 mb-4 bg-gray-50 p-3 rounded">
-              3.5 วงจรสายป้อน/แผงวงจรย่อย (Panel board) (ถ้ามี)
+              5.5 วงจรสายป้อน/แผงวงจรย่อย (Panel board) (ถ้ามี)
             </h3>
 
-            {/* 3.5.1 วงจรสายป้อน */}
+            {/* 5.5.1 วงจรสายป้อน */}
             <div className="mb-6">
-              <h4 className="text-md font-medium text-gray-700 mb-4">3.5.1 วงจรสายป้อน</h4>
+              <h4 className="text-md font-medium text-gray-700 mb-4">5.5.1 วงจรสายป้อน</h4>
               
               <div className="space-y-4">
                 <div>
@@ -2007,9 +1998,9 @@ const initialFormData = {
               </div>
             </div>
 
-            {/* 3.5.2 วิธีการเดินสาย */}
+            {/* 5.5.2 วิธีการเดินสาย */}
             <div className="mb-6">
-              <h4 className="text-md font-medium text-gray-700 mb-4">3.5.2 วิธีการเดินสาย</h4>
+              <h4 className="text-md font-medium text-gray-700 mb-4">5.5.2 วิธีการเดินสาย</h4>
               
               <div className="space-y-4">
                 <div className="flex items-center space-x-2">
@@ -2202,10 +2193,9 @@ const initialFormData = {
               </div>
             </div>
 
-            {/* 3.5.3 ประเภทท่อร้อยสาย */}
+            {/* 5.5.3 ประเภทท่อร้อยสาย */}
             <div className="mb-6">
-              <h4 className="text-md font-medium text-gray-700 mb-4">3.5.3 ประเภทท่อร้อยสาย</h4>
-              
+              <h4 className="text-md font-medium text-gray-700 mb-4">5.5.3 ประเภทท่อร้อยสาย</h4>
               <div className="space-y-4">
                 <div>
                   <span className="text-sm font-medium text-gray-700">ท่อโลหะ:</span>
@@ -2316,10 +2306,11 @@ const initialFormData = {
               </div>
             </div>
 
-            {/* 3.5.4 เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน */}
+
+            {/* 5.5.4 เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน */}
+
             <div className="mb-6">
-              <h4 className="text-md font-medium text-gray-700 mb-4">3.5.4 เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน</h4>
-              
+              <h4 className="text-md font-medium text-gray-700 mb-4">5.5.4 เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน</h4>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2359,10 +2350,9 @@ const initialFormData = {
               </div>
             </div>
 
-            {/* 3.5.5 การติดตั้งแผงวงจรย่อย */}
+            {/* 5.5.5 การติดตั้งแผงวงจรย่อย */}
             <div className="mb-6">
-              <h4 className="text-md font-medium text-gray-700 mb-4">3.5.5 การติดตั้งแผงวงจรย่อย (Panel board)</h4>
-              
+              <h4 className="text-md font-medium text-gray-700 mb-4">5.5.5 การติดตั้งแผงวงจรย่อย (Panel board)</h4>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">

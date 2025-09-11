@@ -78,8 +78,8 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
       'condo_inspection_forms': 'condo-inspection',
       'ev_charger_hv_inspection': 'ev-charger-inspection',
       'ev_charger_lv_inspection': 'ev-charger-lv-inspection',
-      'commercial_inspection': 'commercial-inspection',
-      'commercial_inspection_forms': 'commercial-inspection',
+      'other_inspection': 'other-inspection',
+      'other_inspection_forms': 'other-inspection',
       'construction_inspection_forms': 'construction-inspection',
       'construction_inspection': 'construction-inspection'
     };

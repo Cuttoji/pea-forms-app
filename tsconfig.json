@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/form/layout.jsx", "components/forms/OpenStreetMapComponent.jsx", "app/form/commercial-inspection/page.jsx", "app/form/condo-inspection/page.jsx", "app/form/construction-inspection/page.jsx", "app/form/ev-charger-hv-inspection/page.jsx", "app/form/ev-charger-lv-inspection/page.jsx", "app/form/residential-inspection/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/form/layout.jsx", "components/forms/OpenStreetMapComponent.jsx", "app/form/other-inspection/page.jsx", "app/form/condo-inspection/page.jsx", "app/form/construction-inspection/page.jsx", "app/form/ev-charger-hv-inspection/page.jsx", "app/form/ev-charger-lv-inspection/page.jsx", "app/form/home-inspection/page.jsx", "components/forms/SubCircuitSection.jsx"],
   "exclude": ["node_modules"]
 }

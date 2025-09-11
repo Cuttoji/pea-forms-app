@@ -78,14 +78,6 @@ SignaturePad.displayName = 'SignaturePad';
               <RefreshCw size={16} className="inline mr-2" />
               ล้าง
             </button>
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={!isSigned}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              บันทึก
-            </button>
           </>
         )}
       </div>

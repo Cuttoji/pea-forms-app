@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 });
 
 // Component สำหรับสร้าง PDF Document
-const ConstructionInspectionPDF = ({ data }) => (
+const EVChargerHVInspectionPDF = ({ data }) => (
     <Document>
         <Page size="A4" style={styles.page}>
             <View style={styles.section}>
@@ -50,10 +50,10 @@ const ConstructionInspectionPDF = ({ data }) => (
 );
 
 // Component สำหรับแสดง PDF Viewer
-const ConstructionInspectionPDFViewer = ({ data }) => (
+const EVChargerHVInspectionPDFViewer = ({ data }) => (
     <PDFViewer style={{ width: '100%', height: '600px' }}>
-        <ConstructionInspectionPDF data={data} />
+        <EVChargerHVInspectionPDF data={data} />
     </PDFViewer>
 );
 
-export default ConstructionInspectionPDFViewer;
+export default EVChargerHVInspectionPDFViewer;

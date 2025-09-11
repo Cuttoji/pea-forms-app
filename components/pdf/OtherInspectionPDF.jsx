@@ -60,7 +60,7 @@ const Checkbox = ({ checked, label }) => (
 );
 
 // Component หลักของเอกสาร PDF
-const commercialInspectionPDF = ({ formData }) => {
+const OtherInspectionPDF = ({ formData }) => {
   if (!formData) {
     return <Document><Page style={styles.page}><Text>ไม่มีข้อมูล</Text></Page></Document>;
   }
@@ -119,4 +119,4 @@ const commercialInspectionPDF = ({ formData }) => {
       </Document>
   );
 }
-export default commercialInspectionPDF;
+export default OtherInspectionPDF;

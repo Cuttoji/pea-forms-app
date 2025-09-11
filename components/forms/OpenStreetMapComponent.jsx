@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
-import { Search, MapPin } from 'lucide-react';
+import { Search, MapPin, Navigation } from 'lucide-react';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -39,6 +39,7 @@ export default function OpenStreetMapComponent({ onLocationSelect, initialLatitu
 
   const [searchQuery, setSearchQuery] = useState(''); // State สำหรับเก็บข้อความค้นหา
   const [mapInstance, setMapInstance] = useState(null); // State สำหรับเก็บ instance ของแผนที่ Leaflet
+  const [isGettingLocation, setIsGettingLocation] = useState(false); // State สำหรับสถานะการหาตำแหน่ง GPS
 
   // ฟังก์ชันสำหรับค้นหาสถานที่ (ใช้ useCallback เพื่อให้ฟังก์ชัน stable)
   const handleSearch = useCallback(async (e) => {
@@ -64,6 +65,58 @@ export default function OpenStreetMapComponent({ onLocationSelect, initialLatitu
     }
   }, [handleSearch]); // Dependencies: ฟังก์ชันจะถูกสร้างใหม่เมื่อ handleSearch เปลี่ยน
 
+  // ฟังก์ชันสำหรับหาตำแหน่งปัจจุบันจาก GPS
+  const handleGetCurrentLocation = useCallback(() => {
+    if (!mapInstance) return;
+
+    setIsGettingLocation(true);
+
+    // ตรวจสอบว่าเบราว์เซอร์รองรับ Geolocation API หรือไม่
+    if (!navigator.geolocation) {
+      alert('เบราว์เซอร์ของคุณไม่รองรับ GPS');
+      setIsGettingLocation(false);
+      return;
+    }
+
+    // ขอตำแหน่งปัจจุบันจากเบราว์เซอร์
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        
+        // ย้ายแผนที่ไปยังตำแหน่งปัจจุบัน
+        mapInstance.flyTo([latitude, longitude], 16);
+        
+        // ส่งค่าพิกัดกลับไปที่ parent component
+        onLocationSelect({ lat: latitude, lng: longitude });
+        
+        setIsGettingLocation(false);
+      },
+      (error) => {
+        let errorMessage = 'ไม่สามารถหาตำแหน่งได้';
+        
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'กรุณาอนุญาตให้เข้าถึงตำแหน่งในเบราว์เซอร์';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'ไม่สามารถหาตำแหน่งได้';
+            break;
+          case error.TIMEOUT:
+            errorMessage = 'หาตำแหน่งใช้เวลานานเกินไป';
+            break;
+        }
+        
+        alert(errorMessage);
+        setIsGettingLocation(false);
+      },
+      {
+        enableHighAccuracy: true, // ใช้ความแม่นยำสูง
+        timeout: 10000, // รอสูงสุด 10 วินาที
+        maximumAge: 60000 // ใช้ตำแหน่งเก่าได้สูงสุด 1 นาที
+      }
+    );
+  }, [mapInstance, onLocationSelect]);
+
   return (
     <div className="relative">
       {/* กล่องค้นหาและปุ่ม */}
@@ -82,6 +135,15 @@ export default function OpenStreetMapComponent({ onLocationSelect, initialLatitu
           className="p-2 bg-pea-primary text-white rounded-md hover:bg-pea-dark"
         >
           <Search size={16} />
+        </button>
+        <button
+          type="button"
+          onClick={handleGetCurrentLocation}
+          disabled={isGettingLocation}
+          className="p-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          title="หาตำแหน่งปัจจุบัน"
+        >
+          <Navigation size={16} className={isGettingLocation ? 'animate-spin' : ''} />
         </button>
       </div>
 

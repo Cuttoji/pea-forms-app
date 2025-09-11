@@ -81,7 +81,7 @@ export default function HomePage() {
             icon={<Factory size={28} />}
             title="ฟอร์มพาณิชย์กรรม"
             description="สำหรับตรวจสอบการติดตั้งระบบไฟฟ้าประเภทพาณิชย์กรรม โรงงาน และสถานประกอบการ"
-            href="/form/commercial-inspection"
+            href="/form/other-inspection"
             linkText="เริ่มกรอกฟอร์ม"
             gradient="bg-gradient-to-br from-blue-500 to-indigo-600"
           />

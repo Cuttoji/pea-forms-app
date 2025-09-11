@@ -15,7 +15,7 @@ const formLinks = [
   { href: "/form/condo-inspection", label: "ฟอร์มอาคารชุด", icon: <Building size={16} /> },
   { href: "/form/ev-charger-lv-inspection", label: "ฟอร์ม EV Charger (แรงต่ำ)", icon: <Zap size={16} /> },
   { href: "/form/ev-charger-hv-inspection", label: "ฟอร์ม EV Charger (แรงสูง)", icon: <Zap size={16} /> },
-  { href: "/form/commercial-inspection", label: "ฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)", icon: <FileText size={16} /> },
+  { href: "/form/other-inspection", label: "ฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)", icon: <FileText size={16} /> },
   { href: "/form/construction-inspection", label: "ฟอร์มตรวจสอบงานก่อสร้าง", icon: <Building size={16} /> },
 ];
 
