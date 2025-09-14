@@ -29,19 +29,101 @@ function createInitialTransformer(index) {
     transformer_number: "",
     capacity_kva: "",
     impedance_percent: "",
-    general_test_result: "",
+    hv_voltage: "",
+    lv_voltage: "",
+    transformer_type: "",
+    transformer_type_other: "",
+    vector_group: "",
+    max_short_circuit_current: "",
+    test_result: "",
     general_result: "",
     general_detail: "",
-    lv_conductor_standard: "",
-    lv_conductor_standard_result: "",
-    lv_conductor_standard_detail: "",
-    lv_conductor_type: "",
-    lv_conductor_type_other: "",
-    lv_conductor_size: "",
-    lv_neutral_size: "",
-    lv_result: "",
-    lv_detail: "",
+    installation_type: [],
+    installation_type_other: "",
+    installation_result: "",
+    installation_detail: "",
+    overcurrent_protection: [],
+    overcurrent_protection_other: "",
+    continuous_current_rating: "",
+    interrupting_capacity: "",
+    overcurrent_result: "",
+    overcurrent_detail: "",
+    surge_arrester_voltage: "",
+    surge_arrester_current: "",
+    surge_arrester_result: "",
+    surge_arrester_detail: "",
+    grounding_result: "",
+    grounding_detail: "",
+    ground_resistance: "",
+    ground_resistance_result: "",
+    ground_resistance_detail: "",
+    moisture_absorber_result: "",
+    moisture_absorber_detail: "",
+    bushing_condition_result: "",
+    bushing_condition_detail: "",
+    oil_level_result: "",
+    oil_level_detail: "",
+    oil_leakage_result: "",
+    oil_leakage_detail: "",
+    warning_sign_result: "",
+    warning_sign_detail: "",
+    other_notes: "",
+    main_circuits: [{
+      id: 0,
+      lv_conductor_standard: [],
+      lv_conductor_standard_result: "",
+      lv_conductor_standard_detail: "",
+      lv_conductor_type: "",
+      lv_conductor_type_other: "",
+      lv_conductor_size: "",
+      lv_neutral_size: "",
+      phase_marking: "",
+      phase_marking_detail: "",
+      cable_routing: "",
+      cable_routing_detail: "",
+      cable_installation_method: [],
+      cable_tray_size: "",
+      cable_tray_width: "",
+      underground_conduit_size: "",
+      wall_conduit_size: "",
+      cable_installation_other: "",
+      cable_installation_result: "",
+      cable_installation_detail: "",
+      conduit_type: [],
+      conduit_type_other: "",
+      conduit_type_result: "",
+      conduit_type_detail: "",
+      lv_result: "",
+      lv_detail: ""
+    }],
+    main_breaker_standard: "",
+    main_breaker_standard_detail: "",
+    main_breaker_rating: "",
+    main_breaker_rating_result: "",
+    main_breaker_rating_detail: "",
+    main_breaker_ic_rating: "",
+    main_breaker_ic_result: "",
+    main_breaker_ic_detail: "",
+    gfp_requirement: "",
+    gfp_requirement_detail: "",
+    grounding_conductor_size: "",
+    grounding_conductor_result: "",
+    grounding_conductor_detail: "",
+    main_panel_grounding_type: [],
+    main_panel_grounding_result: "",
+    main_panel_grounding_detail: "",
+    grounding_system_type: "",
+    tn_cs_measures: [],
+    tn_cs_result: "",
+    tn_cs_detail: "",
+    tt_result: "",
+    tt_detail: "",
+    tt_partial_result: "",
+    tt_partial_detail: "",
+    tn_s_result: "",
+    tn_s_detail: "",
     show_panel_boards: false,
+    show_sub_circuits: false,
     panel_boards: [createInitialPanelBoard(0)]
   };
 }
@@ -51,7 +133,7 @@ function createInitialPanelBoard(index) {
     id: index,
     panel_name: "",
     panel_location: "",
-    inspection_items: [],
+    inspection_items: initialEvChargerHVPanelBoardItems.map(item => ({ id: item.id, result: "", detail: "" })),
     sub_circuits: [createInitialSubCircuit(0)]
   };
 }
@@ -100,11 +182,13 @@ const initialEvChargerHVInspectionFormData = {
   total_charger_kw: "",
   map_latitude: null,
   map_longitude: null,
+  document_type: "",
   document_specification: false,
   document_single_line: false,
   document_load_schedule: false,
   document_complete: "",
   document_incomplete_detail: "",
+  document_complete_result: "",
   document_public_single_line: false,
   document_public_as_built: false,
   document_public_load_schedule: false,
@@ -113,8 +197,14 @@ const initialEvChargerHVInspectionFormData = {
   document_public_energy_license: false,
   document_public_complete: "",
   document_public_incomplete_detail: "",
+  document_public_complete_result: "",
   distribution_system_type: "",
-  inspection_items: initialEvChargerHVInspectionItems3,
+  equipment_dropout_fuse: false,
+  equipment_switch: false,
+  switch_type: "",
+  equipment_rmu: false,
+  other_details: "",
+  inspection_items: [],
   transformers: [createInitialTransformer(0)],
   applicant_signature: "",
   applicant_signature_name: "",
@@ -1126,7 +1216,7 @@ function EVChargerHVInspectionFormContent() {
           </div>
         </section>
 
-                /* SECTION 4: ข้อมูลหม้อแปลง */
+                {/* SECTION 4: ข้อมูลหม้อแปลง */}
                 <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg flex items-center justify-center">
@@ -1640,8 +1730,13 @@ function EVChargerHVInspectionFormContent() {
                                     <h5 className="text-lg font-medium text-gray-700">5.1 สายตัวนำประธาน (สายเมน)</h5>
                                     </div>
 
-                                    {(transformer.main_circuits || []).map((mainCircuit, mainCircuitIndex) => (
-                                    <div key={mainCircuit.id} className="border border-gray-300 rounded-lg p-4 mb-4 bg-gray-50">
+                                    {(transformer.main_circuits || []).map((mainCircuit, mainCircuitIndex) => {
+                                      if (!mainCircuit || typeof mainCircuit !== 'object') {
+                                        return null;
+                                      }
+                                      
+                                      return (
+                                      <div key={mainCircuit.id} className="border border-gray-300 rounded-lg p-4 mb-4 bg-gray-50">
                                       <div className="flex justify-between items-center mb-4">
                                       <h6 className="text-md font-medium text-gray-800">วงจรประธานที่ {mainCircuitIndex + 1}</h6>
                                       {(transformer.main_circuits || []).length > 1 && (
@@ -2272,7 +2367,8 @@ function EVChargerHVInspectionFormContent() {
                                       </div>
                                       </div>
                                     </div>
-                                    ))}
+                                    )
+                                    })}
 
                                     {/* Always show the add button for main circuits */}
                                     <div className="text-center py-4 mb-4">
@@ -2280,37 +2376,37 @@ function EVChargerHVInspectionFormContent() {
                                         type="button"
                                         onClick={() => {
                                           const currentMainCircuits = transformer.main_circuits || [];
-                                                        const newMainCircuit = {
-                                                        id: currentMainCircuits.length,
-                                                        lv_conductor_standard: [],
-                                                        lv_conductor_standard_result: "",
-                                                        lv_conductor_standard_detail: "",
-                                                        lv_conductor_type: "",
-                                                        lv_conductor_type_other: "",
-                                                        lv_conductor_size: "",
-                                                        lv_neutral_size: "",
-                                                        phase_marking: "",
-                                                        phase_marking_detail: "",
-                                                        cable_routing: "",
-                                                        cable_routing_detail: "",
-                                                        cable_installation_method: [],
-                                                        cable_tray_size: "",
-                                                        cable_tray_width: "",
-                                                        underground_conduit_size: "",
-                                                        wall_conduit_size: "",
-                                                        cable_installation_other: "",
-                                                        cable_installation_result: "",
-                                                        cable_installation_detail: "",
-                                                        conduit_type: [],
-                                                        conduit_type_other: "",
-                                                        conduit_type_result: "",
-                                                        conduit_type_detail: "",
-                                                        lv_result: "",
-                                                        lv_detail: ""
-                                                        };
-                                                        const newMainCircuits = [...currentMainCircuits, newMainCircuit];
-                                                        handleTransformerChange(transformerIndex, 'main_circuits', newMainCircuits);
-                                                        }}
+                                          const newMainCircuit = {
+                                            id: currentMainCircuits.length,
+                                            lv_conductor_standard: [],
+                                            lv_conductor_standard_result: "",
+                                            lv_conductor_standard_detail: "",
+                                            lv_conductor_type: "",
+                                            lv_conductor_type_other: "",
+                                            lv_conductor_size: "",
+                                            lv_neutral_size: "",
+                                            phase_marking: "",
+                                            phase_marking_detail: "",
+                                            cable_routing: "",
+                                            cable_routing_detail: "",
+                                            cable_installation_method: [],
+                                            cable_tray_size: "",
+                                            cable_tray_width: "",
+                                            underground_conduit_size: "",
+                                            wall_conduit_size: "",
+                                            cable_installation_other: "",
+                                            cable_installation_result: "",
+                                            cable_installation_detail: "",
+                                            conduit_type: [],
+                                            conduit_type_other: "",
+                                            conduit_type_result: "",
+                                            conduit_type_detail: "",
+                                            lv_result: "",
+                                            lv_detail: ""
+                                          };
+                                          const newMainCircuits = [...currentMainCircuits, newMainCircuit];
+                                          handleTransformerChange(transformerIndex, 'main_circuits', newMainCircuits);
+                                        }}
                                                         className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                                                         >
                                                         เพิ่มวงจรประธาน
@@ -2923,280 +3019,240 @@ function EVChargerHVInspectionFormContent() {
                                                         )}
 
                                                         {/* 5.4.4 กรณีต่อลงดินแบบ TN-S ทั้งระบบ */}
-                                                        {transformer.grounding_system_type === 'TN-S' && (
-                                                          <div className="border-l-4 border-purple-500 pl-4 mb-6">
-                                                            <h5 className="text-sm font-medium text-gray-700 mb-3">
-                                                              5.4.4 กรณีต่อลงดินแบบ TN-S ทั้งระบบ
-                                                            </h5>
-                                                            <p className="text-sm text-gray-600 mb-4">
-                                                              ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม ยกเว้นพื้นที่ที่ยากแก่การต่อลงดิน 
-                                                              ยอมให้ค่าความต้านทานของหลักดินกับดินต้องไม่เกิน 25 โอห์ม หากทำการวัดแล้วยังมีค่าเกิน 
-                                                              ให้ปักหลักดินเพิ่มอีกตามความเหมาะสม
-                                                            </p>
-                                                            <div className="flex items-center gap-4">
-                                                              <label className="flex items-center">
-                                                                <input
-                                                                  type="radio"
-                                                                  name={`transformers_${transformerIndex}_tn_s_result`}
-                                                                  value="ถูกต้อง"
-                                                                  checked={transformer.tn_s_result === "ถูกต้อง"}
-                                                                  onChange={(e) => handleTransformerChange(transformerIndex, 'tn_s_result', e.target.value)}
-                                                                  className="mr-2"
+                                                                {transformer.grounding_system_type === 'TN-S' && (
+                                                                  <div className="border-l-4 border-purple-500 pl-4 mb-6">
+                                                                  <h5 className="text-sm font-medium text-gray-700 mb-3">
+                                                                    5.4.4 กรณีต่อลงดินแบบ TN-S ทั้งระบบ
+                                                                  </h5>
+                                                                  <p className="text-sm text-gray-600 mb-4">
+                                                                    ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม ยกเว้นพื้นที่ที่ยากแก่การต่อลงดิน 
+                                                                    ยอมให้ค่าความต้านทานของหลักดินกับดินต้องไม่เกิน 25 โอห์ม หากทำการวัดแล้วยังมีค่าเกิน 
+                                                                    ให้ปักหลักดินเพิ่มอีกตามความเหมาะสม
+                                                                  </p>
+                                                                  <div className="flex items-center gap-4">
+                                                                    <label className="flex items-center">
+                                                                    <input
+                                                                      type="radio"
+                                                                      name={`transformers_${transformerIndex}_tn_s_result`}
+                                                                      value="ถูกต้อง"
+                                                                      checked={transformer.tn_s_result === "ถูกต้อง"}
+                                                                      onChange={(e) => handleTransformerChange(transformerIndex, 'tn_s_result', e.target.value)}
+                                                                      className="mr-2"
+                                                                    />
+                                                                    <span className="text-gray-700">ถูกต้อง</span>
+                                                                    </label>
+                                                                    <label className="flex items-center">
+                                                                    <input
+                                                                      type="radio"
+                                                                      name={`transformers_${transformerIndex}_tn_s_result`}
+                                                                      value="ต้องแก้ไข"
+                                                                      checked={transformer.tn_s_result === "ต้องแก้ไข"}
+                                                                      onChange={(e) => handleTransformerChange(transformerIndex, 'tn_s_result', e.target.value)}
+                                                                      className="mr-2"
+                                                                    />
+                                                                    <span className="text-gray-700">ต้องแก้ไข</span>
+                                                                    </label>
+                                                                  </div>
+                                                                  {transformer.tn_s_result === "ต้องแก้ไข" && (
+                                                                    <textarea
+                                                                    value={transformer.tn_s_detail || ""}
+                                                                    onChange={(e) => handleTransformerChange(transformerIndex, 'tn_s_detail', e.target.value)}
+                                                                    className="text-gray-700 w-full p-2 border border-gray-300 rounded-md mt-2 resize-none"
+                                                                    rows="2"
+                                                                    placeholder="ระบุรายละเอียดที่ต้องแก้ไข"
+                                                                    />
+                                                                  )}
+                                                                  </div>
+                                                                )}
+                                                                </div>
+                                                                      {/* Panel Board Control Buttons */}
+                                                                      <div className="mb-6 space-y-3 p-4 bg-gray-50 rounded-lg border">
+                                                                      <h4 className="font-medium text-gray-800">Panel Board</h4>
+                                                                      
+                                                                      <div className="flex items-center gap-4">
+                                                                        <button
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                          const currentShowPanelBoards = transformer.show_panel_boards || false;
+                                                                          handleTransformerChange(transformerIndex, 'show_panel_boards', !currentShowPanelBoards);
+                                                                          
+                                                                          // ถ้ายังไม่มี panel boards ให้สร้างหนึ่งตัว
+                                                                          if (!currentShowPanelBoards && (!transformer.panel_boards || transformer.panel_boards.length === 0)) {
+                                                                          const newPanelBoard = createInitialPanelBoard(0);
+                                                                          handleTransformerChange(transformerIndex, 'panel_boards', [newPanelBoard]);
+                                                                          }
+                                                                        }}
+                                                                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                                                                          transformer.show_panel_boards 
+                                                                          ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                                                                          : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                                                                        }`}
+                                                                        >
+                                                                        {transformer.show_panel_boards ? '🔽 ซ่อน Panel Board' : '🔺 แสดง Panel Board'}
+                                                                        </button>
+                                                                      </div>
+                                                                      </div>
+                                                                          {/* Panel Boards Section */}
+                                                                          {transformer.show_panel_boards && transformer.panel_boards && transformer.panel_boards.map((panelBoard, panelIndex) => (
+                                                                          <div key={panelBoard.id} className="border border-gray-300 rounded-lg p-6 mb-4 bg-blue-50">
+                                                                            <div className="flex justify-between items-center mb-4">
+                                                                            <h4 className="text-lg font-semibold text-gray-800">
+                                                                              Panel Board {panelIndex + 1}
+                                                                            </h4>
+                                                                            {transformer.panel_boards.length > 1 && (
+                                                                              <button
+                                                                              type="button"
+                                                                              onClick={() => {
+                                                                                const newPanelBoards = transformer.panel_boards.filter((_, index) => index !== panelIndex);
+                                                                                handleTransformerChange(transformerIndex, 'panel_boards', newPanelBoards);
+                                                                              }}
+                                                                              className="px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600"
+                                                                              >
+                                                                              ลบ Panel Board
+                                                                              </button>
+                                                                            )}
+                                                                            </div>
+                                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                                                            <div>
+                                                                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                                              ชื่อ Panel Board
+                                                                              </label>
+                                                                              <input
+                                                                              type="text"
+                                                                              value={panelBoard.panel_name || ""}
+                                                                              onChange={(e) => {
+                                                                                const newPanelBoards = [...transformer.panel_boards];
+                                                                                newPanelBoards[panelIndex].panel_name = e.target.value;
+                                                                                handleTransformerChange(transformerIndex, 'panel_boards', newPanelBoards);
+                                                                              }}
+                                                                              className="text-gray-700 w-full p-3 border border-gray-300 rounded-md"
+                                                                              placeholder="ชื่อ Panel Board"
+                                                                              />
+                                                                            </div>
+                                                                            <div>
+                                                                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                                              ตำแหน่งที่ติดตั้ง
+                                                                              </label>
+                                                                              <input
+                                                                              type="text"
+                                                                              value={panelBoard.panel_location || ""}
+                                                                              onChange={(e) => {
+                                                                                const newPanelBoards = [...transformer.panel_boards];
+                                                                                newPanelBoards[panelIndex].panel_location = e.target.value;
+                                                                                handleTransformerChange(transformerIndex, 'panel_boards', newPanelBoards);
+                                                                              }}
+                                                                              className="text-gray-700 w-full p-3 border border-gray-300 rounded-md"
+                                                                              placeholder="ตำแหน่งที่ติดตั้ง"
+                                                                              />
+                                                                            </div>
+                                                                            </div>
+                                                                            {/* Panel Board Inspection Items */}
+                                                                              <div className="mb-6">
+                                                                              <h5 className="font-medium text-gray-800 mb-3">รายการตรวจสอบ Panel Board</h5>
+                                                                              <CorrectiveRadio
+                                                                                items={initialEvChargerHVPanelBoardItems}
+                                                                                values={panelBoard.inspection_items || []}
+                                                                                onChange={(updatedItems) => {
+                                                                                const newPanelBoards = [...transformer.panel_boards];
+                                                                                newPanelBoards[panelIndex].inspection_items = updatedItems;
+                                                                                handleTransformerChange(transformerIndex, 'panel_boards', newPanelBoards);
+                                                                                }}
+                                                                                disabled={isSubmitting}
+                                                                              />
+                                                                              </div>
+                                                                            </div>
+                                                                            ))}
+                                                                          </div>
+                                                                          ))}
+                                                                          <div className="flex justify-center mt-6">
+                                                                          <button
+                                                                            type="button"
+                                                                            onClick={handleAddTransformer}
+                                                                            className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-medium"
+                                                                          >
+                                                                            เพิ่มหม้อแปลง
+                                                                          </button>
+                                                                          </div>
+                                                                        </section>
+                                                               {/* ส่วนลายเซ็น */}
+                                                              <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                                                              <h2 className="text-xl font-semibold mb-6 text-indigo-600">
+                                                                ลายเซ็นยืนยัน
+                                                              </h2>
+                                                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                                                <div>
+                                                                <h3 className="text-lg font-medium mb-4 text-gray-800">ผู้ขอใช้ไฟฟ้า</h3>
+                                                                <SignaturePad
+                                                                  ref={applicantSigRef}
+                                                                  onSave={(signature) => handleSignatureSave('applicant_signature', signature)}
+                                                                  onClear={() => handleSignatureClear('applicant_signature')}
+                                                                  initialSignature={formData.applicant_signature}
                                                                 />
-                                                                <span className="text-gray-700">ถูกต้อง</span>
-                                                              </label>
-                                                              <label className="flex items-center">
-                                                                <input
-                                                                  type="radio"
-                                                                  name={`transformers_${transformerIndex}_tn_s_result`}
-                                                                  value="ต้องแก้ไข"
-                                                                  checked={transformer.tn_s_result === "ต้องแก้ไข"}
-                                                                  onChange={(e) => handleTransformerChange(transformerIndex, 'tn_s_result', e.target.value)}
-                                                                  className="mr-2"
+                                                                <div className="mt-3">
+                                                                  <input
+                                                                  type="text"
+                                                                  name="applicant_signature_name"
+                                                                  value={formData.applicant_signature_name || ""}
+                                                                  onChange={handleChange}
+                                                                  className="text-gray-700 w-full p-2 border border-gray-300 rounded-md text-center"
+                                                                  placeholder="ชื่อ-นามสกุล"
+                                                                  />
+                                                                </div>
+                                                                </div>
+                                                                <div>
+                                                                <h3 className="text-lg font-medium mb-4 text-gray-800">เจ้าหน้าที่ผู้ตรวจสอบ</h3>
+                                                                <SignaturePad
+                                                                  ref={officerSigRef}
+                                                                  onSave={(signature) => handleSignatureSave('officer_signature', signature)}
+                                                                  onClear={() => handleSignatureClear('officer_signature')}
+                                                                  initialSignature={formData.officer_signature}
                                                                 />
-                                                                <span className="text-gray-700">ต้องแก้ไข</span>
-                                                              </label>
-                                                            </div>
-                                                            {transformer.tn_s_result === "ต้องแก้ไข" && (
-                                                              <textarea
-                                                                value={transformer.tn_s_detail || ""}
-                                                                onChange={(e) => handleTransformerChange(transformerIndex, 'tn_s_detail', e.target.value)}
-                                                                className="text-gray-700 w-full p-2 border border-gray-300 rounded-md mt-2 resize-none"
-                                                                rows="2"
-                                                                placeholder="ระบุรายละเอียดที่ต้องแก้ไข"
-                                                              />
-                                                            )}
-                                                          </div>
-                                                        )}
-                                                      </div>
+                                                                <div className="mt-3">
+                                                                  <input
+                                                                  type="text"
+                                                                  name="officer_signature_name"
+                                                                  value={formData.officer_signature_name || ""}
+                                                                  onChange={handleChange}
+                                                                  className="text-gray-700 w-full p-2 border border-gray-300 rounded-md text-center"
+                                                                  placeholder="ชื่อ-นามสกุล"
+                                                                  />
+                                                                </div>
+                                                                </div>
+                                                              </div>
+                                                              </section>
 
-                                                      <div className="mb-4">
-                                                      <label className="flex items-center cursor-pointer"></label>
-                                                      <input
-                                                      type="checkbox"
-                                                      checked={transformer.show_panel_boards || false}
-                                                      onChange={(e) => handleTransformerChange(transformerIndex, 'show_panel_boards', e.target.checked)}
-                                                      className="text-blue-600 focus:ring-blue-500 h-4 w-4"
-                                                      />
-                                                      <span className="ml-2 text-gray-900 font-medium">แสดงส่วน Panel Board และ Sub Circuit</span>
-                                                      </div>
+                                                              {/* ปุ่มบันทึกและดาวน์โหลด */}
+                                                              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
+                                                              <button
+                                                                type="submit"
+                                                                disabled={isSubmitting}
+                                                                className="flex items-center gap-2 px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-lg"
+                                                              >
+                                                                <Save className="w-5 h-5" />
+                                                                {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
+                                                              </button>
+                                                              
+                                                              <PDFDownloadLink
+                                                                document={<EVChargerHVInspectionPDF data={formData} />}
+                                                                fileName={`ev-charger-hv-inspection-${formData.request_number || 'draft'}-${new Date().toISOString().split('T')[0]}.pdf`}
+                                                                className="flex items-center gap-2 px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium text-lg"
+                                                              >
+                                                                {({ blob, url, loading, error }) => (
+                                                                <>
+                                                                  <Download className="w-5 h-5" />
+                                                                  {loading ? 'กำลังสร้าง PDF...' : 'ดาวน์โหลด PDF'}
+                                                                </>
+                                                                )}
+                                                              </PDFDownloadLink>
+                                                              </div>
 
-                                                      {/* Panel Boards */}
-                      {transformer.show_panel_boards && transformer.panel_boards.map((panel, panelIndex) => (
-                        <div key={panel.id} className="border-l-4 border-blue-500 pl-4 ml-4 mb-6">
-                          <div className="flex justify-between items-center mb-4">
-                            <h4 className="text-md font-medium text-gray-800">Panel Board {panelIndex + 1}</h4>
-                          </div>
-                          
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                ชื่อ Panel
-                              </label>
-                              <input
-                                type="text"
-                                value={panel.panel_name || ""}
-                                onChange={(e) => {
-                                  const newTransformers = [...formData.transformers];
-                                  newTransformers[transformerIndex].panel_boards[panelIndex].panel_name = e.target.value;
-                                  setFormData(prev => ({ ...prev, transformers: newTransformers }));
-                                }}
-                                className="text-gray-700 w-full p-3 border border-gray-300 rounded-md"
-                                placeholder="ชื่อ Panel Board"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                ตำแหน่งที่ตั้ง
-                              </label>
-                              <input
-                                type="text"
-                                value={panel.panel_location || ""}
-                                onChange={(e) => {
-                                  const newTransformers = [...formData.transformers];
-                                  newTransformers[transformerIndex].panel_boards[panelIndex].panel_location = e.target.value;
-                                  setFormData(prev => ({ ...prev, transformers: newTransformers }));
-                                }}
-                                className="text-gray-700 w-full p-3 border border-gray-300 rounded-md"
-                                placeholder="ตำแหน่งที่ตั้ง"
-                              />
-                            </div>
-                          </div>
-
-                          {/* Panel Board Inspection Items */}
-                          <div className="mb-6">
-                            <h5 className="text-sm font-medium text-gray-700 mb-3">รายการตรวจสอบ Panel Board</h5>
-                            {(() => {
-                              const panelBoardValues = initialEvChargerHVPanelBoardItems.map(item => {
-                                const panelInspectionItems = panel.inspection_items || [];
-                                return panelInspectionItems.find(v => v.id === item.id) || { id: item.id };
-                              });
-
-                              return (
-                                <CorrectiveRadio
-                                  items={initialEvChargerHVPanelBoardItems}
-                                  values={panelBoardValues}
-                                  onChange={(updatedItems) => {
-                                    const newTransformers = [...formData.transformers];
-                                    const existingItems = panel.inspection_items || [];
-                                    const updatedInspectionItems = [...existingItems];
-                                    
-                                    updatedItems.forEach(updatedItem => {
-                                      const existingIndex = updatedInspectionItems.findIndex(item => item.id === updatedItem.id);
-                                      if (existingIndex >= 0) {
-                                        updatedInspectionItems[existingIndex] = updatedItem;
-                                      } else {
-                                        updatedInspectionItems.push(updatedItem);
-                                      }
-                                    });
-                                    
-                                    newTransformers[transformerIndex].panel_boards[panelIndex].inspection_items = updatedInspectionItems;
-                                    setFormData(prev => ({ ...prev, transformers: newTransformers }));
-                                  }}
-                                  disabled={isSubmitting}
-                                />
-                              );
-                            })()}
-                          </div>
-
-                          {/* Sub Circuits */}
-                          <div className="ml-4">
-                            <div className="flex justify-between items-center mb-4">
-                              <h5 className="text-sm font-medium text-gray-700">Sub Circuits</h5>
-                              <button
-                                type="button"
-                                onClick={() => handleAddSubCircuit(transformerIndex, panelIndex)}
-                                className="px-3 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600"
-                              >
-                                เพิ่ม Sub Circuit
-                              </button>
-                            </div>
-
-                            {(panel.sub_circuits || []).map((circuit, circuitIndex) => {
-                              if (!circuit) {
-                                return null;
-                              }
-                              return (
-                                <SubCircuitSection
-                                  key={circuit.id || circuitIndex}
-                                  circuit={circuit}
-                                  circuitIndex={circuitIndex}
-                                  onCircuitChange={(field, value) => 
-                                    handleSubCircuitChange(transformerIndex, panelIndex, circuitIndex, field, value)
-                                  }
-                                  onRemoveCircuit={() => 
-                                    handleRemoveSubCircuit(transformerIndex, panelIndex, circuitIndex)
-                                  }
-                                  onAddCharger={() => 
-                                    handleAddCharger(transformerIndex, panelIndex, circuitIndex)
-                                  }
-                                  onChargerChange={(chargerIndex, field, value) =>
-                                    handleChargerChange(transformerIndex, panelIndex, circuitIndex, chargerIndex, field, value)
-                                  }
-                                  onRemoveCharger={(chargerIndex) =>
-                                    handleRemoveCharger(transformerIndex, panelIndex, circuitIndex, chargerIndex)
-                                  }
-                                  showRemove={(panel.sub_circuits || []).length > 1}
-                                />
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-
-                  <div className="flex justify-center mt-6">
-                    <button
-                      type="button"
-                      onClick={handleAddTransformer}
-                      className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-medium"
-                    >
-                      เพิ่มหม้อแปลง
-                    </button>
-                  </div>
-                </section>
-
-
-                {/* ส่วนลายเซ็น */}
-          <section className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-            <h2 className="text-xl font-semibold mb-6 text-indigo-600">
-              ลายเซ็นยืนยัน
-            </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-lg font-medium mb-4 text-gray-800">ผู้ขอใช้ไฟฟ้า</h3>
-                <SignaturePad
-                  ref={applicantSigRef}
-                  onSave={(signature) => handleSignatureSave('applicant_signature', signature)}
-                  onClear={() => handleSignatureClear('applicant_signature')}
-                  initialSignature={formData.applicant_signature}
-                />
-                <div className="mt-3">
-                  <input
-                    type="text"
-                    name="applicant_signature_name"
-                    value={formData.applicant_signature_name || ""}
-                    onChange={handleChange}
-                    className="text-gray-700 w-full p-2 border border-gray-300 rounded-md text-center"
-                    placeholder="ชื่อ-นามสกุล"
-                  />
-                </div>
-              </div>
-              <div>
-                <h3 className="text-lg font-medium mb-4 text-gray-800">เจ้าหน้าที่ผู้ตรวจสอบ</h3>
-                <SignaturePad
-                  ref={officerSigRef}
-                  onSave={(signature) => handleSignatureSave('officer_signature', signature)}
-                  onClear={() => handleSignatureClear('officer_signature')}
-                  initialSignature={formData.officer_signature}
-                />
-                <div className="mt-3">
-                  <input
-                    type="text"
-                    name="officer_signature_name"
-                    value={formData.officer_signature_name || ""}
-                    onChange={handleChange}
-                    className="text-gray-700 w-full p-2 border border-gray-300 rounded-md text-center"
-                    placeholder="ชื่อ-นามสกุล"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ปุ่มบันทึกและดาวน์โหลด */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex items-center gap-2 px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-lg"
-            >
-              <Save className="w-5 h-5" />
-              {isSubmitting ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
-            </button>
-            
-            <PDFDownloadLink
-              document={<EVChargerHVInspectionPDF data={formData} />}
-              fileName={`ev-charger-hv-inspection-${formData.request_number || 'draft'}-${new Date().toISOString().split('T')[0]}.pdf`}
-              className="flex items-center gap-2 px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium text-lg"
-            >
-              {({ blob, url, loading, error }) => (
-                <>
-                  <Download className="w-5 h-5" />
-                  {loading ? 'กำลังสร้าง PDF...' : 'ดาวน์โหลด PDF'}
-                </>
-              )}
-            </PDFDownloadLink>
-          </div>
-
-          
-    </form>
-</div>
-  );
-  
-}
-function LoadingFallback() {
+                                                              
+                                                          </form>
+                                                        </div>
+                                                          );
+                                                          
+                                                        }
+                                                        function LoadingFallback() {
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
       <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#5b2d90] mb-4"></div>

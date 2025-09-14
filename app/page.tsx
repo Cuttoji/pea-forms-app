@@ -73,7 +73,7 @@ export default function HomePage() {
             icon={<Home size={28} />}
             title="ฟอร์มที่อยู่อาศัย"
             description="สำหรับตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัย บ้านเดี่ยว และอาคารพักอาศัย"
-            href="/form/residential-inspection"
+            href="/form/home-inspection"
             linkText="เริ่มกรอกฟอร์ม"
             gradient="bg-gradient-to-br from-green-500 to-emerald-600"
           />
