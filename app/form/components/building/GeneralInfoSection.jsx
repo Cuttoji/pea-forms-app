@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import ImageUpload from "@/components/forms/ImageUpload";
 import dynamic from "next/dynamic";
@@ -21,179 +20,45 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
           </h1>
         </div>
         
-        {/* Custom Project Info Section */}
-        <div className="px-6 py-6 bg-gray-50 border-b border-gray-200">
+        {/* Form Header Info */}
+        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div>
-              <label className="block text-gray-600 mb-1">ชื่องาน:</label>
+              <label className="block text-gray-600 mb-1">การตรวจสอบครั้งที่</label>
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.projectName || ""}
-                onChange={e => onChange("projectName", e.target.value)}
-                placeholder="กรอกชื่องาน"
+                value={data.inspectionNo || ""}
+                onChange={e => onChange("inspectionNo", e.target.value)}
+                placeholder="ครั้งที่"
               />
             </div>
             <div>
-              <label className="block text-gray-600 mb-1">อนุมัติเลขที่:</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.approvalNo || ""}
-                onChange={e => onChange("approvalNo", e.target.value)}
-                placeholder="กรอกเลขอนุมัติ"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">ลงวันที่:</label>
+              <label className="block text-gray-600 mb-1">วันที่</label>
               <input
                 type="date"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.approvalDate || ""}
-                onChange={e => onChange("approvalDate", e.target.value)}
-                placeholder="mm/dd/yyyy"
+                value={data.inspectionDate || ""}
+                onChange={e => onChange("inspectionDate", e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-gray-600 mb-1">หมายเลขงาน:</label>
+              <label className="block text-gray-600 mb-1">การตรวจสอบตามคำร้องขอใช้ไฟเลขที่</label>
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.jobNo || ""}
-                onChange={e => onChange("jobNo", e.target.value)}
-                placeholder="กรอกหมายเลขงาน"
+                value={data.requestNo || ""}
+                onChange={e => onChange("requestNo", e.target.value)}
+                placeholder="เลขที่"
               />
             </div>
             <div>
-              <label className="block text-gray-600 mb-1">วัน/เดือน/ปี ที่ดำเนินการตรวจ:</label>
+              <label className="block text-gray-600 mb-1">วันที่</label>
               <input
                 type="date"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.inspectionDate2 || ""}
-                onChange={e => onChange("inspectionDate2", e.target.value)}
-                placeholder="mm/dd/yyyy"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">กฟภ. ดำเนินการ</label>
-              <select
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.peaType || ""}
-                onChange={e => onChange("peaType", e.target.value)}
-              >
-                <option value="">-- เลือก --</option>
-                <option value="pea">กฟภ. ดำเนินการ</option>
-                <option value="company">งานจ้างฯบริษัท</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">ปริมาณงานแรงสูง (วงจร-กม.):</label>
-              <input
-                type="number"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.hvAmount || ""}
-                onChange={e => onChange("hvAmount", e.target.value)}
-                placeholder="กรอกจำนวน"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">จำนวนเสา (ต้น):</label>
-              <input
-                type="number"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.hvPoleCount || ""}
-                onChange={e => onChange("hvPoleCount", e.target.value)}
-                placeholder="กรอกจำนวนเสา"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">รับไฟจากสถานี:</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.stationName || ""}
-                onChange={e => onChange("stationName", e.target.value)}
-                placeholder="กรอกชื่อสถานี"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">ฟีดเดอร์:</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.feeder || ""}
-                onChange={e => onChange("feeder", e.target.value)}
-                placeholder="กรอกชื่อฟีดเดอร์"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">เฟสที่ต่อ:</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.phase || ""}
-                onChange={e => onChange("phase", e.target.value)}
-                placeholder="กรอกเฟส"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">หม้อแปลงรวม (KVA):</label>
-              <input
-                type="number"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.kva || ""}
-                onChange={e => onChange("kva", e.target.value)}
-                placeholder="กรอก KVA"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">ปริมาณงานแรงต่ำ (วงจร-กม.):</label>
-              <input
-                type="number"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.lvAmount || ""}
-                onChange={e => onChange("lvAmount", e.target.value)}
-                placeholder="กรอกจำนวน"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">จำนวนเสา (ต้น):</label>
-              <input
-                type="number"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.lvPoleCount || ""}
-                onChange={e => onChange("lvPoleCount", e.target.value)}
-                placeholder="กรอกจำนวนเสา"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">ผู้ควบคุมงาน:</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.supervisor || ""}
-                onChange={e => onChange("supervisor", e.target.value)}
-                placeholder="กรอกชื่อผู้ควบคุมงาน"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">ตำแหน่ง:</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.position || ""}
-                onChange={e => onChange("position", e.target.value)}
-                placeholder="กรอกตำแหน่ง"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-600 mb-1">สังกัด:</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.department || ""}
-                onChange={e => onChange("department", e.target.value)}
-                placeholder="กรอกสังกัด"
+                value={data.requestDate || ""}
+                onChange={e => onChange("requestDate", e.target.value)}
               />
             </div>
           </div>
@@ -230,6 +95,29 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
                 value={data.phone || ""}
                 onChange={e => onChange("phone", e.target.value)}
+                placeholder="กรอกเบอร์โทรศัพท์"
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">ชื่อนิติบุคคลที่ขอใช้ไฟฟ้า</label>
+              <input
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.corporateName || ""}
+                onChange={e => onChange("corporateName", e.target.value)}
+                placeholder="กรอกชื่อนิติบุคคล"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">โทรศัพท์นิติบุคคล</label>
+              <input
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.corporatePhone || ""}
+                onChange={e => onChange("corporatePhone", e.target.value)}
                 placeholder="กรอกเบอร์โทรศัพท์"
               />
             </div>

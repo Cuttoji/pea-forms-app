@@ -9,6 +9,9 @@ import LVSystemSection from "@/app/form/components/evCharger/LVSystemSection";
 import PanelBoardSection from "@/app/form/components/evCharger/PanelBoardSection";
 import HVSystemSection from "@/app/form/components/evCharger/HVSystemSection";
 import EvChargerCheckSection from "@/app/form/components/evCharger/EvChargerCheckSection";
+import InspectionSummarySection from "@/app/form/components/shared/InspectionSummarySection";
+import LimitationSection from "@/app/form/components/shared/LimitationSection";
+import SignaturePadSection from "@/app/form/components/shared/SignaturePadSection";
 
 // ตัวอย่างโครงสร้าง state หลัก
 export default function EvChargerHvInspectionPage() {
