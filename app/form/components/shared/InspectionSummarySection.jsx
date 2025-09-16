@@ -2,46 +2,71 @@ import React from "react";
 
 export default function InspectionSummarySection({ value = {}, onChange = () => {} }) {
   return (
-    <section className="border rounded-xl p-4 bg-white mb-6">
-      <h2 className="font-bold text-lg mb-4">สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</h2>
-      <div className="flex flex-wrap gap-6 mb-4">
-        <label className="inline-flex items-center">
-          <input
-            type="radio"
-            name="summaryType"
-            value="ถาวร"
-            checked={value.summaryType === "ถาวร"}
-            onChange={() => onChange({...value, summaryType: "ถาวร"})}
-          />
-          <span className="ml-2">ติดตั้งมิเตอร์ถาวร</span>
-        </label>
-        <label className="inline-flex items-center">
-          <input
-            type="radio"
-            name="summaryType"
-            value="ชั่วคราว"
-            checked={value.summaryType === "ชั่วคราว"}
-            onChange={() => onChange({...value, summaryType: "ชั่วคราว"})}
-          />
-          <span className="ml-2">ติดตั้งมิเตอร์ชั่วคราว</span>
-        </label>
-        <label className="inline-flex items-center">
-          <input
-            type="radio"
-            name="summaryType"
-            value="ปรับปรุง"
-            checked={value.summaryType === "ปรับปรุง"}
-            onChange={() => onChange({...value, summaryType: "ปรับปรุง"})}
-          />
-          <span className="ml-2">ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์</span>
-        </label>
+    <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-bold text-gray-800">สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</h2>
+        </div>
       </div>
-      <textarea
-        className="w-full border p-2 min-h-[80px] text-sm"
-        placeholder="หมายเหตุหรือรายละเอียดเพิ่มเติม (ถ้ามี)"
-        value={value.note || ""}
-        onChange={e => onChange({...value, note: e.target.value})}
-      />
-    </section>
+
+      <div className="px-6 py-6 space-y-6 text-gray-700">
+        <div className="space-y-4">
+          <h3 className="text-base font-semibold text-gray-800 mb-4">ผลการตรวจสอบ</h3>
+          
+          <div className="space-y-3">
+            <label className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+              <input
+                type="radio"
+                name="summaryType"
+                value="ถาวร"
+                checked={value.summaryType === "ถาวร"}
+                onChange={() => onChange({...value, summaryType: "ถาวร"})}
+                className="text-green-600 focus:ring-green-500 h-4 w-4"
+              />
+              <div className="ml-3">
+                <span className="text-green-700 font-medium">✓ ติดตั้งมิเตอร์ถาวร</span>
+                <div className="text-sm text-gray-600 mt-1">
+                  ระบบไฟฟ้าผ่านการตรวจสอบเรียบร้อยแล้ว สามารถติดตั้งมิเตอร์ถาวรได้
+                </div>
+              </div>
+            </label>
+
+            <label className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+              <input
+                type="radio"
+                name="summaryType"
+                value="ชั่วคราว"
+                checked={value.summaryType === "ชั่วคราว"}
+                onChange={() => onChange({...value, summaryType: "ชั่วคราว"})}
+                className="text-yellow-600 focus:ring-yellow-500 h-4 w-4"
+              />
+              <div className="ml-3">
+                <span className="text-yellow-700 font-medium">⚠ ติดตั้งมิเตอร์ชั่วคราว</span>
+                <div className="text-sm text-gray-600 mt-1">
+                  ระบบไฟฟ้ามีข้อบกพร่องเล็กน้อย สามารถติดตั้งมิเตอร์ชั่วคราวได้
+                </div>
+              </div>
+            </label>
+
+            <label className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+              <input
+                type="radio"
+                name="summaryType"
+                value="ปรับปรุง"
+                checked={value.summaryType === "ปรับปรุง"}
+                onChange={() => onChange({...value, summaryType: "ปรับปรุง"})}
+                className="text-red-600 focus:ring-red-500 h-4 w-4"
+              />
+              <div className="ml-3">
+                <span className="text-red-700 font-medium">✗ ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์</span>
+                <div className="text-sm text-gray-600 mt-1">
+                  ระบบไฟฟ้ามีข้อบกพร่องที่ต้องแก้ไขก่อนติดตั้งมิเตอร์
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

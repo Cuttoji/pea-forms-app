@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import GeneralInfoSection from "../components/home/GeneralInfoSection";
 import HomeInspectionSection from "../components/home/HomeInspectionSection";
 import InspectionSummarySection from "../components/shared/InspectionSummarySection";
 import LimitationSection from "../components/shared/LimitationSection";
-import SignatureField from "@/components/forms/SignaturePad";
+import SignaturePadSection from "../components/shared/SignaturePadSection"; 
 
 export default function HomeInspectionPage() {
   const [form, setForm] = useState({
@@ -44,7 +45,7 @@ export default function HomeInspectionPage() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-8 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-center">
+      <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">
         แบบฟอร์มตรวจสอบระบบไฟฟ้าภายในบ้าน/ที่อยู่อาศัย
       </h1>
       <GeneralInfoSection
@@ -63,7 +64,7 @@ export default function HomeInspectionPage() {
         value={form.limitation}
         onChange={(value) => setForm((prev) => ({ ...prev, limitation: value }))}
       />
-      <SignatureField
+      <SignaturePadSection
         value={form.signature}
         onChange={(value) => setForm((prev) => ({ ...prev, signature: value }))}
       />

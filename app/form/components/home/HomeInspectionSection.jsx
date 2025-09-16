@@ -1,7 +1,7 @@
 import React from "react";
 
+// เพิ่มการเก็บค่า wireType, wireOther, wireSize ใน data
 const INSPECTION_ITEMS = [
-  // 2.1
   {
     label: "2.1 สายตัวนำประธานเข้าอาคาร",
     subItems: [
@@ -10,23 +10,7 @@ const INSPECTION_ITEMS = [
       },
       {
         label: "ข) ชนิดและขนาด",
-        extra: (
-          <div className="flex flex-wrap gap-3 mt-1 text-sm">
-            <label className="inline-flex items-center">
-              <input type="checkbox" name="iec01" disabled /> <span className="ml-1">IEC 01</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input type="checkbox" name="nyy" disabled /> <span className="ml-1">NYY</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input type="checkbox" name="cv" disabled /> <span className="ml-1">CV</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input type="checkbox" name="other" disabled /> <span className="ml-1">อื่นๆ</span>
-            </label>
-            <span className="ml-2">ขนาด <input className="border w-16 px-1" disabled /> ตร.มม.</span>
-          </div>
-        ),
+        isWireType: true // ใช้สำหรับ render แบบพิเศษด้านล่าง
       },
       {
         label: "ค) วิธีการเดินสาย",
@@ -48,7 +32,6 @@ const INSPECTION_ITEMS = [
       },
     ],
   },
-  // 2.2
   {
     label: "2.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์(บริภัณฑ์ประธาน)",
     subItems: [
@@ -57,7 +40,6 @@ const INSPECTION_ITEMS = [
       { label: "ค) ขนาดกระแสลัดวงจรสูงสุดไม่ต่ำกว่า 10 กิโลแอมแปร์ (kA)" },
     ],
   },
-  // 2.3
   {
     label: "2.3 ระบบการต่อลงดินที่แผงเมนสวิตช์",
     subItems: [
@@ -69,17 +51,25 @@ const INSPECTION_ITEMS = [
   }
 ];
 
-export default function HomeInspectionSection({ data = {}, onChange = () => {} }) {
+const WIRE_TYPES = [
+  { value: "iec01", label: "IEC 01" },
+  { value: "nyy", label: "NYY" },
+  { value: "cv", label: "CV" },
+  { value: "other", label: "อื่นๆ" }
+];
 
-  // กำหนดค่าเริ่มต้น (ถ้าไม่เคยมี)
+export default function HomeInspectionSection({ data = {}, onChange = () => {} }) {
+  // flatCheckList ใช้สำหรับ index ของการตอบแต่ละข้อ (ไม่รวม wireType)
   const flatCheckList = [];
   INSPECTION_ITEMS.forEach(main => {
     if (main.subItems) {
       main.subItems.forEach(sub => {
-        if (sub.subItems) {
-          sub.subItems.forEach(subsub => flatCheckList.push(subsub.label));
-        } else {
-          flatCheckList.push(sub.label);
+        if (!sub.isWireType) {
+          if (sub.subItems) {
+            sub.subItems.forEach(subsub => flatCheckList.push(subsub.label));
+          } else {
+            flatCheckList.push(sub.label);
+          }
         }
       });
     } else {
@@ -105,58 +95,178 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
     onChange("items", updated);
   };
 
-  // RCD (2.4) logic
+  // ข้อมูลสำหรับชนิดสายไฟ/ขนาด
+  const wireType = data.wireType || "";
+  const wireOther = data.wireOther || "";
+  const wireSize = data.wireSize || "";
+  const wireResult = data.wireResult || "";
+  const wireDetail = data.wireDetail || "";
+
+  // RCD (2.4)
   const rcdResult = data.rcdResult || "";
   const rcdNote = data.rcdNote || "";
 
-  return (
-    <section className="border rounded-xl p-4 bg-white mb-6">
-      <h2 className="font-bold text-lg mb-4">2. การตรวจสอบ</h2>
+  // สำหรับ wireType/size แบบใหม่
+  const handleWireChange = (key, value) => {
+    onChange(key, value);
+  };
 
-      {/* รายการตรวจสอบ 2.1-2.3 */}
-      <div className="space-y-6">
+  return (
+    <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+            <span className="text-white text-sm font-bold">2</span>
+          </div>
+          <h2 className="text-lg font-bold text-gray-800">การตรวจสอบ</h2>
+        </div>
+      </div>
+
+      <div className="px-6 py-6 space-y-8 text-gray-700">
+        {/* รายการตรวจสอบ 2.1-2.3 */}
         {INSPECTION_ITEMS.map((section, sectionIdx) => (
-          <div key={section.label} className="mb-4">
-            <div className="font-semibold mb-2">{section.label}</div>
-            {section.subItems ? section.subItems.map((sub, subIdx) => (
-              sub.subItems ? (
-                <div key={sub.label} className="ml-4 mb-2">
-                  <div className="font-medium">{sub.label}</div>
-                  {sub.subItems.map((subsub, subsubIdx) => {
-                    const flatIdx = flatCheckList.findIndex(l => l === subsub.label);
-                    return (
-                      <CheckItemRow
-                        key={subsub.label}
-                        label={subsub.label}
-                        idx={flatIdx}
-                        value={items[flatIdx]}
-                        onRadio={handleRadio}
-                        onDetail={handleDetail}
-                      />
-                    );
-                  })}
-                </div>
-              ) : (
-                <div key={sub.label} className="ml-4 mb-2">
-                  <div className="flex items-baseline gap-2">
-                    <span>{sub.label}</span>
-                    {sub.extra && <span>{sub.extra}</span>}
+          <div key={section.label} className="border border-gray-200 rounded-lg p-4">
+            <div className="font-semibold text-gray-800 mb-4 text-base border-b border-gray-200 pb-2">
+              {section.label}
+            </div>
+            {section.subItems ? section.subItems.map((sub, subIdx) => {
+              // ข) ชนิดและขนาด (special layout)
+              if (sub.isWireType) {
+                return (
+                  <div key={sub.label} className="mb-6">
+                    <div className="bg-gray-50 p-3 rounded-md mb-3">
+                      <div className="font-medium text-gray-700">{sub.label}</div>
+                      <div className="flex flex-wrap gap-4 items-center mt-3">
+                        {WIRE_TYPES.map(w => (
+                          <label key={w.value} className="inline-flex items-center">
+                            <input
+                              type="radio"
+                              name="wireType"
+                              value={w.value}
+                              checked={wireType === w.value}
+                              onChange={e => {
+                                handleWireChange("wireType", e.target.value);
+                                if (e.target.value !== "other") handleWireChange("wireOther", "");
+                              }}
+                              className="text-blue-600 focus:ring-blue-500"
+                            />
+                            <span className="ml-2 text-gray-700">{w.label}</span>
+                          </label>
+                        ))}
+                        {wireType === "other" && (
+                          <input
+                            type="text"
+                            className="text-gray-700 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                            placeholder="ระบุอื่นๆ"
+                            value={wireOther}
+                            onChange={e => handleWireChange("wireOther", e.target.value)}
+                          />
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-3">
+                        <span className="text-gray-700">ขนาด</span>
+                        <input
+                          type="text"
+                          className="text-gray-700 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 w-24"
+                          placeholder="เช่น 16"
+                          value={wireSize}
+                          onChange={e => handleWireChange("wireSize", e.target.value)}
+                        />
+                        <span className="text-gray-700">ตร.มม.</span>
+                      </div>
+                    </div>
+                    
+                    <div className="border border-gray-200 rounded-lg p-4 bg-white">
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap gap-3">
+                          <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-green-50 cursor-pointer transition-colors">
+                            <input
+                              type="radio"
+                              name="wireResult"
+                              value="ถูกต้อง"
+                              checked={wireResult === "ถูกต้อง"}
+                              onChange={() => handleWireChange("wireResult", "ถูกต้อง")}
+                              className="text-green-600 focus:ring-green-500"
+                            />
+                            <span className="ml-2 text-green-700 font-medium">✓ ถูกต้อง</span>
+                          </label>
+                          <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-red-50 cursor-pointer transition-colors">
+                            <input
+                              type="radio"
+                              name="wireResult"
+                              value="ต้องแก้ไข"
+                              checked={wireResult === "ต้องแก้ไข"}
+                              onChange={() => handleWireChange("wireResult", "ต้องแก้ไข")}
+                              className="text-red-600 focus:ring-red-500"
+                            />
+                            <span className="ml-2 text-red-700 font-medium">✗ ต้องแก้ไข</span>
+                          </label>
+                        </div>
+                        
+                        {wireResult === "ต้องแก้ไข" && (
+                          <div className="mt-3">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              รายละเอียดการแก้ไข
+                            </label>
+                            <textarea
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500 text-gray-700 resize-none"
+                              rows={2}
+                              placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
+                              value={wireDetail}
+                              onChange={e => handleWireChange("wireDetail", e.target.value)}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  {(() => {
-                    const flatIdx = flatCheckList.findIndex(l => l === sub.label);
-                    return (
-                      <CheckItemRow
-                        label=""
-                        idx={flatIdx}
-                        value={items[flatIdx]}
-                        onRadio={handleRadio}
-                        onDetail={handleDetail}
-                      />
-                    );
-                  })()}
+                );
+              }
+
+              // ปกติ
+              if (sub.subItems) {
+                return (
+                  <div key={sub.label} className="ml-4 mb-4">
+                    <div className="font-medium text-gray-700 mb-3 bg-gray-50 p-3 rounded-md">
+                      {sub.label}
+                    </div>
+                    <div className="space-y-3">
+                      {sub.subItems.map((subsub, subsubIdx) => {
+                        const flatIdx = flatCheckList.findIndex(l => l === subsub.label);
+                        return (
+                          <CheckItemRow
+                            key={subsub.label}
+                            label={subsub.label}
+                            idx={flatIdx}
+                            value={items[flatIdx]}
+                            onRadio={handleRadio}
+                            onDetail={handleDetail}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+              // ปกติ
+              const flatIdx = flatCheckList.findIndex(l => l === sub.label);
+              return (
+                <div key={sub.label} className="mb-4">
+                  <div className="bg-gray-50 p-3 rounded-md mb-3">
+                    <div className="flex items-baseline gap-2 text-gray-700">
+                      <span className="font-medium">{sub.label}</span>
+                    </div>
+                  </div>
+                  <CheckItemRow
+                    label=""
+                    idx={flatIdx}
+                    value={items[flatIdx]}
+                    onRadio={handleRadio}
+                    onDetail={handleDetail}
+                  />
                 </div>
-              )
-            )) : (
+              );
+            }) : (
               (() => {
                 const flatIdx = flatCheckList.findIndex(l => l === section.label);
                 return (
@@ -172,87 +282,110 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
             )}
           </div>
         ))}
-      </div>
 
-      {/* 2.4 RCD */}
-      <div className="mt-8 mb-4">
-        <div className="font-semibold mb-2">2.4 เครื่องตัดไฟรั่ว (RCD)</div>
-        <div className="mb-2">
-          ติดตั้งเครื่องตัดไฟรั่ว ขนาดพิกัดกระแสรั่ว (I∆n) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง
+        {/* 2.4 RCD */}
+        <div className="border border-gray-200 rounded-lg p-4">
+          <div className="font-semibold text-gray-800 mb-4 text-base border-b border-gray-200 pb-2">
+            2.4 เครื่องตัดไฟรั่ว (RCD)
+          </div>
+          <div className="bg-gray-50 p-3 rounded-md mb-4">
+            <p className="text-gray-700 text-sm">
+              ติดตั้งเครื่องตัดไฟรั่ว ขนาดพิกัดกระแสรั่ว (I∆n) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง
+            </p>
+          </div>
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-4">
+              <label className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <input
+                  type="radio"
+                  name="rcdResult"
+                  value="ถูกต้อง"
+                  checked={rcdResult === "ถูกต้อง"}
+                  onChange={() => onChange("rcdResult", "ถูกต้อง")}
+                  className="text-green-600 focus:ring-green-500"
+                />
+                <span className="ml-3 text-green-700 font-medium">✓ ถูกต้อง</span>
+              </label>
+              <label className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <input
+                  type="radio"
+                  name="rcdResult"
+                  value="ไม่ติดตั้ง"
+                  checked={rcdResult === "ไม่ติดตั้ง"}
+                  onChange={() => onChange("rcdResult", "ไม่ติดตั้ง")}
+                  className="text-yellow-600 focus:ring-yellow-500"
+                />
+                <span className="ml-3 text-yellow-800 font-medium">⚠ ไม่ประสงค์ติดตั้ง/แจ้งความเสี่ยงแล้ว</span>
+              </label>
+            </div>
+            {rcdResult === "ไม่ติดตั้ง" && (
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  หมายเหตุ / เหตุผลที่ไม่ติดตั้ง
+                </label>
+                <textarea
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 text-gray-700 resize-none"
+                  rows={3}
+                  placeholder="ระบุเหตุผลที่ไม่ติดตั้ง RCD..."
+                  value={rcdNote}
+                  onChange={e => onChange("rcdNote", e.target.value)}
+                />
+              </div>
+            )}
+          </div>
         </div>
-        <div className="flex flex-wrap gap-5 mb-2">
-          <label className="inline-flex items-center">
-            <input
-              type="radio"
-              name="rcdResult"
-              value="ถูกต้อง"
-              checked={rcdResult === "ถูกต้อง"}
-              onChange={() => onChange("rcdResult", "ถูกต้อง")}
-            />
-            <span className="ml-2 text-green-700">ถูกต้อง</span>
-          </label>
-          <label className="inline-flex items-center">
-            <input
-              type="radio"
-              name="rcdResult"
-              value="ไม่ติดตั้ง"
-              checked={rcdResult === "ไม่ติดตั้ง"}
-              onChange={() => onChange("rcdResult", "ไม่ติดตั้ง")}
-            />
-            <span className="ml-2 text-yellow-800">
-              ไม่ประสงค์ติดตั้ง/แจ้งความเสี่ยงแล้ว
-            </span>
-          </label>
-        </div>
-        {rcdResult === "ไม่ติดตั้ง" && (
-          <textarea
-            className="w-full border p-2 text-sm"
-            rows={2}
-            placeholder="หมายเหตุ / เหตุผลที่ไม่ติดตั้ง"
-            value={rcdNote}
-            onChange={e => onChange("rcdNote", e.target.value)}
-          />
-        )}
       </div>
-    </section>
+    </div>
   );
 }
 
-// แยก row สำหรับแต่ละรายการตรวจสอบ
+// ปกติ
 function CheckItemRow({ label, idx, value = {}, onRadio, onDetail }) {
   return (
-    <div className="ml-6 mb-1">
-      {label && <div className="mb-1">{label}</div>}
-      <div className="flex gap-4 items-center">
-        <label className="inline-flex items-center">
-          <input
-            type="radio"
-            name={`result-${idx}`}
-            value="ถูกต้อง"
-            checked={value.result === "ถูกต้อง"}
-            onChange={() => onRadio(idx, "ถูกต้อง")}
-          />
-          <span className="ml-2 text-green-700">ถูกต้อง</span>
-        </label>
-        <label className="inline-flex items-center">
-          <input
-            type="radio"
-            name={`result-${idx}`}
-            value="ต้องแก้ไข"
-            checked={value.result === "ต้องแก้ไข"}
-            onChange={() => onRadio(idx, "ต้องแก้ไข")}
-          />
-          <span className="ml-2 text-red-700">ต้องแก้ไข</span>
-        </label>
+    <div className="border border-gray-200 rounded-lg p-4 bg-white">
+      {label && (
+        <div className="mb-3 text-gray-700 font-medium text-sm leading-relaxed">
+          {label}
+        </div>
+      )}
+      <div className="space-y-3">
+        <div className="flex flex-wrap gap-3">
+          <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-green-50 cursor-pointer transition-colors">
+            <input
+              type="radio"
+              name={`result-${idx}`}
+              value="ถูกต้อง"
+              checked={value.result === "ถูกต้อง"}
+              onChange={() => onRadio(idx, "ถูกต้อง")}
+              className="text-green-600 focus:ring-green-500"
+            />
+            <span className="ml-2 text-green-700 font-medium">✓ ถูกต้อง</span>
+          </label>
+          <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-red-50 cursor-pointer transition-colors">
+            <input
+              type="radio"
+              name={`result-${idx}`}
+              value="ต้องแก้ไข"
+              checked={value.result === "ต้องแก้ไข"}
+              onChange={() => onRadio(idx, "ต้องแก้ไข")}
+              className="text-red-600 focus:ring-red-500"
+            />
+            <span className="ml-2 text-red-700 font-medium">✗ ต้องแก้ไข</span>
+          </label>
+        </div>
         {value.result === "ต้องแก้ไข" && (
-          <textarea
-            className="ml-4 border p-1 text-sm"
-            rows={1}
-            style={{ minWidth: 160 }}
-            placeholder="รายละเอียดการแก้ไข"
-            value={value.detail || ""}
-            onChange={e => onDetail(idx, e.target.value)}
-          />
+          <div className="mt-3">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              รายละเอียดการแก้ไข
+            </label>
+            <textarea
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500 text-gray-700 resize-none"
+              rows={2}
+              placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
+              value={value.detail || ""}
+              onChange={e => onDetail(idx, e.target.value)}
+            />
+          </div>
         )}
       </div>
     </div>
