@@ -7,14 +7,15 @@ import HomeInspectionSection from "../components/home/HomeInspectionSection";
 import InspectionSummarySection from "../components/shared/InspectionSummarySection";
 import LimitationSection from "../components/shared/LimitationSection";
 import SignaturePadSection from "../components/shared/SignaturePadSection"; 
+import homeFormSchema from "@/lib/constants/homeFormSchema";
 
 export default function HomeInspectionPage() {
   const [form, setForm] = useState({
-    general: {},
-    inspection: {},
-    summary: "",
-    limitation: "",
-    signature: "",
+    general: homeFormSchema.general,
+    inspection: homeFormSchema.inspection,
+    summary: homeFormSchema.summary,
+    limitation: homeFormSchema.limitation,
+    signature: homeFormSchema.signature,
   });
 
   // ฟังก์ชันสำหรับเปลี่ยนค่าในแต่ละ section

@@ -6,9 +6,10 @@ import ConstructionInspectionSection from "../components/construction/Constructi
 import InspectionSummarySection from "../components/shared/InspectionSummarySection";
 import LimitationSection from "../components/shared/LimitationSection";
 import SignaturePadSection from "../components/shared/SignaturePadSection";
+import constructionFormSchema from "@/lib/constants/constructionFormSchema";
 
 export default function ConstructionInspectionPage() {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(constructionFormSchema);
 
   const handleFormChange = (field, value) => {
     setFormData(prevData => ({

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { getNewSubCircuit, getNewEvCharger, getNewTransformer } from "@/lib/constants/evHvChargerFormSchema";
 import GeneralInfoHvSection from "@/app/form/components/evCharger/GeneralInfoHvSection";
 import DocumentSection from "@/app/form/components/evCharger/DocumentSection";
 import TransformerSection from "@/app/form/components/evCharger/TransformerSection";
@@ -11,92 +12,23 @@ import HVSystemSection from "@/app/form/components/evCharger/HVSystemSection";
 import InspectionSummarySection from "@/app/form/components/shared/InspectionSummarySection";
 import LimitationSection from "@/app/form/components/shared/LimitationSection";
 import SignaturePadSection from "@/app/form/components/shared/SignaturePadSection";
+import evHvChargerFormSchema from "@/lib/constants/evHvChargerFormSchema";
 
 export default function EvChargerHvInspectionPage() {
-  const [general, setGeneral] = useState({});
+  const [general, setGeneral] = useState(evHvChargerFormSchema.general || {});
   const [docAreaType, setDocAreaType] = useState("personal");
-  const [docs, setDocs] = useState({});
-  const [hvSystem, setHvSystem] = useState({});
-  const [lvSystem, setLvSystem] = useState({});
-  const [summary, setSummary] = useState({});
-  const [limitation, setLimitation] = useState({});
-  const [signature, setSignature] = useState({});
+  const [docs, setDocs] = useState(evHvChargerFormSchema.documents || {});
+  const [hvSystem, setHvSystem] = useState(evHvChargerFormSchema.hvSystem || {});
+  const [lvSystem, setLvSystem] = useState(evHvChargerFormSchema.lvSystem || {});
+  const [summary, setSummary] = useState(evHvChargerFormSchema.summary || {});
+  const [limitation, setLimitation] = useState(evHvChargerFormSchema.limitation || {});
+  const [signature, setSignature] = useState(evHvChargerFormSchema.signature || {});
 
-  // สร้างค่าเริ่มต้นสำหรับ sub-circuit ใหม่
-  const getNewSubCircuit = () => ({
-    circuitNo: "",
-    evOnly: { result: null, detail: "" },
-    evOnePerCircuit: { result: null, detail: "" },
-    standard: [],
-    wireType: [],
-    wireTypeOther: "",
-    phaseSize: "",
-    phaseSizeCheck: { result: null, detail: "" },
-    neutralSize: "",
-    neutralSizeCheck: { result: null, detail: "" },
-    groundSize: "",
-    groundSizeCheck: { result: null, detail: "" },
-    phaseColor: { result: null, detail: "" },
-    wirewayMechanical: { result: null, detail: "" },
-    method: [],
-    methodConduitWallSize: "",
-    methodConduitBuriedSize: "",
-    methodWirewayW: "",
-    methodWirewayH: "",
-    methodCableTrayW: "",
-    methodCableTrayH: "",
-    methodOther: "",
-    methodCheck: { result: null, detail: "" },
-    conduitType: [],
-    conduitTypeOther: "",
-    conduitCheck: { result: null, detail: "" },
-    breakerStandard: false,
-    breakerMode3: false,
-    breakerMode3AT: "",
-    breakerMode2: false,
-    breakerMode2AT: "",
-    breakerCheck: { result: null, detail: "" },
-    breakerSizeCheck: { result: null, detail: "" },
-    rcdTypeB: false,
-    rcdTypeBIn: "",
-    rcdTypeAFPlusDD: false,
-    rcdTypeBInCharger: false,
-    rcdTypeBInChargerIn: "",
-    rcdCheck: { result: null, detail: "" },
-    rcdTypeBMain: { result: null, detail: "" },
-    evChargers: []
-  });
-
-  // สร้างค่าเริ่มต้นสำหรับ EvCharger ใหม่
-  const getNewEvCharger = () => ({
-    product: "",
-    model: "",
-    sn: "",
-    voltage: "",
-    current: "",
-    kw: "",
-    chargeType: [],
-    mode: [],
-    infoCheck: { result: null, detail: "" },
-  });
-
-  const [transformers, setTransformers] = useState([
-    {
-      hasPanel: false,
-      panel: {},
-      lvSystem: {},
-      // แก้ไข: เพิ่มวงจรย่อยเริ่มต้นหนึ่งรายการเพื่อให้แสดงผล
-      subCircuits: [getNewSubCircuit()],
-    },
-  ]);
+  // Use helper functions from schema
+  const [transformers, setTransformers] = useState([getNewTransformer()]);
 
   const addTransformer = () => {
-    setTransformers(prev => [...prev, {
-      hasPanel: false,
-      panel: {},
-      lvSystem: {},
-      subCircuits: [getNewSubCircuit()],
-    }]);
+    setTransformers(prev => [...prev, getNewTransformer()]);
   };
   
   const removeTransformer = (index) => {
@@ -111,7 +43,6 @@ export default function EvChargerHvInspectionPage() {
     );
   };
   
-
 
   const handleAddEvCharger = (transformerIndex, subCircuitIndex) => {
     setTransformers(prev =>
@@ -187,7 +118,8 @@ export default function EvChargerHvInspectionPage() {
 
             <div className="p-6 space-y-8">
               <TransformerSection
-                value={transformer}
+                sectionNumber={4}
+                value={transformer.transformerData || {}}
                 onChange={(updatedTransformer) => {
                   handleTransformerChange(
                     transformerIndex,
@@ -195,7 +127,6 @@ export default function EvChargerHvInspectionPage() {
                     updatedTransformer
                   );
                 }}
-                mode="evCharger"
               />
 
               <LVSystemSection
@@ -204,7 +135,6 @@ export default function EvChargerHvInspectionPage() {
                   handleTransformerChange(transformerIndex, "lvSystem", lvData)
                 }
               />
-
 
               <PanelBoardSection
                 value={transformer.panel || {}}

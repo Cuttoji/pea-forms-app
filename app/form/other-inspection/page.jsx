@@ -1,22 +1,22 @@
 "use client";
 import React, { useState } from "react";
+import otherFormSchema, { getNewOtherTransformer } from "@/lib/constants/otherFormSchema";
 import GeneralInfoSection from "../components/building/GeneralInfoSection";
 import DocumentSection from "../components/building/DocumentSection";
 import HVSystemSection from "../components/evCharger/HVSystemSection";
 import InspectionSummarySection from "../components/shared/InspectionSummarySection";
-import TransformerSection from "../components/building/TransformerSection";
+import TransformerSection from "../components/evCharger/TransformerSection";
 import LimitationSection from "../components/shared/LimitationSection";
 import SignaturePadSection from "../components/shared/SignaturePadSection";
-import LVSystemSection from "../components/building/LVSystemSection";
 
-export default function CondoInspectionPage() {
+export default function OtherInspectionPage() {
   const [formData, setFormData] = useState({
-    general: {},
-    documents: {},
-    hvSystem: {},
-    summary: "",
-    limitation: "",
-    signature: ""
+    general: otherFormSchema.general,
+    documents: otherFormSchema.documents,
+    hvSystem: otherFormSchema.hvSystem,
+    summary: otherFormSchema.summary,
+    limitation: otherFormSchema.limitation,
+    signature: otherFormSchema.signature
   });
 
   const handleSectionChange = (section, field, value) => {
@@ -36,20 +36,10 @@ export default function CondoInspectionPage() {
     }));
   };
 
-  const [transformers, setTransformers] = useState([{
-    transformerData: {},
-    lvSystem: {},
-    hasPanel: false,
-    panel: {}
-  }]);
+  const [transformers, setTransformers] = useState([getNewOtherTransformer()]);
 
   const addTransformer = () => {
-    setTransformers(prev => [...prev, {
-      transformerData: {},
-      lvSystem: {},
-      hasPanel: false,
-      panel: {}
-    }]);
+    setTransformers(prev => [...prev, getNewOtherTransformer()]);
   };
   
   const removeTransformer = (index) => {
@@ -99,12 +89,19 @@ export default function CondoInspectionPage() {
       />
 
       <div className="space-y-10">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            4. ระบบหม้อแปลงและไฟฟ้าแรงต่ำ
+          </h2>
+          <div className="w-full h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+        </div>
+
         {transformers.map((transformer, transformerIndex) => (
           <div
             key={transformerIndex}
             className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden"
           >
-            <div className="bg-gradient-to-r from-orange-600 to-red-600 px-8 py-6 text-gray-700">
+            <div className="bg-gradient-to-r from-orange-600 to-red-600 px-8 py-6">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -118,7 +115,7 @@ export default function CondoInspectionPage() {
                   <button
                     type="button"
                     onClick={() => removeTransformer(transformerIndex)}
-                    className="text-red px-6 py-3 bg-white bg-opacity-20 text-base font-medium rounded-lg hover:bg-opacity-30 transition-colors"
+                    className="px-6 py-3 bg-white bg-opacity-20 text-gray-700 text-base font-medium rounded-lg hover:bg-opacity-30 transition-colors"
                   >
                     ลบหม้อแปลง
                   </button>
@@ -137,9 +134,8 @@ export default function CondoInspectionPage() {
                     updatedTransformer
                   );
                 }}
-                mode="general"
               />
-              </div>
+            </div>
           </div>
         ))}
       </div>

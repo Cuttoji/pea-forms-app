@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import evLvChargerFormSchema, { getNewLvSubCircuit, getNewLvEvCharger } from "@/lib/constants/evLvChargerFormSchema";
 import DocumentSection from "../components/evCharger/DocumentSection";
 import InspectionSummarySection from "../components/shared/InspectionSummarySection";
 import LimitationSection from "../components/shared/LimitationSection";
@@ -10,16 +11,15 @@ import GeneralInfoLvSection from "../components/evCharger/GeneralInfoLvSection";
 
 export default function EvChargerLvInspectionPage() {
   const [form, setForm] = React.useState({
-    general: {},
-    // แก้ไข: กำหนดค่าเริ่มต้นสำหรับ Inspection ให้มี subCircuits
+    general: evLvChargerFormSchema.general,
     inspection: {
-      subCircuits: [{}], // เพิ่มวงจรย่อยเริ่มต้นหนึ่งอัน
+      subCircuits: [getNewLvSubCircuit()], // Use helper function
     },
-    panel: {}, // Add panel section
-    documents: {},
-    summary: "",
-    limitation: "",
-    signature: "",
+    panel: evLvChargerFormSchema.panel,
+    documents: evLvChargerFormSchema.documents,
+    summary: evLvChargerFormSchema.summary,
+    limitation: evLvChargerFormSchema.limitation,
+    signature: evLvChargerFormSchema.signature,
   });
 
   // ฟังก์ชันสำหรับเปลี่ยนค่าในแต่ละ section
@@ -45,7 +45,7 @@ export default function EvChargerLvInspectionPage() {
     // TODO: Implement form submission logic
   };
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 py-8">
+    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8 py-8 px-4">
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">
         แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า (EV Charger) ระดับแรงดันต่ำ
       </h1>
@@ -68,15 +68,14 @@ export default function EvChargerLvInspectionPage() {
       />
 
       <SubCircuitSection
+        sectionNumber={3}
         value={form.inspection.subCircuits || []}
         onChange={(value) => handleSectionChange("inspection", "subCircuits", value)}
         onAddCharger={(subCircuitIndex) => {
-          // เพิ่มเครื่องอัดประจุในวงจรย่อยที่ระบุ
           const subCircuits = form.inspection.subCircuits || [];
           const updatedSubCircuits = subCircuits.map((subCircuit, index) => {
             if (index === subCircuitIndex) {
-              const updatedEvChargers = subCircuit.evChargers ? [...subCircuit.evChargers] : [];
-              updatedEvChargers.push({});
+              const updatedEvChargers = [...(subCircuit.evChargers || []), getNewLvEvCharger()];
               return { ...subCircuit, evChargers: updatedEvChargers };
             }
             return subCircuit;
