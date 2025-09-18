@@ -1,187 +1,279 @@
 import React from "react";
 
 /**
- * GeneralInfoLvSection สำหรับฟอร์ม EV Charger
+ * GeneralInfoHvSection สำหรับฟอร์ม EV Charger - Government form style UI/UX
  * Props:
  * - data: object (ข้อมูลฟอร์ม)
  * - onChange: (field, value) => void
  */
-export default function GeneralInfoLvSection({ data = {}, onChange = () => {} }) {
+export default function GeneralInfoHvSection({ data = {}, onChange = () => {} }) {
   return (
-    <section className="bg-white border border-black rounded-xl p-6 mb-6">
-      {/* หัวข้อการไฟฟ้า */}
-      <div className="flex flex-wrap items-center mb-4 gap-2">
-        <span className="text-base font-medium">การไฟฟ้า</span>
-        <input
-          type="text"
-          className="border-b border-dotted border-black outline-none px-2 w-64 bg-transparent"
-          value={data.powerAuthority || ""}
-          onChange={e => onChange("powerAuthority", e.target.value)}
-        />
-        <span className="ml-4 text-base font-medium">การตรวจสอบครั้งที่</span>
-        <input
-          type="text"
-          className="border-b border-dotted border-black outline-none px-2 w-14 bg-transparent"
-          value={data.inspectionNo || ""}
-          onChange={e => onChange("inspectionNo", e.target.value)}
-        />
-        <span className="ml-4">วันที่</span>
-        <input
-          type="date"
-          className="border-b border-dotted border-black outline-none px-2 w-36 bg-transparent"
-          value={data.inspectionDate || ""}
-          onChange={e => onChange("inspectionDate", e.target.value)}
-        />
-      </div>
-      <div className="flex flex-wrap items-center mb-4 gap-2">
-        <span className="text-base font-medium">
-          การตรวจสอบตามคำร้องขอใช้ไฟเลขที่
-        </span>
-        <input
-          type="text"
-          className="border-b border-dotted border-black outline-none px-2 w-40 bg-transparent"
-          value={data.requestNo || ""}
-          onChange={e => onChange("requestNo", e.target.value)}
-        />
-        <span className="ml-4">วันที่</span>
-        <input
-          type="date"
-          className="border-b border-dotted border-black outline-none px-2 w-36 bg-transparent"
-          value={data.requestDate || ""}
-          onChange={e => onChange("requestDate", e.target.value)}
-        />
-      </div>
-
-      <div className="font-bold text-base mt-4 mb-2">1. ข้อมูลทั่วไป</div>
-      {/* เลือกประเภทผู้ขอ */}
-      <div className="flex flex-col md:flex-row gap-6 mb-2">
-        <div className="flex-1">
-          <label className="flex items-center gap-2 mb-1">
-            <input
-              type="radio"
-              name="userType"
-              value="individual"
-              checked={data.userType === "individual"}
-              onChange={() => onChange("userType", "individual")}
-            />
-            <span className="font-medium">ชื่อ-นามสกุล ผู้ขอใช้ไฟฟ้า (นาย/นาง/นางสาว)</span>
-          </label>
-          <input
-            type="text"
-            placeholder="ชื่อ-นามสกุล"
-            className="border-b border-dotted border-black outline-none px-2 w-full bg-transparent mb-1"
-            value={data.customerName || ""}
-            onChange={e => onChange("customerName", e.target.value)}
-            disabled={data.userType !== "individual"}
-          />
-          <input
-            type="text"
-            placeholder="โทรศัพท์"
-            className="border-b border-dotted border-black outline-none px-2 w-full bg-transparent"
-            value={data.phone || ""}
-            onChange={e => onChange("phone", e.target.value)}
-            disabled={data.userType !== "individual"}
-          />
+    <div className="space-y-6 text-gray-700">
+      {/* Header Section */}
+      <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-[#5b2d90] text-white px-6 py-4">
+          <h1 className="text-xl font-bold text-center">
+            แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
+            <span className="block text-lg font-medium mt-1">สำหรับผู้ใช้ไฟฟ้าแรงสูง</span>
+          </h1>
         </div>
-        <div className="flex-1">
-          <label className="flex items-center gap-2 mb-1">
-            <input
-              type="radio"
-              name="userType"
-              value="corp"
-              checked={data.userType === "corp"}
-              onChange={() => onChange("userType", "corp")}
-            />
-            <span className="font-medium">ชื่อนิติบุคคล ที่ขอใช้ไฟฟ้า</span>
-          </label>
-          <input
-            type="text"
-            placeholder="ชื่อนิติบุคคล"
-            className="border-b border-dotted border-black outline-none px-2 w-full bg-transparent mb-1"
-            value={data.corpName || ""}
-            onChange={e => onChange("corpName", e.target.value)}
-            disabled={data.userType !== "corp"}
-          />
-          <input
-            type="text"
-            placeholder="โทรศัพท์"
-            className="border-b border-dotted border-black outline-none px-2 w-full bg-transparent"
-            value={data.corpPhone || ""}
-            onChange={e => onChange("corpPhone", e.target.value)}
-            disabled={data.userType !== "corp"}
-          />
+        
+        {/* Form Header Info */}
+        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+            <div>
+              <label className="block text-gray-600 mb-1">การไฟฟ้า</label>
+              <input
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.powerAuthority || ""}
+                onChange={e => onChange("powerAuthority", e.target.value)}
+                placeholder="การไฟฟ้า"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-600 mb-1">การตรวจสอบครั้งที่</label>
+              <input
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.inspectionNo || ""}
+                onChange={e => onChange("inspectionNo", e.target.value)}
+                placeholder="ครั้งที่"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-600 mb-1">วันที่ตรวจสอบ</label>
+              <input
+                type="date"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.inspectionDate || ""}
+                onChange={e => onChange("inspectionDate", e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-4">
+            <div>
+              <label className="block text-gray-600 mb-1">การตรวจสอบตามคำร้องขอใช้ไฟเลขที่</label>
+              <input
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.requestNo || ""}
+                onChange={e => onChange("requestNo", e.target.value)}
+                placeholder="เลขที่"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-600 mb-1">วันที่คำร้อง</label>
+              <input
+                type="date"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.requestDate || ""}
+                onChange={e => onChange("requestDate", e.target.value)}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="mb-3">
-        <label className="block text-gray-800 text-sm mb-1">ที่อยู่</label>
-        <input
-          type="text"
-          className="border-b border-dotted border-black outline-none px-2 w-full bg-transparent"
-          value={data.address || ""}
-          onChange={e => onChange("address", e.target.value)}
-        />
-      </div>
+      {/* Section 1: ข้อมูลทั่วไป */}
+      <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-bold">1</span>
+            </div>
+            <h2 className="text-lg font-bold text-gray-800">ข้อมูลทั่วไป</h2>
+          </div>
+        </div>
+        
+        <div className="px-6 py-6 space-y-6">
+          {/* ประเภทผู้ขอใช้ไฟฟ้า */}
+          <div className="space-y-4">
+            <h3 className="text-base font-medium text-gray-800 mb-3">ประเภทผู้ขอใช้ไฟฟ้า</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* บุคคลธรรมดา */}
+              <div className="space-y-3">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="userType"
+                    value="individual"
+                    checked={data.userType === "individual"}
+                    onChange={() => onChange("userType", "individual")}
+                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  <span className="text-gray-700 font-medium">บุคคลธรรมดา</span>
+                </label>
+                <div className="ml-6 space-y-3">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">ชื่อ-นามสกุล</label>
+                    <input
+                      type="text"
+                      className={`w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ${
+                        data.userType !== "individual" ? "bg-gray-100" : ""
+                      }`}
+                      value={data.customerName || ""}
+                      onChange={e => onChange("customerName", e.target.value)}
+                      placeholder="กรอกชื่อ-นามสกุล"
+                      disabled={data.userType !== "individual"}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">โทรศัพท์</label>
+                    <input
+                      type="text"
+                      className={`w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ${
+                        data.userType !== "individual" ? "bg-gray-100" : ""
+                      }`}
+                      value={data.phone || ""}
+                      onChange={e => onChange("phone", e.target.value)}
+                      placeholder="กรอกเบอร์โทรศัพท์"
+                      disabled={data.userType !== "individual"}
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              {/* นิติบุคคล */}
+              <div className="space-y-3">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="userType"
+                    value="corp"
+                    checked={data.userType === "corp"}
+                    onChange={() => onChange("userType", "corp")}
+                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  <span className="text-gray-700 font-medium">นิติบุคคล</span>
+                </label>
+                <div className="ml-6 space-y-3">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">ชื่อนิติบุคคล</label>
+                    <input
+                      type="text"
+                      className={`w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ${
+                        data.userType !== "corp" ? "bg-gray-100" : ""
+                      }`}
+                      value={data.corpName || ""}
+                      onChange={e => onChange("corpName", e.target.value)}
+                      placeholder="กรอกชื่อนิติบุคคล"
+                      disabled={data.userType !== "corp"}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">โทรศัพท์</label>
+                    <input
+                      type="text"
+                      className={`w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ${
+                        data.userType !== "corp" ? "bg-gray-100" : ""
+                      }`}
+                      value={data.corpPhone || ""}
+                      onChange={e => onChange("corpPhone", e.target.value)}
+                      placeholder="กรอกเบอร์โทรศัพท์"
+                      disabled={data.userType !== "corp"}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-      <div className="flex flex-wrap gap-x-8 gap-y-2 items-end mt-2">
-        <div className="flex items-center gap-3">
-          <span className="text-gray-800 text-sm">ระบบไฟฟ้า</span>
-          <label className="inline-flex items-center gap-1">
-            <input
-              type="radio"
-              name="systemType"
-              value="22kv"
-              checked={data.systemType === "22kv"}
-              onChange={() => onChange("systemType", "22kv")}
+          {/* ที่อยู่ */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">ที่อยู่</label>
+            <textarea
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 resize-none"
+              rows={3}
+              value={data.address || ""}
+              onChange={e => onChange("address", e.target.value)}
+              placeholder="กรอกที่อยู่"
             />
-            <span className="select-none"> 3 เฟส (400 / 230 โวลต์)</span>
-          </label>
-          <label className="inline-flex items-center gap-1 ml-4">
-            <input
-              type="radio"
-              name="systemType"
-              value="33kv"
-              checked={data.systemType === "33kv"}
-              onChange={() => onChange("systemType", "33kv")}
-            />
-            <span className="select-none"> 1 เฟส (230 โวลต์) </span>
-          </label>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-gray-800 text-sm">กระแสโหลด (ด้านแรงต่ำ) รวมโดยประมาณ</span>
-          <input
-            type="text"
-            className="border-b border-dotted border-black outline-none px-2 w-20 bg-transparent"
-            value={data.load || ""}
-            onChange={e => onChange("load", e.target.value)}
-          />
-          <span className="text-gray-600">A</span>
-        </div>
-      </div>
+          </div>
 
-      <div className="flex flex-wrap gap-x-8 gap-y-2 items-end mt-4">
-        <div className="flex items-center gap-2">
-          <span className="text-gray-800 text-sm">ติดตั้งเครื่องอัดประจุยานยนต์ไฟฟ้ารวม</span>
-          <input
-            type="number"
-            min={0}
-            className="border-b border-dotted border-black outline-none px-2 w-16 bg-transparent"
-            value={data.evChargerCount || ""}
-            onChange={e => onChange("evChargerCount", e.target.value)}
-          />
-          <span className="text-gray-600">เครื่อง</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-gray-800 text-sm">พิกัดกำลังไฟฟ้ารวมของเครื่องอัดประจุยานยนต์ไฟฟ้า</span>
-          <input
-            type="text"
-            className="border-b border-dotted border-black outline-none px-2 w-24 bg-transparent"
-            value={data.evChargerPower || ""}
-            onChange={e => onChange("evChargerPower", e.target.value)}
-          />
-          <span className="text-gray-600">กิโลวัตต์ (kW)</span>
+          {/* ระบบไฟฟ้าและกระแสโหลด */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-700 font-medium mb-3">ระบบไฟฟ้า</label>
+              <div className="flex gap-6">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="systemType"
+                    value=" 3 เฟส (400 / 230 โวลต์)"
+                    checked={data.systemType === " 3 เฟส (400 / 230 โวลต์)"}
+                    onChange={() => onChange("systemType", " 3 เฟส (400 / 230 โวลต์)")}
+                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  <span className="text-gray-700 font-medium"> 3 เฟส (400 / 230 โวลต์)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="systemType"
+                    value="1 เฟส (230 โวลต์)"
+                    checked={data.systemType === "1 เฟส (230 โวลต์)"}
+                    onChange={() => onChange("systemType", "1 เฟส (230 โวลต์)")}
+                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  />
+                  <span className="text-gray-700 font-medium">1 เฟส (230 โวลต์)</span>
+                </label>
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">กระแสโหลด (ด้านแรงต่ำ) รวมโดยประมาณ (A)</label>
+              <input
+                type="number"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.load || ""}
+                onChange={e => onChange("load", e.target.value)}
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          {/* ข้อมูลเครื่องอัดประจุ */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">จำนวนเครื่องอัดประจุยานยนต์ไฟฟ้า (เครื่อง)</label>
+              <input
+                type="number"
+                min={0}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.evChargerCount || ""}
+                onChange={e => onChange("evChargerCount", e.target.value)}
+                placeholder="0"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">พิกัดกำลังไฟฟ้ารวม (kW)</label>
+              <input
+                type="number"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.evChargerPower || ""}
+                onChange={e => onChange("evChargerPower", e.target.value)}
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          {/* Information Box */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-start gap-2">
+              <div className="text-blue-600 mt-1">ℹ️</div>
+              <div className="text-sm text-blue-800">
+                <strong>หมายเหตุ:</strong> กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง 
+                เพื่อให้การตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าเป็นไปอย่างราบรื่น 
+                สำหรับผู้ใช้ไฟฟ้าแรงสูงจะต้องมีวิศวกรที่ได้รับใบอนุญาตลงนามรับรองเอกสาร
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

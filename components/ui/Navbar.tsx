@@ -11,7 +11,7 @@ import type { User } from '@supabase/supabase-js';
 
 // รายการฟอร์มสำหรับเมนู
 const formLinks = [
-  { href: "/form/residential-inspection", label: "ฟอร์มที่อยู่อาศัย", icon: <FileText size={16} /> },
+  { href: "/form/home-inspection", label: "ฟอร์มที่อยู่อาศัย", icon: <FileText size={16} /> },
   { href: "/form/condo-inspection", label: "ฟอร์มอาคารชุด", icon: <Building size={16} /> },
   { href: "/form/ev-charger-lv-inspection", label: "ฟอร์ม EV Charger (แรงต่ำ)", icon: <Zap size={16} /> },
   { href: "/form/ev-charger-hv-inspection", label: "ฟอร์ม EV Charger (แรงสูง)", icon: <Zap size={16} /> },

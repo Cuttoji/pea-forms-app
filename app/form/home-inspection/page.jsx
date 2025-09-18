@@ -44,7 +44,7 @@ export default function HomeInspectionPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-8 py-8">
+    <form onSubmit={handleSubmit} className="space-y-8 py-8">
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">
         แบบฟอร์มตรวจสอบระบบไฟฟ้าภายในบ้าน/ที่อยู่อาศัย
       </h1>

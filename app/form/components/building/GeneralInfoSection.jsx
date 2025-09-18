@@ -11,7 +11,7 @@ const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStre
  */
 export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
   return (
-    <div className="max-w-4xl mx-auto space-y-6 text-gray-700">
+    <div className="space-y-6 text-gray-700">
       {/* Header Section */}
       <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
         <div className="bg-[#5b2d90] text-white px-6 py-4">
@@ -99,29 +99,6 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               />
             </div>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">ชื่อนิติบุคคลที่ขอใช้ไฟฟ้า</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.corporateName || ""}
-                onChange={e => onChange("corporateName", e.target.value)}
-                placeholder="กรอกชื่อนิติบุคคล"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">โทรศัพท์นิติบุคคล</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.corporatePhone || ""}
-                onChange={e => onChange("corporatePhone", e.target.value)}
-                placeholder="กรอกเบอร์โทรศัพท์"
-              />
-            </div>
-          </div>
 
           <div>
             <label className="block text-gray-700 font-medium mb-2">ที่อยู่</label>
@@ -143,8 +120,8 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
                 onChange={e => onChange("systemType", e.target.value)}
               >
                 <option value="">-- เลือก --</option>
-                <option value="3เฟส">22 kV</option>
-                <option value="1เฟส">33 kV</option>
+                <option value="22kV">22 kV</option>
+                <option value="33kV">33 kV</option>
               </select>
             </div>
             <div>

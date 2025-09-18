@@ -118,7 +118,7 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-bold">4</span>
+                <span className="text-white text-sm font-bold">2</span>
               </div>
               <h2 className="text-lg font-bold text-gray-800">หม้อแปลง</h2>
             </div>
@@ -154,9 +154,9 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                   )}
               </div>
 
-              {/* 4.1 คุณสมบัติทั่วไปของหม้อแปลง */}
+              {/* 2.1 คุณสมบัติทั่วไปของหม้อแปลง */}
               <div className="space-y-4">
-                <h4 className="text-base font-medium text-gray-800">4.1 คุณสมบัติทั่วไปของหม้อแปลง</h4>
+                <h4 className="text-base font-medium text-gray-800">2.1 คุณสมบัติทั่วไปของหม้อแปลง</h4>
                 
                 {/* Test Result */}
                 <div className="space-y-2">
@@ -301,9 +301,9 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                 />
               </div>
 
-              {/* 4.2 ลักษณะการติดตั้ง */}
+              {/* 2.2 ลักษณะการติดตั้ง */}
               <div className="space-y-4">
-                <h4 className="text-base font-medium text-gray-800">4.2 ลักษณะการติดตั้ง</h4>
+                <h4 className="text-base font-medium text-gray-800">2.2 ลักษณะการติดตั้ง</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {["แขวน", "นั่งร้าน", "ตั้งพื้น", "ตั้งบนดาดฟ้า", "ห้องหม้อแปลง"].map(opt => (
                     <label key={opt} className="flex items-center gap-2 cursor-pointer">
@@ -345,9 +345,9 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                 />
               </div>
 
-              {/* 4.3 เครื่องป้องกันกระแสเกิน */}
+              {/* 2.3 เครื่องป้องกันกระแสเกิน */}
               <div className="space-y-4">
-                <h4 className="text-base font-medium text-gray-800">4.3 เครื่องป้องกันกระแสเกินด้านไฟเข้า</h4>
+                <h4 className="text-base font-medium text-gray-800">2.3 เครื่องป้องกันกระแสเกินด้านไฟเข้า</h4>
                 <CorrectableRow
                   label=""
                   value={item.overcurrent}
@@ -415,9 +415,9 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                 </div>
               </div>
 
-              {/* 4.4 การติดตั้งกับดักเสิร์จแรงสูง */}
+              {/* 2.4 การติดตั้งกับดักเสิร์จแรงสูง */}
               <div className="space-y-4">
-                <h4 className="text-base font-medium text-gray-800">4.4 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)</h4>
+                <h4 className="text-base font-medium text-gray-800">2.4 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)</h4>
                 <CorrectableRow
                   label=""
                   value={item.surge}
@@ -449,9 +449,9 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                 </div>
               </div>
 
-              {/* 4.5 การประกอบสายดิน */}
+              {/* 2.5 การประกอบสายดิน */}
               <div className="space-y-4">
-                <h4 className="text-base font-medium text-gray-800">4.5 การประกอบสายดินกับตัวถังหม้อแปลงและกับดักเสิร์จแรงสูง</h4>
+                <h4 className="text-base font-medium text-gray-800">2.5 การประกอบสายดินกับตัวถังหม้อแปลงและกับดักเสิร์จแรงสูง</h4>
                 <CorrectableRow
                   label=""
                   value={item.ground}
@@ -460,10 +460,10 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                 />
               </div>
 
-              {/* 4.6 ค่าความต้านทานดิน */}
+              {/* 2.6 ค่าความต้านทานดิน */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-gray-700 font-medium mb-2">4.6 ค่าความต้านทานดินของระบบแรงสูง (โอห์ม)</label>
+                  <label className="block text-gray-700 font-medium mb-2">2.6 ค่าความต้านทานดินของระบบแรงสูง (โอห์ม)</label>
                   <input
                     type="text"
                     className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
@@ -480,30 +480,30 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                 />
               </div>
 
-              {/* 4.7 สภาพภายนอกหม้อแปลง */}
+              {/* 2.7 สภาพภายนอกหม้อแปลง */}
               <div className="space-y-4">
-                <h4 className="text-base font-medium text-gray-800">4.7 สภาพภายนอกหม้อแปลง (เฉพาะหม้อแปลงชนิดน้ำมัน)</h4>
+                <h4 className="text-base font-medium text-gray-800">2.7 สภาพภายนอกหม้อแปลง (เฉพาะหม้อแปลงชนิดน้ำมัน)</h4>
                 <div className="space-y-4">
                   <CorrectableRow
-                    label="4.7.1 สารดูดความชื้น"
+                    label="2.7.1 สารดูดความชื้น"
                     value={item.ext?.silica}
                     onChange={v => handleTransformer(idx, "ext", { ...item.ext, silica: v })}
                     detail
                   />
                   <CorrectableRow
-                    label="4.7.2 สภาพบุชชิ่ง"
+                    label="2.7.2 สภาพบุชชิ่ง"
                     value={item.ext?.bushing}
                     onChange={v => handleTransformer(idx, "ext", { ...item.ext, bushing: v })}
                     detail
                   />
                   <CorrectableRow
-                    label="4.7.3 ระดับน้ำมัน"
+                    label="2.7.3 ระดับน้ำมัน"
                     value={item.ext?.oilLevel}
                     onChange={v => handleTransformer(idx, "ext", { ...item.ext, oilLevel: v })}
                     detail
                   />
                   <CorrectableRow
-                    label="4.7.4 การรั่วซึมของน้ำมันหม้อแปลง"
+                    label="2.7.4 การรั่วซึมของน้ำมันหม้อแปลง"
                     value={item.ext?.leak}
                     onChange={v => handleTransformer(idx, "ext", { ...item.ext, leak: v })}
                     detail
@@ -511,9 +511,9 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                 </div>
               </div>
 
-              {/* 4.8 ป้ายเตือน */}
+              {/* 2.8 ป้ายเตือน */}
               <div className="space-y-4">
-                <h4 className="text-base font-medium text-gray-800">4.8 ป้ายเตือน</h4>
+                <h4 className="text-base font-medium text-gray-800">2.8 ป้ายเตือน</h4>
                 <CorrectableRow
                   label='"อันตรายไฟฟ้าแรงสูง เฉพาะเจ้าหน้าที่ที่เกี่ยวข้องเท่านั้น"'
                   value={item.sign}
@@ -522,9 +522,9 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                 />
               </div>
 
-              {/* 4.9 อื่นๆ */}
+              {/* 2.9 อื่นๆ */}
               <div className="space-y-4">
-                <h4 className="text-base font-medium text-gray-800">4.9 อื่นๆ</h4>
+                <h4 className="text-base font-medium text-gray-800">2.9 อื่นๆ</h4>
                 <textarea
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 resize-none"
                   rows={3}
@@ -540,17 +540,6 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
               {idx < transformers.length - 1 && <hr className="my-8 border-gray-200" />}
             </div>
           ))}
-
-          {/* Information Box */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-            <div className="flex items-start gap-2">
-              <div className="text-blue-600 mt-1">ℹ️</div>
-              <div className="text-sm text-blue-800">
-                <strong>หมายเหตุ:</strong> กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง 
-                เพื่อให้การตรวจสอบการติดตั้งระบบหม้อแปลงและระบบไฟฟ้าแรงต่ำเป็นไปอย่างราบรื่น
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

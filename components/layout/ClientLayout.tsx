@@ -2,7 +2,6 @@
 
 import { usePathname } from 'next/navigation';
 import SiteNavbar from '@/components/ui/Navbar';
-import SiteFooter from '@/components/ui/Footer';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,7 +13,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <main className={`container mx-auto p-4 sm:p-6 ${!isAuthPage ? 'mt-6' : ''} flex-grow`}>
         {children}
       </main>
-      {!isAuthPage && <SiteFooter />}
     </>
   );
 }
