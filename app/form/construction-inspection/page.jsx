@@ -147,12 +147,12 @@ export default function ConstructionInspectionPage() {
               </>
             )}
           </button>
-          <button
-            type="submit"
-            className="px-8 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded shadow transition-colors duration-200"
-          >
-            บันทึกและส่งข้อมูล
-          </button>
+           <button
+              type="submit"
+              className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
+            >
+              บันทึกฟอร์ม
+            </button>
         </div>
       </form>
     </div>

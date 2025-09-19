@@ -183,11 +183,11 @@ export default function EvChargerLvInspectionPage() {
             )}
           </button>
           <button
-            type="submit"
-            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
-          >
-            บันทึกฟอร์ม
-          </button>
+              type="submit"
+              className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
+            >
+              บันทึกฟอร์ม
+            </button>
         </div>
       </form>
     </div>

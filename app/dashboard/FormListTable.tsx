@@ -4,7 +4,8 @@
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { Eye, Trash2 } from "lucide-react";
+import { Eye, Trash2, AlertCircle } from "lucide-react";
+import { useState } from "react";
 
 // ฟังก์ชันสำหรับจัดรูปแบบวันที่
 const formatDate = (dateString: string) => {
@@ -26,6 +27,8 @@ interface FormListTableProps {
   forms: FormData[];
   selectedFormType: string;
   formTypeLabel: string;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
 interface FormData {
@@ -39,8 +42,15 @@ interface FormData {
   address?: string;
 }
 
-export default function FormListTable({ forms, selectedFormType, formTypeLabel }: FormListTableProps) {
+export default function FormListTable({ 
+  forms, 
+  selectedFormType, 
+  formTypeLabel, 
+  isLoading = false, 
+  error = null 
+}: FormListTableProps) {
   const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   
   // Add error handling for Supabase client creation
   let supabase;
@@ -58,25 +68,34 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
     }
     
     if (window.confirm(`คุณต้องการลบฟอร์มนี้ (${id}) ใช่หรือไม่?`)) {
-      const { error } = await supabase
-        .from(selectedFormType)
-        .delete()
-        .match({ id });
+      setIsDeleting(id);
+      try {
+        const { error } = await supabase
+          .from(selectedFormType)
+          .delete()
+          .match({ id });
 
-      if (error) {
-        toast.error("เกิดข้อผิดพลาดในการลบฟอร์ม: " + error.message);
-      } else {
-        toast.success("ลบฟอร์มสำเร็จแล้ว");
-        router.refresh();
+        if (error) {
+          console.error('Delete error:', error);
+          toast.error("เกิดข้อผิดพลาดในการลบฟอร์ม: " + error.message);
+        } else {
+          toast.success("ลบฟอร์มสำเร็จแล้ว");
+          router.refresh();
+        }
+      } catch (err) {
+        console.error('Unexpected delete error:', err);
+        toast.error("เกิดข้อผิดพลาดที่ไม่คาดคิด");
+      } finally {
+        setIsDeleting(null);
       }
     }
   };
 
   const getFormPath = (formType: string) => {
     const pathMap = {
-      'inspection_forms': 'residential-inspection',
+      'inspection_forms': 'home-inspection',
       'condo_inspection_forms': 'condo-inspection',
-      'ev_charger_hv_inspection': 'ev-charger-inspection',
+      'ev_charger_hv_inspection': 'ev-charger-hv-inspection',
       'ev_charger_lv_inspection': 'ev-charger-lv-inspection',
       'other_inspection': 'other-inspection',
       'other_inspection_forms': 'other-inspection',
@@ -86,8 +105,8 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
     
     const path = pathMap[formType as keyof typeof pathMap];
     if (!path) {
-      console.warn(`Unknown form type: ${formType}, defaulting to residential-inspection`);
-      return 'residential-inspection';
+      console.warn(`Unknown form type: ${formType}, defaulting to home-inspection`);
+      return 'home-inspection';
     }
     return path;
   };
@@ -133,6 +152,43 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
       toast.error("เกิดข้อผิดพลาดในการเปิดฟอร์ม");
     }
   };
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border">
+        <div className="p-4 border-b">
+          <h2 className="text-xl font-semibold text-pea-dark">{formTypeLabel}</h2>
+        </div>
+        <div className="p-8 text-center">
+          <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
+          <h3 className="text-lg font-medium text-red-900 mb-2">เกิดข้อผิดพลาด</h3>
+          <p className="text-red-700 mb-4">{error}</p>
+          <button
+            onClick={() => router.refresh()}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            ลองใหม่
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border">
+        <div className="p-4 border-b">
+          <h2 className="text-xl font-semibold text-pea-dark">{formTypeLabel}</h2>
+        </div>
+        <div className="p-8 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pea-primary mx-auto mb-4"></div>
+          <p className="text-gray-500">กำลังโหลดข้อมูล...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-sm border overflow-x-auto">
@@ -204,16 +260,22 @@ export default function FormListTable({ forms, selectedFormType, formTypeLabel }
                   <button 
                     onClick={() => handleEditClick(form.id)}
                     title="ดู/แก้ไข" 
-                    className="text-blue-600 hover:text-blue-900 transition-colors"
+                    className="text-blue-600 hover:text-blue-900 transition-colors disabled:opacity-50"
+                    disabled={isDeleting === form.id}
                   >
                     <Eye size={18} />
                   </button>
                   <button 
                     onClick={() => handleDelete(form.id)} 
                     title="ลบ" 
-                    className="text-red-600 hover:text-red-900 transition-colors"
+                    className="text-red-600 hover:text-red-900 transition-colors disabled:opacity-50"
+                    disabled={isDeleting === form.id}
                   >
-                    <Trash2 size={18} />
+                    {isDeleting === form.id ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                    ) : (
+                      <Trash2 size={18} />
+                    )}
                   </button>
                 </div>
               </td>

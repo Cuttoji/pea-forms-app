@@ -276,9 +276,12 @@ export default function EvChargerHvInspectionPage() {
               </>
             )}
           </button>
-          <button className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-sm transition-colors duration-200">
-            บันทึกข้อมูล
-          </button>
+           <button
+              type="submit"
+              className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
+            >
+              บันทึกฟอร์ม
+            </button>
         </div>
       </div>
     </div>
