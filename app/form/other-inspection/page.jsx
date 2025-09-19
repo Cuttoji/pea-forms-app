@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import otherFormSchema, { getNewOtherTransformer } from "@/lib/constants/otherFormSchema";
 import GeneralInfoSection from "../components/building/GeneralInfoSection";
 import DocumentSection from "../components/building/DocumentSection";
@@ -8,6 +8,7 @@ import InspectionSummarySection from "../components/shared/InspectionSummarySect
 import TransformerSection from "../components/evCharger/TransformerSection";
 import LimitationSection from "../components/shared/LimitationSection";
 import SignaturePadSection from "../components/shared/SignaturePadSection";
+import OtherInspectionPDF from '../../../components/pdf/OtherInspectionPDF';
 
 export default function OtherInspectionPage() {
   const [formData, setFormData] = useState({
@@ -54,126 +55,183 @@ export default function OtherInspectionPage() {
     );
   };
 
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const formRef = useRef();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", { formData, transformers });
     // TODO: Implement form submission logic
   };
 
+  // PDF generation function
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true);
+    try {
+      const { pdf } = await import('@react-pdf/renderer');
+      
+      // Transform form data to match PDF component expectations
+      const pdfData = {
+        // General info
+        peaoffice: formData.general.peaOffice,
+        inspectionnumber: formData.general.inspectionNumber,
+        inspectiondate: formData.general.inspectionDate,
+        requestnumber: formData.general.requestNumber,
+        requestdate: formData.general.requestDate,
+        fullname: formData.general.fullName,
+        phone: formData.general.phone,
+        address: formData.general.address,
+        buildingtype: formData.general.buildingType,
+        phasetype: formData.general.phaseType,
+        estimatedload: formData.general.estimatedLoad,
+        
+        // Documents
+        documents: formData.documents,
+        
+        // HV System
+        hvSystem: formData.hvSystem,
+        
+        // Transformers
+        transformers: transformers,
+        
+        // Summary
+        summaryresult: formData.summary,
+        
+        // Limitation
+        scopeofinspection: formData.limitation,
+        
+        // Signatures
+        userSignature: formData.signature.userSignature,
+        inspectorSignature: formData.signature.inspectorSignature,
+      };
+      
+      const blob = await pdf(<OtherInspectionPDF formData={pdfData} />).toBlob();
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'other-inspection.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('เกิดข้อผิดพลาดในการสร้าง PDF กรุณาลองใหม่อีกครั้ง');
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-6xl mx-auto space-y-10 py-8 px-4">
-      {/* Page Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">
           แบบฟอร์มตรวจสอบระบบไฟฟ้าอื่นๆ
         </h1>
-        <p className="text-xl text-gray-600">
-          การตรวจสอบระบบไฟฟ้าและอุปกรณ์ป้องกันสำหรับอาคารพิเศษ
-        </p>
-        <div className="w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-6"></div>
       </div>
-
-      <GeneralInfoSection 
-        data={formData.general} 
-        onChange={(field, value) => handleSectionChange("general", field, value)} 
-      />
       
-      <DocumentSection 
-        value={formData.documents} 
-        onChange={(value) => handleSectionObject("documents", value)} 
-      />
-      
-      <HVSystemSection 
-        value={formData.hvSystem} 
-        onChange={(value) => handleSectionObject("hvSystem", value)} 
-      />
-
-      <div className="space-y-10">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            4. ระบบหม้อแปลงและไฟฟ้าแรงต่ำ
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6" ref={formRef}>
+        {/* Page Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">
+            แบบฟอร์มตรวจสอบระบบไฟฟ้าอื่นๆ
           </h2>
-          <div className="w-full h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+          <p className="text-lg text-gray-600">
+            การตรวจสอบระบบไฟฟ้าและอุปกรณ์ป้องกันสำหรับอาคารพิเศษ
+          </p>
+          <div className="w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-6"></div>
         </div>
 
-        {transformers.map((transformer, transformerIndex) => (
-          <div
-            key={transformerIndex}
-            className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden"
-          >
-            <div className="bg-gradient-to-r from-orange-600 to-red-600 px-8 py-6">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                    <span className="text-gray-700 text-lg font-bold">{transformerIndex + 1}</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">
-                    หม้อแปลงที่ {transformerIndex + 1}
-                  </h3>
-                </div>
-                {transformers.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeTransformer(transformerIndex)}
-                    className="px-6 py-3 bg-white bg-opacity-20 text-gray-700 text-base font-medium rounded-lg hover:bg-opacity-30 transition-colors"
-                  >
-                    ลบหม้อแปลง
-                  </button>
-                )}
-              </div>
-            </div>
+        <GeneralInfoSection 
+          data={formData.general} 
+          onChange={(field, value) => handleSectionChange("general", field, value)} 
+        />
+        
+        <DocumentSection 
+          value={formData.documents} 
+          onChange={(value) => handleSectionObject("documents", value)} 
+        />
+        
+        <HVSystemSection 
+          value={formData.hvSystem} 
+          onChange={(value) => handleSectionObject("hvSystem", value)} 
+        />
 
-            <div className="p-8 space-y-10">
+        <div className="space-y-10">
+          <div className="text-center">
+            <h3 className="text-lg font-bold mb-6">หม้อแปลงไฟฟ้า</h3>
+          </div>
+          
+          {transformers.map((transformer, index) => (
+            <div key={index}>
               <TransformerSection
-                sectionNumber={4}
-                value={transformer.transformerData}
-                onChange={(updatedTransformer) => {
-                  handleTransformerChange(
-                    transformerIndex,
-                    "transformerData",
-                    updatedTransformer
-                  );
-                }}
+                transformer={transformer}
+                index={index}
+                onTransformerChange={handleTransformerChange}
+                onRemove={() => removeTransformer(index)}
+                canRemove={transformers.length > 1}
               />
             </div>
+          ))}
+          
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={addTransformer}
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors duration-200"
+            >
+              เพิ่มหม้อแปลง
+            </button>
           </div>
-        ))}
-      </div>
-      
-      <div className="flex justify-center">
-        <button
-          type="button"
-          onClick={addTransformer}
-          className="px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold text-lg rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
-        >
-          + เพิ่มหม้อแปลง
-        </button>
-      </div>
+        </div>
 
-      <InspectionSummarySection 
-        value={formData.summary}
-        onChange={(value) => handleSectionObject("summary", value)}
-      />
-      
-      <LimitationSection 
-        value={formData.limitation}
-        onChange={(value) => handleSectionObject("limitation", value)}
-      />
-      
-      <SignaturePadSection 
-        value={formData.signature}
-        onChange={(value) => handleSectionObject("signature", value)}
-      />
+        <InspectionSummarySection 
+          value={formData.summary} 
+          onChange={(value) => handleSectionObject("summary", value)} 
+        />
+        
+        <LimitationSection 
+          value={formData.limitation} 
+          onChange={(value) => handleSectionObject("limitation", value)} 
+        />
+        
+        <SignaturePadSection 
+          value={formData.signature}
+          onChange={(value) => handleSectionObject("signature", value)}
+        />
 
-      {/* Submit Button */}
-      <div className="flex justify-center pt-8 border-t border-gray-200">
-        <button
-          type="submit"
-          className="px-12 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
-        >
-          บันทึกและส่งข้อมูล
-        </button>
-      </div>
-    </form>
+        {/* Submit Buttons */}
+        <div className="flex justify-center mt-8 space-x-4">
+          <button
+            type="button"
+            onClick={handleDownloadPDF}
+            disabled={isGeneratingPDF}
+            className="bg-red-600 text-white px-8 py-2 rounded shadow font-bold hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
+          >
+            {isGeneratingPDF ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                กำลังสร้าง PDF...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                ดาวน์โหลด PDF
+              </>
+            )}
+          </button>
+          <button
+            type="submit"
+            className="px-8 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded shadow transition-colors duration-200"
+          >
+            บันทึกและส่งข้อมูล
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

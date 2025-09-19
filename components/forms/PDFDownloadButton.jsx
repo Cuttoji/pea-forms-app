@@ -4,40 +4,115 @@ import dynamic from 'next/dynamic';
 const PDFDownloadButton = ({ formRef, fileName = 'form' }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
+  // Function to temporarily replace problematic CSS styles
+  const prepareDOMForPDF = (element) => {
+    const elementsToRevert = [];
+    
+    // Find all elements with problematic styles
+    const allElements = element.querySelectorAll('*');
+    
+    allElements.forEach(el => {
+      const computedStyle = window.getComputedStyle(el);
+      const originalStyles = {};
+      let needsRevert = false;
+      
+      // Check for oklch colors and other problematic styles
+      ['color', 'backgroundColor', 'borderColor', 'fill', 'stroke'].forEach(prop => {
+        const value = computedStyle[prop];
+        if (value && (value.includes('oklch') || value.includes('color-mix'))) {
+          originalStyles[prop] = el.style[prop];
+          // Convert to a fallback color
+          if (value.includes('oklch')) {
+            el.style[prop] = '#6b7280'; // gray-500 fallback
+          }
+          needsRevert = true;
+        }
+      });
+      
+      if (needsRevert) {
+        elementsToRevert.push({ element: el, originalStyles });
+      }
+    });
+    
+    return elementsToRevert;
+  };
+
+  // Function to revert DOM changes
+  const revertDOMChanges = (elementsToRevert) => {
+    elementsToRevert.forEach(({ element, originalStyles }) => {
+      Object.entries(originalStyles).forEach(([prop, value]) => {
+        if (value) {
+          element.style[prop] = value;
+        } else {
+          element.style.removeProperty(prop);
+        }
+      });
+    });
+  };
+
   const handleDownloadPDF = async () => {
     if (!formRef.current) return;
     
     setIsGenerating(true);
+    let elementsToRevert = [];
+    
     try {
+      // Prepare DOM for PDF generation
+      elementsToRevert = prepareDOMForPDF(formRef.current);
+      
       // Dynamic imports to avoid SSR issues
       const html2canvas = (await import('html2canvas')).default;
       const jsPDF = (await import('jspdf')).default;
       
-      const canvas = await html2canvas(formRef.current);
-      const imgData = canvas.toDataURL('image/png');
+      // Generate canvas with better options
+      const canvas = await html2canvas(formRef.current, {
+        scale: 2, // Higher quality
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        removeContainer: true,
+        ignoreElements: (element) => {
+          // Skip elements that might cause issues
+          return element.classList?.contains('no-pdf') || false;
+        }
+      });
       
-      const pdf = new jsPDF();
-      const imgWidth = 210;
-      const pageHeight = 295;
+      const imgData = canvas.toDataURL('image/png', 0.95);
+      
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 295; // A4 height in mm
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       let heightLeft = imgHeight;
       
       let position = 0;
       
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      // Add first page
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
       heightLeft -= pageHeight;
       
+      // Add additional pages if needed
       while (heightLeft >= 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
         heightLeft -= pageHeight;
       }
       
       pdf.save(`${fileName}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
+      alert('เกิดข้อผิดพลาดในการสร้าง PDF กรุณาลองใหม่อีกครั้ง');
     } finally {
+      // Always revert DOM changes
+      if (elementsToRevert.length > 0) {
+        revertDOMChanges(elementsToRevert);
+      }
       setIsGenerating(false);
     }
   };

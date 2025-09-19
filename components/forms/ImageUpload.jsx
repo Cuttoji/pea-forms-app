@@ -23,7 +23,10 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
 
   // อัปเดต preview เมื่อ initialImageUrl เปลี่ยน
   useEffect(() => {
-    if (initialImageUrl && initialImageUrl !== preview) {
+    if (initialImageUrl && 
+        typeof initialImageUrl === 'string' && 
+        initialImageUrl !== preview && 
+        initialImageUrl.trim() !== '') {
       console.log('Setting initial image URL:', initialImageUrl);
       setPreview(initialImageUrl);
       setImageError(false);
@@ -158,9 +161,14 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
   };
 
   const openImageInNewTab = () => {
-    if (preview && !imageError) {
+    if (isValidPreview() && !imageError) {
       window.open(preview, '_blank');
     }
+  };
+
+  // Helper function to check if preview is valid
+  const isValidPreview = () => {
+    return preview && typeof preview === 'string' && preview.trim() !== '';
   };
 
   return (
@@ -183,7 +191,7 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
         <div className="w-40 h-40 rounded-2xl border-3 border-dashed border-gray-300 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden flex-shrink-0 relative shadow-inner hover:shadow-lg transition-all duration-300 group">
           {showCamera ? (
             <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover rounded-xl"></video>
-          ) : preview ? (
+          ) : isValidPreview() ? (
             <div className="relative w-full h-full">
               {isImageLoading && (
                 <div className="absolute inset-0 bg-white/90 flex items-center justify-center rounded-xl">
@@ -283,7 +291,7 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
           </div>
 
           {/* ปุ่มเพิ่มเติม */}
-          {preview && !showCamera && (
+          {isValidPreview() && !showCamera && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 type="button"
@@ -321,7 +329,7 @@ const ImageUpload = ({ onImageSelected, initialImageUrl = null, disabled = false
             </div>
           )}
 
-          {preview && !showCamera && (
+          {isValidPreview() && !showCamera && (
             <div className="text-sm text-green-700 bg-gradient-to-r from-green-100 to-green-200 p-3 rounded-xl shadow-inner border border-green-300">
               <div className="flex items-center gap-2">
                 <span className="text-lg">✅</span>

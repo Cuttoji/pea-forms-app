@@ -99,29 +99,6 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               />
             </div>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">ชื่อนิติบุคคลที่ขอใช้ไฟฟ้า</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.corporateName || ""}
-                onChange={e => onChange("corporateName", e.target.value)}
-                placeholder="กรอกชื่อนิติบุคคล"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">โทรศัพท์นิติบุคคล</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.corporatePhone || ""}
-                onChange={e => onChange("corporatePhone", e.target.value)}
-                placeholder="กรอกเบอร์โทรศัพท์"
-              />
-            </div>
-          </div>
 
           <div>
             <label className="block text-gray-700 font-medium mb-2">ที่อยู่</label>

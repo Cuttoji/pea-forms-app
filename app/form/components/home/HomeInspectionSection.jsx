@@ -36,14 +36,19 @@ const INSPECTION_ITEMS = [
     label: "2.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์(บริภัณฑ์ประธาน)",
     subItems: [
       { label: "ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC60898" },
-      { label: "ข) เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์ ขนาด AT......A" },
+      { 
+        label: "ข) เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์ ขนาด AT......A", 
+        isATInput: true // เพิ่ม flag สำหรับ render input ขนาด AT
+      },
       { label: "ค) ขนาดกระแสลัดวงจรสูงสุดไม่ต่ำกว่า 10 กิโลแอมแปร์ (kA)" },
     ],
   },
   {
     label: "2.3 ระบบการต่อลงดินที่แผงเมนสวิตช์",
     subItems: [
-      { label: "ก) ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายตัวนำประธาน ขนาดสายต่อหลักดิน......ตร.มม." },
+      { label: "ก) ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายตัวนำประธาน ขนาดสายต่อหลักดิน......ตร.มม." ,
+        isUnderInput: true
+      },
       { label: "ข) ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม (หรือ 25 โอห์มในบางกรณี)" },
       { label: "ค) กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และต่อสายนิวทรัล (Neutral Wire) ของตัวนำประธาน (Main Conductor) เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน" },
       { label: "ง) กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายดินบริภัณฑ์ ภายในแผงเมนสวิตช์" }
@@ -101,6 +106,10 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
   const wireSize = data.wireSize || "";
   const wireResult = data.wireResult || "";
   const wireDetail = data.wireDetail || "";
+
+  // เพิ่มข้อมูลสำหรับ AT และ Underground
+  const atSize = data.atSize || "";
+  const undergroundSize = data.undergroundSize || "";
 
   // RCD (2.4)
   const rcdResult = data.rcdResult || "";
@@ -254,7 +263,35 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
                 <div key={sub.label} className="mb-4">
                   <div className="bg-gray-50 p-3 rounded-md mb-3">
                     <div className="flex items-baseline gap-2 text-gray-700">
-                      <span className="font-medium">{sub.label}</span>
+                      <span className="font-medium">
+                        {sub.isATInput ? (
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span>ข) เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์ ขนาด AT</span>
+                            <input
+                              type="text"
+                              className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 w-20 text-center"
+                              
+                              value={atSize}
+                              onChange={e => handleWireChange("atSize", e.target.value)}
+                            />
+                            <span>A</span>
+                          </div>
+                        ) : sub.isUnderInput ? (
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span>ก) ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายตัวนำประธาน ขนาดสายต่อหลักดิน</span>
+                            <input
+                              type="text"
+                              className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 w-20 text-center"
+                              
+                              value={undergroundSize}
+                              onChange={e => handleWireChange("undergroundSize", e.target.value)}
+                            />
+                            <span>ตร.มม.</span>
+                          </div>
+                        ) : (
+                          sub.label
+                        )}
+                      </span>
                     </div>
                   </div>
                   <CheckItemRow

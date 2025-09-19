@@ -68,7 +68,7 @@ const CorrectiveItem = ({ label, status, note }) => (
 );
 
 // --- PDF Document ---
-const ResidentialInspectionPDF = ({ formData }) => {
+const HomeInspectionPDF = ({ formData }) => {
   if (!formData) {
     return <Document><Page style={styles.page}><Text>ไม่มีข้อมูล</Text></Page></Document>;
   }
@@ -231,4 +231,4 @@ const ResidentialInspectionPDF = ({ formData }) => {
     </Document>
   );
 }
-export default ResidentialInspectionPDF;
+export default HomeInspectionPDF;
