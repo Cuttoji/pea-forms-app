@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import GeneralInfoSection from "../components/home/GeneralInfoSection";
 import HomeInspectionSection from "../components/home/HomeInspectionSection";
@@ -8,6 +8,7 @@ import InspectionSummarySection from "../components/shared/InspectionSummarySect
 import LimitationSection from "../components/shared/LimitationSection";
 import SignaturePadSection from "../components/shared/SignaturePadSection"; 
 import homeFormSchema from "@/lib/constants/homeFormSchema";
+import PDFDownloadButton from '../../../components/forms/PDFDownloadButton';
 
 export default function HomeInspectionPage() {
   const [form, setForm] = useState({
@@ -17,6 +18,8 @@ export default function HomeInspectionPage() {
     limitation: homeFormSchema.limitation,
     signature: homeFormSchema.signature,
   });
+
+  const formRef = useRef();
 
   // ฟังก์ชันสำหรับเปลี่ยนค่าในแต่ละ section
   const handleSectionChange = (section, field, value) => {
@@ -45,39 +48,50 @@ export default function HomeInspectionPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">
-        แบบฟอร์มตรวจสอบระบบไฟฟ้าภายในบ้าน/ที่อยู่อาศัย
-      </h1>
-      <GeneralInfoSection
-        data={form.general}
-        onChange={(field, value) => handleSectionChange("general", field, value)}
-      />
-      <HomeInspectionSection
-        data={form.inspection}
-        onChange={(field, value) => handleSectionChange("inspection", field, value)}
-      />
-      <InspectionSummarySection
-        value={form.summary}
-        onChange={(value) => setForm((prev) => ({ ...prev, summary: value }))}
-      />
-      <LimitationSection
-        value={form.limitation}
-        onChange={(value) => setForm((prev) => ({ ...prev, limitation: value }))}
-      />
-      <SignaturePadSection
-        value={form.signature}
-        onChange={(value) => setForm((prev) => ({ ...prev, signature: value }))}
-      />
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">
+            แบบตรวจสอบระบบไฟฟ้าภายในบ้านพักอาศัย
+          </h1>
+          <PDFDownloadButton 
+            formRef={formRef} 
+            fileName="home-inspection" 
+          />
+        </div>
+        
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6" ref={formRef}>
+          <GeneralInfoSection
+            data={form.general}
+            onChange={(field, value) => handleSectionChange("general", field, value)}
+          />
+          <HomeInspectionSection
+            data={form.inspection}
+            onChange={(field, value) => handleSectionChange("inspection", field, value)}
+          />
+          <InspectionSummarySection
+            value={form.summary}
+            onChange={(value) => setForm((prev) => ({ ...prev, summary: value }))}
+          />
+          <LimitationSection
+            value={form.limitation}
+            onChange={(value) => setForm((prev) => ({ ...prev, limitation: value }))}
+          />
+          <SignaturePadSection
+            value={form.signature}
+            onChange={(value) => setForm((prev) => ({ ...prev, signature: value }))}
+          />
 
-      <div className="flex justify-center mt-8">
-        <button
-          type="submit"
-          className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
-        >
-          บันทึกฟอร์ม
-        </button>
+          <div className="flex justify-center mt-8">
+            <button
+              type="submit"
+              className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
+            >
+              บันทึกฟอร์ม
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
 }

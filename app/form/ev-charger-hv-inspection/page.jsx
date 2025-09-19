@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { getNewSubCircuit, getNewEvCharger, getNewTransformer } from "@/lib/constants/evHvChargerFormSchema";
 import GeneralInfoHvSection from "@/app/form/components/evCharger/GeneralInfoHvSection";
 import DocumentSection from "@/app/form/components/evCharger/DocumentSection";
@@ -13,6 +13,7 @@ import InspectionSummarySection from "@/app/form/components/shared/InspectionSum
 import LimitationSection from "@/app/form/components/shared/LimitationSection";
 import SignaturePadSection from "@/app/form/components/shared/SignaturePadSection";
 import evHvChargerFormSchema from "@/lib/constants/evHvChargerFormSchema";
+import PDFDownloadButton from '../../../components/forms/PDFDownloadButton';
 
 export default function EvChargerHvInspectionPage() {
   const [general, setGeneral] = useState(evHvChargerFormSchema.general || {});
@@ -61,6 +62,8 @@ export default function EvChargerHvInspectionPage() {
       })
     );
   };
+
+  const formRef = useRef();
 
   return (
     <div className=" py-6 px-4">
@@ -185,6 +188,20 @@ export default function EvChargerHvInspectionPage() {
           บันทึกข้อมูล
         </button>
       </div>
+
+      <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">
+            แบบตรวจสอบหม้อแปลงไฟฟ้าและระบบจำหน่ายไฟฟ้าแรงสูง สำหรับสถานีชาร์จรถยนต์ไฟฟ้า
+          </h1>
+          <PDFDownloadButton 
+            formRef={formRef} 
+            fileName="ev-charger-hv-inspection" 
+          />
+        </div>
+        
+        <div ref={formRef} className="bg-white rounded-lg shadow-md p-6">
+          {/* ...existing code... */}
+        </div>
     </div>
   );
 }
