@@ -3,17 +3,16 @@
 import React, { useState, useRef } from "react";
 import GeneralInfoSection from "../components/construction/GeneralInfoSection";
 import ConstructionInspectionSection from "../components/construction/ConstructionInspectionSection";
-import InspectionSummarySection from "../components/shared/InspectionSummarySection";
-import LimitationSection from "../components/shared/LimitationSection";
-import SignaturePadSection from "../components/shared/SignaturePadSection";
 import constructionFormSchema from "@/lib/constants/constructionFormSchema";
-import ConstructionInspectionPDF from '../../../components/pdf/ConstructionInspectionPDF';
+import SummarySection from "../components/construction/SummarySection";
+import ConstructionInspectionPDF from '../../../components/pdf/constructioninspectionPDF';
 
 export default function ConstructionInspectionPage() {
   const [formData, setFormData] = useState(constructionFormSchema);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const formRef = useRef();
 
+  // ปรับให้ onChange รับ field, value
   const handleFormChange = (field, value) => {
     setFormData(prevData => ({
       ...prevData,
@@ -32,10 +31,8 @@ export default function ConstructionInspectionPage() {
     setIsGeneratingPDF(true);
     try {
       const { pdf } = await import('@react-pdf/renderer');
-      
-      // Transform form data to match PDF component expectations
+      // แปลงข้อมูลให้ตรงกับ PDF
       const pdfData = {
-        // General info
         peaoffice: formData.general?.peaOffice,
         inspectionnumber: formData.general?.inspectionNumber,
         inspectiondate: formData.general?.inspectionDate,
@@ -46,24 +43,13 @@ export default function ConstructionInspectionPage() {
         address: formData.general?.address,
         buildingtype: formData.general?.buildingType,
         constructiontype: formData.general?.constructionType,
-        
-        // Construction inspection data
         inspection: formData.inspection,
-        
-        // Summary
         summaryresult: formData.summary,
-        
-        // Limitation
         scopeofinspection: formData.limitation,
-        
-        // Signatures
         userSignature: formData.signature?.userSignature,
         inspectorSignature: formData.signature?.inspectorSignature,
       };
-      
       const blob = await pdf(<ConstructionInspectionPDF formData={pdfData} />).toBlob();
-      
-      // Create download link
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -87,7 +73,6 @@ export default function ConstructionInspectionPage() {
           แบบฟอร์มตรวจสอบการก่อสร้าง
         </h1>
       </div>
-      
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6" ref={formRef}>
         {/* Page Header */}
         <div className="text-center mb-12">
@@ -100,32 +85,23 @@ export default function ConstructionInspectionPage() {
           <div className="w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-6"></div>
         </div>
 
-        <GeneralInfoSection 
-          data={formData} 
-          onChange={handleFormChange} 
-        />
-        
-        <ConstructionInspectionSection 
-          data={formData} 
-          onChange={handleFormChange} 
-        />
-        
-        <InspectionSummarySection 
-          value={formData.summary} 
-          onChange={(value) => handleFormChange("summary", value)} 
-        />
-        
-        <LimitationSection 
-          value={formData.limitation} 
-          onChange={(value) => handleFormChange("limitation", value)} 
-        />
-        
-        <SignaturePadSection 
-          value={formData.signature}
-          onChange={(value) => handleFormChange("signature", value)}
+        {/* ส่ง prop field ให้แต่ละ Section */}
+        <GeneralInfoSection
+          value={formData.general}
+          onChange={val => handleFormChange("general", val)}
         />
 
-        {/* Submit Buttons */}
+        <ConstructionInspectionSection
+          value={formData.inspection}
+          onChange={val => handleFormChange("inspection", val)}
+        />
+
+        <SummarySection
+          value={formData.summary}
+          onChange={val => handleFormChange("summary", val)}
+        />
+
+        {/* ปุ่ม */}
         <div className="flex justify-center mt-8 space-x-4">
           <button
             type="button"
@@ -147,12 +123,12 @@ export default function ConstructionInspectionPage() {
               </>
             )}
           </button>
-           <button
-              type="submit"
-              className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
-            >
-              บันทึกฟอร์ม
-            </button>
+          <button
+            type="submit"
+            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
+          >
+            บันทึกฟอร์ม
+          </button>
         </div>
       </form>
     </div>

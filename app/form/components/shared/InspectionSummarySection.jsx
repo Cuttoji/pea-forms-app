@@ -2,7 +2,7 @@ import React from "react";
 
 export default function InspectionSummarySection({ value = {}, onChange = () => {} }) {
   return (
-    <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+    <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden mb-6">
       <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-bold text-gray-800">สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</h2>

@@ -9,6 +9,7 @@ import PanelBoardSection from "../components/evCharger/PanelBoardSection";
 import SubCircuitSection from "../components/evCharger/SubCircuitSection";
 import GeneralInfoLvSection from "../components/evCharger/GeneralInfoLvSection";
 import EvChargerLvFormPDF from "../../../components/pdf/EvChargerLvFormPDF";
+import LVSystemSectionPEA from "../components/evCharger/LVSystemSectionPEA";
 
 export default function EvChargerLvInspectionPage() {
   const [form, setForm] = React.useState({
@@ -123,6 +124,10 @@ export default function EvChargerLvInspectionPage() {
         <DocumentSection
           value={form.documents}
           onChange={(value) => handleSectionObject("documents", value)}
+        />
+        <LVSystemSectionPEA
+          value={form.inspection.lvSystemPEA}
+          onChange={(value) => handleSectionChange("inspection", "lvSystemPEA", value)}
         />
 
         {/* Updated Panel Board Section */}

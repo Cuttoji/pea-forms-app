@@ -33,21 +33,65 @@ export default function HomeInspectionPage() {
     }));
   };
 
-  // ฟังก์ชันเปลี่ยนค่าที่เป็น object ทั้งก้อน (สำหรับบาง section)
-  const handleSectionObject = (section, value) => {
-    setForm((prev) => ({
-      ...prev,
-      [section]: value,
-    }));
-  };
-
   // ฟังก์ชันบันทึกหรือส่งฟอร์ม
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: เพิ่ม logic ส่งฟอร์มหรือ validate ตามต้องการ
-    // เช่น console.log(form);
-  };
 
+    // สร้าง payload ให้ตรงกับ column ใน home_inspections
+    const payload = {
+      // General Information
+      inspection_no: form.general.inspectionNo,
+      inspection_date: form.general.inspectionDate,
+      request_no: form.general.requestNo,
+      request_date: form.general.requestDate,
+      customer_name: form.general.customerName,
+      phone: form.general.phone,
+      address: form.general.address,
+      system_type: form.general.systemType,
+      load: form.general.load,
+      latitude: form.general.latitude,
+      longitude: form.general.longitude,
+      house_image: form.general.houseImage,
+
+      // Home Inspection Data
+      items: form.inspection.items,
+      wire_type: form.inspection.wireType,
+      wire_other: form.inspection.wireOther,
+      wire_size: form.inspection.wireSize,
+      wire_result: form.inspection.wireResult,
+      wire_detail: form.inspection.wireDetail,
+      at_size: form.inspection.atSize,
+      underground_size: form.inspection.undergroundSize,
+      rcd_result: form.inspection.rcdResult,
+      rcd_note: form.inspection.rcdNote,
+
+      // Summary
+      overall_result: form.summaryType?.overallResult ?? null,
+
+      // Limitation
+      limitation: form.limitation,
+
+      // Signature
+      officer_sign: form.signature.officerSign,
+      customer_sign: form.signature.customerSign,
+    };
+
+    try {
+      const response = await fetch('/api/submit-form/home-inspection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        alert('บันทึกฟอร์มเรียบร้อยแล้ว!');
+      } else {
+        alert(result.error || 'เกิดข้อผิดพลาดในการบันทึกฟอร์ม');
+      }
+    } catch (error) {
+      alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+    }
+  };
   // PDF generation function
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
@@ -57,7 +101,6 @@ export default function HomeInspectionPage() {
       // Transform form data to match PDF component expectations
       const pdfData = {
         // General info
-        peaoffice: form.general.peaOffice,
         inspectionnumber: form.general.inspectionNumber,
         inspectiondate: form.general.inspectionDate,
         requestnumber: form.general.requestNumber,

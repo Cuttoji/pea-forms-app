@@ -9,7 +9,7 @@ import LimitationSection from "../components/shared/LimitationSection";
 import SignaturePadSection from "../components/shared/SignaturePadSection";
 import LVSystemSection from "../components/building/LVSystemSection";
 import condoFormSchema, { getNewCondoTransformer } from "@/lib/constants/condoFormSchema";
-import CondoInspectionPDF from "../components/pdf/CondoInspectionPDF";
+import CondoInspectionPDF from "../../../components/pdf/CondoInspectionPDF";
 
 export default function CondoInspectionPage() {
   const [formData, setFormData] = useState({

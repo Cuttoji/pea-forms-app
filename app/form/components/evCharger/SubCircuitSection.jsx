@@ -557,7 +557,7 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
       <div className="flex justify-center mt-4">
         <button
           type="button"
-          className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-sm hover:bg-blue-700 transition-colors"
+          className="mb-6 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-sm hover:bg-blue-700 transition-colors"
           onClick={addSub}
         >
           + เพิ่มวงจรย่อย

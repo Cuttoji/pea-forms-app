@@ -12,7 +12,7 @@ const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStre
  */
 export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
   return (
-    <div className="max-w-4xl mx-auto space-y-6 text-gray-700">
+    <div className="space-y-6 text-gray-700">
       {/* Header Section */}
       <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
         <div className="bg-[#5b2d90] text-white px-6 py-4">

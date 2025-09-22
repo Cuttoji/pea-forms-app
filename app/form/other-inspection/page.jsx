@@ -58,11 +58,27 @@ export default function OtherInspectionPage() {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const formRef = useRef();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", { formData, transformers });
-    // TODO: Implement form submission logic
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch('/api/submit-form/other-inspection', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...formData,
+        transformers,
+      }),
+    });
+    const result = await response.json();
+    if (response.ok) {
+      alert('บันทึกฟอร์มเรียบร้อยแล้ว!');
+    } else {
+      alert(result.error || 'เกิดข้อผิดพลาดในการบันทึกฟอร์ม');
+    }
+  } catch (error) {
+    alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
+  }
+};
 
   // PDF generation function
   const handleDownloadPDF = async () => {
@@ -159,7 +175,7 @@ export default function OtherInspectionPage() {
           onChange={(value) => handleSectionObject("hvSystem", value)} 
         />
 
-        <div className="space-y-10">
+        <div className="space-y-10 mb-6">
           <div className="text-center">
             <h3 className="text-lg font-bold mb-6">หม้อแปลงไฟฟ้า</h3>
           </div>
