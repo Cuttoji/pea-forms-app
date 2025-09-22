@@ -26,7 +26,7 @@ const eslintConfig = [
 
   ...tseslint.configs.recommended,
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
@@ -37,6 +37,7 @@ const eslintConfig = [
     rules: {
       // TypeScript-specific rules
       "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
 
