@@ -36,6 +36,7 @@ const eslintConfig = [
     },
     rules: {
       // TypeScript-specific rules
+      "no-unused-vars": "off",
     },
   },
 
