@@ -53,9 +53,34 @@ export default function CondoInspectionPage() {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", { formData, transformers });
+
+    // รวมข้อมูลทั้งหมด
+    const payload = {
+      ...formData,
+      transformers,
+      created_at: new Date().toISOString(),
+    };
+
+    try {
+      // ส่งข้อมูลไป API (ใช้ path ตาม dynamic route)
+      const response = await fetch("/api/submit-form/condo-inspection", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        alert("บันทึกฟอร์มสำเร็จ!");
+        // สามารถ reset form หรือ redirect ได้ที่นี่
+      } else {
+        alert(result.error || "เกิดข้อผิดพลาดในการบันทึกฟอร์ม");
+      }
+    } catch (error) {
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+      console.error(error);
+    }
   };
 
   const handleGeneratePDF = () => {

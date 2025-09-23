@@ -23,12 +23,12 @@ export async function POST(request, context) {
 
   // Map formType to table name (เติม s ให้ตรงกับชื่อ table)
   const tableMap = {
-    "home-inspection": "home_inspections",
-    "condo-inspection": "condo_inspections",
-    "construction-inspection": "construction_inspections",
-    "ev-lv-charger-inspection": "ev_lv_charger_inspections",
-    "ev-hv-charger-inspection": "ev_hv_charger_inspections",
-    "other-inspection": "other_inspections",
+    "home-inspection": "home_inspection_forms",
+    "condo-inspection": "condo_inspection_forms",
+    "construction-inspection": "construction_inspection",
+    "ev-charger-lv-inspection": "ev_charger_lv_inspection",
+    "ev-charger-hv-inspection": "ev_charger_hv_inspection",
+    "other-inspection": "other_inspection_forms",
   };
   const tableName = tableMap[formTypeFromPath];
   if (!tableName) {

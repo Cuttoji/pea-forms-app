@@ -58,37 +58,36 @@ export default function OtherInspectionPage() {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const formRef = useRef();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await fetch('/api/submit-form/other-inspection', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...formData,
-        transformers,
-      }),
-    });
-    const result = await response.json();
-    if (response.ok) {
-      alert('บันทึกฟอร์มเรียบร้อยแล้ว!');
-    } else {
-      alert(result.error || 'เกิดข้อผิดพลาดในการบันทึกฟอร์ม');
+  // ไม่ต้อง import หรือใช้ supabase client ฝั่ง client
+  // ส่งข้อมูลไป API /api/submit-form/other-inspection
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/submit-form/other-inspection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          transformers,
+        }),
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        alert('บันทึกฟอร์มเรียบร้อยแล้ว!');
+      } else {
+        alert(result.error || 'เกิดข้อผิดพลาดในการบันทึกฟอร์ม');
+      }
+    } catch (error) {
+      alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
     }
-  } catch (error) {
-    alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
-  }
-};
+  };
 
-  // PDF generation function
+  // PDF generation function (เหมือนเดิม)
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
     try {
       const { pdf } = await import('@react-pdf/renderer');
-      
-      // Transform form data to match PDF component expectations
       const pdfData = {
-        // General info
         peaoffice: formData.general.peaOffice,
         inspectionnumber: formData.general.inspectionNumber,
         inspectiondate: formData.general.inspectionDate,
@@ -100,30 +99,15 @@ const handleSubmit = async (e) => {
         buildingtype: formData.general.buildingType,
         phasetype: formData.general.phaseType,
         estimatedload: formData.general.estimatedLoad,
-        
-        // Documents
         documents: formData.documents,
-        
-        // HV System
         hvSystem: formData.hvSystem,
-        
-        // Transformers
         transformers: transformers,
-        
-        // Summary
         summaryresult: formData.summary,
-        
-        // Limitation
         scopeofinspection: formData.limitation,
-        
-        // Signatures
         userSignature: formData.signature.userSignature,
         inspectorSignature: formData.signature.inspectorSignature,
       };
-      
       const blob = await pdf(<OtherInspectionPDF formData={pdfData} />).toBlob();
-      
-      // Create download link
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;

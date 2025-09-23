@@ -1,37 +1,55 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import constructionFormSchema from "@/lib/constants/constructionFormSchema";
 import GeneralInfoSection from "../components/construction/GeneralInfoSection";
 import ConstructionInspectionSection from "../components/construction/ConstructionInspectionSection";
-import constructionFormSchema from "@/lib/constants/constructionFormSchema";
 import SummarySection from "../components/construction/SummarySection";
 import ConstructionInspectionPDF from '../../../components/pdf/constructioninspectionPDF';
 
 export default function ConstructionInspectionPage() {
   const [formData, setFormData] = useState(constructionFormSchema);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef();
 
-  // ปรับให้ onChange รับ field, value
+  // อัปเดตข้อมูลแต่ละ section
   const handleFormChange = (field, value) => {
-    setFormData(prevData => ({
-      ...prevData,
+    setFormData(prev => ({
+      ...prev,
       [field]: value
     }));
   };
 
-  const handleSubmit = (e) => {
+  // ส่งข้อมูลไป API (ไม่ต้อง import supabase client)
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // TODO: Implement form submission logic
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/submit-form/construction-inspection", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        alert("บันทึกฟอร์มสำเร็จ!");
+      } else {
+        alert(result.error || "เกิดข้อผิดพลาดในการบันทึกฟอร์ม");
+      }
+    } catch (error) {
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // PDF generation function
+  // PDF generation function (เหมือนเดิม)
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
     try {
       const { pdf } = await import('@react-pdf/renderer');
-      // แปลงข้อมูลให้ตรงกับ PDF
       const pdfData = {
         peaoffice: formData.general?.peaOffice,
         inspectionnumber: formData.general?.inspectionNumber,
@@ -68,40 +86,19 @@ export default function ConstructionInspectionPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          แบบฟอร์มตรวจสอบการก่อสร้าง
-        </h1>
-      </div>
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6" ref={formRef}>
-        {/* Page Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            แบบฟอร์มตรวจสอบการก่อสร้าง
-          </h2>
-          <p className="text-lg text-gray-600">
-            การตรวจสอบความปลอดภัยและมาตรฐานการก่อสร้าง
-          </p>
-          <div className="w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-6"></div>
-        </div>
-
-        {/* ส่ง prop field ให้แต่ละ Section */}
         <GeneralInfoSection
           value={formData.general}
           onChange={val => handleFormChange("general", val)}
         />
-
         <ConstructionInspectionSection
           value={formData.inspection}
           onChange={val => handleFormChange("inspection", val)}
         />
-
         <SummarySection
           value={formData.summary}
           onChange={val => handleFormChange("summary", val)}
         />
-
-        {/* ปุ่ม */}
         <div className="flex justify-center mt-8 space-x-4">
           <button
             type="button"
@@ -125,9 +122,10 @@ export default function ConstructionInspectionPage() {
           </button>
           <button
             type="submit"
-            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
+            disabled={isSubmitting}
+            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800 disabled:opacity-50"
           >
-            บันทึกฟอร์ม
+            {isSubmitting ? "กำลังบันทึก..." : "บันทึกฟอร์ม"}
           </button>
         </div>
       </form>

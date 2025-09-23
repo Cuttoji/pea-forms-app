@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+
 import { getNewEvCharger, getNewTransformer } from "@/lib/constants/evHvChargerFormSchema";
 import GeneralInfoHvSection from "@/app/form/components/evCharger/GeneralInfoHvSection";
 import DocumentSection from "@/app/form/components/evCharger/DocumentSection";
@@ -137,12 +138,28 @@ export default function EvChargerHvInspectionPage() {
     }
   };
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  // เพิ่ม logic ที่ต้องการ
-  console.log("Form data:", form);
-  alert("บันทึกฟอร์มสำเร็จ!");
-};
+  // ส่งข้อมูลไป API (ไม่ต้อง import supabase client)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("/api/submit-form/ev-charger-hv-inspection", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        alert("บันทึกฟอร์มสำเร็จ!");
+        // สามารถ reset form หรือ redirect ได้ที่นี่
+      } else {
+        alert(result.error || "เกิดข้อผิดพลาดในการบันทึกฟอร์ม");
+      }
+    } catch (err) {
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+      console.error(err);
+    }
+  };
 
   return (
     <div className="min-h-screen p-4">

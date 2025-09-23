@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PEA Forms App
 
-## Getting Started
+## ขั้นตอนการเริ่มต้นใช้งานโปรเจกต์นี้อย่างละเอียด
 
-First, run the development server:
+### 1. ติดตั้งโปรแกรมที่จำเป็น
+- ติดตั้ง [Node.js (แนะนำเวอร์ชันล่าสุด LTS)](https://nodejs.org/)
+- ติดตั้ง [Git](https://git-scm.com/) (ถ้าต้องการ clone โปรเจกต์จาก GitHub)
 
-```bash
+### 2. ดาวน์โหลดหรือ Clone โปรเจกต์
+- ถ้าได้ไฟล์ ZIP ให้แตกไฟล์
+- ถ้า clone จาก GitHub ให้ใช้คำสั่ง
+  ```bash
+  git clone <repo-url>
+  cd pea-forms-app
+
+### 3. ติดตั้ง dependencies
+เปิด terminal ในโฟลเดอร์โปรเจกต์
+รันคำสั่งใดคำสั่งหนึ่ง (ตามที่ใช้ package manager)
+
+npm install
+# หรือ
+yarn install
+# หรือ
+pnpm install
+
+### 4. ตั้งค่า Environment Variables
+สร้างไฟล์ .env.local ที่ root ของโปรเจกต์
+ใส่ค่าเช่น (ตัวอย่างสำหรับ Supabase)
+
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+### 5. สร้างฐานข้อมูล (Supabase)
+เข้าไปที่ Supabase
+สร้าง Project ใหม่ (หรือใช้ Project เดิม)
+ไปที่เมนู Table Editor หรือ SQL Editor
+สร้าง table ตาม schema ที่โปรเจกต์ใช้ (ดูตัวอย่าง SQL ในไฟล์หรือ README)
+ตรวจสอบให้แน่ใจว่าชื่อ table ตรงกับที่ใช้ในโค้ด
+
+### 6. เริ่มต้นเซิร์ฟเวอร์สำหรับพัฒนา
+รันคำสั่ง
 npm run dev
-# or
+# หรือ
 yarn dev
-# or
+# หรือ
 pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 7. เปิดเว็บแอปในเบราว์เซอร์
+เปิดเบราว์เซอร์แล้วไปที่ http://localhost:3000
+จะเห็นหน้าแรกของแอป
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 8. เริ่มแก้ไข/พัฒนา
+แก้ไขไฟล์ในโฟลเดอร์ app/ หรือไฟล์อื่นๆ ตามต้องการ
+เมื่อบันทึกไฟล์ หน้าเว็บจะรีเฟรชอัตโนมัติ
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 9. (ถ้าต้องการ) Deploy ขึ้น Vercel
+สมัครและล็อกอิน Vercel
+กด Import Project แล้วเลือก repo นี้
+ตั้งค่า Environment Variables ใน Vercel ให้เหมือนกับ .env.local
+กด Deploy
