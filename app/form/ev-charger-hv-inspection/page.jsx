@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { getNewSubCircuit, getNewEvCharger, getNewTransformer } from "@/lib/constants/evHvChargerFormSchema";
+import React, { useState } from "react";
+import { getNewEvCharger, getNewTransformer } from "@/lib/constants/evHvChargerFormSchema";
 import GeneralInfoHvSection from "@/app/form/components/evCharger/GeneralInfoHvSection";
 import DocumentSection from "@/app/form/components/evCharger/DocumentSection";
 import TransformerSection from "@/app/form/components/evCharger/TransformerSection";
@@ -16,40 +16,54 @@ import evHvChargerFormSchema from "@/lib/constants/evHvChargerFormSchema";
 import EVChargerHVInspectionPDF from '../../../components/pdf/EVChargerHVInspectionPDF';
 
 export default function EvChargerHvInspectionPage() {
-  const [general, setGeneral] = useState(evHvChargerFormSchema.general || {});
-  const [docAreaType, setDocAreaType] = useState("personal");
-  const [docs, setDocs] = useState(evHvChargerFormSchema.documents || {});
-  const [hvSystem, setHvSystem] = useState(evHvChargerFormSchema.hvSystem || {});
-  const [lvSystem, setLvSystem] = useState(evHvChargerFormSchema.lvSystem || {});
-  const [summary, setSummary] = useState(evHvChargerFormSchema.summary || {});
-  const [limitation, setLimitation] = useState(evHvChargerFormSchema.limitation || {});
-  const [signature, setSignature] = useState(evHvChargerFormSchema.signature || {});
+  // ใช้ state เดียวสำหรับทุก section
+  const [form, setForm] = useState({
+    general: evHvChargerFormSchema.general,
+    documents: evHvChargerFormSchema.documents,
+    hvSystem: evHvChargerFormSchema.hvSystem,
+    transformers: [getNewTransformer()],
+    summary: evHvChargerFormSchema.summary,
+    limitation: evHvChargerFormSchema.limitation,
+    signature: evHvChargerFormSchema.signature,
+  });
 
-  // Use helper functions from schema
-  const [transformers, setTransformers] = useState([getNewTransformer()]);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
+  // เพิ่มหม้อแปลง
   const addTransformer = () => {
-    setTransformers(prev => [...prev, getNewTransformer()]);
+    setForm(prev => ({
+      ...prev,
+      transformers: [...prev.transformers, getNewTransformer()],
+    }));
   };
-  
+
+  // ลบหม้อแปลง
   const removeTransformer = (index) => {
-    if (transformers.length > 1) {
-      setTransformers(prev => prev.filter((_, i) => i !== index));
-    }
+    setForm(prev => ({
+      ...prev,
+      transformers: prev.transformers.length > 1
+        ? prev.transformers.filter((_, i) => i !== index)
+        : prev.transformers,
+    }));
   };
 
+  // เปลี่ยนค่าใน transformer
   const handleTransformerChange = (idx, key, value) => {
-    setTransformers((old) =>
-      old.map((t, i) => (i === idx ? { ...t, [key]: value } : t))
-    );
+    setForm(prev => ({
+      ...prev,
+      transformers: prev.transformers.map((t, i) =>
+        i === idx ? { ...t, [key]: value } : t
+      ),
+    }));
   };
-  
 
+  // เพิ่ม EV Charger ใน subcircuit
   const handleAddEvCharger = (transformerIndex, subCircuitIndex) => {
-    setTransformers(prev =>
-      prev.map((transformer, tIdx) => {
+    setForm(prev => ({
+      ...prev,
+      transformers: prev.transformers.map((transformer, tIdx) => {
         if (tIdx === transformerIndex) {
-          const newSubCircuits = transformer.subCircuits.map((subCircuit, sIdx) => {
+          const newSubCircuits = (transformer.subCircuits || []).map((subCircuit, sIdx) => {
             if (sIdx === subCircuitIndex) {
               const newEvChargers = [...(subCircuit.evChargers || []), getNewEvCharger()];
               return { ...subCircuit, evChargers: newEvChargers };
@@ -59,59 +73,54 @@ export default function EvChargerHvInspectionPage() {
           return { ...transformer, subCircuits: newSubCircuits };
         }
         return transformer;
-      })
-    );
+      }),
+    }));
   };
 
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  // เปลี่ยนค่าในแต่ละ section (object ทั้งก้อน)
+  const handleSectionChange = (section, value) => {
+    setForm(prev => ({
+      ...prev,
+      [section]: value,
+    }));
+  };
+
+  // เปลี่ยนค่าใน general section (field, value)
+  const handleGeneralChange = (field, fieldValue) => {
+    setForm(prev => ({
+      ...prev,
+      general: { ...prev.general, [field]: fieldValue }
+    }));
+  };
 
   // PDF generation function
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
     try {
       const { pdf } = await import('@react-pdf/renderer');
-      
-      // Transform form data to match PDF component expectations
+      // เตรียมข้อมูลสำหรับ PDF
       const pdfData = {
-        // General info
-        peaoffice: general.peaOffice,
-        inspectionnumber: general.inspectionNumber,
-        inspectiondate: general.inspectionDate,
-        requestnumber: general.requestNumber,
-        requestdate: general.requestDate,
-        fullname: general.fullName,
-        phone: general.phone,
-        address: general.address,
-        phasetype: general.phaseType,
-        estimatedload: general.estimatedLoad,
-        
-        // Documents
-        documents: docs,
-        docAreaType: docAreaType,
-        
-        // HV System
-        hvSystem: hvSystem,
-        
-        // LV System
-        lvSystem: lvSystem,
-        
-        // Transformers with their sub circuits
-        transformers: transformers,
-        
-        // Summary
-        summaryresult: summary,
-        
-        // Limitation
-        scopeofinspection: limitation,
-        
-        // Signatures
-        userSignature: signature.userSignature,
-        inspectorSignature: signature.inspectorSignature,
+        peaoffice: form.general.peaOffice,
+        inspectionnumber: form.general.inspectionNumber,
+        inspectiondate: form.general.inspectionDate,
+        requestnumber: form.general.requestNumber,
+        requestdate: form.general.requestDate,
+        fullname: form.general.fullName,
+        phone: form.general.phone,
+        address: form.general.address,
+        phasetype: form.general.phaseType,
+        estimatedload: form.general.estimatedLoad,
+        buildingtype: form.general.buildingType,
+        documents: form.documents,
+        hvSystem: form.hvSystem,
+        transformers: form.transformers,
+        lvSystem: form.transformers.map(t => t.lvSystem),
+        summaryresult: form.summary,
+        scopeofinspection: form.limitation,
+        userSignature: form.signature.userSignature,
+        inspectorSignature: form.signature.inspectorSignature,
       };
-      
       const blob = await pdf(<EVChargerHVInspectionPDF formData={pdfData} />).toBlob();
-      
-      // Create download link
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -128,17 +137,16 @@ export default function EvChargerHvInspectionPage() {
     }
   };
 
-  const formRef = useRef();
+const handleSubmit = (e) => {
+  e.preventDefault();
+  // เพิ่ม logic ที่ต้องการ
+  console.log("Form data:", form);
+  alert("บันทึกฟอร์มสำเร็จ!");
+};
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          แบบตรวจสอบหม้อแปลงไฟฟ้าและระบบจำหน่ายไฟฟ้าแรงสูง สำหรับสถานีชาร์จรถยนต์ไฟฟ้า
-        </h1>
-      </div>
-      
-      <div ref={formRef} className="bg-white rounded-lg shadow-md p-6">
+    <div className="min-h-screen p-4">
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
           แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าก่อนติดตั้งมิเตอร์
         </h2>
@@ -147,19 +155,18 @@ export default function EvChargerHvInspectionPage() {
         </p>
 
         <GeneralInfoHvSection
-          data={general}
-          onChange={(k, v) => setGeneral((o) => ({ ...o, [k]: v }))}
+          value={form.general}
+          onChange={handleGeneralChange}
         />
 
         <DocumentSection
-          areaType={docAreaType}
-          value={docs}
-          onChange={setDocs}
+          value={form.documents}
+          onChange={value => handleSectionChange("documents", value)}
         />
-        
+
         <HVSystemSection
-          value={hvSystem}
-          onChange={setHvSystem}
+          value={form.hvSystem}
+          onChange={value => handleSectionChange("hvSystem", value)}
         />
 
         <div className="space-y-8 mt-8">
@@ -170,7 +177,7 @@ export default function EvChargerHvInspectionPage() {
             <div className="w-full h-px bg-gradient-to-r from-blue-500 to-purple-500 mb-6"></div>
           </div>
 
-          {transformers.map((transformer, transformerIndex) => (
+          {form.transformers.map((transformer, transformerIndex) => (
             <div
               key={transformerIndex}
               className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
@@ -180,8 +187,9 @@ export default function EvChargerHvInspectionPage() {
                   <h3 className="text-lg font-semibold text-gray-900">
                     หม้อแปลง #{transformerIndex + 1}
                   </h3>
-                  {transformers.length > 1 && (
+                  {form.transformers.length > 1 && (
                     <button
+                      type="button"
                       onClick={() => removeTransformer(transformerIndex)}
                       className="text-red-600 hover:text-red-800 text-sm px-3 py-1 border border-red-300 rounded-md hover:bg-red-50 transition-colors"
                     >
@@ -195,18 +203,14 @@ export default function EvChargerHvInspectionPage() {
                 <TransformerSection
                   sectionNumber={4}
                   value={transformer.transformerData || {}}
-                  onChange={(updatedTransformer) => {
-                    handleTransformerChange(
-                      transformerIndex,
-                      "transformerData",
-                      updatedTransformer
-                    );
-                  }}
+                  onChange={updatedTransformer =>
+                    handleTransformerChange(transformerIndex, "transformerData", updatedTransformer)
+                  }
                 />
 
                 <LVSystemSection
                   value={transformer.lvSystem || {}}
-                  onChange={(lvData) =>
+                  onChange={lvData =>
                     handleTransformerChange(transformerIndex, "lvSystem", lvData)
                   }
                 />
@@ -214,7 +218,7 @@ export default function EvChargerHvInspectionPage() {
                 <PanelBoardSection
                   value={transformer.panel || {}}
                   sectionNumber={5}
-                  onChange={(panelData) =>
+                  onChange={panelData =>
                     handleTransformerChange(transformerIndex, "panel", panelData)
                   }
                 />
@@ -224,17 +228,22 @@ export default function EvChargerHvInspectionPage() {
                   <SubCircuitSection
                     sectionNumber={5}
                     value={transformer.subCircuits}
-                    onChange={val => handleTransformerChange(transformerIndex, "subCircuits", val)}
-                    onAddCharger={(subCircuitIndex) => handleAddEvCharger(transformerIndex, subCircuitIndex)}
+                    onChange={value =>
+                      handleTransformerChange(transformerIndex, "subCircuits", value)
+                    }
+                    onAddCharger={subCircuitIndex =>
+                      handleAddEvCharger(transformerIndex, subCircuitIndex)
+                    }
                   />
                 </div>
               </div>
             </div>
           ))}
         </div>
-        
+
         <div className="flex justify-center">
           <button
+            type="button"
             onClick={addTransformer}
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors mb-6"
           >
@@ -243,16 +252,16 @@ export default function EvChargerHvInspectionPage() {
         </div>
 
         <InspectionSummarySection
-          value={summary}
-          onChange={setSummary}
+          value={form.summary}
+          onChange={value => handleSectionChange("summary", value)}
         />
         <LimitationSection
-          value={limitation}
-          onChange={setLimitation}
+          value={form.limitation}
+          onChange={value => handleSectionChange("limitation", value)}
         />
         <SignaturePadSection
-          value={signature}
-          onChange={setSignature}
+          value={form.signature}
+          onChange={value => handleSectionChange("signature", value)}
         />
 
         <div className="flex justify-center mt-8 space-x-4">
@@ -276,14 +285,14 @@ export default function EvChargerHvInspectionPage() {
               </>
             )}
           </button>
-           <button
-              type="submit"
-              className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
-            >
-              บันทึกฟอร์ม
-            </button>
+          <button
+            type="submit"
+            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
+          >
+            บันทึกฟอร์ม
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

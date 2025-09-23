@@ -3,12 +3,12 @@ import React from "react";
 /**
  * GeneralInfoHvSection สำหรับฟอร์ม EV Charger - Government form style UI/UX
  * Props:
- * - data: object (ข้อมูลฟอร์ม)
+ * - value: object (ข้อมูลฟอร์ม)
  * - onChange: (field, value) => void
  */
-export default function GeneralInfoHvSection({ data = {}, onChange = () => {} }) {
+export default function GeneralInfoHvSection({ value, onChange }) {
   return (
-    <div className="pace-y-6 text-gray-700">
+    <div className="space-y-6 text-gray-700">
       {/* Header Section */}
       <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
         <div className="bg-[#5b2d90] text-white px-6 py-4">
@@ -26,7 +26,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.powerAuthority || ""}
+                value={value.powerAuthority || ""}
                 onChange={e => onChange("powerAuthority", e.target.value)}
                 placeholder="การไฟฟ้า"
               />
@@ -36,7 +36,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.inspectionNo || ""}
+                value={value.inspectionNo || ""}
                 onChange={e => onChange("inspectionNo", e.target.value)}
                 placeholder="ครั้งที่"
               />
@@ -46,7 +46,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
               <input
                 type="date"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.inspectionDate || ""}
+                value={value.inspectionDate || ""}
                 onChange={e => onChange("inspectionDate", e.target.value)}
               />
             </div>
@@ -58,7 +58,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.requestNo || ""}
+                value={value.requestNo || ""}
                 onChange={e => onChange("requestNo", e.target.value)}
                 placeholder="เลขที่"
               />
@@ -68,7 +68,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
               <input
                 type="date"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.requestDate || ""}
+                value={value.requestDate || ""}
                 onChange={e => onChange("requestDate", e.target.value)}
               />
             </div>
@@ -100,7 +100,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
                     type="radio"
                     name="userType"
                     value="individual"
-                    checked={data.userType === "individual"}
+                    checked={value.userType === "individual"}
                     onChange={() => onChange("userType", "individual")}
                     className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                   />
@@ -112,12 +112,12 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
                     <input
                       type="text"
                       className={`w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ${
-                        data.userType !== "individual" ? "bg-gray-100" : ""
+                        value.userType !== "individual" ? "bg-gray-100" : ""
                       }`}
-                      value={data.customerName || ""}
+                      value={value.customerName || ""}
                       onChange={e => onChange("customerName", e.target.value)}
                       placeholder="กรอกชื่อ-นามสกุล"
-                      disabled={data.userType !== "individual"}
+                      disabled={value.userType !== "individual"}
                     />
                   </div>
                   <div>
@@ -125,12 +125,12 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
                     <input
                       type="text"
                       className={`w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ${
-                        data.userType !== "individual" ? "bg-gray-100" : ""
+                        value.userType !== "individual" ? "bg-gray-100" : ""
                       }`}
-                      value={data.phone || ""}
+                      value={value.phone || ""}
                       onChange={e => onChange("phone", e.target.value)}
                       placeholder="กรอกเบอร์โทรศัพท์"
-                      disabled={data.userType !== "individual"}
+                      disabled={value.userType !== "individual"}
                     />
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
                     type="radio"
                     name="userType"
                     value="corp"
-                    checked={data.userType === "corp"}
+                    checked={value.userType === "corp"}
                     onChange={() => onChange("userType", "corp")}
                     className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                   />
@@ -155,12 +155,12 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
                     <input
                       type="text"
                       className={`w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ${
-                        data.userType !== "corp" ? "bg-gray-100" : ""
+                        value.userType !== "corp" ? "bg-gray-100" : ""
                       }`}
-                      value={data.corpName || ""}
+                      value={value.corpName || ""}
                       onChange={e => onChange("corpName", e.target.value)}
                       placeholder="กรอกชื่อนิติบุคคล"
-                      disabled={data.userType !== "corp"}
+                      disabled={value.userType !== "corp"}
                     />
                   </div>
                   <div>
@@ -168,12 +168,12 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
                     <input
                       type="text"
                       className={`w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ${
-                        data.userType !== "corp" ? "bg-gray-100" : ""
+                        value.userType !== "corp" ? "bg-gray-100" : ""
                       }`}
-                      value={data.corpPhone || ""}
+                      value={value.corpPhone || ""}
                       onChange={e => onChange("corpPhone", e.target.value)}
                       placeholder="กรอกเบอร์โทรศัพท์"
-                      disabled={data.userType !== "corp"}
+                      disabled={value.userType !== "corp"}
                     />
                   </div>
                 </div>
@@ -187,7 +187,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
             <textarea
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 resize-none"
               rows={3}
-              value={data.address || ""}
+              value={value.address || ""}
               onChange={e => onChange("address", e.target.value)}
               placeholder="กรอกที่อยู่"
             />
@@ -203,7 +203,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
                     type="radio"
                     name="systemType"
                     value="22kv"
-                    checked={data.systemType === "22kv"}
+                    checked={value.systemType === "22kv"}
                     onChange={() => onChange("systemType", "22kv")}
                     className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                   />
@@ -214,7 +214,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
                     type="radio"
                     name="systemType"
                     value="33kv"
-                    checked={data.systemType === "33kv"}
+                    checked={value.systemType === "33kv"}
                     onChange={() => onChange("systemType", "33kv")}
                     className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                   />
@@ -226,9 +226,9 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
             <div>
               <label className="block text-gray-700 font-medium mb-2">กระแสโหลด (ด้านแรงต่ำ) รวมโดยประมาณ (A)</label>
               <input
-                type="number"
+                type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.load || ""}
+                value={value.load || ""}
                 onChange={e => onChange("load", e.target.value)}
                 placeholder="0"
               />
@@ -240,10 +240,10 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
             <div>
               <label className="block text-gray-700 font-medium mb-2">จำนวนเครื่องอัดประจุยานยนต์ไฟฟ้า (เครื่อง)</label>
               <input
-                type="number"
+                type="text"
                 min={0}
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.evChargerCount || ""}
+                value={value.evChargerCount || ""}
                 onChange={e => onChange("evChargerCount", e.target.value)}
                 placeholder="0"
               />
@@ -252,9 +252,9 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
             <div>
               <label className="block text-gray-700 font-medium mb-2">พิกัดกำลังไฟฟ้ารวม (kW)</label>
               <input
-                type="number"
+                type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.evChargerPower || ""}
+                value={value.evChargerPower || ""}
                 onChange={e => onChange("evChargerPower", e.target.value)}
                 placeholder="0"
               />
