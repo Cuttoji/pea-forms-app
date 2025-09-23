@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 
 export async function POST(request, context) {
   const { params } = await context;
-  const formTypeFromPath = context.params.formType;
+  const formTypeFromPath = params.formType;
   let formData;
 
   try {

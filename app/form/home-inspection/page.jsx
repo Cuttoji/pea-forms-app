@@ -57,35 +57,18 @@ export default function HomeInspectionPage() {
     }
   };
 
-  // PDF generation function
+  // PDF generation function (ปรับให้ส่งข้อมูลครบทุก field)
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
     try {
       const { pdf } = await import('@react-pdf/renderer');
-      // Transform form data to match PDF component expectations
+      // รวมข้อมูลทุก section เป็น object เดียว
       const pdfData = {
-        inspectionnumber: form.general.inspectionNumber,
-        inspectiondate: form.general.inspectionDate,
-        requestnumber: form.general.requestNumber,
-        requestdate: form.general.requestDate,
-        fullname: form.general.fullName,
-        phone: form.general.phone,
-        address: form.general.address,
-        phasetype: form.general.phaseType,
-        estimatedload: form.general.estimatedLoad,
-        wireType: form.inspection.wireType,
-        wireOther: form.inspection.wireOther,
-        wireSize: form.inspection.wireSize,
-        wireResult: form.inspection.wireResult,
-        wireDetail: form.inspection.wireDetail,
-        atSize: form.inspection.atSize,
-        undergroundSize: form.inspection.undergroundSize,
-        rcdResult: form.inspection.rcdResult,
-        rcdNote: form.inspection.rcdNote,
+        ...form.general,
+        ...form.inspection,
         summaryresult: form.summary,
         scopeofinspection: form.limitation,
-        userSignature: form.signature.userSignature,
-        inspectorSignature: form.signature.inspectorSignature,
+        ...form.signature,
       };
       const blob = await pdf(<HomeInspectionPDF formData={pdfData} />).toBlob();
       const url = URL.createObjectURL(blob);

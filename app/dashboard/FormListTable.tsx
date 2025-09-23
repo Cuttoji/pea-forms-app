@@ -24,35 +24,56 @@ const formatDate = (dateString: string) => {
 };
 
 interface FormListTableProps {
-  forms: FormData[];
+  forms: any[];
   selectedFormType: string;
   formTypeLabel: string;
   isLoading?: boolean;
   error?: string | null;
 }
 
-interface FormData {
-  id: string;
-  inspectionnumber?: string;
-  fullname?: string;
-  phasetype?: string;
-  estimatedload?: string;
-  created_at?: string;
-  inspectiondate?: string;
-  address?: string;
-}
+// helper สำหรับคืนค่าจาก general ตาม key หลายชื่อ
+const getGeneralValue = (general: any, keys: string[]) => {
+  for (const key of keys) {
+    const value = general?.[key];
+    if (value !== undefined && value !== null && value !== "") return value;
+  }
+  return "-";
+};
 
-export default function FormListTable({ 
-  forms, 
-  selectedFormType, 
-  formTypeLabel, 
-  isLoading = false, 
-  error = null 
+// ฟังก์ชันดึงข้อมูลจาก schema (jsonb) ของแต่ละฟอร์ม
+const getField = (form: any, selectedFormType: string, field: string) => {
+  const general = form?.general ?? {};
+
+  // mapping field → possible keys ใน general
+  const fieldMap: Record<string, string[]> = {
+    inspectionnumber: ["inspectionNo", "inspectionNumber"],
+    fullname: ["customerName", "fullName"],
+    phasetype: ["systemType", "phaseType"],
+    estimatedload: ["load", "estimatedLoad"],
+    inspectiondate: ["inspectionDate"],
+    address: ["address"]
+  };
+
+  // ตรวจสอบว่า field ที่ขอมี mapping หรือไม่
+  if (fieldMap[field]) {
+    return getGeneralValue(general, fieldMap[field]);
+  }
+
+  // ถ้าไม่รู้จัก field หรือ form type
+  console.warn(`Unknown field "${field}" or form type "${selectedFormType}" in getField`);
+  return "-";
+};
+
+export default function FormListTable({
+  forms,
+  selectedFormType,
+  formTypeLabel,
+  isLoading = false,
+  error = null,
 }: FormListTableProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
-  
-  // Add error handling for Supabase client creation
+
   let supabase;
   try {
     supabase = createClient();
@@ -66,7 +87,7 @@ export default function FormListTable({
       toast.error("ไม่สามารถเชื่อมต่อฐานข้อมูลได้");
       return;
     }
-    
+
     if (window.confirm(`คุณต้องการลบฟอร์มนี้ (${id}) ใช่หรือไม่?`)) {
       setIsDeleting(id);
       try {
@@ -93,16 +114,13 @@ export default function FormListTable({
 
   const getFormPath = (formType: string) => {
     const pathMap = {
-      'inspection_forms': 'home-inspection',
+      'home_inspection_forms': 'home-inspection',
       'condo_inspection_forms': 'condo-inspection',
       'ev_charger_hv_inspection': 'ev-charger-hv-inspection',
       'ev_charger_lv_inspection': 'ev-charger-lv-inspection',
-      'other_inspection': 'other-inspection',
       'other_inspection_forms': 'other-inspection',
-      'construction_inspection_forms': 'construction-inspection',
       'construction_inspection': 'construction-inspection'
     };
-    
     const path = pathMap[formType as keyof typeof pathMap];
     if (!path) {
       console.warn(`Unknown form type: ${formType}, defaulting to home-inspection`);
@@ -117,36 +135,26 @@ export default function FormListTable({
         toast.error("ไม่พบรหัสฟอร์ม");
         return;
       }
-      
-      // Find the form in the already loaded forms array
-      const selectedForm = forms.find(form => form.id === formId);
-      if (!selectedForm) {
-        console.error('Form not found in local data:', { formId });
-        toast.error("ไม่พบข้อมูลฟอร์มในรายการ");
+      const formPath = getFormPath(selectedFormType);
+
+      // ค้นหา form object ที่ต้องการ
+      const formObj = forms.find((f) => f.id === formId);
+      if (!formObj) {
+        toast.error("ไม่พบข้อมูลฟอร์ม");
         return;
       }
-      
-      // Simple approach - just use the form path and ID
-      const formPath = getFormPath(selectedFormType);
-      
-      // Try-catch for sessionStorage in case of private browsing mode
+
+      // เก็บข้อมูลฟอร์มทั้งหมดลง sessionStorage เพื่อให้หน้าแก้ไขสามารถแสดงข้อมูลที่กรอกไว้ครบ
       try {
         sessionStorage.setItem('selectedFormType', selectedFormType);
         sessionStorage.setItem('formId', formId);
-        console.log('Stored in sessionStorage:', { selectedFormType, formId });
+        sessionStorage.setItem('formData', JSON.stringify(formObj));
       } catch (storageError) {
-        console.warn('Failed to use sessionStorage:', storageError);
-        // Continue anyway - this is just a backup
+        // ignore
       }
-      
-      // Simplified URL with minimal parameters
+
       const editUrl = `/form/${formPath}?id=${formId}`;
-      
-      console.log('Navigating to:', editUrl);
-      
-      // Direct navigation without async/await
       window.location.href = editUrl;
-      
     } catch (error) {
       console.error('Error in handleEditClick:', error);
       toast.error("เกิดข้อผิดพลาดในการเปิดฟอร์ม");
@@ -201,30 +209,28 @@ export default function FormListTable({
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               เลขที่ฟอร์ม
             </th>
-            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               ชื่อผู้ขอใช้ไฟ
             </th>
-            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               ประเภท
             </th>
-            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               โหลด (A)
             </th>
-            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               วันที่สร้าง
             </th>
-            {/* --- START: คอลัมน์ที่เพิ่มเข้ามา --- */}
-            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               วันที่ตรวจสอบ
             </th>
-            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               ที่อยู่
             </th>
-            {/* --- END: คอลัมน์ที่เพิ่มเข้ามา --- */}
-            <th scope="col" className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
               การกระทำ
             </th>
           </tr>
@@ -233,41 +239,39 @@ export default function FormListTable({
           {forms.map((form) => (
             <tr key={form.id} className="hover:bg-gray-50">
               <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-pea-dark text-gray-700">
-                {form.inspectionnumber || "-"}
+                {getField(form, selectedFormType, "inspectionnumber")}
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
-                {form.fullname || "-"}
+                {getField(form, selectedFormType, "fullname")}
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
-                {form.phasetype === "1_phase" ? "1 เฟส" : "3 เฟส"}
+                {getField(form, selectedFormType, "phasetype")}
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
-                {form.estimatedload || "-"}
+                {getField(form, selectedFormType, "estimatedload")}
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
                 {formatDate(form.created_at || "")}
               </td>
-              {/* --- START: ข้อมูลที่เพิ่มเข้ามา --- */}
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700">
-                {formatDate(form.inspectiondate || "")}
+                {formatDate(getField(form, selectedFormType, "inspectiondate"))}
               </td>
-              <td className="px-4 py-4 text-sm text-gray-700 max-w-xs truncate" title={form.address}>
-                {form.address || "-"}
+              <td className="px-4 py-4 text-sm text-gray-700 max-w-xs truncate" title={getField(form, selectedFormType, "address")}>
+                {getField(form, selectedFormType, "address")}
               </td>
-              {/* --- END: ข้อมูลที่เพิ่มเข้ามา --- */}
               <td className="px-4 py-4 whitespace-nowrap text-center text-sm font-medium">
                 <div className="flex items-center justify-center gap-3">
-                  <button 
+                  <button
                     onClick={() => handleEditClick(form.id)}
-                    title="ดู/แก้ไข" 
+                    title="ดู/แก้ไข"
                     className="text-blue-600 hover:text-blue-900 transition-colors disabled:opacity-50"
                     disabled={isDeleting === form.id}
                   >
                     <Eye size={18} />
                   </button>
-                  <button 
-                    onClick={() => handleDelete(form.id)} 
-                    title="ลบ" 
+                  <button
+                    onClick={() => handleDelete(form.id)}
+                    title="ลบ"
                     className="text-red-600 hover:text-red-900 transition-colors disabled:opacity-50"
                     disabled={isDeleting === form.id}
                   >

@@ -33,11 +33,11 @@ interface FormData {
 }
 
 const formTypes = [
-  { value: 'inspection_forms', label: 'ฟอร์มที่อยู่อาศัย' },
+  { value: 'home_inspection_forms', label: 'ฟอร์มที่อยู่อาศัย' },
   { value: 'condo_inspection_forms', label: 'ฟอร์มอาคารชุด' },
   { value: 'ev_charger_lv_inspection', label: 'ฟอร์ม EV Charger (แรงต่ำ)' },
   { value: 'ev_charger_hv_inspection', label: 'ฟอร์ม EV Charger (แรงสูง)' },
-  { value: 'commercial_inspection_forms', label: 'ฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)' },
+  { value: 'other_inspection_forms', label: 'ฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)' },
   { value: 'construction_inspection', label: 'ฟอร์มตรวจสอบงานก่อสร้าง' },
   // เพิ่มประเภทฟอร์มอื่นๆ ตามต้องการ
 ];
@@ -69,7 +69,7 @@ export default function DashboardPage() {
     async function fetchDashboardStats() {
       // ดึงจำนวนฟอร์มทั้งหมด (จากตารางรวม หรือตารางใดตารางหนึ่งที่ใหญ่ที่สุด)
       const { count: totalCount, error: totalError } = await supabase
-        .from('inspection_forms')
+        .from('home_inspection_forms')
         .select('*', { count: 'exact', head: true });
       if (totalCount !== null) {
         setTotalForms(totalCount);
@@ -84,7 +84,7 @@ export default function DashboardPage() {
       tomorrow.setDate(today.getDate() + 1);
 
       const { count: todayCount, error: todayError } = await supabase
-        .from('inspection_forms')
+        .from('home_inspection_forms')
         .select('*', { count: 'exact', head: true })
         .gte('created_at', today.toISOString())
         .lt('created_at', tomorrow.toISOString());
@@ -105,7 +105,7 @@ export default function DashboardPage() {
       endOfWeek.setDate(startOfWeek.getDate() + 7);
 
       const { count: weekCount, error: weekError } = await supabase
-        .from('inspection_forms')
+        .from('home_inspection_forms')
         .select('*', { count: 'exact', head: true })
         .gte('created_at', startOfWeek.toISOString())
         .lt('created_at', endOfWeek.toISOString());
@@ -142,13 +142,13 @@ export default function DashboardPage() {
       let countQuery = supabase.from(selectedFormType).select('*', { count: 'exact', head: true });
       
       if (searchTerm) {
-          countQuery = countQuery.or(`inspectionnumber.ilike.%${searchTerm}%,fullname.ilike.%${searchTerm}%,address.ilike.%${searchTerm}%`);
+          countQuery = countQuery.or(`general->>inspectionNo.ilike.%${searchTerm}%,general->>customerName.ilike.%${searchTerm}%,general->>address.ilike.%${searchTerm}%`);
       }
       if (startDate) {
-          countQuery = countQuery.gte('inspectiondate', startDate);
+          countQuery = countQuery.gte('general->>inspectionDate', startDate);
       }
       if (endDate) {
-          countQuery = countQuery.lte('inspectiondate', endDate);
+          countQuery = countQuery.lte('general->>inspectionDate', endDate);
       }
       
       const { count: totalCount, error: countError } = await countQuery;
@@ -164,17 +164,25 @@ export default function DashboardPage() {
       let dataQuery = supabase.from(selectedFormType).select('*');
       
       if (searchTerm) {
-          dataQuery = dataQuery.or(`inspectionnumber.ilike.%${searchTerm}%,fullname.ilike.%${searchTerm}%,address.ilike.%${searchTerm}%`);
+          dataQuery = dataQuery.or(`general->>inspectionNo.ilike.%${searchTerm}%,general->>customerName.ilike.%${searchTerm}%,general->>address.ilike.%${searchTerm}%`);
       }
       if (startDate) {
-          dataQuery = dataQuery.gte('inspectiondate', startDate);
+          dataQuery = dataQuery.gte('general->>inspectionDate', startDate);
       }
       if (endDate) {
-          dataQuery = dataQuery.lte('inspectiondate', endDate);
+          dataQuery = dataQuery.lte('general->>inspectionDate', endDate);
       }
 
+      // sortBy: created_at, fullname, inspectionnumber, inspectiondate, phasetype, estimatedload
+      let sortField = sortBy;
+      if (sortBy === "fullname") sortField = "general->>customerName";
+      if (sortBy === "inspectionnumber") sortField = "general->>inspectionNo";
+      if (sortBy === "inspectiondate") sortField = "general->>inspectionDate";
+      if (sortBy === "phasetype") sortField = "general->>systemType";
+      if (sortBy === "estimatedload") sortField = "general->>load";
+
       const { data, error } = await dataQuery
-        .order(sortColumn, { ascending: false })
+        .order(sortField, { ascending: false })
         .range(startIndex, endIndex);
 
       if (error) {
@@ -269,10 +277,6 @@ export default function DashboardPage() {
               <h1 className="text-4xl font-extrabold text-[#3a1a5b]">Operational Dashboard</h1>
               <p className="text-gray-700 mt-2 text-lg">ภาพรวมและจัดการฟอร์มการตรวจสอบระบบไฟฟ้า</p>
           </div>
-          <Link href="/form/new" className="px-6 py-3 bg-[#5b2d90] text-white rounded-lg shadow-md hover:bg-[#4a2575] flex items-center gap-2 transition-all duration-200">
-            <FilePlus size={20} />
-            สร้างฟอร์มใหม่
-          </Link>
       </div>
 
       {/* แถบสรุปสถิติ (KPIs) */}

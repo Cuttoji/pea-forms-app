@@ -14,7 +14,7 @@ import InspectionSummarySection from "@/app/form/components/shared/InspectionSum
 import LimitationSection from "@/app/form/components/shared/LimitationSection";
 import SignaturePadSection from "@/app/form/components/shared/SignaturePadSection";
 import evHvChargerFormSchema from "@/lib/constants/evHvChargerFormSchema";
-import EVChargerHVInspectionPDF from '../../../components/pdf/EVChargerHVInspectionPDF';
+import EVChargerHVExportPDF from '../../../components/pdf/EVChargerHVExportPDF';
 
 export default function EvChargerHvInspectionPage() {
   // ใช้ state เดียวสำหรับทุก section
@@ -121,7 +121,7 @@ export default function EvChargerHvInspectionPage() {
         userSignature: form.signature.userSignature,
         inspectorSignature: form.signature.inspectorSignature,
       };
-      const blob = await pdf(<EVChargerHVInspectionPDF formData={pdfData} />).toBlob();
+      const blob = await pdf(<EVChargerHVExportPDF formData={pdfData} />).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
