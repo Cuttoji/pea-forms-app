@@ -1,10 +1,23 @@
 "use client";
+import { Suspense } from "react";
+import EditCondoInspectionPageInner from "./EditCondoInspectionPageInner";
+
+// แยก logic ไปไว้ในไฟล์/ฟังก์ชันย่อย หรือในไฟล์เดียวกันก็ได้
+export default function EditCondoInspectionPage() {
+  return (
+    <Suspense fallback={<div className="p-4">กำลังโหลด...</div>}>
+      <EditCondoInspectionPageInner />
+    </Suspense>
+  );
+}
+
+// --- ย้าย logic เดิมมาไว้ใน component ย่อย ---
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import CondoInspectionForm from "../page"; // ใช้ฟอร์มหลักร่วมกัน
 
-export default function EditCondoInspectionPage() {
+function EditCondoInspectionPageInner() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [form, setForm] = useState(null);
