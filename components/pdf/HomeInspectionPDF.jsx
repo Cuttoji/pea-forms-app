@@ -1,239 +1,187 @@
 import React from "react";
-import {
+import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
 
-Document,
-Page,
-Text,
-View,
-StyleSheet,
-Font,
-} from "@react-pdf/renderer";
-
-// โหลดฟอนต์ Sarabun (Google Fonts)
+// Register Sarabun font
 Font.register({
-family: "Sarabun",
-src: "/fonts/Sarabun-Regular.ttf"
+  family: "Sarabun",
+  src: "/fonts/Sarabun-Regular.ttf",
 });
-
 Font.register({
-family: "Sarabun",
-src: "/fonts/Sarabun-Bold.ttf",
-fontWeight: "bold",
+  family: "Sarabun",
+  src: "/fonts/Sarabun-Bold.ttf",
+  fontWeight: "bold",
 });
 
-// สไตล์
-const styles = StyleSheet.create({
-page: {
-  fontFamily: "Sarabun",
-  fontSize: 12,
-  padding: 32,
-  lineHeight: 1.5,
-  backgroundColor: "#fff",
-},
-section: {
-  marginBottom: 16,
-},
-header: {
-  fontSize: 20,
-  fontWeight: "bold",
-  marginBottom: 8,
-  textAlign: "center",
-},
-subHeader: {
-  fontSize: 16,
-  fontWeight: "bold",
-  marginBottom: 6,
-  marginTop: 12,
-  color: "#222",
-},
-label: {
-  fontWeight: "bold",
-  marginRight: 6,
-},
-row: {
-  flexDirection: "row",
-  marginBottom: 4,
-  alignItems: "flex-start",
-},
-table: {
-  display: "table",
-  width: "auto",
-  borderStyle: "solid",
-  borderWidth: 1,
-  borderColor: "#222",
-  marginBottom: 8,
-},
-tableRow: {
-  flexDirection: "row",
-},
-tableColHeader: {
-  width: "33%",
-  borderStyle: "solid",
-  borderWidth: 1,
-  borderColor: "#222",
-  backgroundColor: "#eee",
-  padding: 4,
-  fontWeight: "bold",
-},
-tableCol: {
-  width: "33%",
-  borderStyle: "solid",
-  borderWidth: 1,
-  borderColor: "#222",
-  padding: 4,
-},
-signatureBox: {
-  border: "1 solid #222",
-  padding: 16,
-  marginTop: 24,
-  alignItems: "center",
-  minHeight: 80,
-},
-signatureLabel: {
-  marginTop: 8,
-  fontSize: 12,
-},
-noteBox: {
-  border: "1 solid #aaa",
-  padding: 12,
-  marginTop: 16,
-  minHeight: 60,
-},
-});
+// Fallback mock data
+const mockData = {
+  general: {
+    customerName: "-",
+    address: "-",
+    phone: "-",
+    inspectionDate: "-",
+    inspector: "-",
+  },
+  inspection: [],
+  summary: {
+    result: "-",
+    note: "-",
+  },
+  limitation: "-",
+  signature: {
+    name: "-",
+    date: "-",
+    note: "-",
+  },
+};
 
-// Helper: แสดงค่าหรือ "-"
-const renderValue = (value) => {
-if (value === null || value === undefined || value === "") return "-";
-if (Array.isArray(value)) {
-  if (value.length === 0) return "-";
+// General Info Section
+const GeneralInfoSection = ({ data }) => (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>1. ข้อมูลทั่วไป</Text>
+    <Text>ชื่อผู้ขอใช้ไฟฟ้า: {data?.customerName || "-"}</Text>
+    <Text>ที่อยู่: {data?.address || "-"}</Text>
+    <Text>เบอร์โทร: {data?.phone || "-"}</Text>
+    <Text>วันที่ตรวจสอบ: {data?.inspectionDate || "-"}</Text>
+    <Text>ผู้ตรวจสอบ: {data?.inspector || "-"}</Text>
+  </View>
+);
+
+// Inspection Detail Section
+const InspectionDetailSection = ({ data }) => (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>2. รายละเอียดการตรวจสอบ</Text>
+    {Array.isArray(data) && data.length > 0 ? (
+      data.map((item, idx) => (
+        <Text key={idx}>{item.detail || JSON.stringify(item)}</Text>
+      ))
+    ) : (
+      <Text>-</Text>
+    )}
+  </View>
+);
+
+// Summary Section
+const SummarySection = ({ summary }) => (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>3. สรุปผลการตรวจสอบ</Text>
+    <Text>ผลการตรวจสอบ: {summary?.result || "-"}</Text>
+    <Text>หมายเหตุ: {summary?.note || "-"}</Text>
+  </View>
+);
+
+// Limitation Section
+const LimitationSection = ({ limitation }) => (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>4. ข้อจำกัดในการตรวจสอบ</Text>
+    <Text>{limitation || "-"}</Text>
+  </View>
+);
+
+// Signature Section
+const SignatureSection = ({ signature }) => (
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>5. ลายเซ็น</Text>
+    <View style={styles.signatureBox}>
+      <Text>.............................................</Text>
+      <Text style={styles.signatureLabel}>{signature?.name || "-"}</Text>
+      <Text style={styles.signatureLabel}>วันที่: {signature?.date || "-"}</Text>
+    </View>
+    <Text style={styles.sectionTitle}>หมายเหตุ</Text>
+    <View style={styles.noteBox}>
+      <Text>{signature?.note || "-"}</Text>
+    </View>
+  </View>
+);
+
+const HomeInspectionPDF = ({ formData }) => {
+  // รวม mockData กับ formData เพื่อกัน field หาย
+  const safeData = {
+    ...mockData,
+    ...(formData || {}),
+    general: { ...mockData.general, ...(formData?.general || {}) },
+    summary: { ...mockData.summary, ...(formData?.summary || {}) },
+    signature: { ...mockData.signature, ...(formData?.signature || {}) },
+    inspection: Array.isArray(formData?.inspection) ? formData.inspection : [],
+  };
+
   return (
-    <View>
-      {value.map((item, idx) => (
-        <View key={idx} style={{ marginBottom: 2 }}>
-          {typeof item === "object" ? renderObject(item) : <Text>{item}</Text>}
-        </View>
-      ))}
-    </View>
+    <Document>
+      {/* หน้า 1 */}
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.header} fixed>การไฟฟ้าส่วนภูมิภาค</Text>
+        <GeneralInfoSection data={safeData.general} />
+        <Text style={styles.footer} fixed>หน้า 1/2</Text>
+      </Page>
+      {/* หน้า 2 */}
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.header} fixed>การไฟฟ้าส่วนภูมิภาค</Text>
+        <InspectionDetailSection data={safeData.inspection} />
+        <SummarySection summary={safeData.summary} />
+        <LimitationSection limitation={safeData.limitation} />
+        <SignatureSection signature={safeData.signature} />
+        <Text style={styles.footer} fixed>หน้า 2/2</Text>
+      </Page>
+    </Document>
   );
-}
-if (typeof value === "object") {
-  return renderObject(value);
-}
-return <Text>{value}</Text>;
 };
 
-// Helper: แสดง object ซ้อน
-const renderObject = (obj) => {
-if (!obj || typeof obj !== "object") return <Text>-</Text>;
-return (
-  <View style={{ marginLeft: 8 }}>
-    {Object.entries(obj).map(([key, val], idx) => (
-      <View style={styles.row} key={idx}>
-        <Text style={styles.label}>{key}:</Text>
-        {renderValue(val)}
-      </View>
-    ))}
-  </View>
-);
-};
-
-// Helper: แสดงตารางข้อมูล array ของ object
-const renderTable = (data) => {
-if (!Array.isArray(data) || data.length === 0) return <Text>-</Text>;
-const columns = Object.keys(data[0] || {});
-return (
-  <View style={styles.table}>
-    <View style={styles.tableRow}>
-      {columns.map((col, idx) => (
-        <Text style={styles.tableColHeader} key={idx}>
-          {col}
-        </Text>
-      ))}
-    </View>
-    {data.map((row, idx) => (
-      <View style={styles.tableRow} key={idx}>
-        {columns.map((col, cidx) => (
-          <Text style={styles.tableCol} key={cidx}>
-            {row[col] !== undefined && row[col] !== null && row[col] !== ""
-              ? String(row[col])
-              : "-"}
-          </Text>
-        ))}
-      </View>
-    ))}
-  </View>
-);
-};
-
-// Main Component
-const HomeInspectionPDF = ({ formData = {} }) => {
-// แยก section
-const {
-  general = {},
-  inspection = {},
-  summary = {},
-  limitation = {},
-  signature = {},
-} = formData;
-
-// Helper: render fields
-const renderFields = (data) =>
-  Object.entries(data).map(([key, value], idx) => (
-    <View style={styles.row} key={idx}>
-      <Text style={styles.label}>{key}:</Text>
-      {Array.isArray(value) && value.length > 0 && typeof value[0] === "object"
-        ? renderTable(value)
-        : renderValue(value)}
-    </View>
-  ));
-
-return (
-  <Document>
-    {/* หน้าแรก: หัวข้อและข้อมูลทั่วไป */}
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.header}>รายงานการตรวจสอบบ้าน</Text>
-      <Text style={styles.subHeader}>ข้อมูลทั่วไป</Text>
-      {renderFields(general)}
-    </Page>
-
-    {/* หน้าถัดไป: รายละเอียดการตรวจสอบ, สรุป, ข้อจำกัด */}
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.subHeader}>รายละเอียดการตรวจสอบ</Text>
-      {renderFields(inspection)}
-
-      <Text style={styles.subHeader}>สรุปผลการตรวจสอบ</Text>
-      {renderFields(summary)}
-
-      <Text style={styles.subHeader}>ข้อจำกัดในการตรวจสอบ</Text>
-      {renderFields(limitation)}
-    </Page>
-
-    {/* หน้าสุดท้าย: ลายเซ็นและหมายเหตุ */}
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.subHeader}>ลายเซ็น</Text>
-      <View style={styles.signatureBox}>
-        {signature.signatureImage ? (
-          <Image
-            src={signature.signatureImage}
-            style={{ width: 120, height: 60 }}
-          />
-        ) : (
-          <Text>.............................................</Text>
-        )}
-        <Text style={styles.signatureLabel}>
-          {signature.name || "-"}
-        </Text>
-        <Text style={styles.signatureLabel}>
-          วันที่: {signature.date || "-"}
-        </Text>
-      </View>
-      <Text style={styles.subHeader}>หมายเหตุ</Text>
-      <View style={styles.noteBox}>
-        <Text>{signature.note || "-"}</Text>
-      </View>
-    </Page>
-  </Document>
-);
-};
+const styles = StyleSheet.create({
+  page: {
+    fontFamily: "Sarabun",
+    fontSize: 12,
+    padding: 32,
+    backgroundColor: "#fff",
+    lineHeight: 1.5,
+  },
+  header: {
+    position: "absolute",
+    top: 16,
+    left: 32,
+    right: 32,
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#3a1a5b",
+  },
+  footer: {
+    position: "absolute",
+    bottom: 16,
+    left: 32,
+    right: 32,
+    textAlign: "right",
+    fontSize: 10,
+    color: "#aaa",
+  },
+  section: {
+    marginBottom: 18,
+    paddingBottom: 8,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#e0e0e0",
+    borderBottomStyle: "solid",
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: "bold",
+    marginBottom: 8,
+    color: "#5b2d90",
+  },
+  signatureBox: {
+    border: "1 solid #222",
+    padding: 16,
+    marginTop: 24,
+    alignItems: "center",
+    minHeight: 80,
+  },
+  signatureLabel: {
+    marginTop: 8,
+    fontSize: 12,
+  },
+  noteBox: {
+    border: "1 solid #aaa",
+    padding: 12,
+    marginTop: 16,
+    minHeight: 60,
+  },
+});
 
 export default HomeInspectionPDF;

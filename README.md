@@ -58,3 +58,18 @@ pnpm dev
 กด Import Project แล้วเลือก repo นี้
 ตั้งค่า Environment Variables ใน Vercel ให้เหมือนกับ .env.local
 กด Deploy
+
+## สิ่งที่ต้องติดตั้ง
+
+- Node.js (แนะนำเวอร์ชันล่าสุด LTS)
+- Git (ถ้าต้องการ clone โปรเจกต์จาก GitHub)
+- Dependencies ของโปรเจกต์ (ติดตั้งด้วยคำสั่ง `npm install`, `yarn install` หรือ `pnpm install`)
+
+**หมายเหตุ:**  
+หากจะพัฒนา/แก้ไข PDF ให้ติดตั้งไลบรารี @react-pdf/renderer ด้วย  
+```bash
+npm install @react-pdf/renderer
+# หรือ
+yarn add @react-pdf/renderer
+# หรือ
+pnpm add @react-pdf/renderer
