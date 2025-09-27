@@ -43,21 +43,22 @@ export default function FormListTable({
     window.location.href = `/form/${path}/edit?id=${id}`;
   }
 
-  // ปุ่มลบ (ตัวอย่าง, ต้องเพิ่ม logic ลบจริงเอง)
-  async function handleDelete(id: string) {
-    if (confirm("ยืนยันการลบฟอร์มนี้?")) {
-      const supabase = createClient();
-      const { error } = await supabase
-        .from("forms")
-        .delete()
-        .eq("id", id);
+async function handleDelete(id: string) {
+  if (confirm("ยืนยันการลบฟอร์มนี้?")) {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from(selectedFormType) // <<< ใช้ตารางตามประเภทฟอร์ม
+      .delete()
+      .eq("id", id);
 
-      if (error) {
-        alert("เกิดข้อผิดพลาดในการลบฟอร์ม");
-        return;
-      }
+    if (error) {
+      alert("เกิดข้อผิดพลาดในการลบฟอร์ม");
+      return;
     }
+    // อัปเดตรายการฟอร์มต่อ เช่น รีเฟรชหน้าหรือ reload ข้อมูล
+    window.location.reload(); // หรือเรียกฟังก์ชัน fetch ใหม่
   }
+}
 
   return (
     <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow text-gray-700">
