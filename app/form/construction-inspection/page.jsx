@@ -1,22 +1,18 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import constructionFormSchema from "@/lib/constants/constructionFormSchema";
 import GeneralInfoSection from "../components/construction/GeneralInfoSection";
 import ConstructionInspectionSection from "../components/construction/ConstructionInspectionSection";
 import SummarySection from "../components/construction/SummarySection";
 import ConstructionInspectionPDF from '../../../components/pdf/constructioninspectionPDF';
 
-export default function ConstructionInspectionPage({ initialData }) {
-  // ใช้ initialData ถ้ามี, ถ้าไม่มี fallback เป็น schema เปล่า
+export default function ConstructionInspectionClient({ initialData }) {
   const safeInitial = initialData && typeof initialData === "object" ? initialData : constructionFormSchema;
   const [formData, setFormData] = useState(safeInitial);
-  const [generalInfo, setGeneralInfo] = useState(safeInitial.general || {});
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const formRef = useRef();
 
-  // อัปเดตข้อมูลแต่ละ section
   const handleFormChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
@@ -24,7 +20,6 @@ export default function ConstructionInspectionPage({ initialData }) {
     }));
   };
 
-  // ส่งข้อมูลไป API (ไม่ต้อง import supabase client)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -48,7 +43,6 @@ export default function ConstructionInspectionPage({ initialData }) {
     }
   };
 
-  // PDF generation function (เหมือนเดิม)
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
     try {
@@ -87,22 +81,9 @@ export default function ConstructionInspectionPage({ initialData }) {
     }
   };
 
-  // เมื่อ generalInfo เปลี่ยน ให้ sync ไป formData.general ด้วย (ถ้าต้องการ)
-  React.useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      general: generalInfo
-    }));
-  }, [generalInfo]);
-
-  // เพิ่ม useEffect นี้
-  React.useEffect(() => {
-    setGeneralInfo(safeInitial.general || {});
-  }, [safeInitial.general]);
-
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6" ref={formRef}>
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
         <GeneralInfoSection
           value={formData.general}
           onChange={(field, val) =>
