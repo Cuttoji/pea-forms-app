@@ -7,8 +7,11 @@ import ConstructionInspectionSection from "../components/construction/Constructi
 import SummarySection from "../components/construction/SummarySection";
 import ConstructionInspectionPDF from '../../../components/pdf/constructioninspectionPDF';
 
-export default function ConstructionInspectionPage() {
-  const [formData, setFormData] = useState(constructionFormSchema);
+export default function ConstructionInspectionPage({ initialData }) {
+  // ใช้ initialData ถ้ามี, ถ้าไม่มี fallback เป็น schema เปล่า
+  const safeInitial = initialData && typeof initialData === "object" ? initialData : constructionFormSchema;
+  const [formData, setFormData] = useState(safeInitial);
+  const [generalInfo, setGeneralInfo] = useState(safeInitial.general || {});
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef();
@@ -84,12 +87,33 @@ export default function ConstructionInspectionPage() {
     }
   };
 
+  // เมื่อ generalInfo เปลี่ยน ให้ sync ไป formData.general ด้วย (ถ้าต้องการ)
+  React.useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      general: generalInfo
+    }));
+  }, [generalInfo]);
+
+  // เพิ่ม useEffect นี้
+  React.useEffect(() => {
+    setGeneralInfo(safeInitial.general || {});
+  }, [safeInitial.general]);
+
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6" ref={formRef}>
         <GeneralInfoSection
           value={formData.general}
-          onChange={value => handleFormChange("general", value)}
+          onChange={(field, val) =>
+            setFormData(prev => ({
+              ...prev,
+              general: {
+                ...prev.general,
+                [field]: val
+              }
+            }))
+          }
         />
         <ConstructionInspectionSection
           value={formData.inspection}

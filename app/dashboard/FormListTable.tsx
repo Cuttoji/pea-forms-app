@@ -65,7 +65,14 @@ async function handleDelete(id: string) {
       <table className="min-w-full text-sm">
         <thead className="bg-[#ede9f7]">
           <tr>
-            <th className="p-3 font-bold text-[#3a1a5b] border-b">เลขที่คำร้อง</th>
+            {selectedFormType === "construction_inspection" ? (
+              <>
+                <th className="p-3 font-bold text-[#3a1a5b] border-b">ชื่องาน</th>
+                <th className="p-3 font-bold text-[#3a1a5b] border-b">อนุมัติเลขที่</th>
+              </>
+            ) : (
+              <th className="p-3 font-bold text-[#3a1a5b] border-b">เลขที่คำร้อง</th>
+            )}
             <th className="p-3 font-bold text-[#3a1a5b] border-b">ชื่อผู้ขอใช้ไฟ</th>
             <th className="p-3 font-bold text-[#3a1a5b] border-b">ประเภท</th>
             <th className="p-3 font-bold text-[#3a1a5b] border-b">โหลด (A)</th>
@@ -78,14 +85,21 @@ async function handleDelete(id: string) {
         <tbody>
           {forms.length === 0 ? (
             <tr>
-              <td colSpan={8} className="text-center text-gray-400 py-8">
+              <td colSpan={selectedFormType === "construction_inspection" ? 9 : 8} className="text-center text-gray-400 py-8">
                 ไม่มีข้อมูล
               </td>
             </tr>
           ) : (
             forms.map((form) => (
               <tr key={form.id} className="hover:bg-[#f6f3fa] transition">
-                <td className="p-3 border-b">{getField(form.general, ["inspectionNo", "inspection_number", "inspectionNumber"])}</td>
+                {selectedFormType === "construction_inspection" ? (
+                  <>
+                    <td className="p-3 border-b">{getField(form.general, ["projectName"])}</td>
+                    <td className="p-3 border-b">{getField(form.general, ["approvalNo"])}</td>
+                  </>
+                ) : (
+                  <td className="p-3 border-b">{getField(form.general, ["inspectionNo", "inspection_number", "inspectionNumber"])}</td>
+                )}
                 <td className="p-3 border-b">{getField(form.general, ["customerName", "fullName"])}</td>
                 <td className="p-3 border-b">{getField(form.general, ["systemType", "phaseType"])}</td>
                 <td className="p-3 border-b">{getField(form.general, ["load", "estimatedLoad"])}</td>
