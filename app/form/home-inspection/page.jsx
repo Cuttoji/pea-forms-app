@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import GeneralInfoSection from "../components/home/GeneralInfoSection";
 import HomeInspectionSection from "../components/home/HomeInspectionSection";
 import InspectionSummarySection from "../components/shared/InspectionSummarySection";
@@ -9,7 +9,7 @@ import SignaturePadSection from "../components/shared/SignaturePadSection";
 import homeFormSchema from "@/lib/constants/homeFormSchema";
 import HomeInspectionPDF from "../../../components/pdf/HomeInspectionPDF";
 
-export default function HomeInspectionPage() {
+export default function HomeInspectionPage({ initialForm }) {
   const [form, setForm] = useState({
     general: homeFormSchema.general,
     inspection: homeFormSchema.inspection,
@@ -21,6 +21,12 @@ export default function HomeInspectionPage() {
   const formRef = useRef();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (initialForm) {
+      setForm(initialForm);
+    }
+  }, [initialForm]);
 
   // ฟังก์ชันสำหรับเปลี่ยนค่าในแต่ละ section
   const handleSectionChange = (section, field, value) => {

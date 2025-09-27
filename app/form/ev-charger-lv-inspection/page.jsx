@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 import evLvChargerFormSchema, { getNewLvSubCircuit, getNewLvEvCharger } from "@/lib/constants/evLvChargerFormSchema";
 import DocumentSection from "../components/evCharger/DocumentSection";
@@ -12,7 +12,7 @@ import GeneralInfoLvSection from "../components/evCharger/GeneralInfoLvSection";
 import EvChargerLvFormPDF from "../../../components/pdf/EvChargerLvFormPDF";
 import LVSystemSectionPEA from "../components/evCharger/LVSystemSectionPEA";
 
-export default function EvChargerLvInspectionPage() {
+export default function EvChargerLvInspectionPage({ initialForm }) {
   const [form, setForm] = React.useState({
     general: evLvChargerFormSchema.general,
     inspection: {
@@ -27,6 +27,12 @@ export default function EvChargerLvInspectionPage() {
 
   const [isGeneratingPDF, setIsGeneratingPDF] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  useEffect(() => {
+    if (initialForm) {
+      setForm(initialForm);
+    }
+  }, [initialForm]);
 
   // ฟังก์ชันสำหรับเปลี่ยนค่าในแต่ละ section
   const handleSectionChange = (section, field, value) => {

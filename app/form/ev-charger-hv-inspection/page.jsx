@@ -16,8 +16,7 @@ import SignaturePadSection from "@/app/form/components/shared/SignaturePadSectio
 import evHvChargerFormSchema from "@/lib/constants/evHvChargerFormSchema";
 import EVChargerHVExportPDF from '../../../components/pdf/EVChargerHVExportPDF';
 
-export default function EvChargerHvInspectionPage() {
-  // ใช้ state เดียวสำหรับทุก section
+export default function EvChargerHvInspectionPage({ initialForm }) {
   const [form, setForm] = useState({
     general: evHvChargerFormSchema.general,
     documents: evHvChargerFormSchema.documents,
@@ -29,6 +28,13 @@ export default function EvChargerHvInspectionPage() {
   });
 
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+  // เพิ่ม useEffect นี้!
+  React.useEffect(() => {
+    if (initialForm) {
+      setForm(initialForm);
+    }
+  }, [initialForm]);
 
   // เพิ่มหม้อแปลง
   const addTransformer = () => {

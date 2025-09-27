@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import GeneralInfoSection from "../components/building/GeneralInfoSection";
 import DocumentSection from "../components/building/DocumentSection";
 import HVSystemSection from "../components/evCharger/HVSystemSection";
@@ -11,7 +11,7 @@ import LVSystemSection from "../components/building/LVSystemSection";
 import condoFormSchema, { getNewCondoTransformer } from "@/lib/constants/condoFormSchema";
 import CondoInspectionPDF from "../../../components/pdf/CondoInspectionPDF";
 
-export default function CondoInspectionPage() {
+export default function CondoInspectionPage({ initialForm }) {
   const [formData, setFormData] = useState({
     general: condoFormSchema.general,
     documents: condoFormSchema.documents,
@@ -20,6 +20,12 @@ export default function CondoInspectionPage() {
     limitation: condoFormSchema.limitation,
     signature: condoFormSchema.signature
   });
+
+  useEffect(() => {
+    if (initialForm) {
+      setFormData(initialForm);
+    }
+  }, [initialForm]);
 
   const handleSectionChange = (section, field, value) => {
     setFormData(prevData => ({

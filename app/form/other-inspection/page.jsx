@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import otherFormSchema, { getNewOtherTransformer } from "@/lib/constants/otherFormSchema";
 import GeneralInfoSection from "../components/building/GeneralInfoSection";
 import DocumentSection from "../components/building/DocumentSection";
@@ -10,7 +10,7 @@ import LimitationSection from "../components/shared/LimitationSection";
 import SignaturePadSection from "../components/shared/SignaturePadSection";
 import OtherInspectionPDF from '../../../components/pdf/OtherInspectionPDF';
 
-export default function OtherInspectionPage() {
+export default function OtherInspectionPage({ initialForm }) {
   const [formData, setFormData] = useState({
     general: otherFormSchema.general,
     documents: otherFormSchema.documents,
@@ -19,6 +19,12 @@ export default function OtherInspectionPage() {
     limitation: otherFormSchema.limitation,
     signature: otherFormSchema.signature
   });
+
+  useEffect(() => {
+    if (initialForm) {
+      setFormData(initialForm);
+    }
+  }, [initialForm]);
 
   const handleSectionChange = (section, field, value) => {
     setFormData(prevData => ({
@@ -36,6 +42,7 @@ export default function OtherInspectionPage() {
       [section]: value
     }));
   };
+  
 
   const [transformers, setTransformers] = useState([getNewOtherTransformer()]);
 

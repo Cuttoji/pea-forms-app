@@ -1,17 +1,23 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import constructionFormSchema from "@/lib/constants/constructionFormSchema";
 import GeneralInfoSection from "../components/construction/GeneralInfoSection";
 import ConstructionInspectionSection from "../components/construction/ConstructionInspectionSection";
 import SummarySection from "../components/construction/SummarySection";
 import ConstructionInspectionPDF from '../../../components/pdf/constructioninspectionPDF';
 
-export default function ConstructionInspectionPage() {
+export default function ConstructionInspectionPage({ initialForm }) {
   const [formData, setFormData] = useState(constructionFormSchema);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef();
+
+  useEffect(() => {
+    if (initialForm) {
+      setFormData(initialForm);
+    }
+  }, [initialForm]);
 
   // อัปเดตข้อมูลแต่ละ section
   const handleFormChange = (field, value) => {

@@ -1,5 +1,6 @@
 "use client";
 import { Eye, Trash2 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 function getField(general: any, keys: string[]) {
   if (!general) return "-";
@@ -43,10 +44,18 @@ export default function FormListTable({
   }
 
   // ปุ่มลบ (ตัวอย่าง, ต้องเพิ่ม logic ลบจริงเอง)
-  function handleDelete(id: string) {
+  async function handleDelete(id: string) {
     if (confirm("ยืนยันการลบฟอร์มนี้?")) {
-      // TODO: เรียก API ลบ
-      alert("ลบฟอร์ม (demo): " + id);
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("forms")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        alert("เกิดข้อผิดพลาดในการลบฟอร์ม");
+        return;
+      }
     }
   }
 
