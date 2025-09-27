@@ -1,10 +1,11 @@
 "use client";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import HomeInspectionForm from "../page"; // ใช้ฟอร์มหลักร่วมกัน
 
-export default function EditHomeInspectionPage() {
+function EditHomeInspectionPageInner() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [form, setForm] = useState(null);
@@ -35,5 +36,13 @@ export default function EditHomeInspectionPage() {
       <h1 className="text-2xl font-bold mb-4">แก้ไขฟอร์มตรวจสอบบ้านพักอาศัย</h1>
       <HomeInspectionForm initialForm={form} mode="edit" />
     </div>
+  );
+}
+
+export default function EditHomeInspectionPage() {
+  return (
+    <Suspense fallback={<div className="p-4">กำลังโหลด...</div>}>
+      <EditHomeInspectionPageInner />
+    </Suspense>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import OtherInspectionForm from "../page"; // ใช้ฟอร์มหลักร่วมกัน
 
-export default function EditOtherInspectionPage() {
+function EditOtherInspectionPageInner() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [form, setForm] = useState(null);
@@ -35,5 +36,13 @@ export default function EditOtherInspectionPage() {
       <h1 className="text-2xl font-bold mb-4">แก้ไขฟอร์มตรวจสอบอื่นๆ</h1>
       <OtherInspectionForm initialForm={form} mode="edit" />
     </div>
+  );
+}
+
+export default function EditOtherInspectionPage() {
+  return (
+    <Suspense fallback={<div className="p-4">กำลังโหลด...</div>}>
+      <EditOtherInspectionPageInner />
+    </Suspense>
   );
 }
