@@ -11,19 +11,30 @@ import LVSystemSection from "../components/building/LVSystemSection";
 import condoFormSchema, { getNewCondoTransformer } from "@/lib/constants/condoFormSchema";
 import CondoInspectionPDF from "../../../components/pdf/CondoInspectionPDF";
 
-export default function CondoInspectionPage({ initialForm }) {
+
+// รับ props แบบ optional เพื่อรองรับทั้งสร้างใหม่และ edit
+export default function CondoInspectionPage(props) {
+  const initialForm = props?.initialForm;
+
   const [formData, setFormData] = useState({
     general: condoFormSchema.general,
     documents: condoFormSchema.documents,
     hvSystem: condoFormSchema.hvSystem,
-    summary: condoFormSchema.summary,
+    summary: condoFormSchema.summary || {}, // ป้องกัน summary เป็น null
     limitation: condoFormSchema.limitation,
     signature: condoFormSchema.signature
   });
 
+  // รับ initialForm กรณี edit
   useEffect(() => {
     if (initialForm) {
-      setFormData(initialForm);
+      setFormData({
+        ...initialForm,
+        summary: initialForm.summary || {}, // fallback ป้องกัน null
+      });
+      if (Array.isArray(initialForm.transformers)) {
+        setTransformers(initialForm.transformers);
+      }
     }
   }, [initialForm]);
 
@@ -44,7 +55,12 @@ export default function CondoInspectionPage({ initialForm }) {
     }));
   };
 
-  const [transformers, setTransformers] = useState([getNewCondoTransformer()]);
+  // ถ้า initialForm มี transformers ให้ใช้เลย ไม่งั้น default 1 ตัว
+  const [transformers, setTransformers] = useState(
+    (initialForm && Array.isArray(initialForm.transformers) && initialForm.transformers.length > 0)
+      ? initialForm.transformers
+      : [getNewCondoTransformer()]
+  );
   const [showPDF, setShowPDF] = useState(false);
 
   const handleAddTransformer = () => {
@@ -70,7 +86,6 @@ export default function CondoInspectionPage({ initialForm }) {
     };
 
     try {
-      // ส่งข้อมูลไป API (ใช้ path ตาม dynamic route)
       const response = await fetch("/api/submit-form/condo-inspection", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -184,8 +199,8 @@ export default function CondoInspectionPage({ initialForm }) {
           </button>
         </div>
 
-        <InspectionSummarySection 
-          value={formData.summary}
+        <InspectionSummarySection
+          value={formData.summary || {}} // ป้องกัน null
           onChange={(value) => handleSectionObject("summary", value)}
         />
         
