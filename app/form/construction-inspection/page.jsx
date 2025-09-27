@@ -1,23 +1,17 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import constructionFormSchema from "@/lib/constants/constructionFormSchema";
 import GeneralInfoSection from "../components/construction/GeneralInfoSection";
 import ConstructionInspectionSection from "../components/construction/ConstructionInspectionSection";
 import SummarySection from "../components/construction/SummarySection";
 import ConstructionInspectionPDF from '../../../components/pdf/constructioninspectionPDF';
 
-export default function ConstructionInspectionPage({ initialForm }) {
+export default function ConstructionInspectionPage() {
   const [formData, setFormData] = useState(constructionFormSchema);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef();
-
-  useEffect(() => {
-    if (initialForm) {
-      setFormData(initialForm);
-    }
-  }, [initialForm]);
 
   // อัปเดตข้อมูลแต่ละ section
   const handleFormChange = (field, value) => {
@@ -95,15 +89,15 @@ export default function ConstructionInspectionPage({ initialForm }) {
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6" ref={formRef}>
         <GeneralInfoSection
           value={formData.general}
-          onChange={val => handleFormChange("general", val)}
+          onChange={value => handleFormChange("general", value)}
         />
         <ConstructionInspectionSection
           value={formData.inspection}
-          onChange={val => handleFormChange("inspection", val)}
+          onChange={value => handleFormChange("inspection", value)}
         />
         <SummarySection
           value={formData.summary}
-          onChange={val => handleFormChange("summary", val)}
+          onChange={value => handleFormChange("summary", value)}
         />
         <div className="flex justify-center mt-8 space-x-4">
           <button

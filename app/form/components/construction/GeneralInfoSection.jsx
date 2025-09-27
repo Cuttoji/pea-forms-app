@@ -10,7 +10,7 @@ const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStre
 /**
  * GeneralInfoSection - Government form style UI/UX
  */
-export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
+export default function GeneralInfoSection({ value = {}, onChange = () => {} }) {
   return (
     <div className="space-y-6 text-gray-700">
       {/* Header Section */}
@@ -29,7 +29,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.projectName || ""}
+                value={value.projectName || ""}
                 onChange={e => onChange("projectName", e.target.value)}
                 placeholder="กรอกชื่องาน"
               />
@@ -39,7 +39,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.approvalNo || ""}
+                value={value.approvalNo || ""}
                 onChange={e => onChange("approvalNo", e.target.value)}
                 placeholder="กรอกเลขอนุมัติ"
               />
@@ -49,7 +49,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="date"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.approvalDate || ""}
+                value={value.approvalDate || ""}
                 onChange={e => onChange("approvalDate", e.target.value)}
                 placeholder="mm/dd/yyyy"
               />
@@ -59,7 +59,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.jobNo || ""}
+                value={value.jobNo || ""}
                 onChange={e => onChange("jobNo", e.target.value)}
                 placeholder="กรอกหมายเลขงาน"
               />
@@ -69,7 +69,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="date"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.inspectionDate2 || ""}
+                value={value.inspectionDate2 || ""}
                 onChange={e => onChange("inspectionDate2", e.target.value)}
                 placeholder="mm/dd/yyyy"
               />
@@ -78,7 +78,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <label className="block text-gray-600 mb-1">กฟภ. ดำเนินการ</label>
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.peaType || ""}
+                value={value.peaType || ""}
                 onChange={e => onChange("peaType", e.target.value)}
               >
                 <option value="">-- เลือก --</option>
@@ -91,7 +91,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="number"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.hvAmount || ""}
+                value={value.hvAmount || ""}
                 onChange={e => onChange("hvAmount", e.target.value)}
                 placeholder="กรอกจำนวน"
               />
@@ -101,7 +101,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="number"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.hvPoleCount || ""}
+                value={value.hvPoleCount || ""}
                 onChange={e => onChange("hvPoleCount", e.target.value)}
                 placeholder="กรอกจำนวนเสา"
               />
@@ -111,7 +111,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.stationName || ""}
+                value={value.stationName || ""}
                 onChange={e => onChange("stationName", e.target.value)}
                 placeholder="กรอกชื่อสถานี"
               />
@@ -121,7 +121,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.feeder || ""}
+                value={value.feeder || ""}
                 onChange={e => onChange("feeder", e.target.value)}
                 placeholder="กรอกชื่อฟีดเดอร์"
               />
@@ -131,7 +131,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.phase || ""}
+                value={value.phase || ""}
                 onChange={e => onChange("phase", e.target.value)}
                 placeholder="กรอกเฟส"
               />
@@ -141,7 +141,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="number"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.kva || ""}
+                value={value.kva || ""}
                 onChange={e => onChange("kva", e.target.value)}
                 placeholder="กรอก KVA"
               />
@@ -151,7 +151,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="number"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.lvAmount || ""}
+                value={value.lvAmount || ""}
                 onChange={e => onChange("lvAmount", e.target.value)}
                 placeholder="กรอกจำนวน"
               />
@@ -161,7 +161,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="number"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.lvPoleCount || ""}
+                value={value.lvPoleCount || ""}
                 onChange={e => onChange("lvPoleCount", e.target.value)}
                 placeholder="กรอกจำนวนเสา"
               />
@@ -171,7 +171,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.supervisor || ""}
+                value={value.supervisor || ""}
                 onChange={e => onChange("supervisor", e.target.value)}
                 placeholder="กรอกชื่อผู้ควบคุมงาน"
               />
@@ -181,7 +181,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.position || ""}
+                value={value.position || ""}
                 onChange={e => onChange("position", e.target.value)}
                 placeholder="กรอกตำแหน่ง"
               />
@@ -191,7 +191,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.department || ""}
+                value={value.department || ""}
                 onChange={e => onChange("department", e.target.value)}
                 placeholder="กรอกสังกัด"
               />
@@ -218,7 +218,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.customerName || ""}
+                value={value.customerName || ""}
                 onChange={e => onChange("customerName", e.target.value)}
                 placeholder="กรอกชื่อ-นามสกุล"
               />
@@ -228,7 +228,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.phone || ""}
+                value={value.phone || ""}
                 onChange={e => onChange("phone", e.target.value)}
                 placeholder="กรอกเบอร์โทรศัพท์"
               />
@@ -240,7 +240,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
             <textarea
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 resize-none"
               rows={3}
-              value={data.address || ""}
+              value={value.address || ""}
               onChange={e => onChange("address", e.target.value)}
               placeholder="กรอกที่อยู่"
             />
@@ -251,7 +251,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <label className="block text-gray-700 font-medium mb-2">ระบบไฟฟ้า</label>
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.systemType || ""}
+                value={value.systemType || ""}
                 onChange={e => onChange("systemType", e.target.value)}
               >
                 <option value="">-- เลือก --</option>
@@ -264,7 +264,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="number"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.load || ""}
+                value={value.load || ""}
                 onChange={e => onChange("load", e.target.value)}
                 placeholder="0"
               />
@@ -294,7 +294,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
                   type="number"
                   step="any"
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                  value={data.latitude || ""}
+                  value={value.latitude || ""}
                   onChange={e => onChange("latitude", e.target.value)}
                   placeholder="13.7563"
                 />
@@ -305,7 +305,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
                   type="number"
                   step="any"
                   className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                  value={data.longitude || ""}
+                  value={value.longitude || ""}
                   onChange={e => onChange("longitude", e.target.value)}
                   placeholder="100.5018"
                 />
@@ -319,8 +319,8 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
                     onChange("latitude", location.lat.toFixed(6));
                     onChange("longitude", location.lng.toFixed(6));
                   }}
-                  initialLatitude={parseFloat(data.latitude) || 13.7563}
-                  initialLongitude={parseFloat(data.longitude) || 100.5018}
+                  initialLatitude={parseFloat(value.latitude) || 13.7563}
+                  initialLongitude={parseFloat(value.longitude) || 100.5018}
                   height="400px"
                 />
               </div>
@@ -343,7 +343,7 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
             <div className="mt-2">
               <ImageUpload 
                 onImageSelected={(imageUrl) => onChange("houseImage", imageUrl)}
-                initialImageUrl={data.houseImage}
+                initialImageUrl={value.houseImage}
                 label="รูปหน้าบ้าน"
                 accept="image/*"
               />
