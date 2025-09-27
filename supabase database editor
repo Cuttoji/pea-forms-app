@@ -1,0 +1,145 @@
+-- เปิด UUID extension (รันครั้งเดียว)
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- 1. Home Inspection
+CREATE TABLE home_inspection_forms (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    general JSONB,
+    inspection JSONB,
+    summary JSONB,
+    limitation TEXT,
+    signature JSONB
+);
+
+-- 2. Condo Inspection
+CREATE TABLE condo_inspection_forms (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    general JSONB,
+    documents JSONB,
+    hvSystem JSONB,
+    transformers JSONB,
+    summary JSONB,
+    limitation TEXT,
+    signature JSONB
+);
+
+-- 3. Construction Inspection
+CREATE TABLE construction_inspection (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    general JSONB,
+    inspection JSONB,
+    summary JSONB,
+    limitation TEXT,
+    signature JSONB
+);
+
+-- 4. EV Charger LV Inspection
+CREATE TABLE ev_charger_lv_inspection (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    general JSONB,
+    documents JSONB,
+    panel JSONB,
+    inspection JSONB,
+    summary JSONB,
+    limitation TEXT,
+    signature JSONB
+);
+
+-- 5. EV Charger HV Inspection
+CREATE TABLE ev_charger_hv_inspection (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    general JSONB,
+    documents JSONB,
+    hvSystem JSONB,
+    transformers JSONB,
+    summary JSONB,
+    limitation TEXT,
+    signature JSONB
+);
+
+-- 6. Other Inspection
+CREATE TABLE other_inspection_forms (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    general JSONB,
+    documents JSONB,
+    hvSystem JSONB,
+    transformers JSONB,
+    summary JSONB,
+    limitation TEXT,
+    signature JSONB
+);
+
+-- อัปเดต updated_at อัตโนมัติ
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_home_inspection_forms_updated_at
+    BEFORE UPDATE ON home_inspection_forms
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_condo_inspection_forms_updated_at
+    BEFORE UPDATE ON condo_inspection_forms
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_construction_inspection_updated_at
+    BEFORE UPDATE ON construction_inspection
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_ev_charger_lv_inspection_updated_at
+    BEFORE UPDATE ON ev_charger_lv_inspection
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_ev_charger_hv_inspection_updated_at
+    BEFORE UPDATE ON ev_charger_hv_inspection
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_other_inspection_forms_updated_at
+    BEFORE UPDATE ON other_inspection_forms
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- เปิด RLS
+ALTER TABLE home_inspection_forms ENABLE ROW LEVEL SECURITY;
+ALTER TABLE condo_inspection_forms ENABLE ROW LEVEL SECURITY;
+ALTER TABLE construction_inspection ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ev_charger_lv_inspection ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ev_charger_hv_inspection ENABLE ROW LEVEL SECURITY;
+ALTER TABLE other_inspection_forms ENABLE ROW LEVEL SECURITY;
+
+-- Allow all (ปลอดภัยจริงควรแก้ไข policy)
+CREATE POLICY "Allow all" ON home_inspection_forms FOR ALL USING (true);
+CREATE POLICY "Allow all" ON condo_inspection_forms FOR ALL USING (true);
+CREATE POLICY "Allow all" ON construction_inspection FOR ALL USING (true);
+CREATE POLICY "Allow all" ON ev_charger_lv_inspection FOR ALL USING (true);
+CREATE POLICY "Allow all" ON ev_charger_hv_inspection FOR ALL USING (true);
+CREATE POLICY "Allow all" ON other_inspection_forms FOR ALL USING (true);
+
+-- ตัวอย่างการสร้าง index สำหรับ dashboard/filter
+CREATE INDEX idx_home_inspection_forms_created_at ON home_inspection_forms(created_at);
+CREATE INDEX idx_condo_inspection_forms_created_at ON condo_inspection_forms(created_at);
+CREATE INDEX idx_construction_inspection_created_at ON construction_inspection(created_at);
+CREATE INDEX idx_ev_charger_lv_inspection_created_at ON ev_charger_lv_inspection(created_at);
+CREATE INDEX idx_ev_charger_hv_inspection_created_at ON ev_charger_hv_inspection(created_at);
+CREATE INDEX idx_other_inspection_forms_created_at ON other_inspection_forms(created_at);
