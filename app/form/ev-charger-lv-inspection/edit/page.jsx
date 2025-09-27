@@ -1,10 +1,11 @@
 "use client";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import EvChargerLvInspectionForm from "../page"; // ใช้ฟอร์มหลักร่วมกัน
 
-export default function EditEvChargerLvInspectionPage() {
+function EditEvChargerLvInspectionPageInner() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [form, setForm] = useState(null);
@@ -35,5 +36,13 @@ export default function EditEvChargerLvInspectionPage() {
       <h1 className="text-2xl font-bold mb-4">แก้ไขฟอร์ม EV Charger LV</h1>
       <EvChargerLvInspectionForm initialForm={form} mode="edit" />
     </div>
+  );
+}
+
+export default function EditEvChargerLvInspectionPage() {
+  return (
+    <Suspense fallback={<div className="p-4">กำลังโหลด...</div>}>
+      <EditEvChargerLvInspectionPageInner />
+    </Suspense>
   );
 }
