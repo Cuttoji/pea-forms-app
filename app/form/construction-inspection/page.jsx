@@ -1,16 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import constructionFormSchema from "@/lib/constants/constructionFormSchema";
 import GeneralInfoSection from "../components/construction/GeneralInfoSection";
 import ConstructionInspectionSection from "../components/construction/ConstructionInspectionSection";
 import SummarySection from "../components/construction/SummarySection";
 import ConstructionInspectionPDF from '../../../components/pdf/constructioninspectionPDF';
 
-export default function ConstructionInspectionClient({ initialData }) {
-  const safeInitial = initialData && typeof initialData === "object" ? initialData : constructionFormSchema;
+export default function ConstructionInspectionClient({ props }) {
+  const initialForm = props?.initialForm;
+  const safeInitial = initialForm && typeof initialForm === "object" ? initialForm : constructionFormSchema;
   const [formData, setFormData] = useState(safeInitial);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+      if (initialForm) {
+        setFormData({
+          ...initialForm,
+          summary: initialForm.summary || {}, // fallback ป้องกัน null
+        });
+        if (Array.isArray(initialForm.transformers)) {
+          setTransformers(initialForm.transformers);
+        }
+      }
+    }, [initialForm]);
+  
 
   const handleFormChange = (field, value) => {
     setFormData(prev => ({

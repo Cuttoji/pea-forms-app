@@ -34,7 +34,7 @@ function EditConstructionInspectionPageInner() {
   return (
     <div className="p-4 text-gray-700">
       <h1 className="text-2xl font-bold mb-4">แก้ไขฟอร์มตรวจสอบงานก่อสร้าง</h1>
-      <ConstructionInspectionForm initialForm={form} mode="edit" />
+      <ConstructionInspectionForm initialData={form} mode="edit" />
     </div>
   );
 }
