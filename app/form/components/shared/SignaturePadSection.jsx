@@ -1,23 +1,22 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, forwardRef, useImperativeHandle } from "react";
 import SignaturePad from "@/components/forms/SignaturePad";
 
-export default function SignaturePadSection({ value = {}, onChange = () => {} }) {
+const SignaturePadSection = forwardRef(function SignaturePadSection(
+  { value = {}, onChange = () => {} },
+  ref
+) {
   const customerRef = useRef(null);
   const officerRef = useRef(null);
 
-  // สำหรับเคลียร์ทั้งหมด (หากต้องการจากฟอร์มแม่)
-  React.useImperativeHandle(
-    null,
-    () => ({
-      clearAll: () => {
-        customerRef.current?.clear();
-        officerRef.current?.clear();
-      },
-    }),
-    []
-  );
+  // ให้ฟอร์มแม่สามารถ clear ทั้งสองลายเซ็นได้
+  useImperativeHandle(ref, () => ({
+    clearAll: () => {
+      customerRef.current?.clear();
+      officerRef.current?.clear();
+    },
+  }));
 
   return (
     <div className="flex flex-wrap gap-8 w-full">
@@ -26,7 +25,7 @@ export default function SignaturePadSection({ value = {}, onChange = () => {} })
           ref={customerRef}
           title="ผู้ขอใช้ไฟฟ้าหรือผู้แทน"
           initialDataUrl={value.customerSign}
-          onSave={img => onChange({ ...value, customerSign: img })}
+          onSave={(img) => onChange({ ...value, customerSign: img })}
           onClear={() => onChange({ ...value, customerSign: "" })}
         />
       </div>
@@ -35,10 +34,12 @@ export default function SignaturePadSection({ value = {}, onChange = () => {} })
           ref={officerRef}
           title="เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค"
           initialDataUrl={value.officerSign}
-          onSave={img => onChange({ ...value, officerSign: img })}
+          onSave={(img) => onChange({ ...value, officerSign: img })}
           onClear={() => onChange({ ...value, officerSign: "" })}
         />
       </div>
     </div>
   );
-}
+});
+
+export default SignaturePadSection;

@@ -9,7 +9,8 @@ import LimitationSection from "../components/shared/LimitationSection";
 import SignaturePadSection from "../components/shared/SignaturePadSection";
 import LVSystemSection from "../components/building/LVSystemSection";
 import condoFormSchema, { getNewCondoTransformer } from "@/lib/constants/condoFormSchema";
-import CondoInspectionPDF from "../../../components/pdf/CondoInspectionPDF";
+import CondoInspectionPDF from '../../../components/pdf/CondoInspectionPDF';
+import { pdf } from "@react-pdf/renderer"; // เพิ่มถ้ายังไม่ได้ import
 
 
 // รับ props แบบ optional เพื่อรองรับทั้งสร้างใหม่และ edit
@@ -20,10 +21,19 @@ export default function CondoInspectionPage(props) {
     general: condoFormSchema.general,
     documents: condoFormSchema.documents,
     hvSystem: condoFormSchema.hvSystem,
-    summary: condoFormSchema.summary || {}, // ป้องกัน summary เป็น null
+    summary: condoFormSchema.summary || {},
     limitation: condoFormSchema.limitation,
     signature: condoFormSchema.signature
   });
+
+  // ถ้า initialForm มี transformers ให้ใช้เลย ไม่งั้น default 1 ตัว
+  const [transformers, setTransformers] = useState(
+    (initialForm && Array.isArray(initialForm.transformers) && initialForm.transformers.length > 0)
+      ? initialForm.transformers
+      : [getNewCondoTransformer()]
+  );
+  const [showPDF, setShowPDF] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   // รับ initialForm กรณี edit
   useEffect(() => {
@@ -54,14 +64,6 @@ export default function CondoInspectionPage(props) {
       [section]: value
     }));
   };
-
-  // ถ้า initialForm มี transformers ให้ใช้เลย ไม่งั้น default 1 ตัว
-  const [transformers, setTransformers] = useState(
-    (initialForm && Array.isArray(initialForm.transformers) && initialForm.transformers.length > 0)
-      ? initialForm.transformers
-      : [getNewCondoTransformer()]
-  );
-  const [showPDF, setShowPDF] = useState(false);
 
   const handleAddTransformer = () => {
     setTransformers(prev => [...prev, getNewCondoTransformer()]);
@@ -104,10 +106,36 @@ export default function CondoInspectionPage(props) {
     }
   };
 
-  const handleGeneratePDF = () => {
-    setShowPDF(true);
+  // แก้ไขตรงนี้: ใช้ setIsGeneratingPDF (สะกดถูก) แทน setIsGenratingPDF
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true);
+    try {
+      // รวมข้อมูลตรงกับ payload ที่บันทึก/โหลด
+      const pdfData = {
+        general: formData.general,
+        documents: formData.documents,
+        hvSystem: formData.hvSystem,
+        transformers: transformers,
+        summary: formData.summary,
+        limitation: formData.limitation,
+        signature: formData.signature,
+      };
+      const blob = await pdf(<CondoInspectionPDF formData={pdfData} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'condo-inspection.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('เกิดข้อผิดพลาดในการสร้าง PDF กรุณาลองใหม่อีกครั้ง');
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
-
   return (
     <>
       <form onSubmit={handleSubmit} className="max-w-6xl mx-auto space-y-10 py-8 px-4">
@@ -119,7 +147,7 @@ export default function CondoInspectionPage(props) {
           <p className="text-xl text-gray-600">
             การตรวจสอบระบบไฟฟ้าและอุปกรณ์ป้องกันสำหรับอาคารชุดพักอาศัย
           </p>
-          <div className="w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-6"></div>
+          <div className="w-full h-1 bg-blue-200 from-blue-500 to-purple-500 rounded-full mt-6"></div>
         </div>
 
         <GeneralInfoSection 
@@ -132,28 +160,32 @@ export default function CondoInspectionPage(props) {
           onChange={(value) => handleSectionObject("documents", value)} 
         />
         
-        <HVSystemSection 
-          value={formData.hvSystem} 
-          onChange={(value) => handleSectionObject("hvSystem", value)} 
+        <HVSystemSection
+          value={formData.hvSystem}
+          onChange={value => handleSectionChange("hvSystem", value)}
         />
 
+        {/* ระบบหม้อแปลง (ตกแต่งใหม่) */}
         <div className="space-y-10">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold mb-4">
               4. ระบบหม้อแปลงและไฟฟ้าแรงต่ำ
             </h2>
-            <div className="w-full h-1 bg-gradient-to-r from-green-500 to-blue-500 rounded-full"></div>
+            <div className="w-full h-1 bg-blue-200 from-green-500 to-blue-500 rounded-full"></div>
           </div>
 
           {transformers.map((transformer, idx) => (
-            <div key={idx} className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-green-600 to-blue-600 px-8 py-6">
+            <div
+              key={idx}
+              className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden"
+            >
+              <div className="bg-blue-200 from-green-600 to-blue-600 px-8 py-6">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                      <span className="text-white text-lg font-bold">{idx + 1}</span>
+                      <span className="text-gray-900 text-lg font-bold text-gray-900">{idx + 1}</span>
                     </div>
-                    <h3 className="text-2xl font-bold text-white">
+                    <h3 className="text-2xl font-bold text-gray-700">
                       หม้อแปลงที่ {idx + 1}
                     </h3>
                   </div>
@@ -161,7 +193,7 @@ export default function CondoInspectionPage(props) {
                     <button
                       type="button"
                       onClick={() => setTransformers(prev => prev.filter((_, i) => i !== idx))}
-                      className="px-6 py-3 bg-white bg-opacity-20 text-white text-base font-medium rounded-lg hover:bg-opacity-30 transition-colors"
+                      className="px-6 py-3 bg-white bg-opacity-20 text-gray-900 text-base font-medium rounded-lg hover:bg-opacity-30 transition-colors"
                     >
                       ลบหม้อแปลง
                     </button>
@@ -177,7 +209,7 @@ export default function CondoInspectionPage(props) {
                     handleTransformerChange(idx, "transformerData", updatedTransformer);
                   }}
                 />
-                
+
                 <LVSystemSection
                   value={transformer.lvSystem || {}}
                   onChange={(lvData) =>
@@ -193,7 +225,7 @@ export default function CondoInspectionPage(props) {
           <button
             type="button"
             onClick={handleAddTransformer}
-            className="px-8 py-4 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold text-lg rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
+            className="px-8 py-4 bg-green-400 from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold text-lg rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
           >
             + เพิ่มหม้อแปลง
           </button>
@@ -218,27 +250,20 @@ export default function CondoInspectionPage(props) {
         <div className="flex justify-center gap-4 pt-8 border-t border-gray-200">
           <button
             type="button"
-            onClick={handleGeneratePDF}
-            className="px-12 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
+            onClick={handleDownloadPDF}
+            className="px-12 py-4 bg-blue-500 from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
+            disabled={isGeneratingPDF}
           >
-            สร้าง PDF
+            {isGeneratingPDF ? "กำลังสร้าง PDF..." : "สร้าง PDF"}
           </button>
           <button
             type="submit"
-            className="px-12 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
+            className="px-12 py-4 bg-green-500 from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
           >
             บันทึกและส่งข้อมูล
           </button>
         </div>
       </form>
-
-      {showPDF && (
-        <CondoInspectionPDF
-          formData={formData}
-          transformers={transformers}
-          onClose={() => setShowPDF(false)}
-        />
-      )}
     </>
   );
 }

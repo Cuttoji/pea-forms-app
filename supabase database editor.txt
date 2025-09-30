@@ -22,7 +22,7 @@ CREATE TABLE condo_inspection_forms (
     documents JSONB,
     hvSystem JSONB,
     transformers JSONB,
-    summary JSONB,
+    summaryType JSONB,
     limitation TEXT,
     signature JSONB
 );
@@ -48,7 +48,7 @@ CREATE TABLE ev_charger_lv_inspection (
     documents JSONB,
     panel JSONB,
     inspection JSONB,
-    summary JSONB,
+    summaryType JSONB,
     limitation TEXT,
     signature JSONB
 );
@@ -62,7 +62,7 @@ CREATE TABLE ev_charger_hv_inspection (
     documents JSONB,
     hvSystem JSONB,
     transformers JSONB,
-    summary JSONB,
+    summaryType JSONB,
     limitation TEXT,
     signature JSONB
 );
@@ -76,7 +76,7 @@ CREATE TABLE other_inspection_forms (
     documents JSONB,
     hvSystem JSONB,
     transformers JSONB,
-    summary JSONB,
+    summaryType JSONB,
     limitation TEXT,
     signature JSONB
 );

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import ConstructionInspectionForm from "../page";
+import ConstructionInspectionClient from "../page"; // ใช้ฟอร์มหลักร่วมกัน
 
 function EditConstructionInspectionPageInner() {
   const searchParams = useSearchParams();
@@ -33,13 +33,13 @@ function EditConstructionInspectionPageInner() {
 
   return (
     <div className="p-4 text-gray-700">
-      <h1 className="text-2xl font-bold mb-4">แก้ไขฟอร์มตรวจสอบงานก่อสร้าง</h1>
-      <ConstructionInspectionForm initialData={form} mode="edit" />
+      <h1 className="text-2xl font-bold mb-4">แก้ไขฟอร์มตรวจสอบอาคารชุด</h1>
+      <ConstructionInspectionClient initialForm={form} mode="edit" />
     </div>
   );
 }
 
-export default function EditConstructionInspectionPage() {
+export default function EditCondoInspectionPage() {
   return (
     <Suspense fallback={<div className="p-4">กำลังโหลด...</div>}>
       <EditConstructionInspectionPageInner />

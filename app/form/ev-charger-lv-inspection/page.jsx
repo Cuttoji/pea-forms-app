@@ -12,7 +12,7 @@ import GeneralInfoLvSection from "../components/evCharger/GeneralInfoLvSection";
 import EvChargerLvFormPDF from "../../../components/pdf/EvChargerLvFormPDF";
 import LVSystemSectionPEA from "../components/evCharger/LVSystemSectionPEA";
 
-export default function EvChargerLvInspectionPage({ initialForm }) {
+export default function EvChargerLvInspectionPage({ initialForm, formFromDb }) {
   const [form, setForm] = React.useState({
     general: evLvChargerFormSchema.general,
     inspection: {
@@ -20,7 +20,8 @@ export default function EvChargerLvInspectionPage({ initialForm }) {
     },
     panel: evLvChargerFormSchema.panel,
     documents: evLvChargerFormSchema.documents,
-    summary: evLvChargerFormSchema.summary,
+    lvSystem: evLvChargerFormSchema.lvSystem,
+    summary: evLvChargerFormSchema.summary || {},
     limitation: evLvChargerFormSchema.limitation,
     signature: evLvChargerFormSchema.signature,
   });
@@ -33,6 +34,15 @@ export default function EvChargerLvInspectionPage({ initialForm }) {
       setForm(initialForm);
     }
   }, [initialForm]);
+
+  useEffect(() => {
+    if (formFromDb) {
+      setForm({
+        ...formFromDb,
+        summary: formFromDb.summary || {},
+      });
+    }
+  }, [formFromDb]);
 
   // ฟังก์ชันสำหรับเปลี่ยนค่าในแต่ละ section
   const handleSectionChange = (section, field, value) => {
@@ -82,24 +92,16 @@ export default function EvChargerLvInspectionPage({ initialForm }) {
     setIsGeneratingPDF(true);
     try {
       const { pdf } = await import('@react-pdf/renderer');
+      // ส่งข้อมูลเป็น object ตาม schema ที่บันทึก
       const pdfData = {
-        peaoffice: form.general.peaOffice,
-        inspectionnumber: form.general.inspectionNumber,
-        inspectiondate: form.general.inspectionDate,
-        requestnumber: form.general.requestNumber,
-        requestdate: form.general.requestDate,
-        fullname: form.general.fullName,
-        phone: form.general.phone,
-        address: form.general.address,
-        phasetype: form.general.phaseType,
-        estimatedload: form.general.estimatedLoad,
-        documents: form.documents,
+        general: form.general,
+        inspection: form.inspection,
         panel: form.panel,
-        subCircuits: form.inspection.subCircuits,
-        summaryresult: form.summary,
-        scopeofinspection: form.limitation,
-        userSignature: form.signature.userSignature,
-        inspectorSignature: form.signature.inspectorSignature,
+        documents: form.documents,
+        lvSystem: form.lvSystem,
+        summary: form.summary,
+        limitation: form.limitation,
+        signature: form.signature,
       };
       const blob = await pdf(<EvChargerLvFormPDF formData={pdfData} />).toBlob();
       const url = URL.createObjectURL(blob);

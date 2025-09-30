@@ -24,7 +24,12 @@ export default function HomeInspectionPage({ initialForm }) {
 
   useEffect(() => {
     if (initialForm) {
-      setForm(initialForm);
+      setForm({
+        ...initialForm,
+        summary: initialForm.summary || homeFormSchema.summary || {},
+        limitation: initialForm.limitation || homeFormSchema.limitation || "",
+        signature: initialForm.signature || homeFormSchema.signature || {},
+      });
     }
   }, [initialForm]);
 
@@ -63,18 +68,18 @@ export default function HomeInspectionPage({ initialForm }) {
     }
   };
 
-  // PDF generation function (ปรับให้ส่งข้อมูลครบทุก field)
+  // PDF generation function (ปรับใหม่)
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
     try {
       const { pdf } = await import('@react-pdf/renderer');
-      // รวมข้อมูลทุก section เป็น object เดียว
+      // ส่งข้อมูลเป็น object ตาม schema ที่บันทึก
       const pdfData = {
-        ...form.general,
-        ...form.inspection,
-        summaryresult: form.summary,
-        scopeofinspection: form.limitation,
-        ...form.signature,
+        general: form.general,
+        inspection: form.inspection,
+        summary: form.summary,
+        limitation: form.limitation,
+        signature: form.signature,
       };
       const blob = await pdf(<HomeInspectionPDF formData={pdfData} />).toBlob();
       const url = URL.createObjectURL(blob);

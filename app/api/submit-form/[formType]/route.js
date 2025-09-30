@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 export async function POST(request, context) {
-  const { params } = await context;
+  const { params } = context;
   const formTypeFromPath = params.formType;
   let formData;
 
@@ -21,7 +21,7 @@ export async function POST(request, context) {
     return NextResponse.json({ error: "กรุณาส่งข้อมูลฟอร์ม (formData) มาใน request body" }, { status: 400 });
   }
 
-  // Map formType to table name (เติม s ให้ตรงกับชื่อ table)
+  // Map formType to table name
   const tableMap = {
     "home-inspection": "home_inspection_forms",
     "condo-inspection": "condo_inspection_forms",
@@ -43,8 +43,21 @@ export async function POST(request, context) {
   }
   const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
-  // Insert data
-  const { data, error } = await supabase.from(tableName).insert([formData]).select();
+  let data, error;
+  if (formData.id) {
+    // ถ้ามี id ให้ update
+    ({ data, error } = await supabase
+      .from(tableName)
+      .update(formData)
+      .eq("id", formData.id)
+      .select());
+  } else {
+    // ถ้าไม่มี id ให้ insert
+    ({ data, error } = await supabase
+      .from(tableName)
+      .insert([formData])
+      .select());
+  }
 
   if (error) {
     return NextResponse.json({ error: `เกิดข้อผิดพลาดในการบันทึกข้อมูล: ${error.message}` }, { status: 400 });

@@ -105,27 +105,15 @@ export default function EvChargerHvInspectionPage({ initialForm }) {
     setIsGeneratingPDF(true);
     try {
       const { pdf } = await import('@react-pdf/renderer');
-      // เตรียมข้อมูลสำหรับ PDF
+      // ส่งข้อมูลเป็น object ตาม schema ที่บันทึก
       const pdfData = {
-        peaoffice: form.general.peaOffice,
-        inspectionnumber: form.general.inspectionNumber,
-        inspectiondate: form.general.inspectionDate,
-        requestnumber: form.general.requestNumber,
-        requestdate: form.general.requestDate,
-        fullname: form.general.fullName,
-        phone: form.general.phone,
-        address: form.general.address,
-        phasetype: form.general.phaseType,
-        estimatedload: form.general.estimatedLoad,
-        buildingtype: form.general.buildingType,
+        general: form.general,
         documents: form.documents,
         hvSystem: form.hvSystem,
         transformers: form.transformers,
-        lvSystem: form.transformers.map(t => t.lvSystem),
-        summaryresult: form.summary,
-        scopeofinspection: form.limitation,
-        userSignature: form.signature.userSignature,
-        inspectorSignature: form.signature.inspectorSignature,
+        summary: form.summary,
+        limitation: form.limitation,
+        signature: form.signature,
       };
       const blob = await pdf(<EVChargerHVExportPDF formData={pdfData} />).toBlob();
       const url = URL.createObjectURL(blob);

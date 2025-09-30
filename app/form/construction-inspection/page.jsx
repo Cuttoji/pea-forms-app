@@ -6,25 +6,24 @@ import ConstructionInspectionSection from "../components/construction/Constructi
 import SummarySection from "../components/construction/SummarySection";
 import ConstructionInspectionPDF from '../../../components/pdf/constructioninspectionPDF';
 
-export default function ConstructionInspectionClient({ props }) {
+export default function ConstructionInspectionClient(props) {
   const initialForm = props?.initialForm;
-  const safeInitial = initialForm && typeof initialForm === "object" ? initialForm : constructionFormSchema;
-  const [formData, setFormData] = useState(safeInitial);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    general: constructionFormSchema.general,
+    sections: constructionFormSchema.sections,
+    summary: constructionFormSchema.summary || {},
+  });
 
   useEffect(() => {
-      if (initialForm) {
-        setFormData({
-          ...initialForm,
-          summary: initialForm.summary || {}, // fallback ป้องกัน null
-        });
-        if (Array.isArray(initialForm.transformers)) {
-          setTransformers(initialForm.transformers);
-        }
-      }
-    }, [initialForm]);
-  
+    if (initialForm) {
+      setFormData({
+        ...initialForm,
+        summary: initialForm.summary || {},
+      });
+    }
+  }, [initialForm]);
 
   const handleFormChange = (field, value) => {
     setFormData(prev => ({
@@ -60,22 +59,13 @@ export default function ConstructionInspectionClient({ props }) {
     setIsGeneratingPDF(true);
     try {
       const { pdf } = await import('@react-pdf/renderer');
+      // ส่งข้อมูลเป็น object ตาม schema ที่บันทึก/โหลด
       const pdfData = {
-        peaoffice: formData.general?.peaOffice,
-        inspectionnumber: formData.general?.inspectionNumber,
-        inspectiondate: formData.general?.inspectionDate,
-        requestnumber: formData.general?.requestNumber,
-        requestdate: formData.general?.requestDate,
-        fullname: formData.general?.fullName,
-        phone: formData.general?.phone,
-        address: formData.general?.address,
-        buildingtype: formData.general?.buildingType,
-        constructiontype: formData.general?.constructionType,
-        inspection: formData.inspection,
-        summaryresult: formData.summary,
-        scopeofinspection: formData.limitation,
-        userSignature: formData.signature?.userSignature,
-        inspectorSignature: formData.signature?.inspectorSignature,
+        general: formData.general,
+        sections: formData.sections,
+        summary: formData.summary,
+        limitation: formData.limitation,
+        signature: formData.signature,
       };
       const blob = await pdf(<ConstructionInspectionPDF formData={pdfData} />).toBlob();
       const url = URL.createObjectURL(blob);
@@ -110,8 +100,8 @@ export default function ConstructionInspectionClient({ props }) {
           }
         />
         <ConstructionInspectionSection
-          value={formData.inspection}
-          onChange={value => handleFormChange("inspection", value)}
+          value={formData.sections}
+          onChange={value => handleFormChange("sections", value)}
         />
         <SummarySection
           value={formData.summary}

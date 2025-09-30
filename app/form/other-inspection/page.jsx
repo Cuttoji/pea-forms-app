@@ -89,30 +89,19 @@ export default function OtherInspectionPage({ initialForm }) {
     }
   };
 
-  // PDF generation function (เหมือนเดิม)
+  // PDF generation function (ปรับใหม่)
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
     try {
       const { pdf } = await import('@react-pdf/renderer');
       const pdfData = {
-        peaoffice: formData.general.peaOffice,
-        inspectionnumber: formData.general.inspectionNumber,
-        inspectiondate: formData.general.inspectionDate,
-        requestnumber: formData.general.requestNumber,
-        requestdate: formData.general.requestDate,
-        fullname: formData.general.fullName,
-        phone: formData.general.phone,
-        address: formData.general.address,
-        buildingtype: formData.general.buildingType,
-        phasetype: formData.general.phaseType,
-        estimatedload: formData.general.estimatedLoad,
+        general: formData.general,
         documents: formData.documents,
         hvSystem: formData.hvSystem,
         transformers: transformers,
-        summaryresult: formData.summary,
-        scopeofinspection: formData.limitation,
-        userSignature: formData.signature.userSignature,
-        inspectorSignature: formData.signature.inspectorSignature,
+        summary: formData.summary,
+        limitation: formData.limitation,
+        signature: formData.signature,
       };
       const blob = await pdf(<OtherInspectionPDF formData={pdfData} />).toBlob();
       const url = URL.createObjectURL(blob);

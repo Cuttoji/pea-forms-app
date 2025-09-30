@@ -21,7 +21,14 @@ SignaturePad.displayName = 'SignaturePad';
 
   const handleBeginStroke = () => {
     setIsSigned(true);
-    setIsSaved(false); // ถ้าเริ่มวาดใหม่ ให้สถานะบันทึกเป็น false
+    setIsSaved(false);
+    // บันทึกอัตโนมัติเมื่อเริ่มเซ็น
+    if (sigPadRef.current) {
+      const dataUrl = sigPadRef.current.getTrimmedCanvas().toDataURL('image/png');
+      if (onSave) {
+        onSave(dataUrl);
+      }
+    }
   };
 
   const handleClear = () => {
@@ -54,6 +61,16 @@ SignaturePad.displayName = 'SignaturePad';
           penColor='black'
           canvasProps={{ className: 'w-full h-full rounded-lg' }}
           onBegin={handleBeginStroke}
+          onEnd={() => {
+            setIsSigned(true);
+            setIsSaved(false);
+            if (sigPadRef.current) {
+              const dataUrl = sigPadRef.current.getTrimmedCanvas().toDataURL('image/png');
+              if (onSave) {
+                onSave(dataUrl);
+              }
+            }
+          }}
         />
         {!isSigned && !isSaved && (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
