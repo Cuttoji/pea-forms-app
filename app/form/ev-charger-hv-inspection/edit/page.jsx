@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import EvChargerHvInspectionForm from "../page";
+import EvChargerHvInspectionForm from "../EvChargerHvInspectionForm";
 
 function EditEvChargerHvInspectionPageInner() {
   const searchParams = useSearchParams();

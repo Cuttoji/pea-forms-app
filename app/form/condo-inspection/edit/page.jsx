@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import CondoInspectionForm from "../page"; // ใช้ฟอร์มหลักร่วมกัน
+import CondoInspectionForm from "../condoinspectionform";
 
 function EditCondoInspectionPageInner() {
   const searchParams = useSearchParams();
