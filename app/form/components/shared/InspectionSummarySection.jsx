@@ -18,15 +18,15 @@ export default function InspectionSummarySection({ value = {}, onChange = () => 
               <input
                 type="radio"
                 name="summaryType"
-                value="ถาวร"
-                checked={value.summaryType === "ถาวร"}
-                onChange={() => onChange({...value, summaryType: "ถาวร"})}
+                value="compliant"
+                checked={value.summaryType === "compliant"}
+                onChange={() => onChange({...value, summaryType: "compliant"})}
                 className="text-green-600 focus:ring-green-500 h-4 w-4"
               />
               <div className="ml-3">
-                <span className="text-green-700 font-medium">✓ ติดตั้งมิเตอร์ถาวร</span>
+                <span className="text-green-700 font-medium">✓ ติดตั้งมิเตอร์ได้</span>
                 <div className="text-sm text-gray-600 mt-1">
-                  ระบบไฟฟ้าผ่านการตรวจสอบเรียบร้อยแล้ว สามารถติดตั้งมิเตอร์ถาวรได้
+                  ระบบไฟฟ้าผ่านการตรวจสอบเรียบร้อยแล้ว สามารถติดตั้งมิเตอร์ได้
                 </div>
               </div>
             </label>
@@ -35,15 +35,15 @@ export default function InspectionSummarySection({ value = {}, onChange = () => 
               <input
                 type="radio"
                 name="summaryType"
-                value="ชั่วคราว"
-                checked={value.summaryType === "ชั่วคราว"}
-                onChange={() => onChange({...value, summaryType: "ชั่วคราว"})}
+                value="compliant_with_conditions"
+                checked={value.summaryType === "compliant_with_conditions"}
+                onChange={() => onChange({...value, summaryType: "compliant_with_conditions"})}
                 className="text-yellow-600 focus:ring-yellow-500 h-4 w-4"
               />
               <div className="ml-3">
-                <span className="text-yellow-700 font-medium">⚠ ติดตั้งมิเตอร์ชั่วคราว</span>
+                <span className="text-yellow-700 font-medium">⚠ ติดตั้งมิเตอร์ได้ตามเงื่อนไข</span>
                 <div className="text-sm text-gray-600 mt-1">
-                  ระบบไฟฟ้ามีข้อบกพร่องเล็กน้อย สามารถติดตั้งมิเตอร์ชั่วคราวได้
+                  ระบบไฟฟ้ามีข้อบกพร่องเล็กน้อย สามารถติดตั้งมิเตอร์ได้ตามเงื่อนไข
                 </div>
               </div>
             </label>
@@ -52,9 +52,9 @@ export default function InspectionSummarySection({ value = {}, onChange = () => 
               <input
                 type="radio"
                 name="summaryType"
-                value="ปรับปรุง"
-                checked={value.summaryType === "ปรับปรุง"}
-                onChange={() => onChange({...value, summaryType: "ปรับปรุง"})}
+                value="non_compliant"
+                checked={value.summaryType === "non_compliant"}
+                onChange={() => onChange({...value, summaryType: "non_compliant"})}
                 className="text-red-600 focus:ring-red-500 h-4 w-4"
               />
               <div className="ml-3">

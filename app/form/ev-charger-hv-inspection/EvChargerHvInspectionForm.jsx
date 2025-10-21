@@ -146,6 +146,34 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
     }
   };
 
+  // แก้ไขการจัดการ LVSystem
+  const handleLVSystemChange = (transformerIndex, newLVSystemData) => {
+    console.log(`=== Updating LV System for transformer ${transformerIndex} ===`);
+    console.log('New LV System data:', newLVSystemData);
+    
+    setForm(prev => {
+      const updatedTransformers = [...prev.transformers];
+      
+      // ตรวจสอบว่า transformer index มีอยู่จริง
+      if (updatedTransformers[transformerIndex]) {
+        updatedTransformers[transformerIndex] = {
+          ...updatedTransformers[transformerIndex],
+          lvSystem: newLVSystemData
+        };
+        
+        console.log(`Updated transformer ${transformerIndex}:`, updatedTransformers[transformerIndex]);
+      }
+      
+      const updatedForm = {
+        ...prev,
+        transformers: updatedTransformers
+      };
+      
+      console.log('Updated complete form:', updatedForm);
+      return updatedForm;
+    });
+  };
+
   return (
     <div className="min-h-screen p-4">
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
@@ -212,9 +240,8 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
 
                 <LVSystemSection
                   value={transformer.lvSystem || {}}
-                  onChange={lvData =>
-                    handleTransformerChange(transformerIndex, "lvSystem", lvData)
-                  }
+                  onChange={(lvData) => handleLVSystemChange(transformerIndex, lvData)}
+                  transformerIndex={transformerIndex}
                 />
 
                 <PanelBoardSection
@@ -255,7 +282,7 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
 
         <InspectionSummarySection
           value={form.summary}
-          onChange={value => handleSectionChange("summary", value)}
+          onChange={(value) => setForm((prev) => ({ ...prev, summary: value }))}
         />
         <LimitationSection
           value={form.limitation}

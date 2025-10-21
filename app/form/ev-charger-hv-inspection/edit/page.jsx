@@ -20,7 +20,95 @@ function EditEvChargerHvInspectionPageInner() {
         .eq("id", id)
         .single()
         .then(({ data }) => {
-          setForm(data);
+          // แก้ไขข้อมูลที่ได้จาก database ให้มี default values
+          const formattedData = {
+            ...data,
+            summary: data?.summary || { summaryType: null },
+            limitation: data?.limitation || "",
+            signature: data?.signature || { officerSign: "", customerSign: "" },
+            general: data?.general || {},
+            documents: data?.documents || {},
+            hvSystem: data?.hvSystem || {},
+            // แก้ไข transformers ให้มีโครงสร้างครบถ้วน
+            transformers: Array.isArray(data?.transformers) && data.transformers.length > 0
+              ? data.transformers.map(transformer => ({
+                  ...transformer,
+                  // เพิ่ม lvSystem ถ้าไม่มี
+                  lvSystem: transformer?.lvSystem || {
+                    mainCircuit: {
+                      cableType: "",
+                      cableSize: "",
+                      conduitType: "",
+                      conduitSize: "",
+                      installation: "",
+                      result: null,
+                      detail: ""
+                    },
+                    mainBreaker: {
+                      type: "",
+                      rating: "",
+                      icRating: "",
+                      phases: "",
+                      result: null,
+                      detail: ""
+                    },
+                    grounding: {
+                      type: "",
+                      resistance: "",
+                      result: null,
+                      detail: ""
+                    }
+                  },
+                  // เพิ่ม subCircuits ถ้าไม่มี
+                  subCircuits: Array.isArray(transformer?.subCircuits) && transformer.subCircuits.length > 0
+                    ? transformer.subCircuits
+                    : []
+                }))
+              : [{
+                  id: Date.now().toString(),
+                  transformerNo: 1,
+                  rating: "",
+                  primaryVoltage: "",
+                  secondaryVoltage: "",
+                  impedance: "",
+                  yearInstalled: "",
+                  result: null,
+                  detail: "",
+                  lvSystem: {
+                    mainCircuit: {
+                      cableType: "",
+                      cableSize: "",
+                      conduitType: "",
+                      conduitSize: "",
+                      installation: "",
+                      result: null,
+                      detail: ""
+                    },
+                    mainBreaker: {
+                      type: "",
+                      rating: "",
+                      icRating: "",
+                      phases: "",
+                      result: null,
+                      detail: ""
+                    },
+                    grounding: {
+                      type: "",
+                      resistance: "",
+                      result: null,
+                      detail: ""
+                    }
+                  },
+                  subCircuits: []
+                }]
+          };
+          
+          console.log("Formatted data:", formattedData); // Debug log
+          setForm(formattedData);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error loading form:", error);
           setLoading(false);
         });
     } else {

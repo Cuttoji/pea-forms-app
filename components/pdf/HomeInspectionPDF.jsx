@@ -1,26 +1,67 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet, Font, Image } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Font, Image, Svg, Rect, Path } from "@react-pdf/renderer";
 
-// Register Sarabun font
 Font.register({
   family: "Sarabun",
   fonts: [
-    { src: "/fonts/Sarabun-Regular.ttf" },
-    { src: "/fonts/Sarabun-Bold.ttf", fontWeight: "bold" },
+    { src: "/fonts/THSarabunNew.ttf" },
+    { src: "/fonts/THSarabunNew-Bold.ttf", fontWeight: "bold" },
   ],
 });
 
+// เพิ่ม font สำหรับ symbols
+Font.registerHyphenationCallback(word => [word]);
+
 const PEA_LOGO = "/pea_logo.png";
 
-// Checkbox Component - แสดง ☐ (ไม่ติ๊ก) และ ☑ (ติ๊ก)
-const Checkbox = ({ checked = false, label }) => (
-  <View style={styles.checkbox}>
-    <Text style={styles.checkboxSymbol}>
-      {checked ? "☑" : "☐"}
-    </Text>
-    {label && <Text style={styles.checkboxText}>{label}</Text>}
-  </View>
+const Checkbox = ({ checked = false, size = 16 }) => (
+  <Svg width={size} height={size} style={{ marginRight: 6 }}>
+    {/* กรอบสี่เหลี่ยม */}
+    <Rect
+      x="0.5"
+      y="0.5"
+      width={size - 1}
+      height={size - 1}
+      stroke="#000000"
+      strokeWidth="1.2"
+      fill={checked ? "#ffffff" : "#ffffff"}
+      rx="1.5"
+    />
+    {/* เครื่องหมายถูก ✓ */}
+    {checked && (
+      <Path
+        d={`M ${size * 0.25} ${size * 0.5} L ${size * 0.45} ${size * 0.7} L ${size * 0.75} ${size * 0.3}`}
+        stroke="#000000"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+    )}
+  </Svg>
 );
+
+// Checkbox Component - แสดงทั้ง checked และ unchecked
+const CheckboxResult = ({ result, detail }) => {
+  return (
+    <View style={styles.resultContainer}>
+      <View style={styles.checkboxRow}>
+        <View style={styles.resultRow}>
+          <Checkbox checked={result === "ถูกต้อง"} />
+          <Text style={[styles.resultText, result === "ถูกต้อง" && styles.correctText]}>
+            ถูกต้อง
+          </Text>
+        </View>
+        <View style={styles.resultRow}>
+          <Checkbox checked={result === "ต้องแก้ไข"} />
+          <Text style={[styles.resultText, result === "ต้องแก้ไข" && styles.fixText]}>
+            ต้องแก้ไข{result === "ต้องแก้ไข" && detail ? ` ${detail}` : ""}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+};
 
 // Header Component
 const FormHeader = () => (
@@ -47,6 +88,13 @@ const GeneralInfoSection = ({ data }) => (
       <View style={styles.row}>
         <Text style={styles.label}>ที่อยู่</Text>
         <Text style={styles.underlineLong}>{data?.address || " "}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>ระบบไฟฟ้า:</Text>
+        <Text style={styles.underline}>{data?.systemType || " "}</Text>
+        <Text style={styles.label}>โหลดประมาณ</Text>
+        <Text style={styles.underline}>{data?.load || " "}</Text>
+        <Text style={styles.label}>แอมแปร์</Text>
         <Text style={styles.label}>ละติจูด</Text>
         <Text style={styles.underline}>{data?.latitude || " "}</Text>
         <Text style={styles.label}>ลองจิจูด</Text>
@@ -55,87 +103,153 @@ const GeneralInfoSection = ({ data }) => (
       <View style={styles.row}>
         <Text style={styles.label}>รูปบ้าน</Text>
         {data?.houseImage ? (
-          <Image src={data.houseImage} style={{ width: 150, height: 130, objectFit: "cover", marginRight: 10 }} />
+          <Image src={data.houseImage} style={{ width: 150, height: 120 }} />
         ) : (
-          <Text style={styles.underline} />
+          <Text style={styles.underline}>ไม่มีรูปภาพ</Text>
         )}
-        <Text style={styles.label}>ระบบไฟฟ้า:</Text>
-        <Text style={styles.underline}>{data?.systemType || " "}</Text>
-        <Text style={styles.label}>โหลดประมาณ</Text>
-        <Text style={styles.underline}>{data?.load || " "}</Text>
-        <Text style={styles.label}>แอมแปร์</Text>
       </View>
     </View>
   </View>
 );
 
 // Section 2.1: สายดับประธานเข้าอาคาร
-const MainConductorSection = ({ data }) => {
-  const mainConductor = data?.mainConductor || {};
+const MainConductorSection = ({ inspection }) => {
+  const items = inspection?.items || [];
+  const selectedWiringMethods = inspection?.selectedWiringMethods || [];
+  
+  const standardItem = items[0] || {};
+  
+  // หาข้อมูลของแต่ละ method จาก items array
+  const overheadItem1 = items.find(item => item.label?.includes("สูงจากพื้นไม่น้อยกว่า 2.9 เมตร")) || {};
+  const overheadItem2 = items.find(item => item.label?.includes("สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล") && item.label?.includes("1) สูงจากพื้น") === false) || {};
+  const undergroundItem = items.find(item => item.label?.includes("สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล") && item.label?.includes("เดินสายฝังใต้ดิน")) || {};
+  
+  const wireType = inspection?.wireType || "";
+  const wireOther = inspection?.wireOther || "";
+  const wireSize = inspection?.wireSize || "";
+  const wireResult = inspection?.wireResult || "";
+  const wireDetail = inspection?.wireDetail || "";
+
   return (
     <View style={styles.subsection}>
-      <Text style={styles.subsectionTitle}>2.1 สายดับประธานเข้าอาคาร</Text>
+      <Text style={styles.subsectionTitle}>2.1 สายตัวนำประธานเข้าอาคาร</Text>
       
+      {/* ก) มาตรฐาน */}
       <View style={styles.item}>
         <Text style={styles.itemLabel}>ก) สายไฟฟ้าเป็นไปตามมาตรฐาน มอก. 11-2553 หรือ มอก. 293-2541 หรือ IEC 60502</Text>
-        <View style={styles.checkboxRow}>
-          <Checkbox checked={mainConductor.result === "correct"} label="ถูกต้อง" />
-          <Checkbox checked={mainConductor.result === "fix"} label="ต้องแก้ไข" />
-        </View>
+        <CheckboxResult result={standardItem.result} detail={standardItem.detail} />
       </View>
 
+      {/* ข) ชนิดและขนาด */}
       <View style={styles.item}>
         <Text style={styles.itemLabel}>ข) ชนิดและขนาด</Text>
-        <View style={styles.checkboxRow}>
-          <Checkbox checked={mainConductor.wireType === "IEC01"} label="IEC 01" />
-          <Checkbox checked={mainConductor.wireType === "NYY"} label="NYY" />
-          <Checkbox checked={mainConductor.wireType === "CV"} label="CV" />
-          <Checkbox checked={mainConductor.wireOther === "other"} label="อื่นๆ" />
+        <View style={styles.wireTypeRow}>
+          <View style={styles.optionRow}>
+            <Checkbox checked={wireType === "iec01"} />
+            <Text style={styles.optionText}>IEC 01</Text>
+          </View>
+          <View style={styles.optionRow}>
+            <Checkbox checked={wireType === "nyy"} />
+            <Text style={styles.optionText}>NYY</Text>
+          </View>
+          <View style={styles.optionRow}>
+            <Checkbox checked={wireType === "cv"} />
+            <Text style={styles.optionText}>CV</Text>
+          </View>
+          <View style={styles.optionRow}>
+            <Checkbox checked={wireType === "other"} />
+            <Text style={styles.optionText}>อื่นๆ {wireType === "other" ? wireOther : ""}</Text>
+          </View>
         </View>
         <View style={styles.sizeRow}>
           <Text style={styles.label}>ขนาด</Text>
-          <Text style={styles.underline}>{mainConductor.size || " "}</Text>
+          <Text style={styles.underline}>{wireSize || " "}</Text>
           <Text style={styles.label}>ตร.มม.</Text>
         </View>
-        <View style={styles.checkboxRow}>
-          <Checkbox checked={mainConductor.sizeResult === "correct"} label="ถูกต้อง" />
-          <Checkbox checked={mainConductor.sizeResult === "fix"} label="ต้องแก้ไข" />
-        </View>
+        <CheckboxResult result={wireResult} detail={wireDetail} />
       </View>
 
+      {/* ค) วิธีการเดินสาย */}
       <View style={styles.item}>
         <Text style={styles.itemLabel}>ค) วิธีการเดินสาย</Text>
-        <View style={styles.indentedRow}>
-          <Checkbox checked={mainConductor.installation === "overhead"} label="เดินสายบนลูกถ้วยฉนวนใต้อากาศ" />
-        </View>
-        <View style={styles.indentedRow}>
-          <Text style={styles.smallLabel}>1) ความสูงไม่น้อยกว่า 2.9 เมตร หรือ 5.5 เมตร กำหนดขึ้นกับขนาดผ่านศูนย์กลาง</Text>
-        </View>
-        <View style={styles.indentedRow}>
-          <Text style={styles.smallLabel}>ตัวนำพบขนาดเส้นผ่านศูนย์กลางตัวนำไฟฟ้ามากกว่า</Text>
-        </View>
-        <View style={styles.checkboxRow}>
-          <Checkbox checked={mainConductor.overheadResult === "correct"} label="ถูกต้อง" />
-          <Checkbox checked={mainConductor.overheadResult === "fix"} label="ต้องแก้ไข" />
-        </View>
-        
-        <View style={styles.indentedRow}>
-          <Text style={styles.smallLabel}>2) สายดับประธานห้ามหย่อนหรือห้ามพาดข้ามมากเกินไป</Text>
-        </View>
-        <View style={styles.checkboxRow}>
-          <Checkbox checked={mainConductor.sagResult === "correct"} label="ถูกต้อง" />
-          <Checkbox checked={mainConductor.sagResult === "fix"} label="ต้องแก้ไข" />
+
+        {/* เดินสายบนลูกถ้วยฉนวนในอากาศ */}
+        <View style={styles.methodSection}>
+          <View style={styles.optionRow}>
+            <Checkbox checked={selectedWiringMethods.includes("overhead")} />
+            <Text style={styles.optionText}>เดินสายบนลูกถ้วยฉนวนในอากาศ</Text>
+          </View>
+          {selectedWiringMethods.includes("overhead") && (
+            <View style={styles.subMethodDetails}>
+              {/* ข้อ 1 */}
+              <View style={styles.subItemRow}>
+                <Text style={styles.subItemNumber}>1) </Text>
+                <Text style={styles.subItemText}>สูงจากพื้นไม่น้อยกว่า 2.9 เมตร หรือ 5.5 เมตรถ้ามียานพาหนะลอดผ่าน</Text>
+              </View>
+              <View style={styles.checkboxDetailRow}>
+                <View style={styles.resultRow}>
+                  <Checkbox checked={overheadItem1?.result === "ถูกต้อง"} />
+                  <Text style={styles.resultText}>ถูกต้อง</Text>
+                </View>
+                <View style={styles.resultRow}>
+                  <Checkbox checked={overheadItem1?.result === "ต้องแก้ไข"} />
+                  <Text style={styles.resultText}>ต้องแก้ไข</Text>
+                  {overheadItem1?.result === "ต้องแก้ไข" && (
+                    <Text style={styles.detailDots}>......................................</Text>
+                  )}
+                </View>
+              </View>
+
+              {/* ข้อ 2 */}
+              <View style={styles.subItemRow}>
+                <Text style={styles.subItemNumber}>2) </Text>
+                <Text style={styles.subItemText}>สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล  </Text>
+              </View>
+              <View style={styles.checkboxDetailRow}>
+                <View style={styles.resultRow}>
+                  <Checkbox checked={overheadItem2?.result === "ถูกต้อง"} />
+                  <Text style={styles.resultText}>ถูกต้อง</Text>
+                </View>
+                <View style={styles.resultRow}>
+                  <Checkbox checked={overheadItem2?.result === "ต้องแก้ไข"} />
+                  <Text style={styles.resultText}>ต้องแก้ไข</Text>
+                  {overheadItem2?.result === "ต้องแก้ไข" && (
+                    <Text style={styles.detailDots}>......................................</Text>
+                  )}
+                </View>
+              </View>
+            </View>
+          )}
         </View>
 
-        <View style={styles.indentedRow}>
-          <Checkbox checked={mainConductor.installation === "underground"} label="เดินสายใต้ดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)" />
-        </View>
-        <View style={styles.indentedRow}>
-          <Text style={styles.smallLabel}>1) สายดับประธานห้ามหย่อนหรือห้ามพาดข้ามมากเกินไป</Text>
-        </View>
-        <View style={styles.checkboxRow}>
-          <Checkbox checked={mainConductor.undergroundResult === "correct"} label="ถูกต้อง" />
-          <Checkbox checked={mainConductor.undergroundResult === "fix"} label="ต้องแก้ไข" />
+        {/* เดินสายฝังใต้ดิน */}
+        <View style={styles.methodSection}>
+          <View style={styles.optionRow}>
+            <Checkbox checked={selectedWiringMethods.includes("underground")} />
+            <Text style={styles.optionText}>เดินสายฝังใต้ดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)</Text>
+          </View>
+          {selectedWiringMethods.includes("underground") && (
+            <View style={styles.subMethodDetails}>
+              {/* ข้อ 1 */}
+              <View style={styles.subItemRow}>
+                <Text style={styles.subItemNumber}>1) </Text>
+                <Text style={styles.subItemText}>สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล  </Text>
+              </View>
+              <View style={styles.checkboxDetailRow}>
+                <View style={styles.resultRow}>
+                  <Checkbox checked={undergroundItem?.result === "ถูกต้อง"} />
+                  <Text style={styles.resultText}>ถูกต้อง</Text>
+                </View>
+                <View style={styles.resultRow}>
+                  <Checkbox checked={undergroundItem?.result === "ต้องแก้ไข"} />
+                  <Text style={styles.resultText}>ต้องแก้ไข</Text>
+                  {undergroundItem?.result === "ต้องแก้ไข" && (
+                    <Text style={styles.detailDots}>......................................</Text>
+                  )}
+                </View>
+              </View>
+            </View>
+          )}
         </View>
       </View>
     </View>
@@ -143,124 +257,147 @@ const MainConductorSection = ({ data }) => {
 };
 
 // Section 2.2: เครื่องป้องกันกระแสเกิน
-const ProtectionDeviceSection = ({ data }) => {
-  const protection = data?.protection || {};
+const ProtectionDeviceSection = ({ inspection }) => {
+  const items = inspection?.items || [];
+  const atSize = inspection?.atSize || "";
+  
+  const standardItem = items[3] || {};
+  const sizingItem = items[4] || {};
+  const currentItem = items[5] || {};
+
   return (
     <View style={styles.subsection}>
-      <Text style={styles.subsectionTitle}>2.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์(บริเวณต่อประธาน)</Text>
+      <Text style={styles.subsectionTitle}>2.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์(บริภัณฑ์ประธาน)</Text>
       
       <View style={styles.item}>
-        <Text style={styles.itemLabel}>ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC60898 หรือ ที่เทียบเท่า IEC60947-2</Text>
-        <View style={styles.checkboxRow}>
-          <Checkbox checked={protection.standard === "correct"} label="ถูกต้อง" />
-          <Checkbox checked={protection.standard === "fix"} label="ต้องแก้ไข" />
-        </View>
+        <Text style={styles.itemLabel}>ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน <Text style={styles.highlight}>IEC60898</Text> | <Text style={styles.redText}>ที่ราชบัญเท่า IEC60947-2</Text></Text>
+        <CheckboxResult result={standardItem.result} detail={standardItem.detail} />
       </View>
 
       <View style={styles.item}>
-        <Text style={styles.itemLabel}>ข) เซอร์กิตเบรกเกอร์สอดคล้องกับชนิดของสายไฟฟ้า ขนาด AT</Text>
-        <Text style={styles.underline}>{protection.atSize || " "}</Text>
-        <Text style={styles.label}>A</Text>
-        <View style={styles.checkboxRow}>
-          <Checkbox checked={protection.sizing === "correct"} label="ถูกต้อง" />
-          <Checkbox checked={protection.sizing === "fix"} label="ต้องแก้ไข" />
+        <View style={styles.sizeRow}>
+          <Text style={styles.itemLabel}>ข) เซอร์กิตเบรกเกอร์สอดคล้องกับชนิดของสายไฟฟ้า ขนาด AT</Text>
+          <Text style={styles.underline}>{atSize || " "}</Text>
+          <Text style={styles.label}>A</Text>
         </View>
+        <CheckboxResult result={sizingItem.result} detail={sizingItem.detail} />
       </View>
 
       <View style={styles.item}>
-        <Text style={styles.itemLabel}>ค) ขนาดกระแสตัดวงจรสูงสุดไม่เกิน 10 กิโลแอมแปร์ (kA)</Text>
-        <View style={styles.checkboxRow}>
-          <Checkbox checked={protection.current === "correct"} label="ถูกต้อง" />
-          <Checkbox checked={protection.current === "fix"} label="ต้องแก้ไข" />
-        </View>
+        <Text style={styles.itemLabel}>ค) ขนาดกระแสลัดวงจรสูงสุดไม่ต่ำกว่า 10 กิโลแอมแปร์ (kA)</Text>
+        <CheckboxResult result={currentItem.result} detail={currentItem.detail} />
       </View>
     </View>
   );
 };
 
 // Section 2.3: ระบบการต่อสายดิน
-const GroundingSection = ({ data }) => (
-  <View style={styles.subsection}>
-    <Text style={styles.subsectionTitle}>2.3 ระบบการต่อสายดินที่แผงเมนสวิตช์</Text>
-    
-    <View style={styles.item}>
-      <Text style={styles.itemLabel}>ก) ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายดับประธาน</Text>
-      <Text style={styles.itemLabel}>ขนาดสายต่อหลักดิน</Text>
-      <Text style={styles.underline}>{data?.grounding?.earthWireSize }</Text>
-      <Text style={styles.label}>ตร.มม.</Text>
-      <View style={styles.checkboxRow}>
-        <Checkbox checked={data?.grounding?.earthWireSizeResult === "correct"} label="ถูกต้อง" />
-        <Checkbox checked={data?.grounding?.earthWireSizeResult === "fix"} label="ต้องแก้ไข" />
-      </View>
-    </View>
+const GroundingSection = ({ inspection }) => {
+  const items = inspection?.items || [];
+  const undergroundSize = inspection?.undergroundSize || "";
+  
+  const earthWireItem = items[6] || {};
+  const resistanceItem = items[7] || {};
+  const onePhaseItem = items[8] || {};
+  const threePhaseItem = items[9] || {};
 
-    <View style={styles.item}>
-      <Text style={styles.itemLabel}>ข) ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม ยกเว้นพื้นที่</Text>
-      <Text style={styles.itemLabel}>ที่ยากในการปฏิบัติและการไฟฟ้าส่วนภูมิภาคเห็นชอบ ยอมให้ค่า</Text>
-      <Text style={styles.itemLabel}>ความต้านทานของหลักดินกับดินต้องไม่เกิน 25 โอห์ม หากทำการ</Text>
-      <Text style={styles.itemLabel}>วัดแล้วมีค่าเกินให้ปักหลักดินเพิ่มอีก 1 แท่ง</Text>
-      <View style={styles.checkboxRow}>
-        <Checkbox checked={data?.grounding?.resistance === "correct"} label="ถูกต้อง" />
-        <Checkbox checked={data?.grounding?.resistance === "fix"} label="ต้องแก้ไข" />
+  return (
+    <View style={styles.subsection}>
+      <Text style={styles.subsectionTitle}>2.3 ระบบการต่อลงดินที่แผงเมนสวิตช์</Text>
+      
+      <View style={styles.item}>
+        <Text style={styles.itemLabel}>ก) ขนาดสายต่อหลักดินสอดคล้องกับขนาดสายตัวนำประธาน</Text>
+        <View style={styles.sizeRow}>
+          <Text style={styles.itemLabel}>ขนาดสายต่อหลักดิน</Text>
+          <Text style={styles.underline}>{undergroundSize || " "}</Text>
+          <Text style={styles.label}>ตร.มม.</Text>
+        </View>
+        <CheckboxResult result={earthWireItem.result} detail={earthWireItem.detail} />
       </View>
-    </View>
 
-    <View style={styles.item}>
-      <Text style={styles.itemLabel}>ค) กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน</Text>
-      <Text style={styles.itemLabel}>(Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Wire) ของสายดินกับตัว</Text>
-      <Text style={styles.itemLabel}>ประธาน (Main Conductor) เข้าขั้วต่อสายดินก่อนเข้าเบรกเกอร์ของ</Text>
-      <Text style={styles.itemLabel}>ประธาน (Main Circuit Breaker) ตามที่ กฟภ. กำหนด</Text>
-      <View style={styles.checkboxRow}>
-        <Checkbox checked={data?.grounding?.singlePhaseConnection === "correct"} label="ถูกต้อง" />
-        <Checkbox checked={data?.grounding?.singlePhaseConnection === "fix"} label="ต้องแก้ไข" />
+      <View style={styles.item}>
+        <Text style={styles.itemLabel}>ข) ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม ยกเว้นพื้นที่</Text>
+        <Text style={styles.itemLabel}>ที่ยากในการปฏิบัติและการไฟฟ้าส่วนภูมิภาคเห็นชอบ ยอมให้ค่า</Text>
+        <Text style={styles.itemLabel}>ความต้านทานของหลักดินกับดินต้องไม่เกิน 25 โอห์ม หากทำการ</Text>
+        <Text style={styles.itemLabel}>วัดแล้วมีค่าเกินให้ปักหลักดินเพิ่มอีก 1 แท่ง</Text>
+        <CheckboxResult result={resistanceItem.result} detail={resistanceItem.detail} />
       </View>
-    </View>
 
-    <View style={styles.item}>
-      <Text style={styles.itemLabel}>ง) กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน</Text>
-      <Text style={styles.itemLabel}>(Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) โดยเชื่อม</Text>
-      <Text style={styles.itemLabel}>สายต่อหลักดินและสายต่อดินเบรกเกอร์ ภายในแผงเมนสวิตช์ ตามที่</Text>
-      <Text style={styles.itemLabel}>กฟภ. กำหนด</Text>
-      <View style={styles.checkboxRow}>
-        <Checkbox checked={data?.grounding?.threePhaseConnection === "correct"} label="ถูกต้อง" />
-        <Checkbox checked={data?.grounding?.threePhaseConnection === "fix"} label="ต้องแก้ไข" />
+      <View style={styles.item}>
+        <Text style={styles.itemLabel}>ค) กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus)</Text>
+        <Text style={styles.itemLabel}>และต่อสายนิวทรัล (Neutral Wire) ของตัวนำประธาน (Main Conductor)</Text>
+        <Text style={styles.itemLabel}>เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน</Text>
+        <CheckboxResult result={onePhaseItem.result} detail={onePhaseItem.detail} />
+      </View>
+
+      <View style={styles.item}>
+        <Text style={styles.itemLabel}>ง) กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus)</Text>
+        <Text style={styles.itemLabel}>และขั้วต่อสายนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดิน</Text>
+        <Text style={styles.itemLabel}>และสายดินบริภัณฑ์ ภายในแผงเมนสวิตช์</Text>
+        <CheckboxResult result={threePhaseItem.result} detail={threePhaseItem.detail} />
       </View>
     </View>
-  </View>
-);
+  );
+};
 
 // Section 2.4: เครื่องตัดไฟรั่ว (RCD)
-const RCDSection = ({ data }) => (
-  <View style={styles.subsection}>
-    <Text style={styles.subsectionTitle}>2.4 เครื่องตัดไฟรั่ว (RCD)</Text>
-    
-    <View style={styles.item}>
-      <Text style={styles.itemLabel}>ติดตั้งเครื่องตัดไฟรั่ว ขนาดกำหนดกระแสรั่ว (IΔn) ไม่เกิน 30 mA</Text>
-      <Text style={styles.itemLabel}>โดยติดตั้งในวงจรที่มีความเสี่ยง</Text>
-      <View style={styles.checkboxRow}>
-        <Checkbox checked={data?.rcd?.installed === true} label="ถูกต้อง" />
+const RCDSection = ({ inspection }) => {
+  const rcdResult = inspection?.rcdResult || "";
+  const rcdNote = inspection?.rcdNote || "";
+
+  return (
+    <View style={styles.subsection}>
+      <Text style={styles.subsectionTitle}>2.4 เครื่องตัดไฟรั่ว (RCD)</Text>
+      
+      <View style={styles.item}>
+        <Text style={styles.itemLabel}>ติดตั้งเครื่องตัดไฟรั่ว ขนาดพิกัดกระแสรั่ว (IΔn) ไม่เกิน 30 mA</Text>
+        <Text style={styles.itemLabel}>โดยติดตั้งในวงจรที่มีความเสี่ยง</Text>
+        
+        <View style={styles.checkboxRow}>
+          <View style={styles.resultRow}>
+            <Checkbox checked={rcdResult === "ถูกต้อง"} />
+            <Text style={[styles.resultText, rcdResult === "ถูกต้อง" && styles.correctText]}>
+              ถูกต้อง
+            </Text>
+          </View>
+        </View>
+        
+        <View style={styles.optionRow}>
+          <Checkbox checked={rcdResult === "ไม่ติดตั้ง"} />
+          <Text style={[styles.optionText, rcdResult === "ไม่ติดตั้ง" && styles.warningText]}>
+            ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว และผู้ตรวจสอบ
+          </Text>
+        </View>
+        
+        {rcdResult === "ไม่ติดตั้ง" && (
+          <>
+            <Text style={styles.itemLabel}>มาตรฐานได้แจ้งให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนทราบถึงความเสี่ยง</Text>
+            <Text style={styles.itemLabel}>จากการไม่ติดตั้งเครื่องตัดไฟรั่วแล้ว</Text>
+            {rcdNote && (
+              <View style={styles.detailBox}>
+                <Text style={styles.detailLabel}>หมายเหตุ: </Text>
+                <Text style={styles.detailText}>{rcdNote}</Text>
+              </View>
+            )}
+          </>
+        )}
       </View>
-      <View style={styles.checkboxRow}>
-        <Checkbox checked={data?.rcd?.installed === false} label="ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว และผู้ตรวจสอบ" />
-      </View>
-      <Text style={styles.itemLabel}>มาตรฐานได้แจ้งให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนทราบถึงความเสี่ยง</Text>
-      <Text style={styles.itemLabel}>จากการไม่ติดตั้งเครื่องตัดไฟรั่วแล้ว</Text>
     </View>
-  </View>
-);
+  );
+};
 
 // Section 2: การตรวจสอบ (2 คอลัมน์)
-const InspectionSection = ({ data }) => (
+const InspectionSection = ({ inspection }) => (
   <View style={styles.section}>
     <Text style={styles.sectionTitle}>2. การตรวจสอบ</Text>
     <View style={styles.twoColumns}>
       <View style={styles.leftColumn}>
-        <MainConductorSection data={data} />
-        <ProtectionDeviceSection data={data} />
+        <MainConductorSection inspection={inspection} />
+        <ProtectionDeviceSection inspection={inspection} />
       </View>
       <View style={styles.rightColumn}>
-        <GroundingSection data={data} />
-        <RCDSection data={data} />
+        <GroundingSection inspection={inspection} />
+        <RCDSection inspection={inspection} />
       </View>
     </View>
   </View>
@@ -269,31 +406,42 @@ const InspectionSection = ({ data }) => (
 // Section 3: กรณีผู้ใช้ไฟฟ้าประเภทอื่น
 const OtherTypeSection = ({ data }) => (
   <View style={styles.section}>
-    <Text style={styles.sectionTitle}>3. กรณีผู้ใช้ไฟฟ้าประเภทอื่นยอมที่อำนวยให้อาคารที่คล้ายคลึงกัน ติดตั้งหม้อแปลงไฟฟ้าเพื่อรับไฟแรงสูง ให้ตรวจสอบ มาตรฐานการติดตั้งระบบไฟฟ้าในส่วนสูงเพิ่มเติมโดยใช้แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภท อื่นๆ นอกเหนือจากที่อยู่อาศัย</Text>
-    <View style={styles.noteBox}>
-      <Text style={styles.noteText}>{data?.otherTypeNotes }</Text>
-    </View>
+    <Text style={styles.sectionTitle}>3. กรณีผู้ใช้ไฟฟ้าประเภทอื่นอย่างอาคารที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ติดตั้งหม้อแปลงไฟฟ้าเพื่อรับไฟแรงสูง ให้ตรวจสอบ มาตรฐานการติดตั้งระบบไฟฟ้าในส่วนสูงเพิ่มเติมโดยใช้แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภท อื่นๆ นอกเหนือจากที่อยู่อาศัย</Text>
   </View>
 );
 
 // Section 4: สรุปผลการตรวจสอบ
-const SummarySection = ({ data }) => (
-  <View style={styles.section}>
-    <Text style={styles.sectionTitle}>4. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</Text>
-    <View style={styles.checkboxRow}>
-      <Checkbox checked={data?.summaryType === "compliant"} label="ติดตั้งมิเตอร์ได้" />
-      <Checkbox checked={data?.summaryType === "compliant_with_conditions"} label="ติดตั้งมิเตอร์ได้ตามเงื่อนไข" />
-      <Checkbox checked={data?.summaryType === "non_compliant"} label="ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์" />
+const SummarySection = ({ summaryType }) => {
+  // Add debugging
+  console.log("SummarySection received:", summaryType);
+  
+  return (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>4. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</Text>
+      <View style={styles.checkboxColumn}>
+        <View style={styles.optionRow}>
+          <Checkbox checked={summaryType === "compliant"} size={14} />
+          <Text style={styles.summaryText}>ติดตั้งมิเตอร์ได้</Text>
+        </View>
+        <View style={styles.optionRow}>
+          <Checkbox checked={summaryType === "compliant_with_conditions"} size={14} />
+          <Text style={styles.summaryText}>ติดตั้งมิเตอร์ได้ตามเงื่อนไข</Text>
+        </View>
+        <View style={styles.optionRow}>
+          <Checkbox checked={summaryType === "non_compliant"} size={14} />
+          <Text style={styles.summaryText}>ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์</Text>
+        </View>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 // Section 5: ข้อเสนอแนะ
-const SuggestionSection = ({ data }) => (
+const SuggestionSection = ({ limitation }) => (
   <View style={styles.section}>
-    <Text style={styles.sectionTitle}>5. ข้อเสนอแนะข้อจำกัดในการตรวจสอบ</Text>
+    <Text style={styles.sectionTitle}>5. ข้อเสนอแนะข้อจำกัดในการตรวจสอบ  </Text>
     <View style={styles.noteBox}>
-      <Text style={styles.noteText}>{data?.limitation}</Text>
+      <Text style={styles.noteText}>{limitation || " "}</Text>
     </View>
   </View>
 );
@@ -301,10 +449,10 @@ const SuggestionSection = ({ data }) => (
 // Section 6: สำหรับผู้ขอใช้ไฟฟ้ารับทราบ
 const AcknowledgmentSection = () => (
   <View style={styles.section}>
-    <Text style={styles.sectionTitle}>6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</Text>
+    <Text style={styles.sectionTitle}>6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ  </Text>
     <View style={styles.acknowledgmentBox}>
-      <Text style={styles.acknowledgmentText}>6.1 งานเดินสายและติดตั้งระบบไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทอื่นยอมที่อำนวยให้อาคารที่คล้ายคลึงกัน ต้องตามมาตรฐานที่ผู้ขอใช้ไฟฟ้าเป็นผู้จัดหาการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งไฟฟ้าในอาคาร (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลัง</Text>
-      <Text style={styles.acknowledgmentText}>6.2 ในกรณีทำการไฟฟ้าส่วนภูมิภาคเห็นชอบการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการในภายหลัง หรืออุปกรณ์ลืกสายเสื่อมคุณภาพในเวลาใดๆ ผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบเองในทันทีเพื่อความปลอดภัย</Text>
+      <Text style={styles.acknowledgmentText}>6.1 งานเดินสายและติดตั้งระบบไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทอื่นอย่างอาคารที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ต้องดำเนินการโดยผู้ขอใช้ไฟฟ้าเป็นผู้จัดหาการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้งไฟฟ้าในอาคาร (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้นภายหลัง</Text>
+      <Text style={styles.acknowledgmentText}>6.2 ในกรณีที่การไฟฟ้าส่วนภูมิภาคเห็นชอบการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการในภายหลัง หรืออุปกรณ์สายเสื่อมคุณภาพในเวลาใดๆ ผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบเองในทันทีเพื่อความปลอดภัย</Text>
       <Text style={styles.acknowledgmentText}>6.3 สำหรับระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าในส่วนที่การไฟฟ้าส่วนภูมิภาคไม่สามารถตรวจสอบได้ ผู้ขอใช้ไฟฟ้าต้องจัดให้เป็นไปตามมาตรฐานการติดตั้งไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) หากเกิดความเสียหายผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</Text>
       <Text style={styles.acknowledgmentText}>6.4 หากเกิดความเสียหายใดๆ ที่เกิดจากการที่ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว (RCD) ในวงจรที่มีความเสี่ยง ผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว</Text>
     </View>
@@ -316,26 +464,23 @@ const SignatureSection = ({ signature }) => (
   <View style={styles.signatureSection}>
     <View style={styles.signatureRow}>
       <View style={styles.signatureBox}>
-        <Text style={styles.signatureLabel}>ลงชื่อ.............................................ผู้ขอใช้ไฟฟ้าหรือผู้แทน</Text>
         {signature?.customerSign && (
           <Image src={signature.customerSign} style={styles.signatureImage} />
         )}
-        <Text style={styles.signatureDate}>(...............................................)</Text>
+        <Text style={styles.signatureLabel}>ลงชื่อ.............................................ผู้ขอใช้ไฟฟ้าหรือผู้แทน</Text>
       </View>
       <View style={styles.signatureBox}>
-        <Text style={styles.signatureLabel}>ลงชื่อ.............................................เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค</Text>
         {signature?.officerSign && (
           <Image src={signature.officerSign} style={styles.signatureImage} />
         )}
-        <Text style={styles.signatureDate}>(...............................................)</Text>
+        <Text style={styles.signatureLabel}>ลงชื่อ.............................................เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค</Text>
       </View>
     </View>
 
-    {/* ข้อแนะนำ */}
     <View style={styles.recommendationBox}>
       <Text style={styles.recommendationTitle}>ข้อแนะนำ</Text>
-      <Text style={styles.recommendationText}>1. ควรติดตั้งเครื่องตัดไฟรั่ว (RCD) ขนาดกำหนดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง เช่น บริเวณที่เป็นหย่อมชื้น ห้องน้ำ ห้องอาบน้ำ ห้องครัว ห้องใต้ถุน อ่างล้างมือ วงจรไฟฟ้าภายนอกอาคาร รวมทั้งวงจร ย่อยสำหรับเครื่องทำน้ำอุ่น/อ่างอาบน้ำ</Text>
-      <Text style={styles.recommendationText}>2. ควรติดตั้งสายดินกับบริภัณฑ์ไฟฟ้าเพื่อความปลอดภัย ในกรณีเกิดไฟฟ้ารั่ว หรือไฟฟ้าดูดวงจร</Text>
+      <Text style={styles.recommendationText}>1. ควรติดตั้งเครื่องตัดไฟรั่ว (RCD) ขนาดพิกัดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง เช่น บริเวณที่เป็นหย่อมชื้น ห้องน้ำ ห้องอาบน้ำ ห้องครัว ห้องใต้ถุน อ่างล้างมือ วงจรไฟฟ้าภายนอกอาคาร รวมทั้งวงจรย่อยสำหรับเครื่องทำน้ำอุ่น/อ่างอาบน้ำ</Text>
+      <Text style={styles.recommendationText}>2. ควรติดตั้งสายดินกับบริภัณฑ์ไฟฟ้าเพื่อความปลอดภัย ในกรณีเกิดไฟฟ้ารั่ว หรือไฟฟ้าลัดวงจร</Text>
       <Text style={styles.recommendationText}>3. ควรติดตั้งระบบไฟฟ้าโดยช่างที่ได้รับหนังสือรับรองการผ่านทดสอบ มาตรฐานฝีมือแรงงานแห่งชาติ จากกรมพัฒนาฝีมือแรงงาน</Text>
     </View>
   </View>
@@ -347,79 +492,79 @@ const DiagramPage = () => (
     <Text style={styles.pageNumber}>หน้า 3/3</Text>
     
     <Text style={styles.diagramTitle}>รูปแบบการรับไฟฟ้าผ่านระบบจำหน่ายแรงต่ำ (400/230 โวลต์)</Text>
-    <Text style={styles.diagramSubtitle}>สำหรับผู้ใช้ไฟฟ้าประเภทอื่นยอมที่อำนวยให้อาคารที่คล้ายคลึงกัน</Text>
+    <Text style={styles.diagramSubtitle}>สำหรับผู้ใช้ไฟฟ้าประเภทอื่นอย่างอาคารที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน</Text>
     
-    {/* ไดอะแกรมรูปภาพ */}
     <View style={styles.diagramContainer}>
       <Image src="/homediagram.png" style={{ width: 400, height: 200, marginBottom: 10 }} />
     </View>
 
-    {/* ข้อกำหนด */}
     <View style={styles.requirementBox}>
       <Text style={styles.requirementTitle}>ข้อกำหนด</Text>
-      <Text style={styles.requirementText}>1. สำหรับผู้ใช้ไฟฟ้าประเภทอื่นยอมที่อำนวยให้อาคารที่คล้ายคลึงกันให้ใช้วิธีการตรวจสอบระบบไฟฟ้าตามมาตรการ 1 - 4</Text>
-      <Text style={styles.requirementText}>2. นอกจากการตรวจสอบสายต่อหลักดินของแผง MDB ตามมาตรการ 4 แล้ว ให้ตรวจสอบระบบต่อลงดินภายในแผง MDB ร่วมด้วย</Text>
-      <Text style={styles.requirementText}>3. ตรวจสอบว่ามีการติดตั้ง RCD ในวงจรที่มีความเสี่ยง หากผู้ขอใช้ไฟฟ้า ไม่ประสงค์ติดตั้ง RCD ผู้ตรวจสอบมาตรฐานต้องแจ้งให้ผู้ขอใช้ไฟฟ้าหรือ ผู้แทนทราบถึงความเสี่ยงจากการไม่ติดตั้ง RCD และให้ผู้ขอใช้ไฟฟ้าหรือ ผู้แทนลงนามในแบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าด้วย</Text>
+      <Text style={styles.requirementText}>1. สำหรับผู้ใช้ไฟฟ้าประเภทอื่นอย่างอาคารที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกันให้ใช้วิธีการตรวจสอบระบบไฟฟ้าตามมาตรฐาน 1 - 4</Text>
+      <Text style={styles.requirementText}>2. นอกจากการตรวจสอบสายต่อหลักดินของแผง MDB ตามมาตรฐาน 4 แล้ว ให้ตรวจสอบระบบต่อลงดินภายในแผง MDB ร่วมด้วย</Text>
+      <Text style={styles.requirementText}>3. ตรวจสอบว่ามีการติดตั้ง RCD ในวงจรที่มีความเสี่ยง หากผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้ง RCD ผู้ตรวจสอบมาตรฐานต้องแจ้งให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนทราบถึงความเสี่ยงจากการไม่ติดตั้ง RCD และให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนลงนามในแบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าด้วย</Text>
     </View>
 
-    {/* ข้อแนะนำ */}
     <View style={styles.recommendationBox}>
       <Text style={styles.recommendationTitle}>ข้อแนะนำ</Text>
-      <Text style={styles.recommendationText}>1. ควรติดตั้งเครื่องตัดไฟรั่ว (RCD) ขนาดกำหนดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง เช่น บริเวณที่เป็นหย่อมชื้น ห้องน้ำ ห้องอาบน้ำ ห้องครัว ห้องใต้ถุน อ่างล้างมือ วงจรไฟฟ้าภายนอกอาคาร รวมทั้งวงจร ย่อยสำหรับเครื่องทำน้ำอุ่น/อ่างอาบน้ำ</Text>
-      <Text style={styles.recommendationText}>2. ควรติดตั้งสายดินกับบริภัณฑ์ไฟฟ้าเพื่อความปลอดภัย ในกรณีเกิดไฟฟ้ารั่ว หรือไฟฟ้าดูดวงจร</Text>
+      <Text style={styles.recommendationText}>1. ควรติดตั้งเครื่องตัดไฟรั่ว (RCD) ขนาดพิกัดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง เช่น บริเวณที่เป็นหย่อมชื้น ห้องน้ำ ห้องอาบน้ำ ห้องครัว ห้องใต้ถุน อ่างล้างมือ วงจรไฟฟ้าภายนอกอาคาร รวมทั้งวงจรย่อยสำหรับเครื่องทำน้ำอุ่น/อ่างอาบน้ำ</Text>
+      <Text style={styles.recommendationText}>2. ควรติดตั้งสายดินกับบริภัณฑ์ไฟฟ้าเพื่อความปลอดภัย ในกรณีเกิดไฟฟ้ารั่ว หรือไฟฟ้าลัดวงจร</Text>
       <Text style={styles.recommendationText}>3. ควรติดตั้งระบบไฟฟ้าโดยช่างที่ได้รับหนังสือรับรองการผ่านทดสอบ มาตรฐานฝีมือแรงงานแห่งชาติ จากกรมพัฒนาฝีมือแรงงาน</Text>
     </View>
 
-    <Text style={styles.footer}>กมฟ.ผสม.-01-63 (แบบฟอร์มตรวจสอบฯ สำหรับผู้ใช้ไฟฟ้าประเภทอื่นยอมที่อำนวยให้อาคารที่คล้ายคลึงกัน)</Text>
   </Page>
 );
 
 // Main Document Component
 const HomeInspectionPDF = ({ formData }) => {
+  // เพิ่ม debugging
+  console.log("PDF formData:", formData);
+  console.log("summary จาก DB:", formData?.summary);
+  
   const safeData = {
     general: formData?.general || {},
     inspection: formData?.inspection || {},
-    summaryType: formData?.summaryType || "",
+    // แก้จาก summaryType เป็น summary ให้ตรงกับฐานข้อมูล
+    summary: formData?.summary || {},
     limitation: formData?.limitation || "",
     signature: formData?.signature || {},
     otherTypeNotes: formData?.otherTypeNotes || "",
   };
-
+  
+  // ดึง summaryType จาก summary object
+  const summaryType = safeData.summary?.summaryType || "";
+  console.log("summaryType ที่จะส่งให้ checkbox:", summaryType);
+  
   return (
     <Document>
-      {/* หน้า 1 */}
-        <Page size="A4" style={styles.page}>
-          <FormHeader />
-          <View style={styles.divider} />
-          <Text style={styles.pageNumber}>หน้า 1/3</Text>
-          <View style={styles.titleBox}>
-            <Text style={styles.titleText}>แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์</Text>
-            <Text style={styles.titleText}>สำหรับผู้ใช้ไฟฟ้าประเภทอื่นยอมที่อำนวยให้อาคารที่คล้ายคลึงกัน</Text>
-            <Text style={styles.inspectionInfo}>
-          การตรวจสอบครั้งที่ {safeData.inspection?.inspectionNumber || ""} วันที่ {safeData.inspection?.inspectionDate || ""} การตรวจสอบตามคำร้องขอใช้ไฟเลขที่ {safeData.inspection?.requestNumber || ""} วันที่ {safeData.inspection?.requestDate || ""}
-            </Text>
-          </View>
+      <Page size="A4" style={styles.page}>
+        <FormHeader />
+        <View style={styles.divider} />
+        <Text style={styles.pageNumber}>หน้า 1/3</Text>
+        <View style={styles.titleBox}>
+          <Text style={styles.titleText}>แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์</Text>
+          <Text style={styles.titleText}>สำหรับผู้ใช้ไฟฟ้าประเภทอื่นอย่างอาคารที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน</Text>
+          <Text style={styles.inspectionInfo}>
+            การตรวจสอบครั้งที่ {safeData.general?.inspectionNo || "-"} วันที่ {safeData.general?.inspectionDate || "-"} การตรวจสอบตามคำร้องขอใช้ไฟเลขที่ {safeData.general?.requestNo || "-"} วันที่ {safeData.general?.requestDate || "-"}
+          </Text>
+        </View>
 
-          <GeneralInfoSection data={safeData.general} />
-          <InspectionSection data={safeData.inspection} />
+        <GeneralInfoSection data={safeData.general} />
+        <InspectionSection inspection={safeData.inspection} />
 
-          <Text style={styles.footer}>กมฟ.ผสม.-01-63 (แบบฟอร์มตรวจสอบฯ สำหรับผู้ใช้ไฟฟ้าประเภทอื่นยอมที่อำนวยให้อาคารที่คล้ายคลึงกัน)</Text>
-        </Page>
+      </Page>
 
-        {/* หน้า 2 */}
       <Page size="A4" style={styles.page}>
         <Text style={styles.pageNumber}>หน้า 2/3</Text>
         
         <OtherTypeSection data={safeData} />
-        <SummarySection data={safeData} />
-        <SuggestionSection data={safeData} />
+        <SummarySection summaryType={summaryType} />
+        <SuggestionSection limitation={safeData.limitation} />
         <AcknowledgmentSection />
         <SignatureSection signature={safeData.signature} />
 
-        <Text style={styles.footer}>กมฟ.ผสม.-01-63 (แบบฟอร์มตรวจสอบฯ สำหรับผู้ใช้ไฟฟ้าประเภทอื่นยอมที่อำนวยให้อาคารที่คล้ายคลึงกัน)</Text>
       </Page>
 
-      {/* หน้า 3: ไดอะแกรม */}
       <DiagramPage />
     </Document>
   );

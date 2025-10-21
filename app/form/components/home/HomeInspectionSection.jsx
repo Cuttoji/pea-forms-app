@@ -14,17 +14,19 @@ const INSPECTION_ITEMS = [
       },
       {
         label: "ค) วิธีการเดินสาย",
-        subItems: [
+        wiringMethods: [
           {
             label: "เดินสายบนลูกถ้วยฉนวนในอากาศ",
-            subItems: [
+            key: "overhead",
+            checkItems: [
               { label: "1) สูงจากพื้นไม่น้อยกว่า 2.9 เมตร หรือ 5.5 เมตรถ้ามียานพาหนะลอดผ่าน" },
               { label: "2) สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล" },
             ],
           },
           {
             label: "เดินสายฝังใต้ดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)",
-            subItems: [
+            key: "underground",
+            checkItems: [
               { label: "1) สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล" },
             ],
           },
@@ -70,8 +72,20 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
     if (main.subItems) {
       main.subItems.forEach(sub => {
         if (!sub.isWireType) {
-          if (sub.subItems) {
-            sub.subItems.forEach(subsub => flatCheckList.push(subsub.label));
+          if (sub.wiringMethods) {
+            sub.wiringMethods.forEach(method => {
+              if (method.checkItems) {
+                method.checkItems.forEach(item => flatCheckList.push(item.label));
+              }
+            });
+          } else if (sub.subItems) {
+            sub.subItems.forEach(subsub => {
+              if (subsub.checkItems) {
+                subsub.checkItems.forEach(item => flatCheckList.push(item.label));
+              } else {
+                flatCheckList.push(subsub.label);
+              }
+            });
           } else {
             flatCheckList.push(sub.label);
           }
@@ -111,6 +125,9 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
   const atSize = data.atSize || "";
   const undergroundSize = data.undergroundSize || "";
 
+  // เพิ่มข้อมูลสำหรับวิธีการเดินสาย
+  const selectedWiringMethods = data.selectedWiringMethods || [];
+
   // RCD (2.4)
   const rcdResult = data.rcdResult || "";
   const rcdNote = data.rcdNote || "";
@@ -118,6 +135,14 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
   // สำหรับ wireType/size แบบใหม่
   const handleWireChange = (key, value) => {
     onChange(key, value);
+  };
+
+  // Handle wiring method selection
+  const handleWiringMethodToggle = (methodKey) => {
+    const updated = selectedWiringMethods.includes(methodKey)
+      ? selectedWiringMethods.filter(k => k !== methodKey)
+      : [...selectedWiringMethods, methodKey];
+    onChange("selectedWiringMethods", updated);
   };
 
   return (
@@ -233,6 +258,58 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
               }
 
               // ปกติ
+              if (sub.wiringMethods) {
+                return (
+                  <div key={sub.label} className="ml-4 mb-4">
+                    <div className="font-medium text-gray-700 mb-3 bg-gray-50 p-3 rounded-md">
+                      {sub.label}
+                    </div>
+                    <div className="space-y-3">
+                      {sub.wiringMethods.map((method, methodIdx) => {
+                        const isSelected = selectedWiringMethods.includes(method.key);
+                        return (
+                          <div key={method.key} className="ml-4 mb-4">
+                            <div className="bg-blue-50 p-3 rounded-md mb-3">
+                              <div className="flex items-center gap-3">
+                                <label className="flex items-center cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={() => handleWiringMethodToggle(method.key)}
+                                    className="text-blue-600 focus:ring-blue-500 rounded"
+                                  />
+                                  <span className="ml-2 font-medium text-gray-600">
+                                    {method.label}
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                            
+                            {isSelected && (
+                              <div className="space-y-3">
+                                {method.checkItems.map((item, itemIdx) => {
+                                  const flatIdx = flatCheckList.findIndex(l => l === item.label);
+                                  return (
+                                    <CheckItemRow
+                                      key={item.label}
+                                      label={item.label}
+                                      idx={flatIdx}
+                                      value={items[flatIdx]}
+                                      onRadio={handleRadio}
+                                      onDetail={handleDetail}
+                                    />
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+              
               if (sub.subItems) {
                 return (
                   <div key={sub.label} className="ml-4 mb-4">
@@ -241,17 +318,42 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
                     </div>
                     <div className="space-y-3">
                       {sub.subItems.map((subsub, subsubIdx) => {
-                        const flatIdx = flatCheckList.findIndex(l => l === subsub.label);
-                        return (
-                          <CheckItemRow
-                            key={subsub.label}
-                            label={subsub.label}
-                            idx={flatIdx}
-                            value={items[flatIdx]}
-                            onRadio={handleRadio}
-                            onDetail={handleDetail}
-                          />
-                        );
+                        if (subsub.checkItems) {
+                          return (
+                            <div key={subsub.label} className="ml-4 mb-4">
+                              <div className="font-medium text-gray-600 mb-3 bg-blue-50 p-3 rounded-md">
+                                {subsub.label}
+                              </div>
+                              <div className="space-y-3">
+                                {subsub.checkItems.map((item, itemIdx) => {
+                                  const flatIdx = flatCheckList.findIndex(l => l === item.label);
+                                  return (
+                                    <CheckItemRow
+                                      key={item.label}
+                                      label={item.label}
+                                      idx={flatIdx}
+                                      value={items[flatIdx]}
+                                      onRadio={handleRadio}
+                                      onDetail={handleDetail}
+                                    />
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        } else {
+                          const flatIdx = flatCheckList.findIndex(l => l === subsub.label);
+                          return (
+                            <CheckItemRow
+                              key={subsub.label}
+                              label={subsub.label}
+                              idx={flatIdx}
+                              value={items[flatIdx]}
+                              onRadio={handleRadio}
+                              onDetail={handleDetail}
+                            />
+                          );
+                        }
                       })}
                     </div>
                   </div>
