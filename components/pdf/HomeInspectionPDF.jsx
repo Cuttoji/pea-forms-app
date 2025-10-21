@@ -4,8 +4,8 @@ import { Document, Page, Text, View, StyleSheet, Font, Image, Svg, Rect, Path } 
 Font.register({
   family: "Sarabun",
   fonts: [
-    { src: "/fonts/THSarabunNew.ttf" },
-    { src: "/fonts/THSarabunNew-Bold.ttf", fontWeight: "bold" },
+    { src: "/fonts/Sarabun-Regular.ttf" },
+    { src: "/fonts/Sarabun-Bold.ttf", fontWeight: "bold" },
   ],
 });
 
@@ -14,8 +14,8 @@ Font.registerHyphenationCallback(word => [word]);
 
 const PEA_LOGO = "/pea_logo.png";
 
-const Checkbox = ({ checked = false, size = 16 }) => (
-  <Svg width={size} height={size} style={{ marginRight: 6 }}>
+const Checkbox = ({ checked = false, size = 10 }) => (
+  <Svg width={size} height={size} style={{ marginRight: 4 }}>
     {/* กรอบสี่เหลี่ยม */}
     <Rect
       x="0.5"
@@ -23,16 +23,16 @@ const Checkbox = ({ checked = false, size = 16 }) => (
       width={size - 1}
       height={size - 1}
       stroke="#000000"
-      strokeWidth="1.2"
+      strokeWidth="1"
       fill={checked ? "#ffffff" : "#ffffff"}
-      rx="1.5"
+      rx="1"
     />
     {/* เครื่องหมายถูก ✓ */}
     {checked && (
       <Path
         d={`M ${size * 0.25} ${size * 0.5} L ${size * 0.45} ${size * 0.7} L ${size * 0.75} ${size * 0.3}`}
         stroke="#000000"
-        strokeWidth="2"
+        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
@@ -45,18 +45,17 @@ const Checkbox = ({ checked = false, size = 16 }) => (
 const CheckboxResult = ({ result, detail }) => {
   return (
     <View style={styles.resultContainer}>
-      <View style={styles.checkboxRow}>
-        <View style={styles.resultRow}>
-          <Checkbox checked={result === "ถูกต้อง"} />
-          <Text style={[styles.resultText, result === "ถูกต้อง" && styles.correctText]}>
-            ถูกต้อง
-          </Text>
+      <View style={styles.checkboxRowHorizontal}>
+        <View style={styles.resultRowItem}>
+          <Checkbox checked={result === "ถูกต้อง"} size={10} />
+          <Text style={styles.resultText}>ถูกต้อง</Text>
         </View>
-        <View style={styles.resultRow}>
-          <Checkbox checked={result === "ต้องแก้ไข"} />
-          <Text style={[styles.resultText, result === "ต้องแก้ไข" && styles.fixText]}>
-            ต้องแก้ไข{result === "ต้องแก้ไข" && detail ? ` ${detail}` : ""}
-          </Text>
+        <View style={styles.resultRowItem}>
+          <Checkbox checked={result === "ต้องแก้ไข"} size={10} />
+          <Text style={styles.resultText}>ต้องแก้ไข</Text>
+          {result === "ต้องแก้ไข" && detail && (
+            <Text style={styles.detailDots}> {detail}</Text>
+          )}
         </View>
       </View>
     </View>
@@ -145,20 +144,21 @@ const MainConductorSection = ({ inspection }) => {
         <Text style={styles.itemLabel}>ข) ชนิดและขนาด</Text>
         <View style={styles.wireTypeRow}>
           <View style={styles.optionRow}>
-            <Checkbox checked={wireType === "iec01"} />
+            <Checkbox checked={wireType === "iec01"} size={10} />
             <Text style={styles.optionText}>IEC 01</Text>
           </View>
           <View style={styles.optionRow}>
-            <Checkbox checked={wireType === "nyy"} />
+            <Checkbox checked={wireType === "nyy"} size={10} />
             <Text style={styles.optionText}>NYY</Text>
           </View>
           <View style={styles.optionRow}>
-            <Checkbox checked={wireType === "cv"} />
+            <Checkbox checked={wireType === "cv"} size={10} />
             <Text style={styles.optionText}>CV</Text>
           </View>
           <View style={styles.optionRow}>
-            <Checkbox checked={wireType === "other"} />
-            <Text style={styles.optionText}>อื่นๆ {wireType === "other" ? wireOther : ""}</Text>
+            <Checkbox checked={wireType === "other"} size={10} />
+            <Text style={styles.optionText}>อื่นๆ</Text>
+            <Text style={styles.underlineDotted}>{wireOther}</Text>
           </View>
         </View>
         <View style={styles.sizeRow}>
@@ -176,7 +176,7 @@ const MainConductorSection = ({ inspection }) => {
         {/* เดินสายบนลูกถ้วยฉนวนในอากาศ */}
         <View style={styles.methodSection}>
           <View style={styles.optionRow}>
-            <Checkbox checked={selectedWiringMethods.includes("overhead")} />
+            <Checkbox checked={selectedWiringMethods.includes("overhead")} size={10} />
             <Text style={styles.optionText}>เดินสายบนลูกถ้วยฉนวนในอากาศ</Text>
           </View>
           {selectedWiringMethods.includes("overhead") && (
@@ -187,16 +187,14 @@ const MainConductorSection = ({ inspection }) => {
                 <Text style={styles.subItemText}>สูงจากพื้นไม่น้อยกว่า 2.9 เมตร หรือ 5.5 เมตรถ้ามียานพาหนะลอดผ่าน</Text>
               </View>
               <View style={styles.checkboxDetailRow}>
-                <View style={styles.resultRow}>
-                  <Checkbox checked={overheadItem1?.result === "ถูกต้อง"} />
+                <View style={styles.resultRowItem}>
+                  <Checkbox checked={overheadItem1?.result === "ถูกต้อง"} size={10} />
                   <Text style={styles.resultText}>ถูกต้อง</Text>
                 </View>
-                <View style={styles.resultRow}>
-                  <Checkbox checked={overheadItem1?.result === "ต้องแก้ไข"} />
+                <View style={styles.resultRowItem}>
+                  <Checkbox checked={overheadItem1?.result === "ต้องแก้ไข"} size={10} />
                   <Text style={styles.resultText}>ต้องแก้ไข</Text>
-                  {overheadItem1?.result === "ต้องแก้ไข" && (
-                    <Text style={styles.detailDots}>......................................</Text>
-                  )}
+                  <Text style={styles.detailDots}>{overheadItem1?.detail}</Text>
                 </View>
               </View>
 
@@ -206,16 +204,14 @@ const MainConductorSection = ({ inspection }) => {
                 <Text style={styles.subItemText}>สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล  </Text>
               </View>
               <View style={styles.checkboxDetailRow}>
-                <View style={styles.resultRow}>
-                  <Checkbox checked={overheadItem2?.result === "ถูกต้อง"} />
+                <View style={styles.resultRowItem}>
+                  <Checkbox checked={overheadItem2?.result === "ถูกต้อง"} size={10} />
                   <Text style={styles.resultText}>ถูกต้อง</Text>
                 </View>
-                <View style={styles.resultRow}>
-                  <Checkbox checked={overheadItem2?.result === "ต้องแก้ไข"} />
+                <View style={styles.resultRowItem}>
+                  <Checkbox checked={overheadItem2?.result === "ต้องแก้ไข"} size={10} />
                   <Text style={styles.resultText}>ต้องแก้ไข</Text>
-                  {overheadItem2?.result === "ต้องแก้ไข" && (
-                    <Text style={styles.detailDots}>......................................</Text>
-                  )}
+                  <Text style={styles.detailDots}>{overheadItem2?.detail}</Text>
                 </View>
               </View>
             </View>
@@ -225,7 +221,7 @@ const MainConductorSection = ({ inspection }) => {
         {/* เดินสายฝังใต้ดิน */}
         <View style={styles.methodSection}>
           <View style={styles.optionRow}>
-            <Checkbox checked={selectedWiringMethods.includes("underground")} />
+            <Checkbox checked={selectedWiringMethods.includes("underground")} size={10} />
             <Text style={styles.optionText}>เดินสายฝังใต้ดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)</Text>
           </View>
           {selectedWiringMethods.includes("underground") && (
@@ -236,16 +232,14 @@ const MainConductorSection = ({ inspection }) => {
                 <Text style={styles.subItemText}>สายตัวนำประธานทำเครื่องหมายที่สายนิวทรัล  </Text>
               </View>
               <View style={styles.checkboxDetailRow}>
-                <View style={styles.resultRow}>
-                  <Checkbox checked={undergroundItem?.result === "ถูกต้อง"} />
+                <View style={styles.resultRowItem}>
+                  <Checkbox checked={undergroundItem?.result === "ถูกต้อง"} size={10} />
                   <Text style={styles.resultText}>ถูกต้อง</Text>
                 </View>
-                <View style={styles.resultRow}>
-                  <Checkbox checked={undergroundItem?.result === "ต้องแก้ไข"} />
+                <View style={styles.resultRowItem}>
+                  <Checkbox checked={undergroundItem?.result === "ต้องแก้ไข"} size={10} />
                   <Text style={styles.resultText}>ต้องแก้ไข</Text>
-                  {undergroundItem?.result === "ต้องแก้ไข" && (
-                    <Text style={styles.detailDots}>......................................</Text>
-                  )}
+                  <Text style={styles.detailDots}>{undergroundItem?.detail}</Text>
                 </View>
               </View>
             </View>
@@ -270,13 +264,13 @@ const ProtectionDeviceSection = ({ inspection }) => {
       <Text style={styles.subsectionTitle}>2.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์(บริภัณฑ์ประธาน)</Text>
       
       <View style={styles.item}>
-        <Text style={styles.itemLabel}>ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน <Text style={styles.highlight}>IEC60898</Text> | <Text style={styles.redText}>ที่ราชบัญเท่า IEC60947-2</Text></Text>
+        <Text style={styles.itemLabel}>ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน <Text style={styles.highlight}>IEC60898</Text></Text>
         <CheckboxResult result={standardItem.result} detail={standardItem.detail} />
       </View>
 
       <View style={styles.item}>
         <View style={styles.sizeRow}>
-          <Text style={styles.itemLabel}>ข) เซอร์กิตเบรกเกอร์สอดคล้องกับชนิดของสายไฟฟ้า ขนาด AT</Text>
+          <Text style={styles.itemLabel}>ข) เซอร์กิตเบรกเกอร์สอดคล้องกับชนิดของสายไฟฟ้า ขนาด AT </Text>
           <Text style={styles.underline}>{atSize || " "}</Text>
           <Text style={styles.label}>A</Text>
         </View>
@@ -354,8 +348,8 @@ const RCDSection = ({ inspection }) => {
         <Text style={styles.itemLabel}>โดยติดตั้งในวงจรที่มีความเสี่ยง</Text>
         
         <View style={styles.checkboxRow}>
-          <View style={styles.resultRow}>
-            <Checkbox checked={rcdResult === "ถูกต้อง"} />
+          <View style={styles.resultRowItem}>
+            <Checkbox checked={rcdResult === "ถูกต้อง"} size={10} />
             <Text style={[styles.resultText, rcdResult === "ถูกต้อง" && styles.correctText]}>
               ถูกต้อง
             </Text>
@@ -363,7 +357,7 @@ const RCDSection = ({ inspection }) => {
         </View>
         
         <View style={styles.optionRow}>
-          <Checkbox checked={rcdResult === "ไม่ติดตั้ง"} />
+          <Checkbox checked={rcdResult === "ไม่ติดตั้ง"} size={10} />
           <Text style={[styles.optionText, rcdResult === "ไม่ติดตั้ง" && styles.warningText]}>
             ผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้งเครื่องตัดไฟรั่ว และผู้ตรวจสอบ
           </Text>
@@ -420,15 +414,15 @@ const SummarySection = ({ summaryType }) => {
       <Text style={styles.sectionTitle}>4. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</Text>
       <View style={styles.checkboxColumn}>
         <View style={styles.optionRow}>
-          <Checkbox checked={summaryType === "compliant"} size={14} />
+          <Checkbox checked={summaryType === "compliant"} size={10} />
           <Text style={styles.summaryText}>ติดตั้งมิเตอร์ได้</Text>
         </View>
         <View style={styles.optionRow}>
-          <Checkbox checked={summaryType === "compliant_with_conditions"} size={14} />
+          <Checkbox checked={summaryType === "compliant_with_conditions"} size={10} />
           <Text style={styles.summaryText}>ติดตั้งมิเตอร์ได้ตามเงื่อนไข</Text>
         </View>
         <View style={styles.optionRow}>
-          <Checkbox checked={summaryType === "non_compliant"} size={14} />
+          <Checkbox checked={summaryType === "non_compliant"} size={10} />
           <Text style={styles.summaryText}>ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์</Text>
         </View>
       </View>
@@ -539,7 +533,6 @@ const HomeInspectionPDF = ({ formData }) => {
     <Document>
       <Page size="A4" style={styles.page}>
         <FormHeader />
-        <View style={styles.divider} />
         <Text style={styles.pageNumber}>หน้า 1/3</Text>
         <View style={styles.titleBox}>
           <Text style={styles.titleText}>แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์</Text>
@@ -600,6 +593,7 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 8,
     color: "#000",
+    marginTop: 2,
   },
   divider: {
     borderBottomWidth: 1,
@@ -695,12 +689,12 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   subsection: {
-    marginBottom: 8,
+    marginBottom: 2,
   },
   subsectionTitle: {
-    fontSize: 9,
+    fontSize: 8,
     fontWeight: "bold",
-    marginBottom: 3,
+    marginBottom: 2,
   },
   item: {
     marginBottom: 6,
@@ -716,12 +710,92 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     flexWrap: "wrap",
   },
+  checkboxRowHorizontal: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2,
+    flexWrap: "wrap",
+  },
+  resultRowItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 8,
+  },
+  checkboxDetailRow: {
+    flexDirection: "column",
+    marginLeft: 15,
+    marginBottom: 3,
+  },
+  optionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2,
+    marginLeft: 3,
+  },
+  underlineDotted: {
+    fontSize: 8,
+    borderBottomWidth: 1,
+    borderBottomStyle: "dotted",
+    paddingBottom: 1,
+    marginLeft: 2,
+    minWidth: 60,
+  },
+  detailDots: {
+    fontSize: 8,
+    borderBottomWidth: 1,
+    borderBottomStyle: "dotted",
+    paddingBottom: 1,
+    marginLeft: 4,
+  },
   indentedRow: {
     marginLeft: 10,
     marginBottom: 2,
   },
+  methodSection: {
+    marginBottom: 4,
+  },
+  subMethodDetails: {
+    marginLeft: 15,
+    marginTop: 2,
+  },
+  subItemRow: {
+    flexDirection: "row",
+    marginBottom: 2,
+  },
+  subItemNumber: {
+    fontSize: 8,
+    marginRight: 2,
+  },
+  subItemText: {
+    fontSize: 8,
+    flex: 1,
+  },
   smallLabel: {
     fontSize: 7,
+  },
+  wireTypeRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginBottom: 3,
+  },
+  optionText: {
+    fontSize: 8,
+    marginRight: 6,
+  },
+  checkboxColumn: {
+    flexDirection: "column",
+    marginLeft: 10,
+  },
+  summaryText: {
+    fontSize: 9,
+  },
+  resultContainer: {
+    marginLeft: 10,
+    marginTop: 2,
+  },
+  resultText: {
+    fontSize: 8,
+    marginRight: 4,
   },
   sizeRow: {
     flexDirection: "row",
