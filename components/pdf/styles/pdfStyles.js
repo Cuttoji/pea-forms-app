@@ -103,21 +103,22 @@ export const styles = StyleSheet.create({
   // ส่วนหลัก (section)
   section: {
     padding: 0,
-    marginBottom: 10,
+    marginBottom: 6,
   },
 
   // ส่วนข้อมูลทั่วไป (section 1)
   generalSection: {
     border: "1 solid #000",
-    padding: 8,
-    marginBottom: 10,
+    padding: 6,
+    marginBottom: 6,
   },
 
   // หัวข้อหลักของแต่ละส่วน (1., 2., 3., ...)
   sectionTitle: {
     fontSize: 12,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginBottom: 4,
+    marginTop: 2,
     lineHeight: 1.4,
   },
 
@@ -125,8 +126,8 @@ export const styles = StyleSheet.create({
   subsectionTitle: {
     fontSize: 11,
     fontWeight: "bold",
-    marginBottom: 5,
-    marginTop: 6,
+    marginBottom: 3,
+    marginTop: 4,
   },
 
   // ข้อความในหัวข้อย่อย
@@ -203,21 +204,21 @@ export const styles = StyleSheet.create({
   tableRow: {
     flexDirection: "row",
     borderBottom: "1 solid #000",
-    minHeight: 25,
+    minHeight: 20,
     pageBreakInside: "avoid",
   },
 
   // คอลัมน์ซ้าย - กว้างมาก (ประมาณ 80%)
   leftColumn: {
     flex: 4,
-    padding: 8,
+    padding: 4,
     borderRight: "1 solid #000",
   },
 
   // คอลัมน์ขวา - แคบ สำหรับ checkbox (ประมาณ 20%)
   rightColumn: {
     flex: 1,
-    padding: 8,
+    padding: 4,
     justifyContent: "flex-start",
     alignItems: "flex-start",
   },
@@ -261,28 +262,28 @@ export const styles = StyleSheet.create({
   // ตาราง LV
   lvTable: {
     border: "1 solid #000",
-    marginTop: 4,
-    marginBottom: 4,
+    marginTop: 2,
+    marginBottom: 2,
   },
 
   // ตาราง HV System (Section 3) - ตามรูป 2 (แก้ไม่ให้กรอบขาด)
   hvTable: {
     border: "1 solid #000",
-    marginTop: 8,
-    marginBottom: 8,
+    marginTop: 4,
+    marginBottom: 4,
   },
   
   hvRow: {
     flexDirection: "row",
     borderBottom: "1 solid #000",
-    minHeight: 25,
+    minHeight: 20,
     pageBreakInside: "avoid",
   },
   
   // คอลัมน์ซ้าย HV - กว้างมาก (ประมาณ 75%)
   hvLeftCol: {
     flex: 3,
-    padding: 8,
+    padding: 4,
     borderRight: "1 solid #000",
     justifyContent: "center",
   },
@@ -290,7 +291,7 @@ export const styles = StyleSheet.create({
   // คอลัมน์ขวา HV - สำหรับ checkbox ถูกต้อง/ต้องแก้ไข (ประมาณ 25%)
   hvRightCol: {
     flex: 1,
-    padding: 8,
+    padding: 4,
     justifyContent: "flex-start",
   },
 

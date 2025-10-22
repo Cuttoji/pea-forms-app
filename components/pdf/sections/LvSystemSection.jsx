@@ -7,9 +7,9 @@ const LvSystemSection = ({ transformer, index }) => {
   const lvSystem = transformer?.lvSystem || {};
   
   return (
-    <View style={{ paddingTop: 10, pageBreakInside: 'avoid' }}>
+    <View style={{ paddingTop: 4 }}>
       <Text style={styles.sectionTitle}>5. ระบบจำหน่ายแรงต่ำ (หม้อแปลงที่ {index + 1})</Text>
-      <Text style={styles.subsectionTitle}>5.1 วงจรประธานแรงต่ำ  </Text>
+      <Text style={styles.subsectionTitle}>5.1 วงจรประธานแรงต่ำ</Text>
       
       <View style={styles.lvTable}>
         <View style={[styles.tableRow, styles.borderTop]}>
