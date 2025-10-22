@@ -6,11 +6,8 @@ import { styles } from "../styles/pdfStyles";
 const LvSystemSection = ({ transformer, index }) => {
   const lvSystem = transformer?.lvSystem || {};
   
-  console.log("=== LvSystemSection Debug ===");
-  console.log("lvSystem data:", lvSystem);
-  
   return (
-    <View style={{ paddingTop: 10 }}>
+    <View style={{ paddingTop: 10, pageBreakInside: 'avoid' }}>
       <Text style={styles.sectionTitle}>5. ระบบจำหน่ายแรงต่ำ (หม้อแปลงที่ {index + 1})</Text>
       <Text style={styles.subsectionTitle}>5.1 วงจรประธานแรงต่ำ  </Text>
       

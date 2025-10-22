@@ -204,6 +204,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottom: "1 solid #000",
     minHeight: 25,
+    pageBreakInside: "avoid",
   },
 
   // คอลัมน์ซ้าย - กว้างมาก (ประมาณ 80%)
@@ -275,6 +276,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottom: "1 solid #000",
     minHeight: 25,
+    pageBreakInside: "avoid",
   },
   
   // คอลัมน์ซ้าย HV - กว้างมาก (ประมาณ 75%)
@@ -299,19 +301,20 @@ export const styles = StyleSheet.create({
     minWidth: 80,
   },
 
-  // Container สำหรับ checkbox result (ถูกต้อง/ต้องแก้ไข) - แนวตั้งตามรูป
+  // Container สำหรับ checkbox result (ถูกต้อง/ต้องแก้ไข) - แนวนอน
   resultContainer: {
-    flexDirection: "column",
+    flexDirection: "row",
   },
   
-  // สำหรับรายการย่อย (เช่น 4.7.1, 4.7.2 ฯลฯ)
+  // สำหรับรายการย่อย (เช่น 4.7.1, 4.7.2 ฯลฯ) - ป้องกันการตัดครึ่ง
   subItemResult: {
     marginBottom: 6,
+    pageBreakInside: "avoid",
   },
   
-  // Row สำหรับ checkbox แนวนอน (ใน HV section ให้เรียงแนวตั้ง)
+  // Row สำหรับ checkbox แนวนอน
   checkboxRowHorizontal: {
-    flexDirection: "column",
+    flexDirection: "row",
   },
   
   // แต่ละแถวของ result (checkbox + text)
@@ -563,10 +566,13 @@ export const styles = StyleSheet.create({
   signatureLabel: {
     fontSize: 10,
     textAlign: "center",
+    marginTop: 4,
   },
   signatureImage: {
-    maxWidth: 100,
-    maxHeight: 50,
+    width: 120,
+    height: 60,
+    objectFit: "contain",
+    marginBottom: 8,
   },
 
   // กล่องข้อความ/หมายเหตุ - ไม่มีสีพื้นหลัง
@@ -714,5 +720,223 @@ export const styles = StyleSheet.create({
   },
   textLeft: {
     textAlign: "left",
+  },
+  
+  // Styles จาก HomeInspectionPDF
+  boxed: {
+    border: "1 solid #000",
+    padding: 6,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 3,
+    flexWrap: "wrap",
+  },
+  titleBox: {
+    border: "1 solid #000",
+    padding: 6,
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  titleText: {
+    fontSize: 9,
+    marginBottom: 2,
+  },
+  inspectionInfo: {
+    fontSize: 8,
+    marginTop: 3,
+  },
+  twoColumns: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  subsection: {
+    marginBottom: 2,
+  },
+  item: {
+    marginBottom: 6,
+  },
+  itemLabel: {
+    fontSize: 8,
+    marginBottom: 2,
+  },
+  checkboxRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2,
+    marginLeft: 3,
+    flexWrap: "wrap",
+  },
+  resultRowItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 8,
+  },
+  checkboxDetailRow: {
+    flexDirection: "column",
+    marginLeft: 15,
+    marginBottom: 3,
+  },
+  optionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2,
+    marginLeft: 3,
+  },
+  detailDots: {
+    fontSize: 8,
+    borderBottomWidth: 1,
+    borderBottomStyle: "dotted",
+    paddingBottom: 1,
+    marginLeft: 4,
+  },
+  indentedRow: {
+    marginLeft: 10,
+    marginBottom: 2,
+  },
+  methodSection: {
+    marginBottom: 4,
+  },
+  subMethodDetails: {
+    marginLeft: 15,
+    marginTop: 2,
+  },
+  subItemRow: {
+    flexDirection: "row",
+    marginBottom: 2,
+  },
+  subItemNumber: {
+    fontSize: 8,
+    marginRight: 2,
+  },
+  subItemText: {
+    fontSize: 8,
+    flex: 1,
+  },
+  smallLabel: {
+    fontSize: 7,
+  },
+  wireTypeRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginBottom: 3,
+  },
+  optionText: {
+    fontSize: 8,
+    marginRight: 6,
+  },
+  checkboxColumn: {
+    flexDirection: "column",
+    marginLeft: 10,
+  },
+  summaryText: {
+    fontSize: 9,
+  },
+  sizeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2,
+    marginLeft: 3,
+  },
+  highlight: {
+    fontWeight: "bold",
+  },
+  redText: {
+    color: "#dc2626",
+  },
+  acknowledgmentBox: {
+    border: "1 solid #000",
+    padding: 6,
+  },
+  acknowledgmentText: {
+    fontSize: 7,
+    marginBottom: 4,
+    lineHeight: 1.2,
+  },
+  signatureLabel: {
+    fontSize: 8,
+    marginBottom: 6,
+  },
+  signatureDate: {
+    fontSize: 8,
+    textAlign: "center",
+    marginTop: 3,
+  },
+  recommendationTitle: {
+    fontSize: 9,
+    fontWeight: "bold",
+    marginBottom: 3,
+  },
+  recommendationText: {
+    fontSize: 7,
+    marginBottom: 2,
+    lineHeight: 1.2,
+  },
+  footer: {
+    position: "absolute",
+    bottom: 15,
+    left: 20,
+    right: 20,
+    textAlign: "center",
+    fontSize: 7,
+    color: "#666",
+  },
+  diagramSubtitle: {
+    fontSize: 9,
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  diagramContainer: {
+    border: "1 solid #000",
+    padding: 10,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  diagramElement: {
+    fontSize: 8,
+    marginVertical: 2,
+    textAlign: "center",
+  },
+  arrow: {
+    fontSize: 12,
+    marginVertical: 1,
+  },
+  dashedLine: {
+    borderTopWidth: 1,
+    borderTopStyle: "dashed",
+    width: "100%",
+    marginVertical: 4,
+  },
+  systemBox: {
+    border: "1 solid #000",
+    padding: 8,
+    marginVertical: 6,
+    width: "100%",
+  },
+  systemTitle: {
+    fontSize: 8,
+    fontWeight: "bold",
+    marginBottom: 3,
+  },
+  systemItem: {
+    fontSize: 7,
+    marginBottom: 1,
+  },
+  requirementBox: {
+    border: "1 solid #000",
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 8,
+  },
+  requirementTitle: {
+    fontSize: 9,
+    fontWeight: "bold",
+    marginBottom: 3,
+  },
+  requirementText: {
+    fontSize: 7,
+    marginBottom: 2,
+    lineHeight: 1.2,
   },
 });

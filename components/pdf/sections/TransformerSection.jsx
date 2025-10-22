@@ -5,10 +5,6 @@ import { styles } from "../styles/pdfStyles";
 import LvSystemSection from "./LvSystemSection";
 
 const TransformerSection = ({ transformers }) => {
-  console.log("=== TransformerSection Debug ===");
-  console.log("transformers data:", transformers);
-  console.log("transformers length:", transformers?.length);
-  
   if (!transformers || transformers.length === 0) {
     return (
       <View style={styles.section}>
@@ -23,16 +19,16 @@ const TransformerSection = ({ transformers }) => {
       <Text style={styles.sectionTitle}>4. หม้อแปลง</Text>
       
       {transformers.map((transformer, index) => {
-        console.log(`=== Transformer ${index + 1} ===`);
-        console.log("transformer data:", transformer);
-        
         // อ่านข้อมูลจาก transformerData
         const transformerData = transformer?.transformerData || {};
         const general = transformerData?.general || {};
         
         return (
-          <View key={index} wrap={false} style={styles.transformerWrapper}>
-            {/* แสดงหม้อแปลงทุกตัว ไม่ซ่อน - กลุ่มเดียวกันไม่แยกข้ามหน้า */}
+          <View key={index} style={styles.transformerWrapper}>
+            {/* แสดงหม้อแปลงทุกตัว - แต่ละส่วนสามารถขึ้นหน้าใหม่ได้ */}
+            
+            {/* ขึ้นหน้าใหม่สำหรับหม้อแปลงแต่ละตัว ยกเว้นตัวแรก */}
+            {index > 0 && <View break />}
             
             <View style={styles.transformerSection}>
               <Text style={styles.subsectionTitle}>หม้อแปลงที่ {index + 1}</Text>
@@ -410,9 +406,6 @@ const TransformerSection = ({ transformers }) => {
               
               <LvSystemSection transformer={transformer} index={index} />
             </View>
-            
-            {/* เพิ่ม page break หลังหม้อแปลงแต่ละตัว ยกเว้นตัวสุดท้าย */}
-            {index < transformers.length - 1 && <View style={styles.pageBreak} break />}
           </View>
         );
       })}

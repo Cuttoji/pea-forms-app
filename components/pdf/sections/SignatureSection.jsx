@@ -3,11 +3,6 @@ import { View, Text, Image } from "@react-pdf/renderer";
 import { styles } from "../styles/pdfStyles";
 
 const SignatureSection = ({ signature }) => {
-  console.log("=== SignatureSection Debug ===");
-  console.log("signature data:", signature);
-  console.log("customerSign:", signature?.customerSign ? "มีข้อมูล" : "ไม่มีข้อมูล");
-  console.log("officerSign:", signature?.officerSign ? "มีข้อมูล" : "ไม่มีข้อมูล");
-  
   return (
     <View style={styles.signatureSection}>
       <Text style={styles.sectionTitle}>8. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</Text>
@@ -20,25 +15,37 @@ const SignatureSection = ({ signature }) => {
         <View style={styles.signatureBox}>
           {signature?.customerSign && (
             <Image 
-              src={signature.customerSign} 
+              src={signature.customerSign}
               style={styles.signatureImage}
             />
           )}
+          <View style={styles.signatureLine} />
           <Text style={styles.signatureLabel}>
-            ลงชื่อ.............................................ผู้ขอใช้ไฟฟ้าหรือผู้แทน
+            ผู้ขอใช้ไฟฟ้าหรือผู้แทน
           </Text>
+          {signature?.customerDate && (
+            <Text style={styles.signatureLabel}>
+              วันที่: {signature.customerDate}
+            </Text>
+          )}
         </View>
         
         <View style={styles.signatureBox}>
           {signature?.officerSign && (
             <Image 
-              src={signature.officerSign} 
+              src={signature.officerSign}
               style={styles.signatureImage}
             />
           )}
+          <View style={styles.signatureLine} />
           <Text style={styles.signatureLabel}>
-            ลงชื่อ.............................................เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค
+            เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค
           </Text>
+          {signature?.officerDate && (
+            <Text style={styles.signatureLabel}>
+              วันที่: {signature.officerDate}
+            </Text>
+          )}
         </View>
       </View>
 

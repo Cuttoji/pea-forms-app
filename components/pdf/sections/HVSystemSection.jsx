@@ -5,9 +5,9 @@ import { styles } from "../styles/pdfStyles";
 
 const HVSystemSection = ({ hvSystem }) => (
   <View style={styles.section}>
-    <Text style={styles.sectionTitle}>3. ระบบจำหน่ายแรงสูง</Text>
+    <Text style={styles.sectionTitle}>3. ระบบจำหน่ายแรงสูง  </Text>
     
-    <Text style={styles.subsectionTitle}>3.1 ระบบจำหน่ายเหนือดิน</Text>
+    <Text style={styles.subsectionTitle}>3.1 ระบบจำหน่ายเหนือดิน  </Text>
     <View style={styles.hvTable}>
       <View style={styles.hvRow}>
         <View style={styles.hvLeftCol}>
