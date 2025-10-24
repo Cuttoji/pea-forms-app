@@ -2,14 +2,18 @@ import React from "react";
 import { View, Text } from "@react-pdf/renderer";
 import { Checkbox, CheckboxResult } from "../common/FormElements";
 import { styles } from "../styles/pdfStyles";
+import PanelBoardSection from "./PanelBoardSection";
+import SubCircuitSection from "./SubCircuitSection";
 
-const LvSystemSection = ({ transformer, index }) => {
+const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
   const lvSystem = transformer?.lvSystem || {};
   
   return (
     <View style={{ paddingTop: 4 }}>
-      <Text style={styles.sectionTitle}>5. ระบบจำหน่ายแรงต่ำ (หม้อแปลงที่ {index + 1})</Text>
-      <Text style={styles.subsectionTitle}>5.1 วงจรประธานแรงต่ำ</Text>
+      {showSectionTitle && index === 0 && (
+        <Text style={styles.sectionTitle}>5. ระบบจำหน่ายแรงต่ำ</Text>
+      )}
+      <Text style={styles.subsectionTitle}>5.1 วงจรประธานแรงต่ำ (หม้อแปลงที่ {index + 1})</Text>
       
       <View style={styles.lvTable}>
         <View style={[styles.tableRow, styles.borderTop]}>
@@ -465,6 +469,18 @@ const LvSystemSection = ({ transformer, index }) => {
         )}
 
       </View>
+
+      {/* แสดง Panel Board (5.5) ของหม้อแปลงนี้ */}
+      <PanelBoardSection 
+        panelBoard={transformer?.panel} 
+        transformerIndex={index}
+      />
+
+      {/* แสดงวงจรย่อย (SubCircuit - 5.6) ของหม้อแปลงนี้ */}
+      <SubCircuitSection 
+        subCircuits={transformer?.subCircuits} 
+        transformerIndex={index}
+      />
     </View>
   );
 }

@@ -97,7 +97,7 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
             <h2 className="text-xl font-bold text-white">{sectionNumber}.5 วงจรสายป้อน/แผงวงจรย่อย (Panel board)</h2>
           </div>
           
-          <div className="border border-t-0 border-gray-200 rounded-b-lg p-6 space-y-8">
+          <div className="border border-t-0 border-gray-200 rounded-b-lg p-6 space-y-8 text-gray-800">
             {/* 5.5.1 วงจรสายป้อน */}
             <div className="bg-blue-50 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-blue-900 mb-6 flex items-center">

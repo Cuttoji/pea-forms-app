@@ -74,10 +74,10 @@ const TransformerSection = ({ transformers }) => {
                       <Text style={styles.smallText}> อื่นๆ</Text>
                     </View>
                     <Text style={styles.smallText}>
-                      พิกัดการทนกระแสลัดวงจรสูงสุด <Text style={styles.underlineDotted}>{general?.shortCircuitCurrent || ""}</Text> kA
+                      Vector Group  <Text style={styles.underlineDotted}>{general?.vectorGroup || ""}</Text>
                     </Text>
                     <Text style={styles.smallText}>
-                      กรก.มจ.02-04 (แนวทางป้องกันจะลองนำ ขณะดึงรับรุ่งวันแช่บิด์โค่ เครื่องมีให้ไฟฟ้ากับเข้าหำโลิดติดบุหม้อแปลงเมื่อเขตพาจนาจ)
+                      พิกัดการทนกระแสลัดวงจรสูงสุด  <Text style={styles.underlineDotted}>{general?.shortCircuitCurrent || ""}</Text> kA
                     </Text>
                   </View>
                   <View style={styles.transformerRightCol}>
@@ -146,9 +146,12 @@ const TransformerSection = ({ transformers }) => {
                           {transformerData?.typeOther || ""}
                         </Text>
                       </View>
-                      <Text style={styles.underlineDotted}>
-                        {transformerData?.typeOther || ""}
-                      </Text>
+                      <Text style={styles.smallText}>
+                      พิกัดการทนกระแสลัดวงจรสูงสุด <Text style={styles.underlineDotted}>{general?.shortCircuitCurrent || ""}</Text> kA
+                    </Text>
+                    <Text style={styles.smallText}>
+                      พิกัดตัดกระแสลัดวงจรสูงสุด (Interrupting Capacity , IC) <Text style={styles.underlineDotted}>{general?.interruptingCapacity || ""}</Text> kA
+                    </Text>
                     </View>
                   </View>
                   <View style={styles.hvRightCol}>
@@ -307,64 +310,92 @@ const TransformerSection = ({ transformers }) => {
                   </View>
                 </View>
 
-                {/* 4.7 การตรวจสอบภายนอก */}
+                {/* 4.7 การตรวจสอบภายนอก - Header */}
                 <View style={[styles.hvRow, styles.borderTop]}>
                   <View style={styles.hvLeftCol}>
                     <Text style={styles.smallBoldText}>4.7 การตรวจสอบภายนอก (สำหรับหม้อแปลงแห้งและหม้อแปลงน้ำมัน)</Text>
-                    <Text style={styles.smallText}>4.7.1 สารดูดความชื้น</Text>
-                    <Text style={styles.smallText}>4.7.2 บุชชิ่ง</Text>
-                    <Text style={styles.smallText}>4.7.3 ระดับน้ำมัน</Text>
-                    <Text style={styles.smallText}>4.7.4 การรั่วซึมของน้ำมันหม้อแปลง</Text>
                   </View>
                   <View style={styles.hvRightCol}>
-                    <View style={styles.resultContainer}>
-                      {/* 4.7.1 สารดูดความชื้น */}
-                      <View style={styles.subItemResult}>
-                        <View style={styles.checkboxLine}>
-                          <Checkbox checked={transformerData?.ext?.silica?.result === "ถูกต้อง"} />
-                          <Text style={styles.smallText}> ถูกต้อง</Text>
-                          <Checkbox checked={transformerData?.ext?.silica?.result === "ต้องแก้ไข"} />
-                          <Text style={styles.smallText}> ต้องแก้ไข</Text>
-                        </View>
-                      </View>
-                      
-                      {/* 4.7.2 บุชชิ่ง */}
-                      <View style={styles.subItemResult}>
-                        <View style={styles.checkboxLine}>
-                          <Checkbox checked={transformerData?.ext?.bushing?.result === "ถูกต้อง"} />
-                          <Text style={styles.smallText}> ถูกต้อง</Text>
-                          <Checkbox checked={transformerData?.ext?.bushing?.result === "ต้องแก้ไข"} />
-                          <Text style={styles.smallText}> ต้องแก้ไข</Text>
-                        </View>
-                      </View>
-                      
-                      {/* 4.7.3 ระดับน้ำมัน */}
-                      <View style={styles.subItemResult}>
-                        <View style={styles.checkboxLine}>
-                          <Checkbox checked={transformerData?.ext?.oilLevel?.result === "ถูกต้อง"} />
-                          <Text style={styles.smallText}> ถูกต้อง</Text>
-                          <Checkbox checked={transformerData?.ext?.oilLevel?.result === "ต้องแก้ไข"} />
-                          <Text style={styles.smallText}> ต้องแก้ไข</Text>
-                        </View>
-                      </View>
-                      
-                      {/* 4.7.4 การรั่วซึมของน้ำมันหม้อแปลง */}
-                      <View style={styles.subItemResult}>
-                        <View style={styles.checkboxLine}>
-                          <Checkbox checked={transformerData?.ext?.leak?.result === "ถูกต้อง"} />
-                          <Text style={styles.smallText}> ถูกต้อง</Text>
-                          <Checkbox checked={transformerData?.ext?.leak?.result === "ต้องแก้ไข"} />
-                          <Text style={styles.smallText}> ต้องแก้ไข</Text>
-                        </View>
-                      </View>
+                    <Text style={styles.smallBoldText}>ผลการตรวจสอบ</Text>
+                  </View>
+                </View>
+
+                {/* 4.7.1 สารดูดความชื้น */}
+                <View style={styles.transformerRow}>
+                  <View style={styles.transformerLeftCol}>
+                    <Text style={styles.smallText}>4.7.1 สารดูดความชื้น</Text>
+                  </View>
+                  <View style={styles.transformerRightCol}>
+                    <View style={styles.checkboxLine}>
+                      <Checkbox checked={transformerData?.ext?.silica?.result === "ถูกต้อง"} />
+                      <Text style={styles.smallText}> ถูกต้อง</Text>
+                      <Checkbox checked={transformerData?.ext?.silica?.result === "ต้องแก้ไข"} />
+                      <Text style={styles.smallText}> ต้องแก้ไข</Text>
                     </View>
+                    {transformerData?.ext?.silica?.detail && (
+                      <Text style={styles.smallText}>{transformerData.ext.silica.detail}</Text>
+                    )}
+                  </View>
+                </View>
+
+                {/* 4.7.2 บุชชิ่ง */}
+                <View style={styles.transformerRow}>
+                  <View style={styles.transformerLeftCol}>
+                    <Text style={styles.smallText}>4.7.2 บุชชิ่ง</Text>
+                  </View>
+                  <View style={styles.transformerRightCol}>
+                    <View style={styles.checkboxLine}>
+                      <Checkbox checked={transformerData?.ext?.bushing?.result === "ถูกต้อง"} />
+                      <Text style={styles.smallText}> ถูกต้อง</Text>
+                      <Checkbox checked={transformerData?.ext?.bushing?.result === "ต้องแก้ไข"} />
+                      <Text style={styles.smallText}> ต้องแก้ไข</Text>
+                    </View>
+                    {transformerData?.ext?.bushing?.detail && (
+                      <Text style={styles.smallText}>{transformerData.ext.bushing.detail}</Text>
+                    )}
+                  </View>
+                </View>
+
+                {/* 4.7.3 ระดับน้ำมัน */}
+                <View style={styles.transformerRow}>
+                  <View style={styles.transformerLeftCol}>
+                    <Text style={styles.smallText}>4.7.3 ระดับน้ำมัน</Text>
+                  </View>
+                  <View style={styles.transformerRightCol}>
+                    <View style={styles.checkboxLine}>
+                      <Checkbox checked={transformerData?.ext?.oilLevel?.result === "ถูกต้อง"} />
+                      <Text style={styles.smallText}> ถูกต้อง</Text>
+                      <Checkbox checked={transformerData?.ext?.oilLevel?.result === "ต้องแก้ไข"} />
+                      <Text style={styles.smallText}> ต้องแก้ไข</Text>
+                    </View>
+                    {transformerData?.ext?.oilLevel?.detail && (
+                      <Text style={styles.smallText}>{transformerData.ext.oilLevel.detail}</Text>
+                    )}
+                  </View>
+                </View>
+
+                {/* 4.7.4 การรั่วซึมของน้ำมันหม้อแปลง */}
+                <View style={styles.transformerRow}>
+                  <View style={styles.transformerLeftCol}>
+                    <Text style={styles.smallText}>4.7.4 การรั่วซึมของน้ำมันหม้อแปลง</Text>
+                  </View>
+                  <View style={styles.transformerRightCol}>
+                    <View style={styles.checkboxLine}>
+                      <Checkbox checked={transformerData?.ext?.leak?.result === "ถูกต้อง"} />
+                      <Text style={styles.smallText}> ถูกต้อง</Text>
+                      <Checkbox checked={transformerData?.ext?.leak?.result === "ต้องแก้ไข"} />
+                      <Text style={styles.smallText}> ต้องแก้ไข</Text>
+                    </View>
+                    {transformerData?.ext?.leak?.detail && (
+                      <Text style={styles.smallText}>{transformerData.ext.leak.detail}</Text>
+                    )}
                   </View>
                 </View>
 
                 {/* 4.8 ป้ายเครื่องหมาย */}
                 <View style={[styles.hvRow, styles.borderTop]}>
                   <View style={styles.hvLeftCol}>
-                    <Text style={styles.smallBoldText}>4.8 ป้ายเตือน</Text>
+                    <Text style={styles.smallText}>4.8 ป้ายเตือน</Text>
                     <Text style={styles.smallText}>มี โดยให้ใช้ข้อความเช่น "อันตราย แรงดันสูง" เป็นต้น</Text>
                   </View>
                   <View style={styles.hvRightCol}>
@@ -387,7 +418,7 @@ const TransformerSection = ({ transformers }) => {
                 {/* 4.9 อื่นๆ */}
                 <View style={[styles.hvRow, styles.borderTop]}>
                   <View style={styles.hvLeftCol}>
-                    <Text style={styles.smallBoldText}>4.9 อื่นๆ</Text>
+                    <Text style={styles.smallText}>4.9 อื่นๆ</Text>
                     <Text style={styles.underlineLong}>
                       {transformerData?.other && transformerData.other.length > 100 ? 
                         `${transformerData.other.substring(0, 100)}...` : 
@@ -404,7 +435,7 @@ const TransformerSection = ({ transformers }) => {
                 </View>
               </View>
               
-              <LvSystemSection transformer={transformer} index={index} />
+              <LvSystemSection transformer={transformer} index={index} showSectionTitle={true} />
             </View>
           </View>
         );

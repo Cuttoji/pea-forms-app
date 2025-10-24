@@ -8,7 +8,6 @@ import GeneralInfoSection from "./sections/GeneralInfoSection";
 import DocumentSection from "./sections/DocumentSection";
 import HVSystemSection from "./sections/HVSystemSection";
 import TransformerSection from "./sections/TransformerSection";
-import SubCircuitSection from "./sections/SubCircuitSection";
 import EVChargerInspectionSection from "./sections/EVChargerInspectionSection";
 import SummarySection from "./sections/SummarySection";
 import SignatureSection from "./sections/SignatureSection";
@@ -49,24 +48,23 @@ const EVChargerHVExportPDF = ({ formData }) => {
       requestDate: formData?.general?.requestDate,
     },
     documents: {
-      residential: {
-        hasSpecification: formData?.documents?.spec === true,
-        completeness: formData?.documents?.isComplete,
-      },
-      commercial: {
-        hasSingleLineDiagram: formData?.documents?.singleLineDiagram === true,
-        hasAsBuiltDrawing: formData?.documents?.asBuiltDrawing === true,
-        hasLoadSchedule: formData?.documents?.loadSchedule === true,
-        hasEngineerLicense: formData?.documents?.engineerLicense === true,
-        hasSpecification: formData?.documents?.spec === true,
-        hasPermit: formData?.documents?.permit === true,
-        completeness: formData?.documents?.isComplete,
-      }
+      areaType: formData?.documents?.areaType || "personal",
+      spec: formData?.documents?.spec || false,
+      singleLine: formData?.documents?.singleLine || false,
+      loadSchedule: formData?.documents?.loadSchedule || false,
+      asBuilt: formData?.documents?.asBuilt || false,
+      licenceCopy: formData?.documents?.licenceCopy || false,
+      peaLicence: formData?.documents?.peaLicence || false,
+      isComplete: formData?.documents?.isComplete || "",
+      notCompleteDetail: formData?.documents?.notCompleteDetail || "",
+      electricalDocument: formData?.documents?.electricalDocument ?? null,
     },
+
     hvSystem: formData?.hvSystem || {},
     transformers: formData?.transformers || [],
     summaryType: formData?.summary?.summaryType || "",
     limitation: formData?.limitation || "",
+    signature: formData?.signature || {},
   };
 
   console.log("=== safeData.transformers ===");
@@ -88,7 +86,7 @@ const EVChargerHVExportPDF = ({ formData }) => {
         <HVSystemSection hvSystem={safeData.hvSystem} />
       </Page>
 
-      {/* หน้าที่ 3+: หม้อแปลง + ระบบแรงต่ำ - รวมกันเป็นก้อนเดียว */}
+      {/* หน้าที่ 3+: หม้อแปลง + ระบบแรงต่ำ + วงจรย่อย (ต่อเนื่องกัน) */}
       {safeData.transformers && safeData.transformers.length > 0 ? 
         <Page size="A4" style={styles.page}>
           <TransformerSection transformers={safeData.transformers} />
@@ -99,33 +97,22 @@ const EVChargerHVExportPDF = ({ formData }) => {
         </Page>
       }
 
-      {/* หน้าที่ 4+: วงจรย่อยและเครื่องอัดประจุแยกตามหม้อแปลง */}
-      {safeData.transformers && safeData.transformers.length > 0 ? 
+      {/* หน้าที่ 4+: เครื่องอัดประจุแต่ละหม้อแปลง */}
+      {safeData.transformers && safeData.transformers.length > 0 && 
         safeData.transformers.map((transformer, transformerIndex) => (
-          <Page key={`subcircuit-${transformerIndex}`} size="A4" style={styles.page}>
-            <Text style={styles.sectionTitle}>วงจรย่อยและเครื่องอัดประจุของหม้อแปลงที่ {transformerIndex + 1}</Text>
-            
-            <SubCircuitSection 
-              subCircuits={transformer?.subCircuits || []} 
-              transformerIndex={transformerIndex}
-            />
-            
+          <Page key={`evcharger-${transformerIndex}`} size="A4" style={styles.page}>
             <EVChargerInspectionSection 
               evChargers={transformer?.subCircuits?.[0]?.evChargers || []} 
               transformerIndex={transformerIndex}
             />
           </Page>
-        )) : 
-        <Page size="A4" style={styles.page}>
-          <SubCircuitSection subCircuits={[]} />
-          <EVChargerInspectionSection evChargers={[]} />
-        </Page>
+        ))
       }
 
       {/* หน้าสุดท้าย: สรุปผลและลายเซ็น */}
       <Page size="A4" style={styles.page}>
         <SummarySection />
-        <SignatureSection />
+        <SignatureSection signature={safeData.signature} />
         <SingleLineDiagram />
       </Page>
     </Document>

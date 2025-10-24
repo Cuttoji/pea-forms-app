@@ -1,5 +1,20 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet, Font, Image } from "@react-pdf/renderer";
+import { Document, Page, Font } from "@react-pdf/renderer";
+
+// Import sections
+import FormHeader from "./sections/FormHeader";
+import TitleSection from "./sections/TitleSection";
+import GeneralInfoLvSection from "./sections/GeneralInfoLvSection";
+import DocumentSection from "./sections/DocumentSection";
+import LvSystemSectionforLv from "./sections/LvSystemSectionforLv";
+import SubCircuitSection from "./sections/SubCircuitSection";
+import EVChargerInspectionSection from "./sections/EVChargerInspectionSection";
+import SummarySection from "./sections/SummarySection";
+import SignatureSection from "./sections/SignatureSection";
+import SingleLineDiagram from "./sections/SingleLineDiagram";
+
+// Import styles
+import { styles } from "./styles/pdfStyles";
 
 // Register Sarabun font
 Font.register({
@@ -10,360 +25,191 @@ Font.register({
   ],
 });
 
-// โลโก้ PEA (ถ้ามี)
-const PEA_LOGO = "/images/pea-logo.png";
-
-// Section: ข้อมูลทั่วไป
-const GeneralInfoSection = ({ general }) => (
-  <View style={styles.section}>
-    <Text style={styles.sectionTitle}>1. ข้อมูลทั่วไป</Text>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>การไฟฟ้า:</Text>
-      <Text style={styles.infoValue}>{general?.powerAuthority || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>การตรวจสอบครั้งที่:</Text>
-      <Text style={styles.infoValue}>{general?.inspectionNo || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>วันที่ตรวจสอบ:</Text>
-      <Text style={styles.infoValue}>{general?.inspectionDate || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>การตรวจสอบตามคำร้องขอใช้ไฟเลขที่:</Text>
-      <Text style={styles.infoValue}>{general?.requestNo || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>วันที่คำร้อง:</Text>
-      <Text style={styles.infoValue}>{general?.requestDate || "-"}</Text>
-    </View>
-    {general?.userType === "corp" ? (
-      <>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>ชื่อนิติบุคคล:</Text>
-          <Text style={styles.infoValue}>{general?.corpName || "-"}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>โทรศัพท์ (นิติบุคคล):</Text>
-          <Text style={styles.infoValue}>{general?.corpPhone || "-"}</Text>
-        </View>
-      </>
-    ) : (
-      <>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>ชื่อ-นามสกุลผู้ขอใช้ไฟฟ้า:</Text>
-          <Text style={styles.infoValue}>{general?.customerName || "-"}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>โทรศัพท์:</Text>
-          <Text style={styles.infoValue}>{general?.phone || "-"}</Text>
-        </View>
-      </>
-    )}
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>ที่อยู่:</Text>
-      <Text style={styles.infoValue}>{general?.address || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>ระบบไฟฟ้า:</Text>
-      <Text style={styles.infoValue}>{general?.systemType || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>กระแสโหลดรวมโดยประมาณ (A):</Text>
-      <Text style={styles.infoValue}>{general?.load || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>จำนวนเครื่องอัดประจุ:</Text>
-      <Text style={styles.infoValue}>{general?.evChargerCount || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>พิกัดกำลังไฟฟ้ารวม (kW):</Text>
-      <Text style={styles.infoValue}>{general?.evChargerPower || "-"}</Text>
-    </View>
-  </View>
-);
-
-// Section: เอกสารประกอบ
-const DocumentSection = ({ documents }) => (
-  <View style={styles.section}>
-    <Text style={styles.sectionTitle}>2. เอกสารประกอบการตรวจสอบ</Text>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>เอกสารรับรองการออกแบบระบบไฟฟ้า:</Text>
-      <Text style={styles.infoValue}>
-        {documents?.electricalDocument === "has"
-          ? "ครบถ้วน"
-          : documents?.electricalDocument === "none"
-          ? "ไม่ครบถ้วน"
-          : "-"}
-      </Text>
-    </View>
-  </View>
-);
-
-// Section: ระบบไฟฟ้าแรงต่ำ (ตัวอย่างแสดงเฉพาะบางหัวข้อ)
-const LVSystemSection = ({ LVSystemPEA }) => (
-  <View style={styles.section} break>
-    <Text style={styles.sectionTitle}>3. ระบบไฟฟ้าแรงต่ำ</Text>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>มาตรฐานสายเมน:</Text>
-      <Text style={styles.infoValue}>{LVSystemPEA?.standard || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>ชนิดสายตัวนำ:</Text>
-      <Text style={styles.infoValue}>{LVSystemPEA?.conductorType || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>ขนาดสายเฟส (ตร.มม.):</Text>
-      <Text style={styles.infoValue}>{LVSystemPEA?.phaseWireSize || "-"}</Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>ขนาดสายนิวทรัล (ตร.มม.):</Text>
-      <Text style={styles.infoValue}>{LVSystemPEA?.neutralWireSize || "-"}</Text>
-    </View>
-    {/* ... เพิ่มหัวข้ออื่นๆ ตาม schema ... */}
-  </View>
-);
-
-// Section: แผงวงจร (Panel Board)
-const PanelSection = ({ panel }) => (
-  panel?.hasPanelBoard ? (
-    <View style={styles.section} break>
-      <Text style={styles.sectionTitle}>4. แผงวงจร (Panel Board)</Text>
-      <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>ขนาดสายเฟส:</Text>
-        <Text style={styles.infoValue}>{panel?.phaseSize || "-"}</Text>
-      </View>
-      <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>ขนาดสายนิวทรัล:</Text>
-        <Text style={styles.infoValue}>{panel?.neutralSize || "-"}</Text>
-      </View>
-      {/* ... เพิ่มหัวข้ออื่นๆ ตาม schema ... */}
-    </View>
-  ) : null
-);
-
-// Section: วงจรย่อย (Sub Circuits)
-const SubCircuitsSection = ({ subCircuits }) => (
-  <View style={styles.section} break>
-    <Text style={styles.sectionTitle}>5. วงจรย่อย</Text>
-    {Array.isArray(subCircuits) && subCircuits.length > 0 ? (
-      subCircuits.map((circuit, idx) => (
-        <View key={idx} style={{ marginBottom: 10, paddingLeft: 8 }}>
-          <Text style={{ fontWeight: "bold" }}>วงจรที่ {circuit.circuitNo || idx + 1}</Text>
-          <Text>ขนาดสายเฟส: {circuit.phaseSize || "-"}</Text>
-          <Text>ขนาดสายนิวทรัล: {circuit.neutralSize || "-"}</Text>
-          {/* ... เพิ่มหัวข้ออื่นๆ ตาม schema ... */}
-          {/* เครื่องอัดประจุในวงจรนี้ */}
-          {Array.isArray(circuit.evChargers) && circuit.evChargers.length > 0 && (
-            <View style={{ marginTop: 4 }}>
-              <Text style={{ fontWeight: "bold" }}>เครื่องอัดประจุในวงจรนี้</Text>
-              {circuit.evChargers.map((charger, cidx) => (
-                <View key={cidx} style={{ marginLeft: 8, marginBottom: 2 }}>
-                  <Text>ผลิตภัณฑ์: {charger.product || "-"}</Text>
-                  <Text>รุ่น: {charger.model || "-"}</Text>
-                  <Text>Serial Number: {charger.sn || "-"}</Text>
-                  <Text>จำนวนหัวชาร์จ: {charger.chargingHeads || "-"}</Text>
-                  <Text>พิกัดกำลังไฟฟ้ารวม: {charger.totalPower || "-"}</Text>
-                  {/* ... เพิ่มหัวข้ออื่นๆ ตาม schema ... */}
-                </View>
-              ))}
-            </View>
-          )}
-        </View>
-      ))
-    ) : (
-      <Text>-</Text>
-    )}
-  </View>
-);
-
-// Section: สรุปผลและข้อจำกัด
-const SummarySection = ({ summaryType, limitation }) => (
-  <View style={styles.section} break>
-    <Text style={styles.sectionTitle}>6. สรุปผลและข้อจำกัด</Text>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>ผลการตรวจสอบ:</Text>
-      <Text style={styles.infoValue}>
-        {summaryType?.overallResult === "pass"
-          ? "✓ ผ่าน"
-          : summaryType?.overallResult === "fail"
-          ? "✗ ไม่ผ่าน"
-          : "-"}
-      </Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>ข้อจำกัด:</Text>
-      <Text style={styles.infoValue}>{limitation || "-"}</Text>
-    </View>
-  </View>
-);
-
-// Section: ลายเซ็น
-const SignatureSection = ({ signature }) => (
-  <View style={styles.section} break>
-    <Text style={styles.sectionTitle}>7. ลายเซ็น</Text>
-    <View style={styles.signatureRow}>
-      <View style={styles.signatureBox}>
-        <Text style={styles.signatureRole}>ผู้ขอใช้ไฟฟ้าหรือผู้แทน</Text>
-        {signature?.customerSign ? (
-          <Image src={signature.customerSign} style={styles.signatureImage} />
-        ) : (
-          <Text style={styles.signaturePlaceholder}>[ไม่มีลายเซ็น]</Text>
-        )}
-      </View>
-      <View style={styles.signatureBox}>
-        <Text style={styles.signatureRole}>เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค</Text>
-        {signature?.officerSign ? (
-          <Image src={signature.officerSign} style={styles.signatureImage} />
-        ) : (
-          <Text style={styles.signaturePlaceholder}>[ไม่มีลายเซ็น]</Text>
-        )}
-      </View>
-    </View>
-  </View>
-);
-
-// Main PDF Document
 const EvChargerLvFormPDF = ({ formData }) => {
+  console.log("=== EvChargerLvFormPDF Main Component Debug ===");
+  console.log("Full formData:", JSON.stringify(formData, null, 2));
+  
   const safeData = {
-    general: formData?.general || {},
-    documents: formData?.documents || {},
-    LVSystemPEA: formData?.LVSystemPEA || {},
-    panel: formData?.panel || {},
+    general: {
+      powerAuthority: formData?.general?.powerAuthority || "",
+      inspectionNo: formData?.general?.inspectionNo || "",
+      inspectionDate: formData?.general?.inspectionDate || "",
+      requestNo: formData?.general?.requestNo || "",
+      requestDate: formData?.general?.requestDate || "",
+      userType: formData?.general?.userType || "individual",
+      customerName: formData?.general?.customerName || "",
+      phone: formData?.general?.phone || "",
+      corpName: formData?.general?.corpName || "",
+      corpPhone: formData?.general?.corpPhone || formData?.general?.phone || "",
+      address: formData?.general?.address || "",
+      systemType: formData?.general?.systemType || "",
+      load: formData?.general?.load || "",
+      evChargerCount: formData?.general?.evChargerCount || "",
+      evChargerPower: formData?.general?.evChargerPower || "",
+    },
+
+    documents: {
+      areaType: formData?.documents?.areaType || "personal",
+      spec: formData?.documents?.spec || false,
+      singleLine: formData?.documents?.singleLine || false,
+      loadSchedule: formData?.documents?.loadSchedule || false,
+      asBuilt: formData?.documents?.asBuilt || false,
+      licenceCopy: formData?.documents?.licenceCopy || false,
+      peaLicence: formData?.documents?.peaLicence || false,
+      isComplete: formData?.documents?.isComplete || "",
+      notCompleteDetail: formData?.documents?.notCompleteDetail || "",
+      electricalDocument: formData?.documents?.electricalDocument ?? null,
+    },
+
+    LVSystemPEA: {
+      standard: formData?.LVSystemPEA?.standard || "",
+      standardCorrect: formData?.LVSystemPEA?.standardCorrect ?? null,
+      standardNote: formData?.LVSystemPEA?.standardNote || "",
+      conductorType: formData?.LVSystemPEA?.conductorType || "",
+      otherConductorType: formData?.LVSystemPEA?.otherConductorType || "",
+      phaseWireSize: formData?.LVSystemPEA?.phaseWireSize || "",
+      phaseWireSizeCorrect: formData?.LVSystemPEA?.phaseWireSizeCorrect ?? null,
+      phaseWireSizeNote: formData?.LVSystemPEA?.phaseWireSizeNote || "",
+      neutralWireSize: formData?.LVSystemPEA?.neutralWireSize || "",
+      neutralWireSizeCorrect: formData?.LVSystemPEA?.neutralWireSizeCorrect ?? null,
+      neutralWireSizeNote: formData?.LVSystemPEA?.neutralWireSizeNote || "",
+      phaseIdentificationCorrect: formData?.LVSystemPEA?.phaseIdentificationCorrect ?? null,
+      phaseIdentificationNote: formData?.LVSystemPEA?.phaseIdentificationNote || "",
+      cablePathwayCorrect: formData?.LVSystemPEA?.cablePathwayCorrect ?? null,
+      cablePathwayNote: formData?.LVSystemPEA?.cablePathwayNote || "",
+      wiringMethod: formData?.LVSystemPEA?.wiringMethod || "",
+      cableTraySize: formData?.LVSystemPEA?.cableTraySize || { width: "", height: "" },
+      conduitSize: formData?.LVSystemPEA?.conduitSize || "",
+      conduitSizeWall: formData?.LVSystemPEA?.conduitSizeWall || "",
+      otherWiringMethod: formData?.LVSystemPEA?.otherWiringMethod || "",
+      wiringMethodCorrect: formData?.LVSystemPEA?.wiringMethodCorrect ?? null,
+      wiringMethodNote: formData?.LVSystemPEA?.wiringMethodNote || "",
+      conduitType: formData?.LVSystemPEA?.conduitType || "",
+      otherConduitType: formData?.LVSystemPEA?.otherConduitType || "",
+      conduitTypeCorrect: formData?.LVSystemPEA?.conduitTypeCorrect ?? null,
+      conduitTypeNote: formData?.LVSystemPEA?.conduitTypeNote || "",
+      mainBreakerStandardCorrect: formData?.LVSystemPEA?.mainBreakerStandardCorrect ?? null,
+      mainBreakerStandardNote: formData?.LVSystemPEA?.mainBreakerStandardNote || "",
+      mainBreakerSize: formData?.LVSystemPEA?.mainBreakerSize || "",
+      mainBreakerSizeCorrect: formData?.LVSystemPEA?.mainBreakerSizeCorrect ?? null,
+      mainBreakerSizeNote: formData?.LVSystemPEA?.mainBreakerSizeNote || "",
+      shortCircuitRating: formData?.LVSystemPEA?.shortCircuitRating || "",
+      shortCircuitRatingCorrect: formData?.LVSystemPEA?.shortCircuitRatingCorrect ?? null,
+      shortCircuitRatingNote: formData?.LVSystemPEA?.shortCircuitRatingNote || "",
+      groundWireSize: formData?.LVSystemPEA?.groundWireSize || "",
+      groundWireSizeCorrect: formData?.LVSystemPEA?.groundWireSizeCorrect ?? null,
+      groundWireSizeNote: formData?.LVSystemPEA?.groundWireSizeNote || "",
+      groundingSystem: formData?.LVSystemPEA?.groundingSystem || "",
+      groundingSystemCorrect: formData?.LVSystemPEA?.groundingSystemCorrect ?? null,
+      groundingSystemNote: formData?.LVSystemPEA?.groundingSystemNote || "",
+      groundingConfig: formData?.LVSystemPEA?.groundingConfig || "",
+      tncsLoadBalance: formData?.LVSystemPEA?.tncsLoadBalance ?? false,
+      tncsNeutralProtection: formData?.LVSystemPEA?.tncsNeutralProtection ?? false,
+      tncsTouchVoltageProtection: formData?.LVSystemPEA?.tncsTouchVoltageProtection ?? false,
+      tncsCorrect: formData?.LVSystemPEA?.tncsCorrect ?? null,
+      tncsNote: formData?.LVSystemPEA?.tncsNote || "",
+      ttCorrect: formData?.LVSystemPEA?.ttCorrect ?? null,
+      ttNote: formData?.LVSystemPEA?.ttNote || "",
+      ttPartialCorrect: formData?.LVSystemPEA?.ttPartialCorrect ?? null,
+      ttPartialNote: formData?.LVSystemPEA?.ttPartialNote || "",
+    },
+
+    panel: {
+      hasPanelBoard: formData?.panel?.hasPanelBoard ?? false,
+      standard: formData?.panel?.standard || [],
+      standardCheck: formData?.panel?.standardCheck || { result: "", detail: "" },
+      wireType: formData?.panel?.wireType || [],
+      wireTypeOther: formData?.panel?.wireTypeOther || "",
+      wireTypeCheck: formData?.panel?.wireTypeCheck || { result: "", detail: "" },
+      phaseSize: formData?.panel?.phaseSize || "",
+      phaseSizeCheck: formData?.panel?.phaseSizeCheck || { result: "", detail: "" },
+      neutralSize: formData?.panel?.neutralSize || "",
+      neutralSizeCheck: formData?.panel?.neutralSizeCheck || { result: "", detail: "" },
+      groundSize: formData?.panel?.groundSize || "",
+      groundSizeCheck: formData?.panel?.groundSizeCheck || { result: "", detail: "" },
+      phaseColor: formData?.panel?.phaseColor || { result: "", detail: "" },
+      wirewayMechanical: formData?.panel?.wirewayMechanical || { result: "", detail: "" },
+      method: formData?.panel?.method || [],
+      methodWirewayW: formData?.panel?.methodWirewayW || "",
+      methodWirewayH: formData?.panel?.methodWirewayH || "",
+      methodCableTrayW: formData?.panel?.methodCableTrayW || "",
+      methodCableTrayH: formData?.panel?.methodCableTrayH || "",
+      methodBuswayW: formData?.panel?.methodBuswayW || "",
+      methodBuswayH: formData?.panel?.methodBuswayH || "",
+      methodConduitWallSize: formData?.panel?.methodConduitWallSize || "",
+      methodConduitBuriedSize: formData?.panel?.methodConduitBuriedSize || "",
+      methodOther: formData?.panel?.methodOther || "",
+      methodCheck: formData?.panel?.methodCheck || { result: "", detail: "" },
+      conduitType: formData?.panel?.conduitType || [],
+      conduitTypeOther: formData?.panel?.conduitTypeOther || "",
+      conduitCheck: formData?.panel?.conduitCheck || { result: "", detail: "" },
+      breakerStandard: formData?.panel?.breakerStandard || { result: "", detail: "" },
+      breakerSize: formData?.panel?.breakerSize || "",
+      breakerCheck: formData?.panel?.breakerCheck || { result: "", detail: "" },
+      panelCapacity: formData?.panel?.panelCapacity || { result: "", detail: "" },
+      panelNeutralGround: formData?.panel?.panelNeutralGround || { result: "", detail: "" },
+    },
+
     subCircuits: formData?.subCircuits || [],
-    summaryType: formData?.summaryType || {},
+
+    summary: {
+      summaryType: formData?.summary?.summaryType || "",
+    },
+
     limitation: formData?.limitation || "",
     signature: formData?.signature || {},
   };
 
+  console.log("=== safeData.subCircuits ===");
+  console.log("subCircuits array:", safeData.subCircuits);
+  console.log("subCircuits length:", safeData.subCircuits?.length);
+
   return (
     <Document>
+      {/* หน้าที่ 1: ข้อมูลทั่วไปและเอกสาร */}
       <Page size="A4" style={styles.page}>
-        {/* Header */}
-        <View style={styles.headerRow} fixed>
-          {/* <Image src={PEA_LOGO} style={styles.logo} /> */}
-          <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>การไฟฟ้าส่วนภูมิภาค</Text>
-            <Text style={styles.headerSubtitle}>แบบฟอร์มตรวจสอบระบบอัดประจุยานยนต์ไฟฟ้า (แรงต่ำ)</Text>
-          </View>
-        </View>
-        <View style={styles.divider} fixed />
-        <GeneralInfoSection general={safeData.general} />
+        <FormHeader />
+        <TitleSection general={safeData.general} />
+        <GeneralInfoLvSection general={safeData.general} />
         <DocumentSection documents={safeData.documents} />
-        <LVSystemSection LVSystemPEA={safeData.LVSystemPEA} />
-        <PanelSection panel={safeData.panel} />
-        <SubCircuitsSection subCircuits={safeData.subCircuits} />
-        <SummarySection summaryType={safeData.summaryType} limitation={safeData.limitation} />
-        <SignatureSection signature={safeData.signature} />
-        <Text
-          style={styles.footer}
-          fixed
-          render={({ pageNumber, totalPages }) => `หน้า ${pageNumber}/${totalPages}`}
+      </Page>
+
+      {/* หน้าที่ 2: ระบบแรงต่ำ + Panel (ต่อเนื่องกัน) */}
+        <Page size="A4" style={styles.page}>
+          <LvSystemSectionforLv 
+            lvSystemPEA={safeData.LVSystemPEA}
+            panel={safeData.panel}
+            summary={safeData.summary}
+          />
+        </Page>
+
+        {/* หน้าที่ 3+: วงจรย่อยแต่ละวงจร + เครื่องอัดประจุ */}
+        {safeData.subCircuits && safeData.subCircuits.length > 0 && 
+          safeData.subCircuits.map((subCircuit, subCircuitIndex) => (
+            <Page key={`subcircuit-${subCircuitIndex}`} size="A4" style={styles.page}>
+          <SubCircuitSection 
+            subCircuits={[subCircuit]}
+          />
+          
+          {/* เครื่องอัดประจุของวงจรนี้ */}
+          <EVChargerInspectionSection 
+            evChargers={subCircuit?.evChargers || []}
+          />
+            </Page>
+          ))
+        }
+
+        {/* หน้าสุดท้าย: สรุปผลและลายเซ็น */}
+      <Page size="A4" style={styles.page}>
+        <SummarySection 
+          summaryType={safeData.summary?.summaryType} 
+          limitation={safeData.limitation}
         />
+        <SignatureSection signature={safeData.signature} />
+        <SingleLineDiagram />
       </Page>
     </Document>
   );
 };
-
-const styles = StyleSheet.create({
-  page: {
-    fontFamily: "Sarabun",
-    fontSize: 12,
-    padding: 32,
-    backgroundColor: "#fff",
-    lineHeight: 1.5,
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  logo: {
-    width: 48,
-    height: 48,
-    marginRight: 16,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#3a1a5b",
-    marginBottom: 2,
-  },
-  headerSubtitle: {
-    fontSize: 13,
-    color: "#3a1a5b",
-  },
-  divider: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#5b2d90",
-    borderBottomStyle: "solid",
-    marginVertical: 12,
-  },
-  footer: {
-    position: "absolute",
-    bottom: 16,
-    left: 32,
-    right: 32,
-    textAlign: "right",
-    fontSize: 10,
-    color: "#aaa",
-  },
-  section: {
-    marginBottom: 18,
-    paddingBottom: 8,
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#e0e0e0",
-    borderBottomStyle: "solid",
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: "bold",
-    marginBottom: 8,
-    color: "#5b2d90",
-  },
-  infoRow: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  infoLabel: {
-    width: 140,
-    fontWeight: "bold",
-  },
-  infoValue: {
-    flex: 1,
-  },
-  signatureRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 16,
-    marginBottom: 8,
-  },
-  signatureBox: {
-    border: "1 solid #222",
-    padding: 12,
-    minHeight: 90,
-    minWidth: 160,
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-    marginHorizontal: 4,
-  },
-  signatureRole: {
-    fontSize: 11,
-    marginBottom: 4,
-    color: "#5b2d90",
-    fontWeight: "bold",
-  },
-  signatureImage: {
-    width: 120,
-    height: 40,
-    marginBottom: 8,
-    objectFit: "contain",
-  },
-  signaturePlaceholder: {
-    color: "#bbb",
-    marginBottom: 8,
-  },
-});
 
 export default EvChargerLvFormPDF;

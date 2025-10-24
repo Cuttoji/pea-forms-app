@@ -12,37 +12,61 @@ import GeneralInfoLvSection from "../components/evCharger/GeneralInfoLvSection";
 import EvChargerLvFormPDF from "../../../components/pdf/EvChargerLvFormPDF";
 import LVSystemSectionPEA from "../components/evCharger/LVSystemSectionPEA";
 
-export default function EvChargerLvInspectionPage({ initialForm, formFromDb }) {
+export default function EvChargerLvInspectionPage({ initialForm, formFromDb, mode = "create", formId }) {
   const [form, setForm] = React.useState({
     general: evLvChargerFormSchema.general,
-    inspection: {
-      subCircuits: [getNewLvSubCircuit()],
-    },
-    panel: evLvChargerFormSchema.panel,
     documents: evLvChargerFormSchema.documents,
-    lvSystem: evLvChargerFormSchema.lvSystem,
-    summary: evLvChargerFormSchema.summary || {},
-    limitation: evLvChargerFormSchema.limitation,
-    signature: evLvChargerFormSchema.signature,
+    LVSystemPEA: evLvChargerFormSchema.LVSystemPEA,
+    panel: evLvChargerFormSchema.panel,
+    subCircuits: [getNewLvSubCircuit()],
+    summary: evLvChargerFormSchema.summary || { summaryType: null },
+    limitation: evLvChargerFormSchema.limitation || "",
+    signature: evLvChargerFormSchema.signature || { officerSign: "", customerSign: "" },
   });
 
   const [isGeneratingPDF, setIsGeneratingPDF] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   useEffect(() => {
+    console.log("initialForm received:", initialForm);
     if (initialForm) {
-      setForm(initialForm);
+      const newFormState = {
+        general: initialForm.general || evLvChargerFormSchema.general,
+        documents: initialForm.documents || evLvChargerFormSchema.documents,
+        LVSystemPEA: initialForm.LVSystemPEA || evLvChargerFormSchema.LVSystemPEA,
+        panel: initialForm.panel || evLvChargerFormSchema.panel,
+        subCircuits: initialForm.subCircuits || [getNewLvSubCircuit()],
+        summary: initialForm.summary || { summaryType: null },
+        limitation: initialForm.limitation || "",
+        signature: initialForm.signature || { officerSign: "", customerSign: "" },
+      };
+      console.log("Setting form state to:", newFormState);
+      console.log("LVSystemPEA in newFormState:", newFormState.LVSystemPEA);
+      setForm(newFormState);
     }
   }, [initialForm]);
 
   useEffect(() => {
+    console.log("formFromDb received:", formFromDb);
     if (formFromDb) {
       setForm({
-        ...formFromDb,
-        summary: formFromDb.summary || {},
+        general: formFromDb.general || evLvChargerFormSchema.general,
+        documents: formFromDb.documents || evLvChargerFormSchema.documents,
+        LVSystemPEA: formFromDb.LVSystemPEA || evLvChargerFormSchema.LVSystemPEA,
+        panel: formFromDb.panel || evLvChargerFormSchema.panel,
+        subCircuits: formFromDb.subCircuits || [getNewLvSubCircuit()],
+        summary: formFromDb.summary || { summaryType: null },
+        limitation: formFromDb.limitation || "",
+        signature: formFromDb.signature || { officerSign: "", customerSign: "" },
       });
     }
   }, [formFromDb]);
+
+  useEffect(() => {
+    console.log("Current form state:", form);
+    console.log("Current LVSystemPEA:", form.LVSystemPEA);
+    console.log("Current subCircuits:", form.subCircuits);
+  }, [form]);
 
   // ฟังก์ชันสำหรับเปลี่ยนค่าในแต่ละ section
   const handleSectionChange = (section, field, value) => {
@@ -67,21 +91,44 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb }) {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/submit-form/ev-charger-lv-inspection", {
-        method: "POST",
+      let endpoint, method;
+      
+      if (mode === "edit" && formId) {
+        // PUT: /api/submit-form/ev-charger-lv-inspection/{formId}
+        endpoint = `/api/submit-form/ev-charger-lv-inspection/${formId}`;
+        method = "PUT";
+      } else {
+        // POST: /api/submit-form/ev-charger-lv-inspection
+        endpoint = "/api/submit-form/ev-charger-lv-inspection";
+        method = "POST";
+      }
+      
+      console.log(`Submitting ${method} to:`, endpoint);
+      console.log("Form data:", form);
+      
+      const response = await fetch(endpoint, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Response error:", errorText);
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+      
       const result = await response.json();
-      if (response.ok && result.success) {
-        alert("บันทึกฟอร์มสำเร็จ!");
+      
+      if (result.success) {
+        alert(mode === "edit" ? "อัปเดตฟอร์มสำเร็จ!" : "บันทึกฟอร์มสำเร็จ!");
         // สามารถ reset form หรือ redirect ได้ที่นี่
       } else {
         alert(result.error || "เกิดข้อผิดพลาดในการบันทึกฟอร์ม");
       }
     } catch (error) {
-      alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
-      console.error(error);
+      console.error("Submit error:", error);
+      alert(`เกิดข้อผิดพลาด: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -95,10 +142,10 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb }) {
       // ส่งข้อมูลเป็น object ตาม schema ที่บันทึก
       const pdfData = {
         general: form.general,
-        inspection: form.inspection,
-        panel: form.panel,
         documents: form.documents,
-        lvSystem: form.lvSystem,
+        LVSystemPEA: form.LVSystemPEA,
+        panel: form.panel,
+        subCircuits: form.subCircuits,
         summary: form.summary,
         limitation: form.limitation,
         signature: form.signature,
@@ -124,7 +171,7 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb }) {
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">
-          แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า (EV Charger) ระดับแรงดันต่ำ
+          {mode === "edit" ? "แก้ไข" : ""}แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า (EV Charger) ระดับแรงดันต่ำ
         </h1>
       </div>
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
@@ -137,8 +184,8 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb }) {
           onChange={(value) => handleSectionObject("documents", value)}
         />
         <LVSystemSectionPEA
-          value={form.inspection.lvSystemPEA}
-          onChange={(value) => handleSectionChange("inspection", "lvSystemPEA", value)}
+          value={form.LVSystemPEA}
+          onChange={(value) => handleSectionObject("LVSystemPEA", value)}
         />
         <PanelBoardSection
           value={form.panel}
@@ -147,10 +194,10 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb }) {
         />
         <SubCircuitSection
           sectionNumber={3}
-          value={form.inspection.subCircuits || []}
-          onChange={(value) => handleSectionChange("inspection", "subCircuits", value)}
+          value={form.subCircuits || []}
+          onChange={(value) => handleSectionObject("subCircuits", value)}
           onAddCharger={(subCircuitIndex) => {
-            const subCircuits = form.inspection.subCircuits || [];
+            const subCircuits = form.subCircuits || [];
             const updatedSubCircuits = subCircuits.map((subCircuit, index) => {
               if (index === subCircuitIndex) {
                 const updatedEvChargers = [...(subCircuit.evChargers || []), getNewLvEvCharger()];
@@ -158,20 +205,20 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb }) {
               }
               return subCircuit;
             });
-            handleSectionChange("inspection", "subCircuits", updatedSubCircuits);
+            handleSectionObject("subCircuits", updatedSubCircuits);
           }}
         />
         <InspectionSummarySection
           value={form.summary}
-          onChange={(value) => handleSectionChange("summary", null, value)}
+          onChange={(value) => handleSectionObject("summary", value)}
         />
         <LimitationSection
           value={form.limitation}
-          onChange={(value) => handleSectionChange("limitation", null, value)}
+          onChange={(value) => handleSectionObject("limitation", value)}
         />
         <SignaturePadSection
           value={form.signature}
-          onChange={(value) => handleSectionChange("signature", null, value)}
+          onChange={(value) => handleSectionObject("signature", value)}
         />
         <div className="flex justify-center mt-8 space-x-4">
           <button
@@ -199,7 +246,7 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb }) {
             disabled={isSubmitting}
             className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
           >
-            {isSubmitting ? "กำลังบันทึก..." : "บันทึกฟอร์ม"}
+            {isSubmitting ? "กำลังบันทึก..." : (mode === "edit" ? "อัปเดตฟอร์ม" : "บันทึกฟอร์ม")}
           </button>
         </div>
       </form>

@@ -48,7 +48,7 @@ CREATE TABLE ev_charger_lv_inspection (
     documents JSONB,
     panel JSONB,
     inspection JSONB,
-    summaryType JSONB,
+    summary JSONB,
     limitation TEXT,
     signature JSONB
 );
@@ -62,7 +62,7 @@ CREATE TABLE ev_charger_hv_inspection (
     documents JSONB,
     hvSystem JSONB,
     transformers JSONB,
-    summaryType JSONB,
+    summary JSONB,
     limitation TEXT,
     signature JSONB
 );

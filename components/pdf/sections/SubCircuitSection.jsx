@@ -5,18 +5,13 @@ import { styles } from "../styles/pdfStyles";
 
 const SubCircuitSection = ({ subCircuits, transformerIndex = 0 }) => {
   if (!subCircuits || subCircuits.length === 0) {
-    return (
-      <View style={styles.section}>
-        <Text style={styles.subsectionTitle}>5.6 วงจรย่อย วงจรที่ 1 (หม้อแปลงที่ {transformerIndex + 1})</Text>
-        <Text style={styles.smallText}>ไม่มีข้อมูลวงจรย่อย</Text>
-      </View>
-    );
+    return null;
   }
 
   return (
-    <View style={styles.section}>
+    <View>
       {subCircuits.map((item, idx) => (
-        <View key={idx} style={styles.subCircuitSection}>
+        <View key={idx}>
           <Text style={styles.subsectionTitle}>
             5.6 วงจรย่อย วงจรที่ {idx + 1} (หม้อแปลงที่ {transformerIndex + 1})
           </Text>

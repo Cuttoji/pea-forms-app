@@ -35,9 +35,9 @@ const EVChargerInspectionSection = ({ evChargers, transformerIndex = 0 }) => {
                 </Text>
                 <View style={styles.checkboxLine}>
                   <Text style={styles.smallText}>ระบบ </Text>
-                  <Checkbox checked={charger?.systemType?.includes("1เฟส") || charger?.chargeType?.includes("1เฟส")} />
+                  <Checkbox checked={charger?.systemType?.includes("1เฟส") || charger?.chargeType?.includes("1เฟส") || charger?.chargeType?.includes("1")} />
                   <Text style={styles.smallText}> 1 เฟส  </Text>
-                  <Checkbox checked={charger?.systemType?.includes("3เฟส") || charger?.chargeType?.includes("3เฟส")} />
+                  <Checkbox checked={charger?.systemType?.includes("3เฟส") || charger?.chargeType?.includes("3เฟส") || charger?.chargeType?.includes("3")} />
                   <Text style={styles.smallText}> 3 เฟส       จำนวนหัวชาร์จ <Text style={styles.underlineDotted}>{charger?.numberOfPorts || charger?.chargingHeads || "................."}</Text> หัว</Text>
                 </View>
                 <Text style={styles.smallText}>
@@ -46,11 +46,11 @@ const EVChargerInspectionSection = ({ evChargers, transformerIndex = 0 }) => {
                 </Text>
                 <View style={styles.checkboxLine}>
                   <Text style={styles.smallText}>การอัดประจุไฟฟ้า  </Text>
-                  <Checkbox checked={charger?.chargingMode?.includes("โหมด2") || charger?.mode?.includes("โหมด2")} />
+                  <Checkbox checked={charger?.chargingMode?.includes("โหมด2") || charger?.mode?.includes("โหมด2") || charger?.mode?.includes("2")} />
                   <Text style={styles.smallText}> โหมด 2 (AC)  </Text>
-                  <Checkbox checked={charger?.chargingMode?.includes("โหมด3") || charger?.mode?.includes("โหมด3")} />
+                  <Checkbox checked={charger?.chargingMode?.includes("โหมด3") || charger?.mode?.includes("โหมด3") || charger?.mode?.includes("3")} />
                   <Text style={styles.smallText}> โหมด 3 (AC)  </Text>
-                  <Checkbox checked={charger?.chargingMode?.includes("โหมด4") || charger?.mode?.includes("โหมด4")} />
+                  <Checkbox checked={charger?.chargingMode?.includes("โหมด4") || charger?.mode?.includes("โหมด4") || charger?.mode?.includes("4")} />
                   <Text style={styles.smallText}> โหมด 4 (DC)</Text>
                 </View>
                 <Text style={styles.smallText}>* AC คือ ไฟกระแสสลับ    DC คือ ไฟกระแสตรง</Text>

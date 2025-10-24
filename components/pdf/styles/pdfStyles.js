@@ -256,7 +256,7 @@ export const styles = StyleSheet.create({
 
   // ส่วนวงจรย่อย
   subCircuitSection: {
-    marginBottom: 8,
+    marginBottom: 2,
   },
 
   // ตาราง LV
