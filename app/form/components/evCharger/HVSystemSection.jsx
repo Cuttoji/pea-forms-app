@@ -52,7 +52,7 @@ const DROPOUT_OPTIONS = [
 ];
 
 export default function HVSystemSection({
-  sectionNumber = 2, // หรือ 3, ส่งมาจาก parent
+  sectionNumber = 3, // หรือ 3, ส่งมาจาก parent
   value = {},
   onChange = () => {}
 }) {
@@ -237,85 +237,121 @@ export default function HVSystemSection({
             </h4>
             
             <div className="space-y-4">
-              <div className="flex flex-wrap gap-3">
-                <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-green-50 cursor-pointer transition-colors">
-                  <input
-                    type="radio"
-                    name="hv33"
-                    value="ถูกต้อง"
-                    checked={hv33.result === "ถูกต้อง"}
-                    onChange={() => handleHv33Radio("ถูกต้อง")}
-                    className="text-green-600 focus:ring-green-500"
-                  />
-                  <span className="ml-2 text-green-700 font-medium">✓ ถูกต้อง</span>
-                </label>
-                
-                <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-red-50 cursor-pointer transition-colors">
-                  <input
-                    type="radio"
-                    name="hv33"
-                    value="ต้องแก้ไข"
-                    checked={hv33.result === "ต้องแก้ไข"}
-                    onChange={() => handleHv33Radio("ต้องแก้ไข")}
-                    className="text-red-600 focus:ring-red-500"
-                  />
-                  <span className="ml-2 text-red-700 font-medium">✗ ต้องแก้ไข</span>
-                </label>
-              </div>
-
-              {hv33.result === "ต้องแก้ไข" && (
-                <div className="mt-3">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    รายละเอียดการแก้ไข
-                  </label>
-                  <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500 text-gray-700 resize-none"
-                    rows={2}
-                    placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
-                    value={hv33.detail || ""}
-                    onChange={e => handleHv33Detail(e.target.value)}
-                  />
-                </div>
-              )}
-
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                <h5 className="text-sm font-medium text-gray-700 mb-3">ประเภทอุปกรณ์</h5>
-                <div className="flex flex-wrap gap-4">
-                  {DROPOUT_OPTIONS.map(opt => (
-                    <label key={opt.value} className="inline-flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={Array.isArray(hv33.type) ? hv33.type.includes(opt.value) : false}
-                        onChange={e => {
-                          let next;
-                          if (Array.isArray(hv33.type)) {
-                            next = e.target.checked
-                              ? [...hv33.type, opt.value]
-                              : hv33.type.filter(v => v !== opt.value);
-                          } else {
-                            next = e.target.checked ? [opt.value] : [];
-                          }
-                          handleHv33Type(next);
-                        }}
-                        className="text-blue-600 focus:ring-blue-500"
-                      />
-                      <span className="ml-2 text-gray-700">{opt.label}</span>
-                    </label>
-                  ))}
-                </div>
-                
-                {(Array.isArray(hv33.type) ? hv33.type.includes("switch") : hv33.type === "switch") && (
-                  <div className="mt-3">
+              {/* เลือกชนิดอุปกรณ์ก่อน */}
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h5 className="text-sm font-medium text-gray-700 mb-3">เลือกชนิดอุปกรณ์ที่เกี่ยวข้อง</h5>
+                <div className="flex flex-col gap-3">
+                  <label className="inline-flex items-center gap-2">
                     <input
-                      type="text"
-                      className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                      placeholder="ระบุชนิดสวิตช์"
-                      value={hv33.switchType || ""}
-                      onChange={e => handleHv33SwitchType(e.target.value)}
+                      type="checkbox"
+                      checked={Array.isArray(hv33.type) ? hv33.type.includes("dropout") : false}
+                      onChange={e => {
+                        let next;
+                        if (Array.isArray(hv33.type)) {
+                          next = e.target.checked ? [...hv33.type, "dropout"] : hv33.type.filter(v => v !== "dropout");
+                        } else {
+                          next = e.target.checked ? ["dropout"] : [];
+                        }
+                        handleHv33Type(next);
+                      }}
+                      className="text-blue-600 focus:ring-blue-500 w-4 h-4"
                     />
-                  </div>
-                )}
+                    <span className="text-gray-700">ดรอพเอาท์ฟิวส์คัตเอาท์</span>
+                  </label>
+
+                  <label className="inline-flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={Array.isArray(hv33.type) ? hv33.type.includes("switch") : false}
+                      onChange={e => {
+                        let next;
+                        if (Array.isArray(hv33.type)) {
+                          next = e.target.checked ? [...hv33.type, "switch"] : hv33.type.filter(v => v !== "switch");
+                        } else {
+                          next = e.target.checked ? ["switch"] : [];
+                        }
+                        handleHv33Type(next);
+                      }}
+                      className="text-blue-600 focus:ring-blue-500 w-4 h-4"
+                    />
+                    <span className="text-gray-700">สวิตช์ตัดตอน</span>
+
+                    {Array.isArray(hv33.type) && hv33.type.includes("switch") && (
+                      <input
+                        type="text"
+                        className="ml-3 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 flex-1 max-w-xs"
+                        placeholder="ระบุชนิดสวิตช์..."
+                        value={hv33.switchType || ""}
+                        onChange={e => handleHv33SwitchType(e.target.value)}
+                      />
+                    )}
+                  </label>
+
+                  <label className="inline-flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={Array.isArray(hv33.type) ? hv33.type.includes("rmu") : false}
+                      onChange={e => {
+                        let next;
+                        if (Array.isArray(hv33.type)) {
+                          next = e.target.checked ? [...hv33.type, "rmu"] : hv33.type.filter(v => v !== "rmu");
+                        } else {
+                          next = e.target.checked ? ["rmu"] : [];
+                        }
+                        handleHv33Type(next);
+                      }}
+                      className="text-blue-600 focus:ring-blue-500 w-4 h-4"
+                    />
+                    <span className="text-gray-700">RMU (ไม่รวมถึงฟังก์ชั่นการทำงาน)</span>
+                  </label>
+                </div>
               </div>
+
+              {/* แสดงการประเมินผล (ถูกต้อง/ต้องแก้ไข) หลังจากเลือกอุปกรณ์แล้ว */}
+              {Array.isArray(hv33.type) && hv33.type.length > 0 && (
+                <>
+                  <div className="flex flex-wrap gap-3">
+                    <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-green-50 cursor-pointer transition-colors">
+                      <input
+                        type="radio"
+                        name="hv33"
+                        value="ถูกต้อง"
+                        checked={hv33.result === "ถูกต้อง"}
+                        onChange={() => handleHv33Radio("ถูกต้อง")}
+                        className="text-green-600 focus:ring-green-500"
+                      />
+                      <span className="ml-2 text-green-700 font-medium">✓ ถูกต้อง</span>
+                    </label>
+                    
+                    <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-red-50 cursor-pointer transition-colors">
+                      <input
+                        type="radio"
+                        name="hv33"
+                        value="ต้องแก้ไข"
+                        checked={hv33.result === "ต้องแก้ไข"}
+                        onChange={() => handleHv33Radio("ต้องแก้ไข")}
+                        className="text-red-600 focus:ring-red-500"
+                      />
+                      <span className="ml-2 text-red-700 font-medium">✗ ต้องแก้ไข</span>
+                    </label>
+                  </div>
+
+                  {hv33.result === "ต้องแก้ไข" && (
+                    <div className="mt-3">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        รายละเอียดการแก้ไข
+                      </label>
+                      <textarea
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500 text-gray-700 resize-none"
+                        rows={2}
+                        placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
+                        value={hv33.detail || ""}
+                        onChange={e => handleHv33Detail(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
         )}

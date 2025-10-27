@@ -577,6 +577,7 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                             className="w-4 h-4"
                         />
                         <span className="text-sm font-medium">TN-C-S ทั้งระบบ</span>
+                        <img src="/ex_system/TN-C.png" alt="TN-C-S" className="w-full h-auto rounded-md border" />
                     </label>
                     <label className="flex items-center gap-2 p-3 border border-gray-300 rounded-md">
                         <input
@@ -588,6 +589,7 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                             className="w-4 h-4"
                         />
                         <span className="text-sm font-medium">TT ทั้งระบบ</span>
+                        <img src="/ex_system/TT-all.png" alt="TT" className="w-full h-auto rounded-md border" />
                     </label>
                     <label className="flex items-center gap-2 p-3 border border-gray-300 rounded-md">
                         <input
@@ -599,6 +601,7 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                             className="w-4 h-4"
                         />
                         <span className="text-sm font-medium">TT บางส่วน</span>
+                        <img src="/ex_system/TT.png" alt="TT Partial" className="w-full h-auto rounded-md border" />
                     </label>
                     <label className="flex items-center gap-2 p-3 border border-gray-300 rounded-md">
                         <input
@@ -610,6 +613,7 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                             className="w-4 h-4"
                         />
                         <span className="text-sm font-medium">TN-S ทั้งระบบ</span>
+                        <img src="/ex_system/TN-S.png" alt="TN-S" className="w-full h-auto rounded-md border" />
                     </label>
                 </div>
 
@@ -617,7 +621,6 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                 {formData.groundingSystem === 'TN-C-S' && (
                     <div className="mb-6 p-4 border border-orange-200 rounded-md">
                         <h4 className="font-semibold mb-3">5.4.1 กรณีต่อลงดินแบบ TN-C-S ทั้งระบบ (ต้องมีมาตรการอย่างใดอย่างหนึ่ง)</h4>
-                        
                         <div className="space-y-3">
                             <label className="flex items-start gap-2">
                                 <input

@@ -553,138 +553,249 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
         </div>
       </section>
 
-      {/* 3.4 รูปแบบการต่อสายดินและสายนิวทรัล */}
+      {/* 3.4 รูปแบบการต่อลงดินที่แผงเมนสวิตช์ */}
       <section className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">3.4 รูปแบบการต่อสายดินและสายนิวทรัล (เลือกหนึ่งรูปแบบ)</h3>
+        <div className="bg-gradient-to-r from-orange-50 to-orange-100 px-6 py-4 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-orange-800">
+            3.4 รูปแบบการต่อลงดินที่แผงเมนสวิตช์ (เลือกหนึ่งรูปแบบ)
+          </h3>
         </div>
         <div className="p-6 space-y-6">
-          {/* เลือกรูปแบบ */}
+          {/* เลือกรูปแบบพร้อมรูปภาพ */}
           <div className="form-group">
-            <label className="block text-sm font-medium text-gray-700 mb-4">เลือกรูปแบบการต่อสายดิน</label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <label className="flex items-center gap-2 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                <input
-                  type="radio"
-                  name="grounding_config"
-                  value="TN-C-S"
-                  checked={value.groundingConfig === "TN-C-S"}
-                  onChange={() => handleInputChange("groundingConfig", "TN-C-S")}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="font-medium">TN-C-S ทั่วระบบ</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <label className="flex flex-col gap-2 p-3 border border-gray-300 rounded-md hover:border-orange-400 cursor-pointer transition-colors">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="grounding_config"
+                    value="TN-C-S"
+                    checked={value.groundingConfig === "TN-C-S"}
+                    onChange={() => handleInputChange("groundingConfig", "TN-C-S")}
+                    className="w-4 h-4 text-orange-600"
+                  />
+                  <span className="text-sm font-medium">TN-C-S ทั้งระบบ</span>
+                </div>
+                <img src="/ex_system/TN-C.png" alt="TN-C-S" className="w-full h-auto rounded-md border mt-2" />
               </label>
-              <label className="flex items-center gap-2 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                <input
-                  type="radio"
-                  name="grounding_config"
-                  value="TT"
-                  checked={value.groundingConfig === "TT"}
-                  onChange={() => handleInputChange("groundingConfig", "TT")}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="font-medium">TT ทั่วระบบ</span>
+              
+              <label className="flex flex-col gap-2 p-3 border border-gray-300 rounded-md hover:border-orange-400 cursor-pointer transition-colors">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="grounding_config"
+                    value="TT"
+                    checked={value.groundingConfig === "TT"}
+                    onChange={() => handleInputChange("groundingConfig", "TT")}
+                    className="w-4 h-4 text-orange-600"
+                  />
+                  <span className="text-sm font-medium">TT ทั้งระบบ</span>
+                </div>
+                <img src="/ex_system/TT-all.png" alt="TT" className="w-full h-auto rounded-md border mt-2" />
               </label>
-              <label className="flex items-center gap-2 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                <input
-                  type="radio"
-                  name="grounding_config"
-                  value="TT_partial"
-                  checked={value.groundingConfig === "TT_partial"}
-                  onChange={() => handleInputChange("groundingConfig", "TT_partial")}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="font-medium">TT บางส่วน (ต้นทางเป็น TN-C-S และ โหลดเป็น TT)</span>
+              
+              <label className="flex flex-col gap-2 p-3 border border-gray-300 rounded-md hover:border-orange-400 cursor-pointer transition-colors">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="grounding_config"
+                    value="TT_partial"
+                    checked={value.groundingConfig === "TT_partial"}
+                    onChange={() => handleInputChange("groundingConfig", "TT_partial")}
+                    className="w-4 h-4 text-orange-600"
+                  />
+                  <span className="text-sm font-medium">TT บางส่วน</span>
+                </div>
+                <img src="/ex_system/TT.png" alt="TT Partial" className="w-full h-auto rounded-md border mt-2" />
               </label>
             </div>
           </div>
 
           {/* TN-C-S Section */}
           {value.groundingConfig === "TN-C-S" && (
-            <div className="bg-blue-50 p-4 rounded-lg space-y-4">
-              <h4 className="font-semibold text-gray-900">3.4.1 กรณีเป็ดสายดินแบบ TN-C-S ทั่วระบบ (ต้องมีมาตรการดังนี้เพื่อป้องกัน)</h4>
+            <div className="bg-orange-50 p-4 rounded-lg border border-orange-200 space-y-4">
+              <h4 className="font-semibold text-gray-900">
+                3.4.1 กรณีต่อลงดินแบบ TN-C-S ทั้งระบบ (ต้องมีมาตรการอย่างใดอย่างหนึ่ง)
+              </h4>
               
               <div className="space-y-3">
-                <div className="flex items-start gap-2">
+                <label className="flex items-start gap-2">
                   <input
                     type="checkbox"
                     checked={value.tncsLoadBalance}
                     onChange={(e) => handleInputChange("tncsLoadBalance", e.target.checked)}
-                    className="w-4 h-4 text-blue-600 mt-1"
+                    className="w-4 h-4 text-orange-600 mt-1"
                   />
-                  <label className="text-sm text-gray-700">
-                    ก) ตำแหน่งตัวทำเบาการต่อสายดิน...โดยมี (Ω)<br />
-                    กรณีมีเซอร์ 15(45), 5(45) A ต้องดึงเด็จตะเบราดิฟทำเบาการต่อสายดินไม่เกิน 2.5 Ω<br />
-                    กรณีมีเซอร์ 30(100), 5((100) A ต้องดึงเด็จตะเบราดิฟทำเบาการต่อสายดินไม่เกิน 1.25 Ω
-                  </label>
-                </div>
+                  <div className="text-sm text-gray-700">
+                    <div className="font-medium mb-1">ค่าความต้านทานการต่อลงดิน................................โอห์ม (Ω)</div>
+                    <div className="ml-4">
+                      กรณีมีเซอร์ 15(45), 5(45) A ต้องมีค่าความต้านทานการต่อลงดินไม่เกิน 2.5 Ω<br />
+                      กรณีมีเซอร์ 30(100), 5(100) A ต้องมีค่าความต้านทานการต่อลงดินไม่เกิน 1.25 Ω
+                    </div>
+                  </div>
+                </label>
 
-                <div className="flex items-start gap-2">
+                <label className="flex items-start gap-2">
                   <input
                     type="checkbox"
                     checked={value.tncsNeutralProtection}
                     onChange={(e) => handleInputChange("tncsNeutralProtection", e.target.checked)}
-                    className="w-4 h-4 text-blue-600 mt-1"
+                    className="w-4 h-4 text-orange-600 mt-1"
                   />
-                  <label className="text-sm text-gray-700">
-                    ที่ระบบป้องกันเมนท์และหัวทำไฟฟ้าคนละแรงทั้งไฟฟ้าเกิน ด้วยดังนั้นวากายอิม<br />
-                    มีรายละเอียดต่อผลีกซึ่งเป็นระบูรบบอบควบเดียง Iิmมีต้าลลแว่ว
-                  </label>
-                </div>
+                  <span className="text-sm text-gray-700">
+                    ติดตั้งระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกินเพิ่มเติม
+                    ในคาแหน่งก่อนเข้าเครื่องอัดประจุยานยนต์ไฟฟ้า
+                  </span>
+                </label>
 
-                <div className="flex items-start gap-2">
+                <label className="flex items-start gap-2">
                   <input
                     type="checkbox"
                     checked={value.tncsTouchVoltageProtection}
                     onChange={(e) => handleInputChange("tncsTouchVoltageProtection", e.target.checked)}
-                    className="w-4 h-4 text-blue-600 mt-1"
+                    className="w-4 h-4 text-orange-600 mt-1"
                   />
-                  <label className="text-sm text-gray-700">
-                    ของดังสุดกระนี่วกรอื่นให้อบดำเบราดินระโตสเดินด (Touch Voltage) ที่เกิจบริเทิยถ้าพักบินตรับ 70 โวลต์ ซึ่งบูรกถมดำเก่จได้เอ้งฟัดัมทั่อธราบีระรอกของบุมะลู้งไฟฟ้า โอพมเสาย่อดึงคู้แระเนื่อมไม่ขึ้นทุกเล็บ รวมลัดสะเนื่ยภขงที่พิลและยาเมดิชอกหรือบกันทำปิมใบเดสำด 5 จัมทที่
-                  </label>
-                </div>
+                  <span className="text-sm text-gray-700">
+                    มีระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกิน ติดตั้งมากยายใน
+                    เครื่องอัดประจุยานยนต์ไฟฟ้าแล้ว
+                  </span>
+                </label>
+
+                <label className="flex items-start gap-2">
+                  <input
+                    type="checkbox"
+                    checked={value.tncsTouchVoltageProtection}
+                    onChange={(e) => handleInputChange("tncsTouchVoltageProtection", e.target.checked)}
+                    className="w-4 h-4 text-orange-600 mt-1"
+                  />
+                  <span className="text-sm text-gray-700">
+                    ติดตั้งอุปกรณ์ป้องกันแรงดันไฟฟ้าสัมผัส (Touch Voltage) ที่โครง
+                    บริภัณฑ์เทียบกับดินเกิน 70 โวลต์ ซึ่งอุปกรณ์ดังกล่าวใช้สำหรับปลดวงจรการอัด
+                    ประจุไฟฟ้า โดยสามารถตัดกระแสไฟฟ้าทุกเส้น รวมถึงสายนิวทรัลและสายดิน
+                    ออกพร้อมกันภายในเวลา 5 วินาที
+                  </span>
+                </label>
               </div>
 
-              {renderCorrectIncorrectField("tncs_status", "tncsCorrect", "tncsNote", true, 3)}
+              {renderCorrectIncorrectField("tncs_system", "tncsCorrect", "tncsNote", true, 4)}
             </div>
           )}
 
           {/* TT Section */}
           {value.groundingConfig === "TT" && (
-            <div className="bg-green-50 p-4 rounded-lg space-y-4">
-              <h4 className="font-semibold text-gray-900">3.4.2 กรณีเป็ดสายดินแบบ TT ทั่วระบบ (ต้องตำเนาการดงับพื้น ก) และ ข))</h4>
+            <div className="bg-orange-50 p-4 rounded-lg border border-orange-200 space-y-4">
+              <h4 className="font-semibold text-gray-900">
+                3.4.2 กรณีต่อลงดินแบบ TT ทั้งระบบ ( ต้องดำเนินการครบทั้ง ก) และ ข) )
+              </h4>
               
-              <div className="space-y-3">
-                <div className="text-sm text-gray-700">
-                  ก) ต้องติดเริ่วต่อติดไว้ (RCD) ทุกวงจรไฟฟ้าที่ขีอไฟใน หรือทุกยอกหมือต้องไฟฟ้าไหน ไม่เว้นจะมีวระต่อต่อไฟฟ้าในการต้อปันจะบูรบบขดไฟใฟกำใฟฟ้าถือถอผิใกว่แล<br /><br />
-                  ข) ต้องต้ระบบป้องกันเมนท์รีบต่นไฟฟ้าคนและแรงทั้งไฟฟ้าเกิน ส่าหนั่วของต้อตังในขนไว้ให้เท้าหรือจะช่จจระบูรบบขดไฟใฟใต้องไฟฟ้า หรือต้ระบบป้องกันเมนท์ต่นไฟฟ้าที่ให้รับดันแรงทั้งไฟฟ้าเงินต้องดินสายเจอัวต่อเอพระตัวไฟลต้องไฟฟ้าใหน แรงทั้งไฟฟ้าเงินต้องดินสดัมผิใงรับปิมใบเดสำดเขตของปันจะบูรบบขดไฟใฟใดพั้นแล่ว
+              <div className="text-sm text-gray-700 space-y-2">
+                <div>
+                  ก) ติดตั้งเครื่องตัดไฟรั่ว (RCD) ทุกวงจรไฟฟ้าที่จ่ายไฟ หรือทุกเครื่องใช้ไฟฟ้า ไม่ว่า
+                  จะเกี่ยวข้องกับการอัดประจุยานยนต์ไฟฟ้าหรือไม่ก็ตาม
+                </div>
+                <div>
+                  ข) ติดตั้งระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกิน สำหรับจ่ายไฟใน
+                  ให้เครื่องอัดประจุยานยนต์ไฟฟ้า หรือติดตั้งระบบป้องกันแรงดันไฟฟ้าตกและ
+                  แรงดันไฟฟ้าเกินติดตั้งมากยายในเครื่องอัดประจุยานยนต์ไฟฟ้าแล้ว
                 </div>
               </div>
 
-              {renderCorrectIncorrectField("tt_status", "ttCorrect", "ttNote", true, 3)}
+              {renderCorrectIncorrectField("tt_system", "ttCorrect", "ttNote")}
             </div>
           )}
 
           {/* TT Partial Section */}
           {value.groundingConfig === "TT_partial" && (
-            <div className="bg-yellow-50 p-4 rounded-lg space-y-4">
-              <h4 className="font-semibold text-gray-900">3.4.3 กรณีเป็ดสายดินแบบ TT บางส่วน</h4>
+            <div className="bg-orange-50 p-4 rounded-lg border border-orange-200 space-y-4">
+              <h4 className="font-semibold text-gray-900">
+                3.4.3 กรณีต่อลงดินแบบ TT บางส่วน
+              </h4>
               
-              <div className="space-y-3">
-                <div className="text-sm text-gray-700 mb-3">
-                  3.4.3.1 มาตรการที่ต้องดำเนินการให้ครบถึงถมยนตี (ก – ค)<br /><br />
-                  ก) มีการระเย็มความเสื่อจต้อนจะอ ไม่มีอตาควาที่เทคครอะสมคัดีครง<br />
-                  บริเท็บให้ใฟฟ้าเข็ฟต่อสายดินแบบ TN-C-S กับเทรอจรับแล้างลิงจะโดยบอนไฟใฟเว้น<br />
-                  หรือใคระยานยดใฟทั้งไฟฟ้าที่ต้องต้องบูน TT ใดจดชั้นอก หรือชั้อบีระจ่วงโจมว่ระจัวบไว้<br />
-                  การ 2.50 เมตร หรือต้องติดเต้มห่ราระอทบมะรั่ง หรือถัมนิวไผล<br /><br />
-                  ข) ระอขาหำระบ้างหนดังกิเดิมเขียดระบบ TN-C-S กันระบบ TT ต้องตำเส้น<br />
-                  อย่างน้อย 2.00 เมตร<br /><br />
-                  ค) มีการต้องดินโปนและหัวต่าเมนบริเท็มนวิอยต้าครึ่งดีดครึ่งระบูรบบบต<br />
-                  ไฟใฟ้า ความก่าการไฟฟ้าส่วนภูมิภาคกำหนด
+              <div className="text-sm text-gray-700 space-y-3">
+                <div>
+                  <div className="font-medium mb-2">3.4.3.1 มาตรการที่ต้องดำเนินการให้ครบทุกข้อ ( ก – ค )</div>
+                  <div className="ml-4 space-y-2">
+                    <div>
+                      ก) มีการระบุเขตความเสี่ยงก่อน ไม่มีโอกาสที่บุคคลจะสัมผัสได้โดง
+                      บริภัณฑ์ไฟฟ้าที่มีต่อลงดินแบบ TN-C-S กับเครื่องใช้ไฟฟ้าส่วนยายนต์ไฟฟ้า
+                      หรือใช้ยานยนต์ไฟฟ้าที่ต้องอัดประจุ TT ในเวลาเดียวกัน หรือต้องจัดให้ห่างกัน
+                      กว่า 2.50 เมตร สามารถใช้การจัดผนัง หรือเชือกกั้น
+                    </div>
+                    <div>
+                      ข) ระยะห่างระหว่างหลักดินของระบบ TN-C-S กับระบบ TT ต้องมากกว่า
+                      อย่างน้อย 2.00 เมตร
+                    </div>
+                    <div>
+                      ค) มีการต่อลงดินเฉพาะเครื่องอัดประจุยานยนต์ไฟฟ้าและอัดมบริภัณฑ์ไฟฟ้า
+                      ตาม มาตรฐานการไฟฟ้าส่วนภูมิภาคกำหนด
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="font-medium mb-2">3.4.3.2 มาตรการที่ต้องเลือกอย่างใดอย่างหนึ่ง</div>
+                  <div className="ml-4 space-y-2">
+                    <label className="flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        checked={value.tncsLoadBalance}
+                        onChange={(e) => handleInputChange("tncsLoadBalance", e.target.checked)}
+                        className="w-4 h-4 text-orange-600 mt-1"
+                      />
+                      <div>
+                        <div className="font-medium">ค่าความต้านทานการต่อลงดิน................................โอห์ม (Ω)</div>
+                        <div className="ml-4 mt-1">
+                          กรณีมีเซอร์ 15(45), 5(45) A ต้องมีค่าความต้านทานการต่อลงดินไม่เกิน 2.5 Ω<br />
+                          กรณีมีเซอร์ 30(100), 5(100) A ต้องมีค่าความต้านทานการต่อลงดินไม่เกิน 1.25 Ω
+                        </div>
+                      </div>
+                    </label>
+
+                    <label className="flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        checked={value.tncsNeutralProtection}
+                        onChange={(e) => handleInputChange("tncsNeutralProtection", e.target.checked)}
+                        className="w-4 h-4 text-orange-600 mt-1"
+                      />
+                      <span>
+                        ติดตั้งระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกินเพิ่มเติม
+                        ในคาแหน่งก่อนเข้าเครื่องอัดประจุยานยนต์ไฟฟ้า
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        checked={value.tncsTouchVoltageProtection}
+                        onChange={(e) => handleInputChange("tncsTouchVoltageProtection", e.target.checked)}
+                        className="w-4 h-4 text-orange-600 mt-1"
+                      />
+                      <span>
+                        มีระบบป้องกันแรงดันไฟฟ้าตกและแรงดันไฟฟ้าเกิน ติดตั้งมากยายใน
+                        เครื่องอัดระจุยานยนต์ไฟฟ้าแล้ว
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        checked={value.tncsTouchVoltageProtection}
+                        onChange={(e) => handleInputChange("tncsTouchVoltageProtection", e.target.checked)}
+                        className="w-4 h-4 text-orange-600 mt-1"
+                      />
+                      <span>
+                        ติดตั้งอุปกรณ์ป้องกันแรงดันไฟฟ้าสัมผัส (Touch Voltage) ที่โครง
+                        บริภัณฑ์เทียบกับดินเกิน 70 โวลต์ ซึ่งอุปกรณ์ดังกล่าวใช้สำหรับปลดวงจรการอัด
+                        ประจุไฟฟ้า โดยสามารถตัดกระแสไฟฟ้าทุกเส้น รวมถึงสายนิวทรัลและสายดิน
+                        ออกพร้อมกันภายในเวลา 5 วินาที
+                      </span>
+                    </label>
+                  </div>
                 </div>
               </div>
 
-              {renderCorrectIncorrectField("tt_partial_status", "ttPartialCorrect", "ttPartialNote", true, 3)}
+              {renderCorrectIncorrectField("tt_partial_system", "ttPartialCorrect", "ttPartialNote", true, 5)}
             </div>
           )}
         </div>

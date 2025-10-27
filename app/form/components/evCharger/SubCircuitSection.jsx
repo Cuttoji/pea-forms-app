@@ -57,13 +57,18 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
     wirewayMechanical: { result: null, detail: "" },
     method: [],
     methodConduitWallSize: "",
+    methodConduitWallCheck: { result: null, detail: "" },
     methodConduitBuriedSize: "",
+    methodConduitBuriedCheck: { result: null, detail: "" },
+    methodDirectBuriedCheck: { result: null, detail: "" },
     methodWirewayW: "",
     methodWirewayH: "",
+    methodWirewayCheck: { result: null, detail: "" },
     methodCableTrayW: "",
     methodCableTrayH: "",
+    methodCableTrayCheck: { result: null, detail: "" },
     methodOther: "",
-    methodCheck: { result: null, detail: "" },
+    methodOtherCheck: { result: null, detail: "" },
     conduitType: [],
     conduitTypeOther: "",
     conduitCheck: { result: null, detail: "" },
@@ -73,13 +78,10 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
     breakerMode2: false,
     breakerMode2AT: "",
     breakerCheck: { result: null, detail: "" },
-    breakerSizeCheck: { result: null, detail: "" },
     rcdTypeB: false,
     rcdTypeBIn: "",
-    rcdTypeAFPlusDD: false,
     rcdTypeBInCharger: false,
     rcdTypeBInChargerIn: "",
-    rcdCheck: { result: null, detail: "" },
     rcdTypeBMain: { result: null, detail: "" },
     evChargers: []
   });
@@ -133,18 +135,6 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
               {/* ข้อมูลพื้นฐานของวงจร */}
               <div className="bg-blue-50 p-4 rounded-lg">
                 <h4 className="font-semibold text-lg mb-4 text-blue-900">ข้อมูลพื้นฐานของวงจร</h4>
-                
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                  <div className="flex flex-col">
-                    <label className="mb-1 font-medium text-base">หมายเลขวงจร</label>
-                    <input 
-                      type="text" 
-                      className="border border-gray-300 rounded px-2 py-2 w-32 bg-white focus:ring-1 focus:ring-blue-400 text-base" 
-                      value={safeValue(item?.circuitNo)} 
-                      onChange={e => handleSub(idx, "circuitNo", e.target.value)} 
-                    />
-                  </div>
-                </div>
 
                 <CorrectableRow 
                   label="วงจรนี้ใช้สำหรับเครื่องอัดประจุยานยนต์ไฟฟ้าเท่านั้น" 
@@ -168,7 +158,7 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
                 <div className="mb-4">
                   <label className="mb-2 font-medium text-base block">มาตรฐาน</label>
                   <div className="flex flex-wrap gap-4">
-                    {["TIS 17", "IEC 60364", "BS 7671", "NEC"].map(std => (
+                    {["มอก. 11-2553", "มอก. 293-2541", "IEC 60502 "].map(std => (
                       <label key={std} className="flex items-center">
                         <input 
                           type="checkbox" 
@@ -183,9 +173,9 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
                 </div>
 
                 <div className="mb-4">
-                  <label className="mb-2 font-medium text-base block">ชนิดสาย</label>
+                  <label className="mb-2 font-medium text-base block">ชนิดสายตัวนำ</label>
                   <div className="flex flex-wrap gap-4">
-                    {["THW", "THHN", "NYY", "VV", "XLPE"].map(type => (
+                    {["IEC01", "NYY", "CV"].map(type => (
                       <label key={type} className="flex items-center">
                         <input 
                           type="checkbox" 
@@ -237,7 +227,7 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
                     />
                   </div>
                   <div>
-                    <label className="mb-1 font-medium text-base block">ขนาดสายกราวด์ (mm²)</label>
+                    <label className="mb-1 font-medium text-base block">ขนาดสายดิน (mm²)</label>
                     <input 
                       type="text" 
                       className="border border-gray-300 rounded px-2 py-2 w-full text-base" 
@@ -269,123 +259,456 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
                 />
 
                 <CorrectableRow 
-                  label="สีสายเฟส" 
+                  label="ระบุเฟสสายตัวนำ โดยใช้สีของฉนวนหรือการทำเครื่องหมายที่สายตัวนำ " 
                   value={item?.phaseColor} 
                   onChange={v => handleSub(idx, "phaseColor", v)} 
+                  detail 
+                />
+                 <CorrectableRow 
+                  label="ช่องเดินสายมีความต่อเนื่องทางกล และความมั่นคงแข็งแรงเพียงพอ" 
+                  value={item?.wirewayMechanical} 
+                  onChange={v => handleSub(idx, "wirewayMechanical", v)} 
                   detail 
                 />
               </div>
 
               {/* การติดตั้งเดินสาย */}
               <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-lg mb-4 text-blue-900">การติดตั้งเดินสาย</h4>
-
-                <CorrectableRow 
-                  label="ความมั่นคงทางกลของรางเดินสาย" 
-                  value={item?.wirewayMechanical} 
-                  onChange={v => handleSub(idx, "wirewayMechanical", v)} 
-                  detail 
-                />
-
-                <div className="mb-4">
-                  <label className="mb-2 font-medium text-base block">วิธีการเดินสาย</label>
-                  <div className="space-y-2">
-                    {["ท่อร้อยสายบนผนัง", "ท่อร้อยสายฝังดิน", "ราง Wireway", "ถาด Cable Tray", "อื่นๆ"].map(method => (
-                      <label key={method} className="flex items-center">
-                        <input 
-                          type="checkbox" 
-                          checked={safeArray(item?.method).includes(method)} 
-                          onChange={() => handleCheckbox(idx, "method", method)} 
-                          className="mr-2" 
-                        />
-                        <span className="text-sm">{method}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                  <div>
-                    <label className="text-sm">ขนาดท่อบนผนัง (mm)</label>
+                <h4 className="font-semibold text-lg mb-4 text-blue-900">5.6.3 วิธีการเดินสาย</h4>
+                
+                {/* เดินร้อยท่อเกาะผนัง */}
+                <div className="mb-4 pb-4 border-b border-gray-300">
+                  <div className="flex items-start gap-4 mb-2">
+                    <label className="flex items-center min-w-fit">
+                      <input 
+                        type="checkbox" 
+                        checked={safeArray(item?.method).includes("เดินร้อยท่อเกาะผนัง")} 
+                        onChange={() => handleCheckbox(idx, "method", "เดินร้อยท่อเกาะผนัง")} 
+                        className="mr-2" 
+                      />
+                      <span className="text-sm">เดินร้อยท่อเกาะผนัง โดยใช้ท่อร้อยสายขนาด</span>
+                    </label>
                     <input 
                       type="text" 
-                      className="border border-gray-300 rounded px-2 py-1 w-full text-sm" 
+                      placeholder="มม."
+                      className="border border-gray-300 rounded px-2 py-1 w-24 text-sm" 
                       value={safeValue(item?.methodConduitWallSize)} 
                       onChange={e => handleSub(idx, "methodConduitWallSize", e.target.value)} 
+                      disabled={!safeArray(item?.method).includes("เดินร้อยท่อเกาะผนัง")}
                     />
+                    <span className="text-sm">มม.</span>
                   </div>
-                  <div>
-                    <label className="text-sm">ขนาดท่อฝังดิน (mm)</label>
-                    <input 
-                      type="text" 
-                      className="border border-gray-300 rounded px-2 py-1 w-full text-sm" 
-                      value={safeValue(item?.methodConduitBuriedSize)} 
-                      onChange={e => handleSub(idx, "methodConduitBuriedSize", e.target.value)} 
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm">ความกว้างราง (mm)</label>
-                    <input 
-                      type="text" 
-                      className="border border-gray-300 rounded px-2 py-1 w-full text-sm" 
-                      value={safeValue(item?.methodWirewayW)} 
-                      onChange={e => handleSub(idx, "methodWirewayW", e.target.value)} 
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm">ความสูงราง (mm)</label>
-                    <input 
-                      type="text" 
-                      className="border border-gray-300 rounded px-2 py-1 w-full text-sm" 
-                      value={safeValue(item?.methodWirewayH)} 
-                      onChange={e => handleSub(idx, "methodWirewayH", e.target.value)} 
-                    />
+                  <div className="ml-6 flex items-start gap-4">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodConduitWall_${idx}`}
+                        checked={item?.methodConduitWallCheck?.result === "ถูกต้อง"}
+                        onChange={() => handleSub(idx, "methodConduitWallCheck", { result: "ถูกต้อง", detail: "" })}
+                        className="w-4 h-4 text-green-600"
+                      />
+                      <span className="text-sm text-green-700">ถูกต้อง</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodConduitWall_${idx}`}
+                        checked={item?.methodConduitWallCheck?.result === "ต้องแก้ไข"}
+                        onChange={() => handleSub(idx, "methodConduitWallCheck", { result: "ต้องแก้ไข", detail: item?.methodConduitWallCheck?.detail || "" })}
+                        className="w-4 h-4 text-red-600"
+                      />
+                      <span className="text-sm text-red-700">ต้องแก้ไข</span>
+                    </label>
+                    {item?.methodConduitWallCheck?.result === "ต้องแก้ไข" && (
+                      <input
+                        type="text"
+                        placeholder="ระบุรายละเอียด..."
+                        className="flex-1 px-3 py-1 border border-gray-300 rounded text-sm"
+                        value={item?.methodConduitWallCheck?.detail || ""}
+                        onChange={e => handleSub(idx, "methodConduitWallCheck", { ...item?.methodConduitWallCheck, detail: e.target.value })}
+                      />
+                    )}
                   </div>
                 </div>
 
-                {safeArray(item?.method).includes("อื่นๆ") && (
-                  <div className="mb-4">
+                {/* เดินสายร้อยท่อฝังดิน */}
+                <div className="mb-4 pb-4 border-b border-gray-300">
+                  <div className="flex items-start gap-4 mb-2">
+                    <label className="flex items-center min-w-fit">
+                      <input 
+                        type="checkbox" 
+                        checked={safeArray(item?.method).includes("เดินสายร้อยท่อฝังดิน")} 
+                        onChange={() => handleCheckbox(idx, "method", "เดินสายร้อยท่อฝังดิน")} 
+                        className="mr-2" 
+                      />
+                      <span className="text-sm">เดินสายร้อยท่อฝังดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้) โดยใช้ท่อร้อยสายขนาด</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      placeholder="มม."
+                      className="border border-gray-300 rounded px-2 py-1 w-24 text-sm" 
+                      value={safeValue(item?.methodConduitBuriedSize)} 
+                      onChange={e => handleSub(idx, "methodConduitBuriedSize", e.target.value)} 
+                      disabled={!safeArray(item?.method).includes("เดินสายร้อยท่อฝังดิน")}
+                    />
+                    <span className="text-sm">มม.</span>
+                  </div>
+                  <div className="ml-6 flex items-start gap-4">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodConduitBuried_${idx}`}
+                        checked={item?.methodConduitBuriedCheck?.result === "ถูกต้อง"}
+                        onChange={() => handleSub(idx, "methodConduitBuriedCheck", { result: "ถูกต้อง", detail: "" })}
+                        className="w-4 h-4 text-green-600"
+                      />
+                      <span className="text-sm text-green-700">ถูกต้อง</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodConduitBuried_${idx}`}
+                        checked={item?.methodConduitBuriedCheck?.result === "ต้องแก้ไข"}
+                        onChange={() => handleSub(idx, "methodConduitBuriedCheck", { result: "ต้องแก้ไข", detail: item?.methodConduitBuriedCheck?.detail || "" })}
+                        className="w-4 h-4 text-red-600"
+                      />
+                      <span className="text-sm text-red-700">ต้องแก้ไข</span>
+                    </label>
+                    {item?.methodConduitBuriedCheck?.result === "ต้องแก้ไข" && (
+                      <input
+                        type="text"
+                        placeholder="ระบุรายละเอียด..."
+                        className="flex-1 px-3 py-1 border border-gray-300 rounded text-sm"
+                        value={item?.methodConduitBuriedCheck?.detail || ""}
+                        onChange={e => handleSub(idx, "methodConduitBuriedCheck", { ...item?.methodConduitBuriedCheck, detail: e.target.value })}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* เดินสายฝังดินโดยตรง */}
+                <div className="mb-4 pb-4 border-b border-gray-300">
+                  <div className="mb-2">
+                    <label className="flex items-center">
+                      <input 
+                        type="checkbox" 
+                        checked={safeArray(item?.method).includes("เดินสายฝังดินโดยตรง")} 
+                        onChange={() => handleCheckbox(idx, "method", "เดินสายฝังดินโดยตรง")} 
+                        className="mr-2" 
+                      />
+                      <span className="text-sm">เดินสายฝังดินโดยตรง (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)</span>
+                    </label>
+                  </div>
+                  <div className="ml-6 flex items-start gap-4">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodDirectBuried_${idx}`}
+                        checked={item?.methodDirectBuriedCheck?.result === "ถูกต้อง"}
+                        onChange={() => handleSub(idx, "methodDirectBuriedCheck", { result: "ถูกต้อง", detail: "" })}
+                        className="w-4 h-4 text-green-600"
+                      />
+                      <span className="text-sm text-green-700">ถูกต้อง</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodDirectBuried_${idx}`}
+                        checked={item?.methodDirectBuriedCheck?.result === "ต้องแก้ไข"}
+                        onChange={() => handleSub(idx, "methodDirectBuriedCheck", { result: "ต้องแก้ไข", detail: item?.methodDirectBuriedCheck?.detail || "" })}
+                        className="w-4 h-4 text-red-600"
+                      />
+                      <span className="text-sm text-red-700">ต้องแก้ไข</span>
+                    </label>
+                    {item?.methodDirectBuriedCheck?.result === "ต้องแก้ไข" && (
+                      <input
+                        type="text"
+                        placeholder="ระบุรายละเอียด..."
+                        className="flex-1 px-3 py-1 border border-gray-300 rounded text-sm"
+                        value={item?.methodDirectBuriedCheck?.detail || ""}
+                        onChange={e => handleSub(idx, "methodDirectBuriedCheck", { ...item?.methodDirectBuriedCheck, detail: e.target.value })}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* เดินในรางเดินสาย Wireway */}
+                <div className="mb-4 pb-4 border-b border-gray-300">
+                  <div className="flex items-start gap-4 mb-2">
+                    <label className="flex items-center min-w-fit">
+                      <input 
+                        type="checkbox" 
+                        checked={safeArray(item?.method).includes("เดินในรางเดินสาย")} 
+                        onChange={() => handleCheckbox(idx, "method", "เดินในรางเดินสาย")} 
+                        className="mr-2" 
+                      />
+                      <span className="text-sm">เดินในรางเดินสาย (Wireway) ขนาด</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      placeholder="กว้าง"
+                      className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" 
+                      value={safeValue(item?.methodWirewayW)} 
+                      onChange={e => handleSub(idx, "methodWirewayW", e.target.value)} 
+                      disabled={!safeArray(item?.method).includes("เดินในรางเดินสาย")}
+                    />
+                    <span className="text-sm">มม. x</span>
+                    <input 
+                      type="text" 
+                      placeholder="สูง"
+                      className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" 
+                      value={safeValue(item?.methodWirewayH)} 
+                      onChange={e => handleSub(idx, "methodWirewayH", e.target.value)} 
+                      disabled={!safeArray(item?.method).includes("เดินในรางเดินสาย")}
+                    />
+                    <span className="text-sm">มม.</span>
+                  </div>
+                  <div className="ml-6 flex items-start gap-4">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodWireway_${idx}`}
+                        checked={item?.methodWirewayCheck?.result === "ถูกต้อง"}
+                        onChange={() => handleSub(idx, "methodWirewayCheck", { result: "ถูกต้อง", detail: "" })}
+                        className="w-4 h-4 text-green-600"
+                      />
+                      <span className="text-sm text-green-700">ถูกต้อง</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodWireway_${idx}`}
+                        checked={item?.methodWirewayCheck?.result === "ต้องแก้ไข"}
+                        onChange={() => handleSub(idx, "methodWirewayCheck", { result: "ต้องแก้ไข", detail: item?.methodWirewayCheck?.detail || "" })}
+                        className="w-4 h-4 text-red-600"
+                      />
+                      <span className="text-sm text-red-700">ต้องแก้ไข</span>
+                    </label>
+                    {item?.methodWirewayCheck?.result === "ต้องแก้ไข" && (
+                      <input
+                        type="text"
+                        placeholder="ระบุรายละเอียด..."
+                        className="flex-1 px-3 py-1 border border-gray-300 rounded text-sm"
+                        value={item?.methodWirewayCheck?.detail || ""}
+                        onChange={e => handleSub(idx, "methodWirewayCheck", { ...item?.methodWirewayCheck, detail: e.target.value })}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* เดินบนรางเคเบิล Cable Tray */}
+                <div className="mb-4 pb-4 border-b border-gray-300">
+                  <div className="flex items-start gap-4 mb-2">
+                    <label className="flex items-center min-w-fit">
+                      <input 
+                        type="checkbox" 
+                        checked={safeArray(item?.method).includes("เดินบนรางเคเบิล")} 
+                        onChange={() => handleCheckbox(idx, "method", "เดินบนรางเคเบิล")} 
+                        className="mr-2" 
+                      />
+                      <span className="text-sm">เดินบนรางเคเบิล (Cable Tray) ขนาด</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      placeholder="กว้าง"
+                      className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" 
+                      value={safeValue(item?.methodCableTrayW)} 
+                      onChange={e => handleSub(idx, "methodCableTrayW", e.target.value)} 
+                      disabled={!safeArray(item?.method).includes("เดินบนรางเคเบิล")}
+                    />
+                    <span className="text-sm">มม. x</span>
+                    <input 
+                      type="text" 
+                      placeholder="สูง"
+                      className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" 
+                      value={safeValue(item?.methodCableTrayH)} 
+                      onChange={e => handleSub(idx, "methodCableTrayH", e.target.value)} 
+                      disabled={!safeArray(item?.method).includes("เดินบนรางเคเบิล")}
+                    />
+                    <span className="text-sm">มม.</span>
+                  </div>
+                  <div className="ml-6 flex items-start gap-4">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodCableTray_${idx}`}
+                        checked={item?.methodCableTrayCheck?.result === "ถูกต้อง"}
+                        onChange={() => handleSub(idx, "methodCableTrayCheck", { result: "ถูกต้อง", detail: "" })}
+                        className="w-4 h-4 text-green-600"
+                      />
+                      <span className="text-sm text-green-700">ถูกต้อง</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodCableTray_${idx}`}
+                        checked={item?.methodCableTrayCheck?.result === "ต้องแก้ไข"}
+                        onChange={() => handleSub(idx, "methodCableTrayCheck", { result: "ต้องแก้ไข", detail: item?.methodCableTrayCheck?.detail || "" })}
+                        className="w-4 h-4 text-red-600"
+                      />
+                      <span className="text-sm text-red-700">ต้องแก้ไข</span>
+                    </label>
+                    {item?.methodCableTrayCheck?.result === "ต้องแก้ไข" && (
+                      <input
+                        type="text"
+                        placeholder="ระบุรายละเอียด..."
+                        className="flex-1 px-3 py-1 border border-gray-300 rounded text-sm"
+                        value={item?.methodCableTrayCheck?.detail || ""}
+                        onChange={e => handleSub(idx, "methodCableTrayCheck", { ...item?.methodCableTrayCheck, detail: e.target.value })}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* อื่นๆ */}
+                <div className="mb-4">
+                  <div className="flex items-start gap-4 mb-2">
+                    <label className="flex items-center min-w-fit">
+                      <input 
+                        type="checkbox" 
+                        checked={safeArray(item?.method).includes("อื่นๆ")} 
+                        onChange={() => handleCheckbox(idx, "method", "อื่นๆ")} 
+                        className="mr-2" 
+                      />
+                      <span className="text-sm">อื่นๆ ระบุ</span>
+                    </label>
                     <input 
                       type="text" 
                       placeholder="ระบุวิธีการเดินสายอื่นๆ" 
-                      className="border border-gray-300 rounded px-2 py-2 w-full text-sm" 
+                      className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm" 
                       value={safeValue(item?.methodOther)} 
                       onChange={e => handleSub(idx, "methodOther", e.target.value)} 
+                      disabled={!safeArray(item?.method).includes("อื่นๆ")}
                     />
                   </div>
-                )}
+                  <div className="ml-6 flex items-start gap-4">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodOther_${idx}`}
+                        checked={item?.methodOtherCheck?.result === "ถูกต้อง"}
+                        onChange={() => handleSub(idx, "methodOtherCheck", { result: "ถูกต้อง", detail: "" })}
+                        className="w-4 h-4 text-green-600"
+                      />
+                      <span className="text-sm text-green-700">ถูกต้อง</span>
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`methodOther_${idx}`}
+                        checked={item?.methodOtherCheck?.result === "ต้องแก้ไข"}
+                        onChange={() => handleSub(idx, "methodOtherCheck", { result: "ต้องแก้ไข", detail: item?.methodOtherCheck?.detail || "" })}
+                        className="w-4 h-4 text-red-600"
+                      />
+                      <span className="text-sm text-red-700">ต้องแก้ไข</span>
+                    </label>
+                    {item?.methodOtherCheck?.result === "ต้องแก้ไข" && (
+                      <input
+                        type="text"
+                        placeholder="ระบุรายละเอียด..."
+                        className="flex-1 px-3 py-1 border border-gray-300 rounded text-sm"
+                        value={item?.methodOtherCheck?.detail || ""}
+                        onChange={e => handleSub(idx, "methodOtherCheck", { ...item?.methodOtherCheck, detail: e.target.value })}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
 
-                <CorrectableRow 
-                  label="ตรวจสอบวิธีการเดินสาย" 
-                  value={item?.methodCheck} 
-                  onChange={v => handleSub(idx, "methodCheck", v)} 
-                  detail 
-                />
+              {/* 5.6.4 ประเภทท่อร้อยสาย */}
+              <div className="bg-purple-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-lg mb-4 text-blue-900">5.6.4 ประเภทท่อร้อยสาย</h4>
 
                 <div className="mb-4">
-                  <label className="mb-2 font-medium text-base block">ชนิดท่อ</label>
-                  <div className="flex flex-wrap gap-4">
-                    {["PVC", "Steel EMT", "Steel IMC", "Flexible", "อื่นๆ"].map(type => (
-                      <label key={type} className="flex items-center">
+                  <div className="space-y-3">
+                    <div>
+                      <label className="font-medium text-sm block mb-2">ท่อโลหะ:</label>
+                      <div className="ml-4 flex flex-wrap gap-4">
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            checked={safeArray(item?.conduitType).includes("ท่อ (RMC)")} 
+                            onChange={() => handleCheckbox(idx, "conduitType", "ท่อ (RMC)")} 
+                            className="mr-2" 
+                          />
+                          <span className="text-sm">ท่อ (RMC)</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            checked={safeArray(item?.conduitType).includes("ท่อปานกลาง (IMC)")} 
+                            onChange={() => handleCheckbox(idx, "conduitType", "ท่อปานกลาง (IMC)")} 
+                            className="mr-2" 
+                          />
+                          <span className="text-sm">ท่อปานกลาง (IMC)</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            checked={safeArray(item?.conduitType).includes("บาง (EMT)")} 
+                            onChange={() => handleCheckbox(idx, "conduitType", "บาง (EMT)")} 
+                            className="mr-2" 
+                          />
+                          <span className="text-sm">บาง (EMT)</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="font-medium text-sm block mb-2">ท่ออโลหะ:</label>
+                      <div className="ml-4 flex flex-wrap gap-4">
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            checked={safeArray(item?.conduitType).includes("แข็ง (RNC)")} 
+                            onChange={() => handleCheckbox(idx, "conduitType", "แข็ง (RNC)")} 
+                            className="mr-2" 
+                          />
+                          <span className="text-sm">แข็ง (RNC)</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            checked={safeArray(item?.conduitType).includes("อ่อน (ENT)")} 
+                            onChange={() => handleCheckbox(idx, "conduitType", "อ่อน (ENT)")} 
+                            className="mr-2" 
+                          />
+                          <span className="text-sm">อ่อน (ENT)</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <label className="flex items-center">
                         <input 
                           type="checkbox" 
-                          checked={safeArray(item?.conduitType).includes(type)} 
-                          onChange={() => handleCheckbox(idx, "conduitType", type)} 
+                          checked={safeArray(item?.conduitType).includes("ท่อโลหะอ่อน")} 
+                          onChange={() => handleCheckbox(idx, "conduitType", "ท่อโลหะอ่อน")} 
                           className="mr-2" 
                         />
-                        <span className="text-sm">{type}</span>
+                        <span className="text-sm">ท่อโลหะอ่อน (Flexible Metal Conduit)</span>
                       </label>
-                    ))}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="checkbox" 
+                        checked={safeArray(item?.conduitType).includes("อื่นๆ")} 
+                        onChange={() => handleCheckbox(idx, "conduitType", "อื่นๆ")} 
+                        className="mr-2" 
+                      />
+                      <span className="text-sm">อื่นๆ ระบุ</span>
+                      {safeArray(item?.conduitType).includes("อื่นๆ") && (
+                        <input 
+                          type="text" 
+                          placeholder="ระบุชนิดท่ออื่นๆ" 
+                          className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm" 
+                          value={safeValue(item?.conduitTypeOther)} 
+                          onChange={e => handleSub(idx, "conduitTypeOther", e.target.value)} 
+                        />
+                      )}
+                    </div>
                   </div>
-                  {safeArray(item?.conduitType).includes("อื่นๆ") && (
-                    <input 
-                      type="text" 
-                      placeholder="ระบุชนิดท่ออื่นๆ" 
-                      className="mt-2 border border-gray-300 rounded px-2 py-2 w-full md:w-64 text-sm" 
-                      value={safeValue(item?.conduitTypeOther)} 
-                      onChange={e => handleSub(idx, "conduitTypeOther", e.target.value)} 
-                    />
-                  )}
                 </div>
 
                 <CorrectableRow 
@@ -396,135 +719,141 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
                 />
               </div>
 
-              {/* อุปกรณ์ป้องกัน */}
+              {/* 5.6.5 เซอร์กิตเบรกเกอร์ป้องกันวงจรย่อย */}
               <div className="bg-red-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-lg mb-4 text-blue-900">อุปกรณ์ป้องกัน</h4>
+                <h4 className="font-semibold text-lg mb-4 text-blue-900">5.6.5 เซอร์กิตเบรกเกอร์ป้องกันวงจรย่อย</h4>
 
-                <div className="mb-4">
-                  <h5 className="font-medium mb-2">เบรกเกอร์</h5>
-                  <div className="space-y-2">
-                    <label className="flex items-center">
+                <div className="mb-4 space-y-3">
+                  <label className="flex items-start gap-2">
+                    <input 
+                      type="checkbox" 
+                      checked={item?.breakerStandard || false} 
+                      onChange={e => handleSub(idx, "breakerStandard", e.target.checked)} 
+                      className="mt-1" 
+                    />
+                    <span className="text-sm">เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898 หรือ IEC 60947-2</span>
+                  </label>
+
+                  <div className="flex items-start gap-2">
+                    <input 
+                      type="checkbox" 
+                      checked={item?.breakerMode3 || false} 
+                      onChange={e => handleSub(idx, "breakerMode3", e.target.checked)} 
+                      className="mt-1" 
+                    />
+                    <span className="text-sm">กรณีเป็นเบรกเกอร์สำหรับ 3 หรือ 4 เซอร์กิตเบรกเกอร์ประธาน </span>
+                    {item?.breakerMode3 && (
                       <input 
-                        type="checkbox" 
-                        checked={item?.breakerStandard || false} 
-                        onChange={e => handleSub(idx, "breakerStandard", e.target.checked)} 
-                        className="mr-2" 
+                        type="text" 
+                        placeholder="แอมแปร์" 
+                        className="border border-gray-300 rounded px-2 py-1 w-24 text-sm" 
+                        value={safeValue(item?.breakerMode3AT)} 
+                        onChange={e => handleSub(idx, "breakerMode3AT", e.target.value)} 
                       />
-                      <span className="text-sm">เบรกเกอร์มาตรฐาน</span>
-                    </label>
-                    <label className="flex items-center gap-2">
+                    )}
+                  </div>
+
+                  <div className="flex items-start gap-2">
+                    <input 
+                      type="checkbox" 
+                      checked={item?.breakerMode2 || false} 
+                      onChange={e => handleSub(idx, "breakerMode2", e.target.checked)} 
+                      className="mt-1" 
+                    />
+                    <span className="text-sm">กรณีเป็นเบรกเกอร์สำหรับ 2 เซอร์กิตเบรกเกอร์ประธาน</span>
+                    {item?.breakerMode2 && (
                       <input 
-                        type="checkbox" 
-                        checked={item?.breakerMode3 || false} 
-                        onChange={e => handleSub(idx, "breakerMode3", e.target.checked)} 
-                        className="mr-2" 
+                        type="text" 
+                        placeholder="แอมแปร์" 
+                        className="border border-gray-300 rounded px-2 py-1 w-24 text-sm" 
+                        value={safeValue(item?.breakerMode2AT)} 
+                        onChange={e => handleSub(idx, "breakerMode2AT", e.target.value)} 
                       />
-                      <span className="text-sm">เบรกเกอร์สำหรับโหมด 3</span>
-                      {item?.breakerMode3 && (
-                        <input 
-                          type="text" 
-                          placeholder="พิกัดกระแส (A)" 
-                          className="border border-gray-300 rounded px-2 py-1 w-24 text-sm" 
-                          value={safeValue(item?.breakerMode3AT)} 
-                          onChange={e => handleSub(idx, "breakerMode3AT", e.target.value)} 
-                        />
-                      )}
-                    </label>
-                    <label className="flex items-center gap-2">
-                      <input 
-                        type="checkbox" 
-                        checked={item?.breakerMode2 || false} 
-                        onChange={e => handleSub(idx, "breakerMode2", e.target.checked)} 
-                        className="mr-2" 
-                      />
-                      <span className="text-sm">เบรกเกอร์สำหรับโหมด 2</span>
-                      {item?.breakerMode2 && (
-                        <input 
-                          type="text" 
-                          placeholder="พิกัดกระแส (A)" 
-                          className="border border-gray-300 rounded px-2 py-1 w-24 text-sm" 
-                          value={safeValue(item?.breakerMode2AT)} 
-                          onChange={e => handleSub(idx, "breakerMode2AT", e.target.value)} 
-                        />
-                      )}
-                    </label>
+                    )}
                   </div>
                 </div>
 
                 <CorrectableRow 
-                  label="ตรวจสอบเบรกเกอร์" 
+                  label="ตรวจสอบเซอร์กิตเบรกเกอร์" 
                   value={item?.breakerCheck} 
                   onChange={v => handleSub(idx, "breakerCheck", v)} 
                   detail 
                 />
+              </div>
 
-                <CorrectableRow 
-                  label="ตรวจสอบขนาดเบรกเกอร์" 
-                  value={item?.breakerSizeCheck} 
-                  onChange={v => handleSub(idx, "breakerSizeCheck", v)} 
-                  detail 
-                />
+              {/* 5.6.6 ข้อกำหนดเครื่องตัดไฟรั่ว (RCD) */}
+              <div className="bg-indigo-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-lg mb-4 text-blue-900">5.6.6 ข้อกำหนดเครื่องตัดไฟรั่ว (RCD)</h4>
 
-                <div className="mb-4">
-                  <h5 className="font-medium mb-2">RCD (Residual Current Device)</h5>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2">
+                <div className="mb-4 space-y-4">
+                  <div className="p-3 bg-white rounded border border-indigo-200">
+                    <label className="flex items-start gap-2 mb-2">
                       <input 
                         type="checkbox" 
                         checked={item?.rcdTypeB || false} 
                         onChange={e => handleSub(idx, "rcdTypeB", e.target.checked)} 
-                        className="mr-2" 
+                        className="mt-1" 
                       />
-                      <span className="text-sm">RCD Type B</span>
-                      {item?.rcdTypeB && (
+                      <span className="text-sm">
+                        <strong>เครื่องตัดไฟรั่ว (RCD) Type B</strong> ตามมาตรฐาน มอก. 2955 หรือ IEC 62423 
+                        พิกัดกระแสรั่ว IΔn ≤ 30 มิลลิแอมแปร์ (mA) พิกัดกระแส (In)................แอมแปร์ (A) 
+                        เป็น RCD ซึ่งติดตั้งระหว่างเครื่องอัดประจุกับวงจรย่อยของบริเภณฑ์ ของขอบเขตงานของเครื่องจักรกล 
+                        พิกัดความล่าช้าสูงสุดในการเปิดวงจรหรือตัดกระแสวงจร Type S <strong>โดยสามารถปรับระดับ</strong>
+                      </span>
+                    </label>
+                    {item?.rcdTypeB && (
+                      <div className="ml-6 mt-2">
                         <input 
                           type="text" 
-                          placeholder="พิกัดกระแส (mA)" 
-                          className="border border-gray-300 rounded px-2 py-1 w-24 text-sm" 
+                          placeholder="แอมแปร์ (A)" 
+                          className="border border-gray-300 rounded px-3 py-2 w-full md:w-64 text-sm" 
                           value={safeValue(item?.rcdTypeBIn)} 
                           onChange={e => handleSub(idx, "rcdTypeBIn", e.target.value)} 
                         />
-                      )}
-                    </label>
-                    <label className="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        checked={item?.rcdTypeAFPlusDD || false} 
-                        onChange={e => handleSub(idx, "rcdTypeAFPlusDD", e.target.checked)} 
-                        className="mr-2" 
-                      />
-                      <span className="text-sm">RCD Type AF+DD</span>
-                    </label>
-                    <label className="flex items-center gap-2">
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="text-sm text-gray-700 italic pl-6">
+                    * คำแนะนำ RDC-DD ตั้งได้ตาม IEC 62955
+                  </div>
+
+                  <div className="p-3 bg-white rounded border border-indigo-200">
+                    <label className="flex items-start gap-2 mb-2">
                       <input 
                         type="checkbox" 
                         checked={item?.rcdTypeBInCharger || false} 
                         onChange={e => handleSub(idx, "rcdTypeBInCharger", e.target.checked)} 
-                        className="mr-2" 
+                        className="mt-1" 
                       />
-                      <span className="text-sm">RCD Type B ในเครื่องอัดประจุ</span>
-                      {item?.rcdTypeBInCharger && (
+                      <span className="text-sm">
+                        <strong>มีเครื่องตัดไฟรั่ว (RCD) Type B</strong> ตามมาตรฐาน มอก. 2955 หรือ IEC 62423 
+                        พิกัดกระแสรั่ว IΔn ≤ 30 มิลลิแอมแปร์ (mA) พิกัดกระแส (In)................แอมแปร์ (A) 
+                        เป็น RCD ซึ่งติดตั้งภายในเครื่องอัดประจุยานยนต์ไฟฟ้า และเป็นส่วนหนึ่งของเครื่องอัดประจุ 
+                        พิกัดความล่าช้าสูงสุดในการเปิดวงจรหรือตัดกระแสวงจร Type AC อื่นๆ<strong>ไม่ซ้ำซ้อนกับ RCD ในเครื่องอัดประจุ</strong>
+                      </span>
+                    </label>
+                    {item?.rcdTypeBInCharger && (
+                      <div className="ml-6 mt-2">
                         <input 
                           type="text" 
-                          placeholder="พิกัดกระแส (mA)" 
-                          className="border border-gray-300 rounded px-2 py-1 w-24 text-sm" 
+                          placeholder="แอมแปร์ (A)" 
+                          className="border border-gray-300 rounded px-3 py-2 w-full md:w-64 text-sm" 
                           value={safeValue(item?.rcdTypeBInChargerIn)} 
                           onChange={e => handleSub(idx, "rcdTypeBInChargerIn", e.target.value)} 
                         />
-                      )}
-                    </label>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="text-sm text-gray-700 pl-6 space-y-1">
+                    <p>* กรณีการต่อกระแสไฟล่วง 2 ให้พิจารณาติดตั้งในเครื่องโดยให้ถูกต้องตรงเวลาและกองบังคับ 
+                    หรือเป็นความสงสัย การติดตั้ง RCD Type B หรือต้องติดตั้งแยกที่สวนหน้า IC-CPD (In-Cable Control and Protection Device)</p>
                   </div>
                 </div>
 
                 <CorrectableRow 
-                  label="ตรวจสอบ RCD" 
-                  value={item?.rcdCheck} 
-                  onChange={v => handleSub(idx, "rcdCheck", v)} 
-                  detail 
-                />
-
-                <CorrectableRow 
-                  label="RCD Type B ที่เมน" 
+                  label="5.6.7 กรณีติดตั้งเครื่องตัดไฟรั่ว (RCD) Type B ที่วงจรย่อยติดตั้งไกลกับ RCD Type B อื่นๆสำหรับบ้าน RCD Type B อีก อยู่ส่วนหนึ่งของ ของบ้านหรือ" 
                   value={item?.rcdTypeBMain} 
                   onChange={v => handleSub(idx, "rcdTypeBMain", v)} 
                   detail 
