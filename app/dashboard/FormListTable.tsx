@@ -34,6 +34,7 @@ export default function FormListTable({
       .replace("_inspection", "-inspection");
 
     // กรณี special case (ถ้ามี)
+    if (selectedFormType === "condo_inspection_forms") path = "condo-inspection";
     if (selectedFormType === "ev_charger_lv_inspection") path = "ev-charger-lv-inspection";
     if (selectedFormType === "ev_charger_hv_inspection") path = "ev-charger-hv-inspection";
     if (selectedFormType === "construction_inspection") path = "construction-inspection";
@@ -98,11 +99,11 @@ async function handleDelete(id: string) {
                     <td className="p-3 border-b">{getField(form.general, ["approvalNo"])}</td>
                   </>
                 ) : (
-                  <td className="p-3 border-b">{getField(form.general, ["inspectionNo", "inspection_number", "inspectionNumber"])}</td>
+                  <td className="p-3 border-b">{getField(form.general, ["requestNumber", "inspectionNumber", "inspectionNo", "inspection_number"])}</td>
                 )}
-                <td className="p-3 border-b">{getField(form.general, ["customerName", "fullName"])}</td>
-                <td className="p-3 border-b">{getField(form.general, ["systemType", "phaseType"])}</td>
-                <td className="p-3 border-b">{getField(form.general, ["load", "estimatedLoad"])}</td>
+                <td className="p-3 border-b">{getField(form.general, ["applicantName", "customerName", "fullName"])}</td>
+                <td className="p-3 border-b">{getField(form.general, ["systemType", "phaseType", "voltageSystem"])}</td>
+                <td className="p-3 border-b">{getField(form.general, ["estimatedLoad", "load"])}</td>
                 <td className="p-3 border-b">{form.created_at ? new Date(form.created_at).toLocaleDateString("th-TH") : "-"}</td>
                 <td className="p-3 border-b">{getField(form.general, ["inspectionDate", "inspectionDate2"])}</td>
                 <td className="p-3 border-b">{getField(form.general, ["address"])}</td>

@@ -5,20 +5,29 @@ import { styles } from "../styles/pdfStyles";
 import PanelBoardSection from "./PanelBoardSection";
 import SubCircuitSection from "./SubCircuitSection";
 
-const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
+const LvSystemSection = ({ transformer, index, showSectionTitle = true, sectionPrefix = "5" }) => {
   const lvSystem = transformer?.lvSystem || {};
+  
+  // Determine section numbers based on prefix
+  // For Condo: section 2.14-2.22
+  // For EV Charger: section 5.1-5.4
+  const mainSection = sectionPrefix === "2" ? "2.14" : "5.1";
+  const breakerSection = sectionPrefix === "2" ? "2.15" : "5.2";
+  const groundingSection = sectionPrefix === "2" ? "2.16" : "5.3";
+  const systemSection = sectionPrefix === "2" ? "2.17" : "5.4";
+  const sectionTitle = sectionPrefix === "2" ? "ระบบไฟฟ้าแรงต่ำ" : "ระบบจำหน่ายแรงต่ำ";
   
   return (
     <View style={{ paddingTop: 4 }}>
       {showSectionTitle && index === 0 && (
-        <Text style={styles.sectionTitle}>5. ระบบจำหน่ายแรงต่ำ</Text>
+        <Text style={styles.sectionTitle}>{sectionPrefix}. {sectionTitle}</Text>
       )}
-      <Text style={styles.subsectionTitle}>5.1 วงจรประธานแรงต่ำ (หม้อแปลงที่ {index + 1})</Text>
+      <Text style={styles.subsectionTitle}>{mainSection} วงจรประธานแรงต่ำ (หม้อแปลงที่ {index + 1})</Text>
       
       <View style={styles.lvTable}>
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>5.1.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน</Text>
+            <Text style={styles.smallText}>{mainSection}.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน</Text>
             <View style={styles.checkboxLine}>
               <Checkbox checked={lvSystem?.standardMok11 === true} />
               <Text style={styles.smallText}> มอก. 11-2553  </Text>
@@ -38,7 +47,7 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
 
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>5.1.2 ชนิดสายตัวนำ</Text>
+            <Text style={styles.smallText}>{mainSection}.2 ชนิดสายตัวนำ</Text>
             <View style={styles.checkboxLine}>
               <Checkbox checked={lvSystem?.conductorIEC01 === true} />
               <Text style={styles.smallText}> IEC01  </Text>
@@ -61,7 +70,7 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
             <Text style={styles.smallText}>
-              5.1.3 ขนาดสายเฟส <Text style={styles.underlineDotted}>{lvSystem?.phaseWireSize || "........................."}</Text> ตร.มม. 
+              {mainSection}.3 ขนาดสายเฟส <Text style={styles.underlineDotted}>{lvSystem?.phaseWireSize || "........................."}</Text> ตร.มม. 
               พิกัดกระแสสายตัวนำประธานต้องไม่น้อยกว่าขนาดปรับตั้งของเมนเซอร์กิตเบรกเกอร์ และสอดคล้องกับขนาดมิเตอร์ตามที่การไฟฟ้าส่วนภูมิภาคกำหนด
             </Text>
           </View>
@@ -76,7 +85,7 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
             <Text style={styles.smallText}>
-              5.1.4 ขนาดสายนิวทรัล <Text style={styles.underlineDotted}>{lvSystem?.neutralWireSize || "........................."}</Text> ตร.มม.
+              {mainSection}.4 ขนาดสายนิวทรัล <Text style={styles.underlineDotted}>{lvSystem?.neutralWireSize || "........................."}</Text> ตร.มม.
             </Text>
           </View>
           <View style={styles.rightColumn}>
@@ -90,7 +99,7 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
             <Text style={styles.smallText}>
-              5.1.5 ระบุเฟสสายตัวนำ โดยใช้สีของฉนวนหรือการทำเครื่องหมายที่สายตัวนำ
+              {mainSection}.5 ระบุเฟสสายตัวนำ โดยใช้สีของฉนวนหรือการทำเครื่องหมายที่สายตัวนำ
             </Text>
           </View>
           <View style={styles.rightColumn}>
@@ -103,7 +112,7 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
 
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>5.1.6 ช่องเดินสายมีความต่อเนื่องทางกล และความมั่นคงแข็งแรงเพียงพอ</Text>
+            <Text style={styles.smallText}>{mainSection}.6 ช่องเดินสายมีความต่อเนื่องทางกล และความมั่นคงแข็งแรงเพียงพอ</Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -115,7 +124,7 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
 
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>5.1.7 วิธีการเดินสาย</Text>
+            <Text style={styles.smallText}>{mainSection}.7 วิธีการเดินสาย</Text>
             <View style={styles.checkboxLine}>
               <Checkbox checked={lvSystem?.wiringOverhead === true} />
               <Text style={styles.smallText}> เดินสายบนลูกถ้วยฉนวนในอากาศ</Text>
@@ -167,10 +176,10 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
           </View>
         </View>
 
-        {/* 5.1.8 ประเภทท่อร้อยสาย */}
+        {/* ประเภทท่อร้อยสาย */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>5.1.8 ประเภทท่อร้อยสาย</Text>
+            <Text style={styles.smallText}>{mainSection}.8 ประเภทท่อร้อยสาย</Text>
             <View style={styles.checkboxLine}>
               <Checkbox checked={lvSystem?.conduitMetalRMC === true} />
               <Text style={styles.smallText}> RMC (Rigid Metal Conduit)  </Text>
@@ -196,18 +205,18 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
           </View>
         </View>
 
-        {/* 5.2 เครื่องป้องกันกระแสเกิน */}
+        {/* เครื่องป้องกันกระแสเกิน */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.subsectionTitle}>5.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์</Text>
-            <Text style={styles.smallText}>5.2.1 เมนเซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898 หรือ IEC 60947-2</Text>
+            <Text style={styles.subsectionTitle}>{breakerSection} เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์</Text>
+            <Text style={styles.smallText}>{breakerSection}.1 เมนเซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898 หรือ IEC 60947-2</Text>
             <Text style={styles.smallText}>
-              5.2.2 เมนเซอร์กิตเบรกเกอร์ขนาด AT <Text style={styles.underlineDotted}>{lvSystem?.mainBreakerSize || "..........................."}</Text> แอมแปร์ (A)
+              {breakerSection}.2 เมนเซอร์กิตเบรกเกอร์ขนาด AT <Text style={styles.underlineDotted}>{lvSystem?.mainBreakerSize || "..........................."}</Text> แอมแปร์ (A)
             </Text>
             <Text style={styles.smallText}>
-              5.2.3 พิกัดทนกระแสลัดวงจร (Ic) <Text style={styles.underlineDotted}>{lvSystem?.shortCircuitRating || "..........................."}</Text> กิโลแอมแปร์ (kA)
+              {breakerSection}.3 พิกัดทนกระแสลัดวงจร (Ic) <Text style={styles.underlineDotted}>{lvSystem?.shortCircuitRating || "..........................."}</Text> กิโลแอมแปร์ (kA)
             </Text>
-            <Text style={styles.smallText}>5.2.4 การป้องกันการรั่วไหลของกระแสลงดิน</Text>
+            <Text style={styles.smallText}>{breakerSection}.4 การป้องกันการรั่วไหลของกระแสลงดิน</Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -229,14 +238,14 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
           </View>
         </View>
 
-        {/* 5.3 ระบบการต่อลงดิน */}
+        {/* ระบบการต่อลงดิน */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.subsectionTitle}>5.3 ระบบการต่อลงดินที่แผงเมนสวิตช์</Text>
+            <Text style={styles.subsectionTitle}>{groundingSection} ระบบการต่อลงดินที่แผงเมนสวิตช์</Text>
             <Text style={styles.smallText}>
-              5.3.1 สายต่อหลักดิน (ตัวนำทองแดง) ขนาด <Text style={styles.underlineDotted}>{lvSystem?.groundWireSize || "..........................."}</Text> ตร.มม.
+              {groundingSection}.1 สายต่อหลักดิน (ตัวนำทองแดง) ขนาด <Text style={styles.underlineDotted}>{lvSystem?.groundWireSize || "..........................."}</Text> ตร.มม.
             </Text>
-            <Text style={styles.smallText}>5.3.2 การต่อลงดินที่แผงเมนสวิตช์</Text>
+            <Text style={styles.smallText}>{groundingSection}.2 การต่อลงดินที่แผงเมนสวิตช์</Text>
             <View style={styles.checkboxLine}>
               <Checkbox checked={lvSystem?.groundingConfig === "single_phase"} />
               <Text style={styles.smallText}> ระบบ 1 เฟส</Text>
@@ -258,10 +267,10 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
           </View>
         </View>
 
-        {/* 5.4 รูปแบบการต่อลงดิน (เลือกหนึ่งอย่าง) */}
+        {/* รูปแบบการต่อลงดิน (เลือกหนึ่งอย่าง) */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.subsectionTitle}>5.4 รูปแบบการต่อลงดินที่แผงเมนสวิตช์ (เลือกหนึ่งอย่าง)</Text>
+            <Text style={styles.subsectionTitle}>{systemSection} รูปแบบการต่อลงดินที่แผงเมนสวิตช์ (เลือกหนึ่งอย่าง)</Text>
             
             <View style={styles.checkboxLine}>
               <Checkbox checked={lvSystem?.groundingSystem === "TN-C-S"} />
@@ -447,7 +456,7 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true }) => {
         {lvSystem?.groundingSystem === "TN-S" && (
           <View style={[styles.tableRow, styles.borderTop]}>
             <View style={styles.leftColumn}>
-              <Text style={styles.smallBoldText}>5.4.1 การต่อลงดินแบบ TN-S ทั้งระบบ</Text>
+              <Text style={styles.smallBoldText}>5.4.1 การต่อลงดินแบบ TN-S ทั้งระบบ  </Text>
               <Text style={styles.smallText}>
                 ค่าความต้านทานการต่อลงดินไม่เกิน 5 โอห์ม มต่องมีการนำใช้มาตรการ
                 ต่อเติม แมแใดาการก่องการราองสำกันเคมใบไม่เกิดลิ่มหอย 25 โอห์ม

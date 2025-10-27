@@ -7,7 +7,7 @@ const OpenStreetMapComponent = dynamic(() => import('@/components/forms/OpenStre
 });
 
 /**
- * GeneralInfoSection - Government form style UI/UX
+ * GeneralInfoSection - Government form style UI/UX for Condo Inspection
  */
 export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
   return (
@@ -22,14 +22,24 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
         
         {/* Form Header Info */}
         <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 text-sm">
+            <div>
+              <label className="block text-gray-600 mb-1">การไฟฟ้า</label>
+              <input
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
+                value={data.office || ""}
+                onChange={e => onChange("office", e.target.value)}
+                placeholder="การไฟฟ้า..."
+              />
+            </div>
             <div>
               <label className="block text-gray-600 mb-1">การตรวจสอบครั้งที่</label>
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.inspectionNo || ""}
-                onChange={e => onChange("inspectionNo", e.target.value)}
+                value={data.inspectionNumber || ""}
+                onChange={e => onChange("inspectionNumber", e.target.value)}
                 placeholder="ครั้งที่"
               />
             </div>
@@ -47,8 +57,8 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.requestNo || ""}
-                onChange={e => onChange("requestNo", e.target.value)}
+                value={data.requestNumber || ""}
+                onChange={e => onChange("requestNumber", e.target.value)}
                 placeholder="เลขที่"
               />
             </div>
@@ -83,8 +93,8 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="text"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.customerName || ""}
-                onChange={e => onChange("customerName", e.target.value)}
+                value={data.applicantName || ""}
+                onChange={e => onChange("applicantName", e.target.value)}
                 placeholder="กรอกชื่อ-นามสกุล"
               />
             </div>
@@ -116,8 +126,8 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <label className="block text-gray-700 font-medium mb-2">ระบบไฟฟ้า</label>
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.systemType || ""}
-                onChange={e => onChange("systemType", e.target.value)}
+                value={data.voltageSystem || ""}
+                onChange={e => onChange("voltageSystem", e.target.value)}
               >
                 <option value="">-- เลือก --</option>
                 <option value="22kV">22 kV</option>
@@ -129,8 +139,8 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
               <input
                 type="number"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
-                value={data.load || ""}
-                onChange={e => onChange("load", e.target.value)}
+                value={data.estimatedLoad || ""}
+                onChange={e => onChange("estimatedLoad", e.target.value)}
                 placeholder="0"
               />
             </div>

@@ -86,14 +86,22 @@ const EVChargerHVExportPDF = ({ formData }) => {
         <HVSystemSection hvSystem={safeData.hvSystem} />
       </Page>
 
-      {/* หน้าที่ 3+: หม้อแปลง + ระบบแรงต่ำ + วงจรย่อย (ต่อเนื่องกัน) */}
+      {/* หน้าที่ 3+: หม้อแปลง (Section 4) + ระบบแรงต่ำ (Section 5) */}
       {safeData.transformers && safeData.transformers.length > 0 ? 
         <Page size="A4" style={styles.page}>
-          <TransformerSection transformers={safeData.transformers} />
+          <TransformerSection 
+            transformers={safeData.transformers} 
+            includeLvSystem={true}
+            sectionPrefix="5"
+          />
         </Page>
         : 
         <Page size="A4" style={styles.page}>
-          <TransformerSection transformers={[]} />
+          <TransformerSection 
+            transformers={[]} 
+            includeLvSystem={true}
+            sectionPrefix="5"
+          />
         </Page>
       }
 

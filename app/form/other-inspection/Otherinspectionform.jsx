@@ -20,9 +20,15 @@ export default function OtherInspectionPage({ initialForm }) {
     signature: otherFormSchema.signature
   });
 
+  const [transformers, setTransformers] = useState([getNewOtherTransformer()]);
+
   useEffect(() => {
     if (initialForm) {
       setFormData(initialForm);
+      // Load transformers data from initialForm
+      if (initialForm.transformers && Array.isArray(initialForm.transformers) && initialForm.transformers.length > 0) {
+        setTransformers(initialForm.transformers);
+      }
     }
   }, [initialForm]);
 
@@ -41,25 +47,6 @@ export default function OtherInspectionPage({ initialForm }) {
       ...prevData,
       [section]: value
     }));
-  };
-  
-
-  const [transformers, setTransformers] = useState([getNewOtherTransformer()]);
-
-  const addTransformer = () => {
-    setTransformers(prev => [...prev, getNewOtherTransformer()]);
-  };
-  
-  const removeTransformer = (index) => {
-    if (transformers.length > 1) {
-      setTransformers(prev => prev.filter((_, i) => i !== index));
-    }
-  };
-
-  const handleTransformerChange = (idx, key, value) => {
-    setTransformers((old) =>
-      old.map((t, i) => (i === idx ? { ...t, [key]: value } : t))
-    );
   };
 
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
@@ -160,27 +147,10 @@ export default function OtherInspectionPage({ initialForm }) {
             <h3 className="text-lg font-bold mb-6">หม้อแปลงไฟฟ้า</h3>
           </div>
           
-          {transformers.map((transformer, index) => (
-            <div key={index}>
-              <TransformerSection
-                transformer={transformer}
-                index={index}
-                onTransformerChange={handleTransformerChange}
-                onRemove={() => removeTransformer(index)}
-                canRemove={transformers.length > 1}
-              />
-            </div>
-          ))}
-          
-          <div className="text-center">
-            <button
-              type="button"
-              onClick={addTransformer}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors duration-200"
-            >
-              เพิ่มหม้อแปลง
-            </button>
-          </div>
+          <TransformerSection
+            value={transformers}
+            onChange={setTransformers}
+          />
         </div>
 
         <InspectionSummarySection 

@@ -4,7 +4,7 @@ import { Checkbox, CheckboxResult } from "../common/FormElements";
 import { styles } from "../styles/pdfStyles";
 import LvSystemSection from "./LvSystemSection";
 
-const TransformerSection = ({ transformers }) => {
+const TransformerSection = ({ transformers, includeLvSystem = false, sectionPrefix = "5" }) => {
   if (!transformers || transformers.length === 0) {
     return (
       <View style={styles.section}>
@@ -435,7 +435,15 @@ const TransformerSection = ({ transformers }) => {
                 </View>
               </View>
               
-              <LvSystemSection transformer={transformer} index={index} showSectionTitle={true} />
+              {/* แสดง LV System เฉพาะเมื่อ includeLvSystem = true (สำหรับ EV Charger) */}
+              {includeLvSystem && (
+                <LvSystemSection 
+                  transformer={transformer} 
+                  index={index} 
+                  showSectionTitle={true}
+                  sectionPrefix={sectionPrefix}
+                />
+              )}
             </View>
           </View>
         );

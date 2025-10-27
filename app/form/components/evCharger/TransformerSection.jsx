@@ -115,22 +115,11 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
       {/* Section 4: หม้อแปลง */}
       <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
         <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-bold">4</span>
-              </div>
-              <h2 className="text-lg font-bold text-gray-800">หม้อแปลง</h2>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-bold">4</span>
             </div>
-            {Array.isArray(value) && (
-              <button
-                type="button"
-                className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                onClick={addTransformer}
-              >
-                เพิ่มหม้อแปลง
-              </button>
-            )}
+            <h2 className="text-lg font-bold text-gray-800">หม้อแปลง</h2>
           </div>
         </div>
 
@@ -551,6 +540,19 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
               </div>
             </div>
           </div>
+
+          {/* Add Transformer Button */}
+          {Array.isArray(value) && (
+            <div className="text-center mt-6">
+              <button
+                type="button"
+                className="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm transition-colors duration-200"
+                onClick={addTransformer}
+              >
+                + เพิ่มหม้อแปลง
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

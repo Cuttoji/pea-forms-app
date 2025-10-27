@@ -52,12 +52,11 @@ const DROPOUT_OPTIONS = [
 ];
 
 export default function HVSystemSection({
-  mode = "above", // "above" = เหนือดิน, "under" = ใต้ดิน
-  sectionNumber = 3, // หรือ 2, ส่งมาจาก parent
+  sectionNumber = 2, // หรือ 3, ส่งมาจาก parent
   value = {},
   onChange = () => {}
 }) {
-  const currentMode = value.mode || mode;
+  const currentMode = value.mode || "above";
   const prefix = `${sectionNumber}.${currentMode === "above" ? 1 : 2}`;
   const items = currentMode === "above" ? HV_ABOVE_ITEMS(prefix) : HV_UNDER_ITEMS(prefix);
 

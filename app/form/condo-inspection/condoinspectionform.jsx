@@ -7,7 +7,7 @@ import InspectionSummarySection from "../components/shared/InspectionSummarySect
 import TransformerSection from "../components/evCharger/TransformerSection";
 import LimitationSection from "../components/shared/LimitationSection";
 import SignaturePadSection from "../components/shared/SignaturePadSection";
-import LVSystemSection from "../components/building/LVSystemSection";
+import LVSystemSectionCondo from "../components/building/LVSystemSectionCondo";
 import condoFormSchema, { getNewCondoTransformer } from "@/lib/constants/condoFormSchema";
 import CondoInspectionPDF from '../../../components/pdf/CondoInspectionPDF';
 import { pdf } from "@react-pdf/renderer"; // เพิ่มถ้ายังไม่ได้ import
@@ -21,7 +21,9 @@ export default function CondoInspectionPage(props) {
     general: condoFormSchema.general,
     documents: condoFormSchema.documents,
     hvSystem: condoFormSchema.hvSystem,
-    summary: condoFormSchema.summary || {},
+    lvSystem: condoFormSchema.lvSystem,
+    transformers: condoFormSchema.transformers,
+    summary: condoFormSchema.summary,
     limitation: condoFormSchema.limitation,
     signature: condoFormSchema.signature
   });
@@ -39,8 +41,12 @@ export default function CondoInspectionPage(props) {
   useEffect(() => {
     if (initialForm) {
       setFormData({
-        ...initialForm,
-        summary: initialForm.summary || {}, // fallback ป้องกัน null
+        general: initialForm.general || condoFormSchema.general,
+        documents: initialForm.documents || condoFormSchema.documents,
+        hvSystem: initialForm.hvSystem || condoFormSchema.hvSystem,
+        summary: initialForm.summary || condoFormSchema.summary,
+        limitation: initialForm.limitation || "",
+        signature: initialForm.signature || condoFormSchema.signature,
       });
       if (Array.isArray(initialForm.transformers)) {
         setTransformers(initialForm.transformers);
@@ -82,8 +88,13 @@ export default function CondoInspectionPage(props) {
 
     // รวมข้อมูลทั้งหมด
     const payload = {
-      ...formData,
+      general: formData.general,
+      documents: formData.documents,
+      hvSystem: formData.hvSystem,
       transformers,
+      summary: formData.summary,
+      limitation: formData.limitation,
+      signature: formData.signature,
       created_at: new Date().toISOString(),
     };
 
@@ -161,8 +172,9 @@ export default function CondoInspectionPage(props) {
         />
         
         <HVSystemSection
+          sectionNumber={2}
           value={formData.hvSystem}
-          onChange={value => handleSectionChange("hvSystem", value)}
+          onChange={value => handleSectionObject("hvSystem", value)}
         />
 
         {/* ระบบหม้อแปลง (ตกแต่งใหม่) */}
@@ -210,7 +222,7 @@ export default function CondoInspectionPage(props) {
                   }}
                 />
 
-                <LVSystemSection
+                <LVSystemSectionCondo
                   value={transformer.lvSystem || {}}
                   onChange={(lvData) =>
                     handleTransformerChange(idx, "lvSystem", lvData)
@@ -231,12 +243,11 @@ export default function CondoInspectionPage(props) {
           </button>
         </div>
 
-        <InspectionSummarySection
-          value={formData.summary || {}} // ป้องกัน null
-          onChange={(value) => handleSectionObject("summary", value)}
-        />
         
-        <LimitationSection 
+        <InspectionSummarySection
+          value={formData.summary?.summaryType || ""}
+          onChange={(value) => handleSectionObject("summary", { summaryType: value })}
+        />        <LimitationSection 
           value={formData.limitation}
           onChange={(value) => handleSectionObject("limitation", value)}
         />

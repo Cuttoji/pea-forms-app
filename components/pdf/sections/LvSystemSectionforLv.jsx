@@ -165,142 +165,143 @@ const LvSystemSectionforLv = ({ lvSystemPEA, panel }) => {
         </View>
 
         {/* 3.1.8 ประเภทท่อร้อยสาย */}
-        <View style={[styles.tableRow, styles.borderTop]}>
-          <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>3.1.8 ประเภทท่อร้อยสาย</Text>
-            <View style={styles.checkboxLine}>
-              <Text style={styles.smallText}>ท่อโลหะ  </Text>
-              <Checkbox checked={lvSystemPEA?.conduitType === "RMC"} />
-              <Text style={styles.smallText}> หนา (RMC)  </Text>
-              <Checkbox checked={lvSystemPEA?.conduitType === "IMC"} />
-              <Text style={styles.smallText}> หนาปานกลาง (IMC)  </Text>
-              <Checkbox checked={lvSystemPEA?.conduitType === "EMT"} />
-              <Text style={styles.smallText}> บาง (EMT)</Text>
-            </View>
-            <View style={styles.checkboxLine}>
-              <Text style={styles.smallText}>ท่ออโลหะ  </Text>
-              <Checkbox checked={lvSystemPEA?.conduitType === "RNC"} />
-              <Text style={styles.smallText}> แข็ง (RNC)  </Text>
-              <Checkbox checked={lvSystemPEA?.conduitType === "ENT"} />
-              <Text style={styles.smallText}> อ่อน (ENT)</Text>
-            </View>
-            {lvSystemPEA?.otherConduitType && (
+          <View style={[styles.tableRow, styles.borderTop]}>
+            <View style={styles.leftColumn}>
+              <Text style={styles.smallText}>3.1.8 ประเภทท่อร้อยสาย</Text>
               <View style={styles.checkboxLine}>
-                <Checkbox checked={lvSystemPEA?.conduitType === "other"} />
-                <Text style={styles.smallText}> อื่นๆ </Text>
-                <Text style={styles.underlineDotted}>{lvSystemPEA.otherConduitType}</Text>
+                <Text style={styles.smallText}>ท่อโลหะ  </Text>
+                <Checkbox checked={lvSystemPEA?.conduitType === "RMC"} />
+                <Text style={styles.smallText}> หนา (RMC)  </Text>
+                <Checkbox checked={lvSystemPEA?.conduitType === "IMC"} />
+                <Text style={styles.smallText}> หนาปานกลาง (IMC)  </Text>
+                <Checkbox checked={lvSystemPEA?.conduitType === "EMT"} />
+                <Text style={styles.smallText}> บาง (EMT)</Text>
               </View>
-            )}
-          </View>
-          <View style={styles.rightColumn}>
-            <CheckboxResult 
-              result={lvSystemPEA?.conduitTypeCorrect}
-              detail={lvSystemPEA?.conduitTypeNote}
-            />
-          </View>
-        </View>
-      </View>
-
-      {/* 3.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์ */}
-      <Text style={styles.subsectionTitle}>3.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์ (หรือที่แผ่นประธาน)</Text>
-      
-      <View style={styles.lvTable}>
-        <View style={[styles.tableRow, styles.borderTop]}>
-          <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>3.2.1 เมนเซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898 หรือ IEC 60947-2</Text>
-          </View>
-          <View style={styles.rightColumn}>
-            <CheckboxResult 
-              result={lvSystemPEA?.mainBreakerStandardCorrect}
-              detail={lvSystemPEA?.mainBreakerStandardNote}
-            />
-          </View>
-        </View>
-
-        <View style={[styles.tableRow, styles.borderTop]}>
-          <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>
-              3.2.2 เมนเซอร์กิตเบรกเกอร์ขนาด AT <Text style={styles.underlineDotted}>{lvSystemPEA?.mainBreakerSize || "............"}</Text> แอมแปร์ (A) สอดคล้องกับพิกัดกระแสสายตัวนำประธาน
-            </Text>
-          </View>
-          <View style={styles.rightColumn}>
-            <CheckboxResult 
-              result={lvSystemPEA?.mainBreakerSizeCorrect}
-              detail={lvSystemPEA?.mainBreakerSizeNote}
-            />
-          </View>
-        </View>
-
-        <View style={[styles.tableRow, styles.borderTop]}>
-          <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>
-              3.2.3 พิกัดทนกระแสลัดวงจร (Ic) <Text style={styles.underlineDotted}>{lvSystemPEA?.shortCircuitRating || "............"}</Text> กิโลแอมแปร์ (kA)
-            </Text>
-          </View>
-          <View style={styles.rightColumn}>
-            <CheckboxResult 
-              result={lvSystemPEA?.shortCircuitRatingCorrect}
-              detail={lvSystemPEA?.shortCircuitRatingNote}
-            />
-          </View>
-        </View>
-      </View>
-
-      {/* 3.3 ระบบการต่อลงดินที่แผงเมนสวิตช์ */}
-      <Text style={styles.subsectionTitle}>3.3 ระบบการต่อลงดินที่แผงเมนสวิตช์</Text>
-      
-      <View style={styles.lvTable}>
-        <View style={[styles.tableRow, styles.borderTop]}>
-          <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>
-              3.3.1 สายต่อหลักดิน (ตัวนำทองแดง) ขนาด <Text style={styles.underlineDotted}>{lvSystemPEA?.groundWireSize || "............"}</Text> ตร.มม. สอดคล้องกับขนาดสายตัวนำประธาน ตามตารางที่ 1 ในหน้าที่ 5
-            </Text>
-          </View>
-          <View style={styles.rightColumn}>
-            <CheckboxResult 
-              result={lvSystemPEA?.groundWireSizeCorrect}
-              detail={lvSystemPEA?.groundWireSizeNote}
-            />
-          </View>
-        </View>
-
-        <View style={[styles.tableRow, styles.borderTop]}>
-          <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>3.3.2 การต่อลงดินที่แผงเมนสวิตช์</Text>
-            <View style={styles.checkboxLine}>
-              <Checkbox checked={lvSystemPEA?.groundingConfig === "singlePhase"} />
-              <Text style={styles.smallText}> กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีรางตัวต่อดิน (Ground Bus) และต้องต่อสายดินจากวงจรประธาน (Main Conductor) เข้าสู่รางตัวต่อดินเฉพาะเส้นต่ำนั้นของแผงประธาน (Main Circuit Breaker) ตามมีการไฟฟ้าส่วนภูมิภาค กำหนด</Text>
+              <View style={styles.checkboxLine}>
+                <Text style={styles.smallText}>ท่ออโลหะ  </Text>
+                <Checkbox checked={lvSystemPEA?.conduitType === "RNC"} />
+                <Text style={styles.smallText}> แข็ง (RNC)  </Text>
+                <Checkbox checked={lvSystemPEA?.conduitType === "ENT"} />
+                <Text style={styles.smallText}> อ่อน (ENT)</Text>
+              </View>
+              {lvSystemPEA?.otherConduitType && (
+                <View style={styles.checkboxLine}>
+            <Checkbox checked={lvSystemPEA?.conduitType === "other"} />
+            <Text style={styles.smallText}> อื่นๆ </Text>
+            <Text style={styles.underlineDotted}>{lvSystemPEA.otherConduitType}</Text>
+                </View>
+              )}
             </View>
-            <View style={styles.checkboxLine}>
-              <Checkbox checked={lvSystemPEA?.groundingConfig === "threePhase"} />
-              <Text style={styles.smallText}> กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีรางตัวต่อดิน (Ground Bus) และรางตัวต่อนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายนิวทรัลบริโภค ภายในแผงเมนสวิตช์ ตามที่การไฟฟ้าส่วนภูมิภาค กำหนด</Text>
+            <View style={styles.rightColumn}>
+              <CheckboxResult 
+                result={lvSystemPEA?.conduitTypeCorrect}
+                detail={lvSystemPEA?.conduitTypeNote}
+              />
             </View>
           </View>
-          <View style={styles.rightColumn}>
-            <CheckboxResult 
-              result={lvSystemPEA?.groundingSystemCorrect}
-              detail={lvSystemPEA?.groundingSystemNote}
-            />
-          </View>
-        </View>
-      </View>
+              </View>
 
-      {/* 3.4 รูปแบบการต่อลงดินที่แผงเมนสวิตช์ (เลือกหนึ่งอย่าง) */}
+              {/* 3.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์ */}
+              <Text style={styles.subsectionTitle}>3.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์ (หรือที่แผ่นประธาน)</Text>
+              
+              <View style={styles.lvTable}>
+          <View style={[styles.tableRow, styles.borderTop]}>
+            <View style={styles.leftColumn}>
+              <Text style={styles.smallText}>3.2.1 เมนเซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898 หรือ IEC 60947-2</Text>
+            </View>
+            <View style={styles.rightColumn}>
+              <CheckboxResult 
+                result={lvSystemPEA?.mainBreakerStandardCorrect}
+                detail={lvSystemPEA?.mainBreakerStandardNote}
+              />
+            </View>
+          </View>
+
+          <View style={[styles.tableRow, styles.borderTop]}>
+            <View style={styles.leftColumn}>
+              <Text style={styles.smallText}>
+                3.2.2 เมนเซอร์กิตเบรกเกอร์ขนาด AT <Text style={styles.underlineDotted}>{lvSystemPEA?.mainBreakerSize || "............"}</Text> แอมแปร์ (A) สอดคล้องกับพิกัดกระแสสายตัวนำประธาน
+              </Text>
+            </View>
+            <View style={styles.rightColumn}>
+              <CheckboxResult 
+                result={lvSystemPEA?.mainBreakerSizeCorrect}
+                detail={lvSystemPEA?.mainBreakerSizeNote}
+              />
+            </View>
+          </View>
+
+          <View style={[styles.tableRow, styles.borderTop]}>
+            <View style={styles.leftColumn}>
+              <Text style={styles.smallText}>
+                3.2.3 พิกัดทนกระแสลัดวงจร (Ic) <Text style={styles.underlineDotted}>{lvSystemPEA?.shortCircuitRating || "............"}</Text> กิโลแอมแปร์ (kA)
+              </Text>
+            </View>
+            <View style={styles.rightColumn}>
+              <CheckboxResult 
+                result={lvSystemPEA?.shortCircuitRatingCorrect}
+                detail={lvSystemPEA?.shortCircuitRatingNote}
+              />
+            </View>
+          </View>
+              </View>
+
+              {/* 3.3 ระบบการต่อลงดินที่แผงเมนสวิตช์ */}
+                <Text style={styles.subsectionTitle}>3.3 ระบบการต่อลงดินที่แผงเมนสวิตช์</Text>
+                
+                <View style={styles.lvTable}>
+                  <View style={[styles.tableRow, styles.borderTop]}>
+                    <View style={styles.leftColumn}>
+                  <Text style={styles.smallText}>
+                    3.3.1 สายต่อหลักดิน (ตัวนำทองแดง) ขนาด <Text style={styles.underlineDotted}>{lvSystemPEA?.groundWireSize || "............"}</Text> ตร.มม. สอดคล้องกับขนาดสายตัวนำประธาน ตามตารางที่ 1 ในหน้าที่ 5
+                  </Text>
+                    </View>
+                    <View style={styles.rightColumn}>
+                  <CheckboxResult 
+                    result={lvSystemPEA?.groundWireSizeCorrect}
+                    detail={lvSystemPEA?.groundWireSizeNote}
+                  />
+                    </View>
+                  </View>
+
+                  <View style={[styles.tableRow, styles.borderTop]}>
+                    <View style={styles.leftColumn}>
+                  <Text style={styles.smallText}>3.3.2 การต่อลงดินที่แผงเมนสวิตช์</Text>
+                  <View style={styles.checkboxLine}>
+                    <Checkbox checked={lvSystemPEA?.systemType === "singlePhase"} />
+                    <Text style={styles.smallText}> กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีรางตัวต่อดิน (Ground Bus) และต้องต่อสายดินจากวงจรประธาน (Main Conductor) เข้าสู่รางตัวต่อดินเฉพาะเส้นต่ำนั้นของแผงประธาน (Main Circuit Breaker) ตามที่การไฟฟ้าส่วนภูมิภาค กำหนด</Text>
+                  </View>
+                  <View style={styles.checkboxLine}>
+                    <Checkbox checked={lvSystemPEA?.systemType === "threePhase"} />
+                    <Text style={styles.smallText}> กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีรางตัวต่อดิน (Ground Bus) และรางตัวต่อนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายนิวทรัลบริภายในแผงเมนสวิตช์ ตามที่การไฟฟ้าส่วนภูมิภาค กำหนด</Text>
+                  </View>
+                  {/* หากต้องการให้การเลือกพิจารณาจากขนาดเบรกเกอร์ ให้ตั้งค่าสถานะระบบ (systemType) ในฟอร์ม เช่น "singlePhase" หรือ "threePhase" */}
+                    </View>
+                    <View style={styles.rightColumn}>
+                  <CheckboxResult 
+                    result={lvSystemPEA?.groundingSystemCorrect}
+                    detail={lvSystemPEA?.groundingSystemNote}
+                  />
+                    </View>
+                  </View>
+                </View>
+
+                {/* 3.4 รูปแบบการต่อลงดินที่แผงเมนสวิตช์ (เลือกหนึ่งอย่าง) */}
       <Text style={styles.subsectionTitle}>3.4 รูปแบบการต่อลงดินที่แผงเมนสวิตช์ (เลือกหนึ่งอย่าง)</Text>
       
       <View style={styles.lvTable}>
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
             <View style={styles.checkboxLine}>
-              <Checkbox checked={lvSystemPEA?.groundingSystem === "TN-C-S"} />
+              <Checkbox checked={lvSystemPEA?.groundingConfig === "TN-C-S"} />
               <Text style={styles.smallText}> TN-C-S ทั้งระบบ</Text>
             </View>
             <View style={styles.checkboxLine}>
-              <Checkbox checked={lvSystemPEA?.groundingSystem === "TT"} />
+              <Checkbox checked={lvSystemPEA?.groundingConfig === "TT"} />
               <Text style={styles.smallText}> TT ทั้งระบบ</Text>
             </View>
             <View style={styles.checkboxLine}>
-              <Checkbox checked={lvSystemPEA?.groundingSystem === "TT_partial"} />
+              <Checkbox checked={lvSystemPEA?.groundingConfig === "TT_partial"} />
               <Text style={styles.smallText}> TT บางส่วน (ดัมพ์จาก TN-C-S และ โหลดเป็น TT)</Text>
             </View>
           </View>
@@ -310,16 +311,26 @@ const LvSystemSectionforLv = ({ lvSystemPEA, panel }) => {
         </View>
 
         {/* 3.4.1 TN-C-S ทั้งระบบ */}
-        {lvSystemPEA?.groundingSystem === "TN-C-S" && (
+        {lvSystemPEA?.groundingConfig === "TN-C-S" && (
           <View style={[styles.tableRow, styles.borderTop]}>
             <View style={styles.leftColumn}>
               <Text style={styles.smallBoldText}>3.4.1 กรณีต่อลงดินแบบ TN-C-S ทั้งระบบ (ต้องปฏิบัติตามภาคผนวก ก - ค )</Text>
+              <View style={styles.checkboxLine}>
+                <Checkbox checked={lvSystemPEA?.tncsLoadBalance} />
+                <Text style={styles.smallText}> ก) ตำแหน่งตัวทำเบาการต่อสายดิน...โดยมี (Ω)</Text>
+              </View>
               <Text style={styles.smallText}>
-                ก) มีการระบุเส้นความเสี่ยงต่อบาร โมมีเอกสารที่บุคครางสมันสิ่งครู่
-                บริภัณฑ์ไฟฟ้าอื่นต้องลงส่งแบบ TN-C-S กับทรวะบริมัพชั่วโดยเยนอบุฟไฟฟ้า
-                หรือโครงายบอบเหฟที่รีติดลงส่งแบบ TT โหตทีลงคืน หรือมีชุระของห้วางเม็ยอย
-                การ 2.50 เมตร ระหว่างส่งจุดภูกมรากฟเอง ที่เองห้วางรโมได้
+                   กรณีมีเซอร์ 15(45), 5(45) A ต้องดึงเด็จตะเบราดิฟทำเบาการต่อสายดินไม่เกิน 2.5 Ω{"\n"}
+                   กรณีมีเซอร์ 30(100), 5((100) A ต้องดึงเด็จตะเบราดิฟทำเบาการต่อสายดินไม่เกิน 1.25 Ω
               </Text>
+              <View style={styles.checkboxLine}>
+                <Checkbox checked={lvSystemPEA?.tncsNeutralProtection} />
+                <Text style={styles.smallText}> ข) ที่ระบบป้องกันแผงที่และหัวทำไฟฟ้าคนและแรงทั้งไฟฟ้าเกิน และต้องปิ้องกันเมนท์ผ่านและแรงทั้งไฟฟ้าเกิน สำหนับป้องกันเป็นระบูรบบอบควบเดียงที่มีต้าลลแว่ว</Text>
+              </View>
+              <View style={styles.checkboxLine}>
+                <Checkbox checked={lvSystemPEA?.tncsTouchVoltageProtection} />
+                <Text style={styles.smallText}> ค) ของดังสุดกระนี่วกรอื่นให้อบดำเบราดินระโตสเดินด (Touch Voltage) ที่เกิจบริเทิยถ้าพักบินตรับ 70 โวลต์ ซึ่งบูรกถมดำเก่จได้เอ้งฟัดัมทั่อธราบีระรอกของบุมะลู้งไฟฟ้า โอพมเสาย่อดึงคู้แระเนื่อมไม่ขึ้นทุกเล็บ รวมลัดสะเนื่ยภขงที่พิลและยาเมดิชอกหรือบกันทำปิมใบเดสำด 5 จัมทที่</Text>
+              </View>
             </View>
             <View style={styles.rightColumn}>
               <CheckboxResult 
@@ -331,12 +342,13 @@ const LvSystemSectionforLv = ({ lvSystemPEA, panel }) => {
         )}
 
         {/* 3.4.2 TT ทั้งระบบ */}
-        {lvSystemPEA?.groundingSystem === "TT" && (
+        {lvSystemPEA?.groundingConfig === "TT" && (
           <View style={[styles.tableRow, styles.borderTop]}>
             <View style={styles.leftColumn}>
               <Text style={styles.smallBoldText}>3.4.2 กรณีต่อลงดินแบบ TT ทั้งระบบ ( ต้องตามมาตรพดี้ ก) และ ข) )</Text>
               <Text style={styles.smallText}>
-                ก) ติดตั้งเครื่องตัดไฟรั่ว (RCD) ทุกวงจรบริการฟ้าทั้งเป็น หรือภายเหตุ่วตัดไฟฟ้า ไม่ว่า จะเป็นรักษาทนการลิดประจุยนบุรฟไฟฟ้า หรือรีไม่ครอน
+                ก) ติดตั้งเครื่องตัดไฟรั่ว (RCD) ทุกวงจรบริการฟ้าทั้งเป็น หรือภายเหตุ่วตัดไฟฟ้า ไม่ว่า จะเป็นรักษาทนการลิดประจุยนบุรฟไฟฟ้า หรือรีไม่ครอน{"\n"}{"\n"}
+                ข) ต้องต้ระบบป้องกันเมนท์รีบต่นไฟฟ้าคนและแรงทั้งไฟฟ้าเกิน ส่าหนั่วของต้อตังในขนไว้ให้เท้าหรือจะช่จจระบูรบบขดไฟใฟใต้องไฟฟ้า
               </Text>
             </View>
             <View style={styles.rightColumn}>
@@ -349,12 +361,15 @@ const LvSystemSectionforLv = ({ lvSystemPEA, panel }) => {
         )}
 
         {/* 3.4.3 TT บางส่วน */}
-        {lvSystemPEA?.groundingSystem === "TT_partial" && (
+        {lvSystemPEA?.groundingConfig === "TT_partial" && (
           <View style={[styles.tableRow, styles.borderTop]}>
             <View style={styles.leftColumn}>
               <Text style={styles.smallBoldText}>3.4.3 กรณีต่อลงดินแบบ TT บางส่วน</Text>
               <Text style={styles.smallText}>
-                (รายละเอียดตามเอกสารแนบ)
+                3.4.3.1 มาตรการที่ต้องดำเนินการให้ครบถึงถมยนตี (ก – ค){"\n"}{"\n"}
+                ก) มีการระเย็มความเสื่อจต้อนจะอ ไม่มีอตาควาที่เทคครอะสมคัดีครง บริเท็บให้ใฟฟ้าเข็ฟต่อสายดินแบบ TN-C-S กับเทรอจรับแล้างลิงจะโดยบอนไฟใฟเว้น หรือใคระยานยดใฟทั้งไฟฟ้าที่ต้องต้องบูน TT ใดจดชั้นอก หรือชั้อบีระจ่วงโจมว่ระจัวบไว้ การ 2.50 เมตร หรือต้องติดเต้มห่ราระอทบมะรั่ง หรือถัมนิวไผล{"\n"}{"\n"}
+                ข) ระอขาหำระบ้างหนดังกิเดิมเขียดระบบ TN-C-S กันระบบ TT ต้องตำเส้น อย่างน้อย 2.00 เมตร{"\n"}{"\n"}
+                ค) มีการต้องดินโปนและหัวต่าเมนบริเท็มนวิอยต้าครึ่งดีดครึ่งระบูรบบบต ไฟใฟ้า ความก่าการไฟฟ้าส่วนภูมิภาคกำหนด
               </Text>
             </View>
             <View style={styles.rightColumn}>

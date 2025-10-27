@@ -13,29 +13,38 @@ Font.register({
 
 // --- Fallback mock data ---
 const mockData = {
-  work_name: "-",
-  approval_number: "-",
-  approval: "-",
-  work_id: "-",
-  inspection_date: "-",
-  operation: false,
-  contractor_work: false,
-  hv_work_volume: "-",
-  hv_work_volume_poles: "-",
-  hv_station: "-",
-  hv_feeder: "-",
-  hv_phase: "-",
-  hv_transformer_kva: "-",
-  lv_work_volume: "-",
-  lv_work_volume_poles: "-",
-  supervisor_name: "-",
-  supervisor_position: "-",
-  supervisor_affiliation: "-",
-  inspection_items: [],
-  inspection_result: "-",
-  user_signature: null,
-  user_position: "-",
-  inspector_signature: null,
+  projectName: "-",
+  approvalNo: "-",
+  approvalDate: "-",
+  jobNo: "-",
+  inspectionDate2: "-",
+  peaType: "",
+  hvAmount: "-",
+  hvPoleCount: "-",
+  stationName: "-",
+  feeder: "-",
+  phase: "-",
+  kva: "-",
+  lvAmount: "-",
+  lvPoleCount: "-",
+  supervisor: "-",
+  position: "-",
+  department: "-",
+  customerName: "-",
+  phone: "-",
+  address: "-",
+  systemType: "-",
+  load: "-",
+  latitude: "-",
+  longitude: "-",
+  houseImage: "",
+  sections: [],
+  summary: {
+    summaryResult: "",
+    inspector1: "",
+    inspectorPosition1: "",
+    inspectorSign1: null,
+  },
 };
 
 // --- Stylesheet ---
@@ -85,14 +94,54 @@ const Checkbox = ({ checked, label }) => (
     <Text>{label}</Text>
   </View>
 );
-const CorrectiveItem = ({ label, status, note }) => (
-  <View style={styles.checklistItem}>
-    <Text style={styles.itemText}>{label}</Text>
-    <Checkbox checked={status === 'ถูกต้อง'} label="ถูกต้อง" />
-    <Checkbox checked={status === 'ต้องแก้ไข'} label="ต้องแก้ไข" />
-    <Text style={{ ...styles.value, flexGrow: 0, minWidth: '50%', display: status === 'ต้องแก้ไข' ? 'block' : 'none' }}> {note || ''} </Text>
-  </View>
-);
+const CorrectiveItem = ({ label, status, note, item }) => {
+  // ตรวจสอบว่าเป็น TR item หรือไม่
+  if (item && item.key === 'tr_3_0') {
+    return (
+      <View style={{ marginBottom: 6, padding: 6, border: '1px solid #999', borderRadius: 3, backgroundColor: '#f9f9f9' }}>
+        <Text style={{ fontSize: 9, fontWeight: 'bold' }}>
+          TR {item.number || '............'} Ø {item.phase ? `${item.phase} เฟส` : '.............'} {item.kva || '.............'} kVA
+        </Text>
+        {Array.isArray(item.type) && item.type.length > 0 && (
+          <View style={{ flexDirection: 'row', marginTop: 3, fontSize: 8 }}>
+            <Checkbox checked={item.type.includes('แขวน')} label="แขวน" />
+            <Checkbox checked={item.type.includes('นั่งร้าน')} label="นั่งร้าน" />
+          </View>
+        )}
+      </View>
+    );
+  }
+
+  // ตรวจสอบฟิลด์พิเศษ
+  const hasOhm = item && 'ohm' in item;
+  const hasSystem = item && 'system' in item;
+  const hasOther = item && 'other' in item;
+
+  return (
+    <View style={styles.checklistItem}>
+      <Text style={styles.itemText}>{label}</Text>
+      <Checkbox checked={status === 'correct'} label="✓" />
+      <Checkbox checked={status === 'fix'} label="×" />
+      <Checkbox checked={!status || status === 'none'} label="-" />
+      <Text style={{ ...styles.value, flexGrow: 0, minWidth: '35%', display: status === 'fix' ? 'flex' : 'none' }}> {note || ''} </Text>
+      
+      {/* แสดงฟิลด์พิเศษ */}
+      {(hasOhm || hasSystem || hasOther) && (
+        <View style={{ width: '100%', marginTop: 2, paddingLeft: 10, fontSize: 7 }}>
+          {hasOhm && (
+            <Text>ค่าความต้านทาน: {item.ohm || '............'} Ω</Text>
+          )}
+          {hasSystem && (
+            <Text>ระบบ: {item.system === '3phase' ? '3 เฟส' : item.system === '1phase' ? '1 เฟส' : '............'}</Text>
+          )}
+          {hasOther && item.other && (
+            <Text>อื่นๆ: {item.other}</Text>
+          )}
+        </View>
+      )}
+    </View>
+  );
+};
 
 // --- Section Components ---
 const HeaderSection = () => (
@@ -108,18 +157,18 @@ const HeaderSection = () => (
 const InfoSection = ({ data }) => (
   <View style={styles.section}>
     <Text style={styles.sectionTitle}>ข้อมูลส่วนหัว</Text>
-    <Field label="ชื่องาน:" value={data.work_name} />
+    <Field label="ชื่องาน:" value={data.general?.projectName} />
     <View style={styles.headerInfoRow}>
-      <Field label="อนุมัติเลขที่:" value={data.approval_number} style={{ width: '48%' }} />
-      <Field label="ลงวันที่:" value={data.approval} style={{ width: '48%' }} />
+      <Field label="อนุมัติเลขที่:" value={data.general?.approvalNo} style={{ width: '48%' }} />
+      <Field label="ลงวันที่:" value={data.general?.approvalDate} style={{ width: '48%' }} />
     </View>
     <View style={styles.headerInfoRow}>
-      <Field label="หมายเลขงาน:" value={data.work_id} style={{ width: '48%' }} />
-      <Field label="วันที่ดำเนินการตรวจ:" value={data.inspection_date} style={{ width: '48%' }} />
+      <Field label="หมายเลขงาน:" value={data.general?.jobNo} style={{ width: '48%' }} />
+      <Field label="วันที่ดำเนินการตรวจ:" value={data.general?.inspectionDate2} style={{ width: '48%' }} />
     </View>
     <View style={{ ...styles.row, marginTop: 5 }}>
-      <Checkbox checked={!!data.operation} label="กฟภ. ดำเนินการ" />
-      <Checkbox checked={!!data.contractor_work} label="งานจ้างฯบริษัท" />
+      <Checkbox checked={data.general?.peaType === 'pea'} label="กฟภ. ดำเนินการ" />
+      <Checkbox checked={data.general?.peaType === 'company'} label="งานจ้างฯบริษัท" />
     </View>
   </View>
 );
@@ -129,44 +178,45 @@ const WorkVolumeSection = ({ data }) => (
     <Text style={styles.sectionTitle}>ปริมาณงาน</Text>
     <Text style={{ fontWeight: 'bold', marginBottom: 2 }}>งานแรงสูง</Text>
     <View style={styles.headerInfoRow}>
-      <Field label="ปริมาณงาน (วงจร-กม.):" value={data.hv_work_volume} style={{ width: '48%' }} />
-      <Field label="จำนวนเสา (ต้น):" value={data.hv_work_volume_poles} style={{ width: '48%' }} />
+      <Field label="ปริมาณงาน (วงจร-กม.):" value={data.general?.hvAmount} style={{ width: '48%' }} />
+      <Field label="จำนวนเสา (ต้น):" value={data.general?.hvPoleCount} style={{ width: '48%' }} />
     </View>
     <View style={styles.headerInfoRow}>
-      <Field label="รับไฟจากสถานี:" value={data.hv_station} style={{ width: '48%' }} />
-      <Field label="ฟีดเดอร์:" value={data.hv_feeder} style={{ width: '48%' }} />
+      <Field label="รับไฟจากสถานี:" value={data.general?.stationName} style={{ width: '48%' }} />
+      <Field label="ฟีดเดอร์:" value={data.general?.feeder} style={{ width: '48%' }} />
     </View>
     <View style={styles.headerInfoRow}>
-      <Field label="เฟสที่ต่อ:" value={data.hv_phase} style={{ width: '48%' }} />
-      <Field label="หม้อแปลงรวม (KVA):" value={data.hv_transformer_kva} style={{ width: '48%' }} />
+      <Field label="เฟสที่ต่อ:" value={data.general?.phase} style={{ width: '48%' }} />
+      <Field label="หม้อแปลงรวม (KVA):" value={data.general?.kva} style={{ width: '48%' }} />
     </View>
     <Text style={{ fontWeight: 'bold', marginBottom: 2, marginTop: 8 }}>งานแรงต่ำ</Text>
     <View style={styles.headerInfoRow}>
-      <Field label="ปริมาณงาน (วงจร-กม.):" value={data.lv_work_volume} style={{ width: '48%' }} />
-      <Field label="จำนวนเสา (ต้น):" value={data.lv_work_volume_poles} style={{ width: '48%' }} />
+      <Field label="ปริมาณงาน (วงจร-กม.):" value={data.general?.lvAmount} style={{ width: '48%' }} />
+      <Field label="จำนวนเสา (ต้น):" value={data.general?.lvPoleCount} style={{ width: '48%' }} />
     </View>
     <Text style={{ fontWeight: 'bold', marginBottom: 2, marginTop: 8 }}>ผู้ควบคุมงาน</Text>
-    <Field label="ชื่อ:" value={data.supervisor_name} />
+    <Field label="ชื่อ:" value={data.general?.supervisor} />
     <View style={styles.headerInfoRow}>
-      <Field label="ตำแหน่ง:" value={data.supervisor_position} style={{ width: '48%' }} />
-      <Field label="สังกัด:" value={data.supervisor_affiliation} style={{ width: '48%' }} />
+      <Field label="ตำแหน่ง:" value={data.general?.position} style={{ width: '48%' }} />
+      <Field label="สังกัด:" value={data.general?.department} style={{ width: '48%' }} />
     </View>
   </View>
 );
 
-const InspectionItemsSection = ({ items }) => (
+const InspectionItemsSection = ({ sections }) => (
   <View style={styles.section}>
     <Text style={styles.sectionTitle}>รายการตรวจสอบ</Text>
-    {Array.isArray(items) && items.length > 0 ? (
-      items.map((category, index) => (
+    {Array.isArray(sections) && sections.length > 0 ? (
+      sections.map((section, index) => (
         <View key={index} style={{ marginBottom: 8 }}>
-          <Text style={{ fontWeight: 'bold', marginBottom: 4 }}>{category.title}</Text>
-          {Array.isArray(category.items) && category.items.map((item, itemIndex) => (
+          <Text style={{ fontWeight: 'bold', marginBottom: 4 }}>{section.title}</Text>
+          {Array.isArray(section.items) && section.items.map((item, itemIndex) => (
             <CorrectiveItem
               key={itemIndex}
               label={item.label}
-              status={item.value}
-              note={item.note}
+              status={item.result}
+              note={item.detail}
+              item={item}
             />
           ))}
         </View>
@@ -182,21 +232,24 @@ const ResultAndSignatureSection = ({ data }) => (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>ผลการตรวจสอบ</Text>
       <View style={{ ...styles.row, paddingLeft: 10 }}>
-        <Checkbox checked={data.inspection_result === 'ถูกต้องตามมาตรฐาน กฟภ.'} label="ตรวจสอบแล้ว ถูกต้องตามมาตรฐาน กฟภ." />
-        <Checkbox checked={data.inspection_result === 'เห็นควรแก้ไข'} label="ตรวจสอบแล้ว เห็นควรแก้ไขให้ถูกต้องตามรายการข้างต้น" />
+        <Checkbox checked={data.summary?.summaryResult === 'correct'} label="ตรวจสอบแล้ว ถูกต้องตามมาตรฐาน กฟภ." />
+        <Checkbox checked={data.summary?.summaryResult === 'fix'} label="ตรวจสอบแล้ว เห็นควรแก้ไขให้ถูกต้องตามรายการข้างต้น" />
       </View>
     </View>
     <View style={styles.signatureSection}>
       <View style={styles.signatureBox}>
-        {data.user_signature && <Image style={styles.signatureImage} src={data.user_signature} alt="" />}
-        <Text style={styles.signatureLine}>(..................................................)</Text>
-        <Text style={{ fontSize: 8 }}>ผู้ขอใช้ไฟฟ้าหรือผู้แทน</Text>
-        <Text style={{ fontSize: 8 }}>ตำแหน่ง: {data.user_position || "-"}</Text>
+        {data.general?.customerName && (
+          <>
+            <Text style={styles.signatureLine}>({data.general.customerName})</Text>
+            <Text style={{ fontSize: 8 }}>ผู้ขอใช้ไฟฟ้าหรือผู้แทน</Text>
+          </>
+        )}
       </View>
       <View style={styles.signatureBox}>
-        {data.inspector_signature && <Image style={styles.signatureImage} src={data.inspector_signature} alt="" />}
-        <Text style={styles.signatureLine}>(..................................................)</Text>
+        {data.summary?.inspectorSign1 && <Image style={styles.signatureImage} src={data.summary.inspectorSign1} alt="" />}
+        <Text style={styles.signatureLine}>({data.summary?.inspector1 || "................................................."})</Text>
         <Text style={{ fontSize: 8 }}>เจ้าหน้าที่การไฟฟ้าส่วนภูมิภาค</Text>
+        <Text style={{ fontSize: 8 }}>ตำแหน่ง: {data.summary?.inspectorPosition1 || "-"}</Text>
       </View>
     </View>
   </>
@@ -208,7 +261,15 @@ const ConstructionInspectionPDF = ({ formData }) => {
   const safeData = {
     ...mockData,
     ...(formData || {}),
-    inspection_items: Array.isArray(formData?.inspection_items) ? formData.inspection_items : [],
+    general: {
+      ...mockData.general,
+      ...(formData?.general || {})
+    },
+    sections: Array.isArray(formData?.sections) ? formData.sections : mockData.sections,
+    summary: {
+      ...mockData.summary,
+      ...(formData?.summary || {})
+    }
   };
 
   return (
@@ -219,7 +280,7 @@ const ConstructionInspectionPDF = ({ formData }) => {
         <Text style={styles.formTitle} fixed>แบบฟอร์มตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจำหน่าย ของ กฟภ.</Text>
         <InfoSection data={safeData} />
         <WorkVolumeSection data={safeData} />
-        <InspectionItemsSection items={safeData.inspection_items} />
+        <InspectionItemsSection sections={safeData.sections} />
         <Text style={styles.docIdFooter} fixed>แบบฟอร์มตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจำหน่าย ของ กฟภ.</Text>
         <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => (`หน้า ${pageNumber} / ${totalPages}`)} fixed />
       </Page>

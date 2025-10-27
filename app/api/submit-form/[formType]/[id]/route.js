@@ -1,0 +1,118 @@
+// app/api/submit-form/[formType]/[id]/route.js
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+export async function PUT(request, context) {
+  const { params } = context;
+  const formTypeFromPath = params.formType;
+  const formId = params.id;
+  let formData;
+
+  try {
+    formData = await request.json();
+  } catch (error) {
+    return NextResponse.json({ error: "ข้อมูลที่ส่งมาไม่ใช่ JSON ที่ถูกต้อง" }, { status: 400 });
+  }
+
+  if (!formTypeFromPath || typeof formTypeFromPath !== "string") {
+    return NextResponse.json({ error: "ไม่พบประเภทของฟอร์ม (formType) ใน URL path" }, { status: 400 });
+  }
+
+  if (!formId) {
+    return NextResponse.json({ error: "ไม่พบ ID ของฟอร์มที่ต้องการอัปเดต" }, { status: 400 });
+  }
+
+  if (!formData || typeof formData !== "object" || Object.keys(formData).length === 0) {
+    return NextResponse.json({ error: "กรุณาส่งข้อมูลฟอร์ม (formData) มาใน request body" }, { status: 400 });
+  }
+
+  // Map formType to table name
+  const tableMap = {
+    "home-inspection": "home_inspection_forms",
+    "condo-inspection": "condo_inspection_forms",
+    "construction-inspection": "construction_inspection",
+    "ev-charger-lv-inspection": "ev_charger_lv_inspection",
+    "ev-charger-hv-inspection": "ev_charger_hv_inspection",
+    "other-inspection": "other_inspection_forms",
+  };
+  const tableName = tableMap[formTypeFromPath];
+  if (!tableName) {
+    return NextResponse.json({ error: "ไม่รองรับประเภทฟอร์มนี้" }, { status: 400 });
+  }
+
+  // Init Supabase
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    return NextResponse.json({ error: "Supabase config ไม่ถูกต้อง" }, { status: 500 });
+  }
+  const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+  // Remove id from formData to avoid conflicts
+  const { id, ...dataToUpdate } = formData;
+
+  const { data, error } = await supabase
+    .from(tableName)
+    .update(dataToUpdate)
+    .eq("id", formId)
+    .select();
+
+  if (error) {
+    console.error("Supabase update error:", error);
+    return NextResponse.json({ error: `เกิดข้อผิดพลาดในการอัปเดตข้อมูล: ${error.message}` }, { status: 400 });
+  }
+
+  if (!data || data.length === 0) {
+    return NextResponse.json({ error: "ไม่พบฟอร์มที่ต้องการอัปเดต" }, { status: 404 });
+  }
+
+  return NextResponse.json({ success: true, data: data[0] });
+}
+
+export async function DELETE(request, context) {
+  const { params } = context;
+  const formTypeFromPath = params.formType;
+  const formId = params.id;
+
+  if (!formTypeFromPath || typeof formTypeFromPath !== "string") {
+    return NextResponse.json({ error: "ไม่พบประเภทของฟอร์ม (formType) ใน URL path" }, { status: 400 });
+  }
+
+  if (!formId) {
+    return NextResponse.json({ error: "ไม่พบ ID ของฟอร์มที่ต้องการลบ" }, { status: 400 });
+  }
+
+  // Map formType to table name
+  const tableMap = {
+    "home-inspection": "home_inspection_forms",
+    "condo-inspection": "condo_inspection_forms",
+    "construction-inspection": "construction_inspection",
+    "ev-charger-lv-inspection": "ev_charger_lv_inspection",
+    "ev-charger-hv-inspection": "ev_charger_hv_inspection",
+    "other-inspection": "other_inspection_forms",
+  };
+  const tableName = tableMap[formTypeFromPath];
+  if (!tableName) {
+    return NextResponse.json({ error: "ไม่รองรับประเภทฟอร์มนี้" }, { status: 400 });
+  }
+
+  // Init Supabase
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    return NextResponse.json({ error: "Supabase config ไม่ถูกต้อง" }, { status: 500 });
+  }
+  const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+  const { error } = await supabase
+    .from(tableName)
+    .delete()
+    .eq("id", formId);
+
+  if (error) {
+    console.error("Supabase delete error:", error);
+    return NextResponse.json({ error: `เกิดข้อผิดพลาดในการลบข้อมูล: ${error.message}` }, { status: 400 });
+  }
+
+  return NextResponse.json({ success: true, message: "ลบฟอร์มสำเร็จ" });
+}
