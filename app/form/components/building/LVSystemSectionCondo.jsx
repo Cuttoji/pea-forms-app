@@ -1,4 +1,5 @@
 import React from "react";
+import FloorSection from "./floor";
 
 /**
  * LVSystemSectionCondo - Low Voltage System Section for Condo Inspection
@@ -52,6 +53,79 @@ export default function LVSystemSectionCondo({ value = {}, onChange }) {
       ))}
     </div>
   );
+
+  // Reusable radio-only section (for 2.17.1, 2.17.3, 2.20.1, 2.20.3, 2.21)
+  const RadioOnlyCheck = ({ label, fieldPrefix }) => {
+    const resultPath = `${fieldPrefix}.result`;
+    const remarkPath = `${fieldPrefix}.remark`;
+    return (
+      <div>
+        {label && <p className="text-sm text-gray-700 font-medium mb-2">{label}</p>}
+        <RadioOption
+          name={`${fieldPrefix}-result`}
+          selectedValue={getField(resultPath)}
+          options={[
+            { label: 'ถูกต้อง', value: 'correct' },
+            { label: 'ต้องแก้ไข', value: 'incorrect' }
+          ]}
+          onSelect={(val) => updateField(resultPath, val)}
+        />
+        {getField(resultPath) === 'incorrect' && (
+          <textarea
+            className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
+            rows={2}
+            value={getField(remarkPath)}
+            onChange={(e) => updateField(remarkPath, e.target.value)}
+            placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
+          />
+        )}
+      </div>
+    );
+  };
+
+  // Reusable input + radio section (for 2.17.2, 2.18, 2.20.2)
+  const InputCheckSection = ({ label, fieldPrefix, inputs }) => {
+    const resultPath = `${fieldPrefix}.result`;
+    const remarkPath = `${fieldPrefix}.remark`;
+    return (
+      <div>
+        {label && <p className="text-sm text-gray-700 font-medium mb-2">{label}</p>}
+        <div className="flex flex-wrap gap-6 mb-2">
+          {inputs.map(({ key, unit, label: inputLabel }) => (
+            <div key={key} className="flex items-center gap-3">
+              <label className="text-sm text-gray-600 min-w-[40px]">{inputLabel || key.toUpperCase()}:</label>
+              <input
+                type="text"
+                className="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
+                value={getField(`${fieldPrefix}.${key}`)}
+                onChange={(e) => updateField(`${fieldPrefix}.${key}`, e.target.value)}
+                placeholder={key.toUpperCase()}
+              />
+              <span className="text-sm text-gray-600">{unit}</span>
+            </div>
+          ))}
+        </div>
+        <RadioOption
+          name={`${fieldPrefix}-result`}
+          selectedValue={getField(resultPath)}
+          options={[
+            { label: 'ถูกต้อง', value: 'correct' },
+            { label: 'ต้องแก้ไข', value: 'incorrect' }
+          ]}
+          onSelect={(val) => updateField(resultPath, val)}
+        />
+        {getField(resultPath) === 'incorrect' && (
+          <textarea
+            className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
+            rows={2}
+            value={getField(remarkPath)}
+            onChange={(e) => updateField(remarkPath, e.target.value)}
+            placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
+          />
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -521,418 +595,14 @@ Ground Fault Protection (GFP)
           </div>
         </div>
 
-        {/* 2.17 แผงจ่ายไฟประจำชั้น */}
-        <div className="space-y-4">
-          <h4 className="text-lg font-bold text-gray-800 border-b-2 border-purple-300 pb-2">
-            2.17 แผงจ่ายไฟประจำชั้น
-          </h4>
-
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
-            {/* เซอร์กิตเบรกเกอร์ตามมาตรฐาน */}
-            <div>
-              <p className="text-sm text-gray-700 font-medium mb-2">2.17.1 เซอร์กิตเบรกเกอร์ตามมาตรฐาน</p>
-              <RadioOption
-                name="floor-cb-standard-result"
-                selectedValue={getField('floorPanel.cb_standard.result')}
-                options={[
-                  { label: 'ถูกต้อง', value: 'correct' },
-                  { label: 'ต้องแก้ไข', value: 'incorrect' }
-                ]}
-                onSelect={(val) => updateField('floorPanel.cb_standard.result', val)}
-              />
-              {getField('floorPanel.cb_standard.result') === 'incorrect' && (
-                <textarea
-                  className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
-                  rows={2}
-                  value={getField('floorPanel.cb_standard.remark')}
-                  onChange={(e) => updateField('floorPanel.cb_standard.remark', e.target.value)}
-                  placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
-                />
-              )}
-            </div>
-
-            {/* Feeder */}
-            <div>
-              <p className="text-sm text-gray-700 font-medium mb-2">2.17.2 Feeder</p>
-              <div className="flex flex-wrap gap-6 mb-2">
-                <div className="flex items-center gap-3">
-                  <label className="text-sm text-gray-600 min-w-[40px]">AT:</label>
-                  <input
-                    type="text"
-                    className="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                    value={getField('floorPanel.feeder.at')}
-                    onChange={(e) => updateField('floorPanel.feeder.at', e.target.value)}
-                    placeholder="AT"
-                  />
-                  <span className="text-sm text-gray-600">A</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <label className="text-sm text-gray-600 min-w-[40px]">AF:</label>
-                  <input
-                    type="text"
-                    className="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                    value={getField('floorPanel.feeder.af')}
-                    onChange={(e) => updateField('floorPanel.feeder.af', e.target.value)}
-                    placeholder="AF"
-                  />
-                  <span className="text-sm text-gray-600">A</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <label className="text-sm text-gray-600 min-w-[40px]">IC:</label>
-                  <input
-                    type="text"
-                    className="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                    value={getField('floorPanel.feeder.ic')}
-                    onChange={(e) => updateField('floorPanel.feeder.ic', e.target.value)}
-                    placeholder="IC"
-                  />
-                  <span className="text-sm text-gray-600">kA</span>
-                </div>
-              </div>
-              <RadioOption
-                name="floor-feeder-result"
-                selectedValue={getField('floorPanel.feeder.result')}
-                options={[
-                  { label: 'ถูกต้อง', value: 'correct' },
-                  { label: 'ต้องแก้ไข', value: 'incorrect' }
-                ]}
-                onSelect={(val) => updateField('floorPanel.feeder.result', val)}
-              />
-              {getField('floorPanel.feeder.result') === 'incorrect' && (
-                <textarea
-                  className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
-                  rows={2}
-                  value={getField('floorPanel.feeder.remark')}
-                  onChange={(e) => updateField('floorPanel.feeder.remark', e.target.value)}
-                  placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
-                />
-              )}
-            </div>
-
-            {/* ขั้วต่อสายดิน */}
-            <div>
-              <p className="text-sm text-gray-700 font-medium mb-2">2.17.3 ขั้วต่อสายดิน</p>
-              <RadioOption
-                name="floor-ground-bus-result"
-                selectedValue={getField('floorPanel.ground_bus.result')}
-                options={[
-                  { label: 'ถูกต้อง', value: 'correct' },
-                  { label: 'ต้องแก้ไข', value: 'incorrect' }
-                ]}
-                onSelect={(val) => updateField('floorPanel.ground_bus.result', val)}
-              />
-              {getField('floorPanel.ground_bus.result') === 'incorrect' && (
-                <textarea
-                  className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
-                  rows={2}
-                  value={getField('floorPanel.ground_bus.remark')}
-                  onChange={(e) => updateField('floorPanel.ground_bus.remark', e.target.value)}
-                  placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
-                />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* 2.18 เซอร์กิตเบรกเกอร์ด้านไฟเข้าของมิเตอร์ */}
-        <div className="space-y-4">
-          <h4 className="text-lg font-bold text-gray-800 border-b-2 border-purple-300 pb-2">
-            2.18 เซอร์กิตเบรกเกอร์ด้านไฟเข้าของมิเตอร์
-          </h4>
-
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3">
-            <div className="flex flex-wrap gap-6">
-              <div className="flex items-center gap-3">
-                <label className="text-sm text-gray-600 min-w-[40px]">AT:</label>
-                <input
-                  type="text"
-                  className="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                  value={getField('meterBreaker.at')}
-                  onChange={(e) => updateField('meterBreaker.at', e.target.value)}
-                  placeholder="AT"
-                />
-                <span className="text-sm text-gray-600">A</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <label className="text-sm text-gray-600 min-w-[40px]">AF:</label>
-                <input
-                  type="text"
-                  className="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                  value={getField('meterBreaker.af')}
-                  onChange={(e) => updateField('meterBreaker.af', e.target.value)}
-                  placeholder="AF"
-                />
-                <span className="text-sm text-gray-600">A</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <label className="text-sm text-gray-600 min-w-[40px]">IC:</label>
-                <input
-                  type="text"
-                  className="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                  value={getField('meterBreaker.ic')}
-                  onChange={(e) => updateField('meterBreaker.ic', e.target.value)}
-                  placeholder="IC"
-                />
-                <span className="text-sm text-gray-600">kA</span>
-              </div>
-            </div>
-            <RadioOption
-              name="meter-breaker-result"
-              selectedValue={getField('meterBreaker.result')}
-              options={[
-                { label: 'ถูกต้อง', value: 'correct' },
-                { label: 'ต้องแก้ไข', value: 'incorrect' }
-              ]}
-              onSelect={(val) => updateField('meterBreaker.result', val)}
-            />
-            {getField('meterBreaker.result') === 'incorrect' && (
-              <textarea
-                className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
-                rows={2}
-                value={getField('meterBreaker.remark')}
-                onChange={(e) => updateField('meterBreaker.remark', e.target.value)}
-                placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
-              />
-            )}
-          </div>
-        </div>
-
-        {/* 2.19 สายตัวนำประธานเข้าห้องชุด */}
-        <div className="space-y-4">
-          <h4 className="text-lg font-bold text-gray-800 border-b-2 border-purple-300 pb-2">
-            2.19 สายตัวนำประธานเข้าห้องชุด
-          </h4>
-
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">ชนิด:</label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                  value={getField('roomConductor.type')}
-                  onChange={(e) => updateField('roomConductor.type', e.target.value)}
-                  placeholder="ชนิดสายไฟ"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">ขนาด:</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                    value={getField('roomConductor.size')}
-                    onChange={(e) => updateField('roomConductor.size', e.target.value)}
-                    placeholder="ขนาด"
-                  />
-                  <span className="text-sm text-gray-600">ตร.มม.</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-600 mb-2">วิธีการเดินสาย:</label>
-              <div className="flex flex-wrap gap-3">
-                {[
-                  { label: 'ท่อร้อยสาย (Conduit)', value: 'conduit' },
-                  { label: 'รางเดินสาย (Wire Way)', value: 'wireway' },
-                  { label: 'อื่นๆ', value: 'other' }
-                ].map(opt => (
-                  <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={(getField('roomConductor.methods', []) || []).includes(opt.value)}
-                      onChange={(e) => {
-                        const current = getField('roomConductor.methods', []) || [];
-                        const updated = e.target.checked 
-                          ? [...current, opt.value]
-                          : current.filter(v => v !== opt.value);
-                        updateField('roomConductor.methods', updated);
-                      }}
-                      className="w-4 h-4 text-purple-600 focus:ring-purple-500"
-                    />
-                    <span className="text-sm text-gray-700">{opt.label}</span>
-                  </label>
-                ))}
-              </div>
-              {(getField('roomConductor.methods', []) || []).includes('other') && (
-                <input
-                  type="text"
-                  className="mt-2 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                  value={getField('roomConductor.other')}
-                  onChange={(e) => updateField('roomConductor.other', e.target.value)}
-                  placeholder="ระบุวิธีการอื่นๆ"
-                />
-              )}
-            </div>
-
-            <RadioOption
-              name="room-conductor-result"
-              selectedValue={getField('roomConductor.result')}
-              options={[
-                { label: 'ถูกต้อง', value: 'correct' },
-                { label: 'ต้องแก้ไข', value: 'incorrect' }
-              ]}
-              onSelect={(val) => updateField('roomConductor.result', val)}
-            />
-            {getField('roomPanel.cb_standard.result') === 'incorrect' && (
-                <textarea
-                  className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
-                  rows={2}
-                  value={getField('roomPanel.cb_standard.remark')}
-                  onChange={(e) => updateField('roomPanel.cb_standard.remark', e.target.value)}
-                  placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
-                />
-              )}
-          </div>
-        </div>
-
-        {/* 2.20 แผงจ่ายไฟในห้องชุด */}
-        <div className="space-y-4">
-          <h4 className="text-lg font-bold text-gray-800 border-b-2 border-purple-300 pb-2">
-            2.20 แผงจ่ายไฟในห้องชุด
-          </h4>
-
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
-            {/* เซอร์กิตเบรกเกอร์ตามมาตรฐาน */}
-            <div>
-              <p className="text-sm text-gray-700 font-medium mb-2">2.20.1 เซอร์กิตเบรกเกอร์ตามมาตรฐาน</p>
-              <RadioOption
-                name="room-panel-cb-result"
-                selectedValue={getField('roomPanel.cb_standard.result')}
-                options={[
-                  { label: 'ถูกต้อง', value: 'correct' },
-                  { label: 'ต้องแก้ไข', value: 'incorrect' }
-                ]}
-                onSelect={(val) => updateField('roomPanel.cb_standard.result', val)}
-              />
-              {getField('roomPanel.cb_standard.result') === 'incorrect' && (
-                <textarea
-                  className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
-                  rows={2}
-                  value={getField('roomPanel.cb_standard.remark')}
-                  onChange={(e) => updateField('roomPanel.cb_standard.remark', e.target.value)}
-                  placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
-                />
-              )}
-            </div>
-
-            {/* Meter */}
-            <div>
-              <p className="text-sm text-gray-700 font-medium mb-2">2.20.2 Meter</p>
-              <div className="flex flex-wrap gap-6 mb-2">
-                <div className="flex items-center gap-3">
-                  <label className="text-sm text-gray-600 min-w-[40px]">AT:</label>
-                  <input
-                    type="text"
-                    className="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                    value={getField('roomPanel.meter.at')}
-                    onChange={(e) => updateField('roomPanel.meter.at', e.target.value)}
-                    placeholder="AT"
-                  />
-                  <span className="text-sm text-gray-600">A</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <label className="text-sm text-gray-600 min-w-[40px]">AF:</label>
-                  <input
-                    type="text"
-                    className="w-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                    value={getField('roomPanel.meter.af')}
-                    onChange={(e) => updateField('roomPanel.meter.af', e.target.value)}
-                    placeholder="AF"
-                  />
-                  <span className="text-sm text-gray-600">A</span>
-                </div>
-              </div>
-              <RadioOption
-                name="room-panel-meter-result"
-                selectedValue={getField('roomPanel.meter.result')}
-                options={[
-                  { label: 'ถูกต้อง', value: 'correct' },
-                  { label: 'ต้องแก้ไข', value: 'incorrect' }
-                ]}
-                onSelect={(val) => updateField('roomPanel.meter.result', val)}
-              />
-              {getField('roomPanel.meter.result') === 'incorrect' && (
-                <textarea
-                  className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
-                  rows={2}
-                  value={getField('roomPanel.meter.remark')}
-                  onChange={(e) => updateField('roomPanel.meter.remark', e.target.value)}
-                  placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
-                />
-              )}
-            </div>
-
-            {/* IC */}
-            <div>
-              <p className="text-sm text-gray-700 font-medium mb-2">2.20.3 IC</p>
-              <RadioOption
-                name="room-panel-ic-result"
-                selectedValue={getField('roomPanel.ic.result')}
-                options={[
-                  { label: 'ถูกต้อง', value: 'correct' },
-                  { label: 'ต้องแก้ไข', value: 'incorrect' }
-                ]}
-                onSelect={(val) => updateField('roomPanel.ic.result', val)}
-              />
-              {getField('roomPanel.ic.result') === 'incorrect' && (
-                <textarea
-                  className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
-                  rows={2}
-                  value={getField('roomPanel.ic.remark')}
-                  onChange={(e) => updateField('roomPanel.ic.remark', e.target.value)}
-                  placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
-                />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* 2.21 แผงจ่ายไฟในห้องชุดต้องมีขั้วต่อสายดิน */}
-        <div className="space-y-4">
-          <h4 className="text-lg font-bold text-gray-800 border-b-2 border-purple-300 pb-2">
-            2.21 แผงจ่ายไฟในห้องชุดต้องมีขั้วต่อสายดิน
-          </h4>
-
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3">
-            <RadioOption
-              name="room-panel-ground-bus-result"
-              selectedValue={getField('roomPanelGroundBus.result')}
-              options={[
-                { label: 'ถูกต้อง', value: 'correct' },
-                { label: 'ต้องแก้ไข', value: 'incorrect' }
-              ]}
-              onSelect={(val) => updateField('roomPanelGroundBus.result', val)}
-            />
-            {getField('roomPanelGroundBus.result') === 'incorrect' && (
-              <textarea
-                className="mt-2 w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
-                rows={2}
-                value={getField('roomPanelGroundBus.remark')}
-                onChange={(e) => updateField('roomPanelGroundBus.remark', e.target.value)}
-                placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
-              />
-            )}
-          </div>
-        </div>
-
-        {/* 2.22 อื่นๆ */}
-        <div className="space-y-4">
-          <h4 className="text-lg font-bold text-gray-800 border-b-2 border-purple-300 pb-2">
-            2.22 อื่นๆ
-          </h4>
-
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <textarea
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm resize-none"
-              rows={6}
-              value={getField('other')}
-              onChange={(e) => updateField('other', e.target.value)}
-              placeholder="กรุณากรอกรายละเอียดเพิ่มเติม..."
-            />
-          </div>
-        </div>
+        {/* ใช้ FloorSection สำหรับ 2.17-2.21 */}
+        <FloorSection
+          value={value}
+          onChange={onChange}
+          getField={getField}
+          updateField={updateField}
+          RadioOption={RadioOption}
+        />
       </div>
     </div>
   );

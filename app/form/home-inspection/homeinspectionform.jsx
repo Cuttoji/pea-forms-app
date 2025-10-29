@@ -47,17 +47,7 @@ export default function HomeInspectionPage({ initialForm }) {
   // ฟังก์ชันบันทึกหรือส่งฟอร์ม (ส่งไป API เท่านั้น)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // ตรวจสอบความครบถ้วนของข้อมูลก่อน submit
-    const { validateAndScroll } = await import('@/lib/utils/formValidationHelper');
-    const isValid = validateAndScroll(form, 'Home');
-    
-    if (!isValid) {
-      return; // หยุดการ submit ถ้าข้อมูลไม่ครบ
-    }
-    
     setIsSubmitting(true);
-
     try {
       const response = await fetch('/api/submit-form/home-inspection', {
         method: 'POST',

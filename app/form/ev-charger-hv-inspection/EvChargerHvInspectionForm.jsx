@@ -127,15 +127,7 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // ตรวจสอบความครบถ้วนของข้อมูลก่อน submit
-    const { validateAndScroll } = await import('@/lib/utils/formValidationHelper');
-    const isValid = validateAndScroll(form, 'HV');
-    
-    if (!isValid) {
-      return; // หยุดการ submit ถ้าข้อมูลไม่ครบ
-    }
-
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/submit-form/ev-charger-hv-inspection", {
         method: "POST",

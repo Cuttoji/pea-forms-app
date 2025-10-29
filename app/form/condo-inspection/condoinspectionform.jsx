@@ -85,28 +85,17 @@ export default function CondoInspectionPage(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // ตรวจสอบความครบถ้วนของข้อมูลก่อน submit
-    const { validateAndScroll } = await import('@/lib/utils/formValidationHelper');
-    
-    // รวมข้อมูลทั้งหมด
+    // รวมข้อมูลฟอร์มทั้งหมด
     const payload = {
       general: formData.general,
       documents: formData.documents,
       hvSystem: formData.hvSystem,
-      transformers,
+      lvSystem: formData.lvSystem,
+      transformers: transformers,
       summary: formData.summary,
       limitation: formData.limitation,
       signature: formData.signature,
-      created_at: new Date().toISOString(),
     };
-    
-    const isValid = validateAndScroll(payload, 'Condo');
-    
-    if (!isValid) {
-      return; // หยุดการ submit ถ้าข้อมูลไม่ครบ
-    }
-
     try {
       const response = await fetch("/api/submit-form/condo-inspection", {
         method: "POST",

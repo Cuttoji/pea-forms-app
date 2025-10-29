@@ -89,15 +89,6 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb, mod
   // ฟังก์ชันบันทึกหรือส่งฟอร์ม (ส่งไป API เท่านั้น)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // ตรวจสอบความครบถ้วนของข้อมูลก่อน submit
-    const { validateAndScroll } = await import('@/lib/utils/formValidationHelper');
-    const isValid = validateAndScroll(form, 'LV');
-    
-    if (!isValid) {
-      return; // หยุดการ submit ถ้าข้อมูลไม่ครบ
-    }
-    
     setIsSubmitting(true);
     try {
       let endpoint, method;

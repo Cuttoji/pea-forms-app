@@ -56,21 +56,16 @@ export default function OtherInspectionPage({ initialForm }) {
   // ส่งข้อมูลไป API /api/submit-form/other-inspection
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // ตรวจสอบความครบถ้วนของข้อมูลก่อน submit
-    const { validateAndScroll } = await import('@/lib/utils/formValidationHelper');
-    
+    // สร้าง payload จากข้อมูลฟอร์ม
     const payload = {
-      ...formData,
-      transformers,
+      general: formData.general,
+      documents: formData.documents,
+      hvSystem: formData.hvSystem,
+      transformers: transformers,
+      summary: formData.summary,
+      limitation: formData.limitation,
+      signature: formData.signature,
     };
-    
-    const isValid = validateAndScroll(payload, 'Other');
-    
-    if (!isValid) {
-      return; // หยุดการ submit ถ้าข้อมูลไม่ครบ
-    }
-    
     try {
       const response = await fetch('/api/submit-form/other-inspection', {
         method: 'POST',
