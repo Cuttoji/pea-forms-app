@@ -6,7 +6,7 @@ const INSPECTION_ITEMS = [
     label: "2.1 สายตัวนำประธานเข้าอาคาร",
     subItems: [
       {
-        label: "ก) สายไฟฟ้าเป็นไปตามมาตรฐาน มอก. 11-2553 หรือ มอก. 293-2541 หรือ IEC 60502",
+        standardType: true // ใช้สำหรับ render แบบพิเศษด้านล่าง
       },
       {
         label: "ข) ชนิดและขนาด",
@@ -37,7 +37,7 @@ const INSPECTION_ITEMS = [
   {
     label: "2.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์(บริภัณฑ์ประธาน)",
     subItems: [
-      { label: "ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC60898" },
+      { breakerOptions: true }, // ใช้สำหรับ render แบบพิเศษด้านล่าง
       { 
         label: "ข) เซอร์กิตเบรกเกอร์สอดคล้องกับขนาดมิเตอร์ ขนาด AT......A", 
         isATInput: true // เพิ่ม flag สำหรับ render input ขนาด AT
@@ -57,7 +57,15 @@ const INSPECTION_ITEMS = [
     ],
   }
 ];
-
+const breakerOptions = [
+  {value: "IEC60898", label: "IEC60898"},
+  {value: "IEC60947-2", label: "IEC60947-2"}
+];
+const standardTypes = [
+  { value: " มอก. 11-2553", label: " มอก. 11-2553" },
+  { value: " มอก. 293-2541", label: " มอก. 293-2541" },
+  { value: " IEC 60502", label: " IEC 60502" },
+];
 const WIRE_TYPES = [
   { value: "iec01", label: "IEC 01" },
   { value: "nyy", label: "NYY" },
@@ -163,6 +171,144 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
             <div className="font-semibold text-gray-800 mb-4 text-base border-b border-gray-200 pb-2">
               {section.label}
             </div>
+            {/* ก) มาตรฐาน - แสดงเฉพาะ section 2.1 */}
+            {sectionIdx === 0 && (
+              <div className="mb-6">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="font-medium text-gray-700 mb-3">ก) สายไฟฟ้าเป็นไปตามมาตรฐาน</div>
+                  <div className="flex flex-wrap gap-4 items-center mb-4">
+                    {standardTypes.map(std => (
+                      <label key={std.value} className="inline-flex items-center cursor-pointer">
+                        <input
+                          type="radio"
+                          name="standardType"
+                          value={std.value}
+                          checked={data.standardType === std.value}
+                          onChange={e => onChange("standardType", e.target.value)}
+                          className="text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-gray-700">{std.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  
+                  {/* ผลการตรวจ */}
+                  <div className="border border-gray-200 rounded-lg p-4 bg-white">
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap gap-3">
+                        <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-green-50 cursor-pointer transition-colors">
+                          <input
+                            type="radio"
+                            name="standardResult"
+                            value="ถูกต้อง"
+                            checked={data.standardResult === "ถูกต้อง"}
+                            onChange={() => onChange("standardResult", "ถูกต้อง")}
+                            className="text-green-600 focus:ring-green-500"
+                          />
+                          <span className="ml-2 text-green-700 font-medium">✓ ถูกต้อง</span>
+                        </label>
+                        <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-red-50 cursor-pointer transition-colors">
+                          <input
+                            type="radio"
+                            name="standardResult"
+                            value="ต้องแก้ไข"
+                            checked={data.standardResult === "ต้องแก้ไข"}
+                            onChange={() => onChange("standardResult", "ต้องแก้ไข")}
+                            className="text-red-600 focus:ring-red-500"
+                          />
+                          <span className="ml-2 text-red-700 font-medium">✗ ต้องแก้ไข</span>
+                        </label>
+                      </div>
+                      
+                      {data.standardResult === "ต้องแก้ไข" && (
+                        <div className="mt-3">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            รายละเอียดการแก้ไข
+                          </label>
+                          <textarea
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500 text-gray-700 resize-none"
+                            rows={2}
+                            placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
+                            value={data.standardDetail || ""}
+                            onChange={e => onChange("standardDetail", e.target.value)}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* ก) มาตรฐานเบรกเกอร์ - แสดงเฉพาะ section 2.2 */}
+            {sectionIdx === 1 && (
+              <div className="mb-6">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="font-medium text-gray-700 mb-3">ก) เซอร์กิตเบรกเกอร์ตามมาตรฐาน</div>
+                  <div className="flex flex-wrap gap-4 items-center mb-4">
+                    {breakerOptions.map(opt => (
+                      <label key={opt.value} className="inline-flex items-center cursor-pointer">
+                        <input
+                          type="radio"
+                          name="breakerStandard"
+                          value={opt.value}
+                          checked={data.breakerStandard === opt.value}
+                          onChange={e => onChange("breakerStandard", e.target.value)}
+                          className="text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="ml-2 text-gray-700">{opt.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  
+                  {/* ผลการตรวจ */}
+                  <div className="border border-gray-200 rounded-lg p-4 bg-white">
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap gap-3">
+                        <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-green-50 cursor-pointer transition-colors">
+                          <input
+                            type="radio"
+                            name="breakerResult"
+                            value="ถูกต้อง"
+                            checked={data.breakerResult === "ถูกต้อง"}
+                            onChange={() => onChange("breakerResult", "ถูกต้อง")}
+                            className="text-green-600 focus:ring-green-500"
+                          />
+                          <span className="ml-2 text-green-700 font-medium">✓ ถูกต้อง</span>
+                        </label>
+                        <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-red-50 cursor-pointer transition-colors">
+                          <input
+                            type="radio"
+                            name="breakerResult"
+                            value="ต้องแก้ไข"
+                            checked={data.breakerResult === "ต้องแก้ไข"}
+                            onChange={() => onChange("breakerResult", "ต้องแก้ไข")}
+                            className="text-red-600 focus:ring-red-500"
+                          />
+                          <span className="ml-2 text-red-700 font-medium">✗ ต้องแก้ไข</span>
+                        </label>
+                      </div>
+                      
+                      {data.breakerResult === "ต้องแก้ไข" && (
+                        <div className="mt-3">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            รายละเอียดการแก้ไข
+                          </label>
+                          <textarea
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500 text-gray-700 resize-none"
+                            rows={2}
+                            placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
+                            value={data.breakerDetail || ""}
+                            onChange={e => onChange("breakerDetail", e.target.value)}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {section.subItems ? section.subItems.map((sub, subIdx) => {
               // ข) ชนิดและขนาด (special layout)
               if (sub.isWireType) {

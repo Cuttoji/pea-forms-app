@@ -260,18 +260,6 @@ export default function GeneralInfoHvSection({ value, onChange }) {
               />
             </div>
           </div>
-
-          {/* Information Box */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-start gap-2">
-              <div className="text-blue-600 mt-1">ℹ️</div>
-              <div className="text-sm text-blue-800">
-                <strong>หมายเหตุ:</strong> กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง 
-                เพื่อให้การตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าเป็นไปอย่างราบรื่น 
-                สำหรับผู้ใช้ไฟฟ้าแรงสูงจะต้องมีวิศวกรที่ได้รับใบอนุญาตลงนามรับรองเอกสาร
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

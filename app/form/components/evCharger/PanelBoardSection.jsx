@@ -99,6 +99,7 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
           
           <div className="border border-t-0 border-gray-200 rounded-b-lg p-6 space-y-8 text-gray-800">
             {/* 5.5.1 วงจรสายป้อน */}
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="bg-blue-50 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-blue-900 mb-6 flex items-center">
                 <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold mr-3">{sectionNumber}.5.1</span>
@@ -106,6 +107,7 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
               </h3>
               
               {/* สายป้อนเป็นไปตามมาตรฐาน */}
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="mb-6 rounded-lg p-4">
                 <div className="text-sm font-medium text-gray-800 mb-4">ก) สายป้อนเป็นไปตามมาตรฐาน</div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
@@ -114,7 +116,7 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                     "มอก. 293-2541": "มอก. 293-2541", 
                     "IEC 60502": "IEC 60502"
                   }).map(([key, label]) => (
-                    <label key={key} className="flex items-center gap-3 cursor-pointer bg-gray-50 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors">
+                    <label key={key} className="flex items-center gap-3 cursor-pointer">
                       <input
                         type="radio"
                         name="standard"
@@ -134,8 +136,10 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                   detail
                 />
               </div>
+              </div>
 
               {/* ชนิดสายตัวนำ */}
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="mb-4">
                 <div className="text-sm text-gray-700 mb-3">ข) ชนิดสายตัวนำ</div>
                 <div className="flex flex-wrap gap-6 mb-4">
@@ -173,8 +177,10 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                   detail 
                 />
               </div>
+              </div>
 
               {/* ขนาดสายเฟส */}
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="mb-4">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-sm text-gray-700">ค) ขนาดสายเฟส</span>
@@ -193,8 +199,10 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                   detail 
                 />
               </div>
+              </div>
 
               {/* ขนาดสายนิวทรัล */}
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="mb-4">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-sm text-gray-700">ง) ขนาดสายนิวทรัล</span>
@@ -214,8 +222,10 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                   detail 
                 />
               </div>
+              </div>
 
               {/* ขนาดสายดิน */}
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="mb-4">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-sm text-gray-700">จ) ขนาดสายดิน</span>
@@ -235,23 +245,29 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                   detail 
                 />
               </div>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <CorrectableRow 
                 label="ฉ) ระบุเฟสสายตัวนำ โดยใช้สีของฉนวนหรือการทำเครื่องหมายที่สายตัวนำ" 
                 value={value.phaseColor} 
                 onChange={v => handleField("phaseColor", v)} 
                 detail 
               />
-              
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <CorrectableRow 
                 label="ช) ช่องเดินสายมีความต่อเนื่องทางกล และความมั่นคงแข็งแรงเพียงพอ" 
                 value={value.wirewayMechanical} 
                 onChange={v => handleField("wirewayMechanical", v)} 
                 detail 
               />
+              </div>
               
+            </div>
             </div>
 
             {/* 5.5.2 วิธีการเดินสาย */}
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="bg-green-50 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-green-900 mb-6 flex items-center">
                 <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold mr-3">{sectionNumber}.5.2</span>
@@ -439,8 +455,10 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                 />
               </div>
             </div>
+            </div>
 
             {/* 5.5.3 ประเภทท่อร้อยสาย */}
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                   <div className="bg-purple-50 rounded-lg p-6">
                     <h3 className="text-lg font-semibold text-purple-900 mb-6 flex items-center">
                     <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-bold mr-3">{sectionNumber}.5.3</span>
@@ -532,7 +550,9 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                     />
                     </div>
                   </div>
-            {/* 5.5.4 เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน */}      
+                  </div>
+            {/* 5.5.4 เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน */}   
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">   
             <div className="bg-orange-50 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-orange-900 mb-6 flex items-center">
                 <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-bold mr-3">{sectionNumber}.5.4</span>
@@ -574,8 +594,10 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                 </div>
               </div>
             </div>
+            </div>
 
             {/* 5.5.5 การติดตั้งแผงวงจรย่อย */}
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="bg-teal-50 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-teal-900 mb-6 flex items-center">
                 <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-bold mr-3">{sectionNumber}.5.5</span>
@@ -597,6 +619,7 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                   detail 
                 />
               </div>
+            </div>
             </div>
           </div>
         </div>

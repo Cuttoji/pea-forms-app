@@ -14,7 +14,7 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
         <div className="bg-[#5b2d90] text-white px-6 py-4">
           <h1 className="text-xl font-bold text-center">
             แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
-            <span className="block text-lg font-medium mt-1">สำหรับผู้ใช้ไฟฟ้าแรงสูง</span>
+            <span className="block text-lg font-medium mt-1">สำหรับผู้ใช้ไฟฟ้าแรงต่ำ</span>
           </h1>
         </div>
         
@@ -258,18 +258,6 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
                 onChange={e => onChange("evChargerPower", e.target.value)}
                 placeholder="0"
               />
-            </div>
-          </div>
-
-          {/* Information Box */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-start gap-2">
-              <div className="text-blue-600 mt-1">ℹ️</div>
-              <div className="text-sm text-blue-800">
-                <strong>หมายเหตุ:</strong> กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง 
-                เพื่อให้การตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าเป็นไปอย่างราบรื่น 
-                สำหรับผู้ใช้ไฟฟ้าแรงสูงจะต้องมีวิศวกรที่ได้รับใบอนุญาตลงนามรับรองเอกสาร
-              </div>
             </div>
           </div>
         </div>

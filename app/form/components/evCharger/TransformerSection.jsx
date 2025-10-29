@@ -141,6 +141,7 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
               </div>
 
               {/* 4.1 คุณสมบัติทั่วไปของหม้อแปลง */}
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="space-y-4">
                 <h4 className="text-base font-medium text-gray-800">4.1 คุณสมบัติทั่วไปของหม้อแปลง</h4>
                 
@@ -258,8 +259,10 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                   detail
                 />
               </div>
+              </div>
 
               {/* 4.2 ลักษณะการติดตั้ง */}
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="space-y-4">
                 <h4 className="text-base font-medium text-gray-800">4.2 ลักษณะการติดตั้ง</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -302,8 +305,10 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                   detail
                 />
               </div>
+              </div>
 
               {/* 4.3 เครื่องป้องกันกระแสเกิน */}
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="space-y-4">
                 <h4 className="text-base font-medium text-gray-800">4.3 เครื่องป้องกันกระแสเกินด้านไฟเข้า</h4>
                 
@@ -372,8 +377,10 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                   detail
                 />
               </div>
+              </div>
 
               {/* 4.4 การติดตั้งกับดักเสิร์จแรงสูง */}
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="space-y-4">
                 <h4 className="text-base font-medium text-gray-800">4.4 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)</h4>
                 
@@ -403,8 +410,10 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                   detail
                 />
               </div>
+              </div>
 
               {/* 4.5 การประกอบสายดิน */}
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="space-y-4">
                 <h4 className="text-base font-medium text-gray-800">4.5 การประกอบสายดินกับตัวถังหม้อแปลงและกับดักเสิร์จแรงสูง</h4>
                 <CorrectableRow
@@ -414,8 +423,10 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                   detail
                 />
               </div>
+              </div>
 
               {/* 4.6 ค่าความต้านทานดิน */}
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="space-y-4">
                 <label className="text-base font-medium text-gray-800">4.6 ค่าความต้านทานดินของระบบแรงสูง
                 
@@ -432,8 +443,10 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                   หากทำการวัดแล้วยังมีค่าเกิน ให้ปักหลักดินเพิ่มอีกตามความเหมาะสม
                 </div>
               </div>
+              </div>
 
               {/* 4.7 สภาพภายนอกหม้อแปลง */}
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="space-y-4">
                 <h4 className="text-base font-medium text-gray-800">4.7 สภาพภายนอกหม้อแปลง (เฉพาะหม้อแปลงชนิดน้ำมัน)</h4>
                 <div className="space-y-3">
@@ -471,8 +484,10 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                   />
                 </div>
               </div>
+              </div>
 
               {/* 4.8 ป้ายเตือน */}
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="space-y-4">
                 <h4 className="text-base font-medium text-gray-800">4.8 ป้ายเตือน</h4>
                 <div className="text-sm text-gray-600 ml-4">
@@ -485,8 +500,10 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                   detail
                 />
               </div>
+              </div>
 
               {/* 4.9 อื่นๆ */}
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="space-y-4">
                 <h4 className="text-base font-medium text-gray-800">4.9 อื่นๆ</h4>
                 <textarea
@@ -497,24 +514,12 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
                   placeholder="ระบุรายละเอียดเพิ่มเติม (ถ้ามี)"
                 />
               </div>
+              </div>
 
-              {/* Continue with the rest of the sections... */}
-              {/* Note: The rest of the component would follow the same pattern with proper styling */}
               
               {idx < transformers.length - 1 && <hr className="my-8 border-gray-200" />}
             </div>
           ))}
-
-          {/* Information Box */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-            <div className="flex items-start gap-2">
-              <div className="text-blue-600 mt-1">ℹ️</div>
-              <div className="text-sm text-blue-800">
-                <strong>หมายเหตุ:</strong> กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง 
-                เพื่อให้การตรวจสอบการติดตั้งระบบหม้อแปลงและระบบไฟฟ้าแรงต่ำเป็นไปอย่างราบรื่น
-              </div>
-            </div>
-          </div>
 
           {/* Add Transformer Button */}
           {Array.isArray(value) && (

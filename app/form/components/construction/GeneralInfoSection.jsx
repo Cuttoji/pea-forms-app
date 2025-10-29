@@ -14,7 +14,7 @@ export default function GeneralInfoSection({ value = {}, onChange = () => {} }) 
   return (
     <div className="space-y-6 text-gray-700">
       {/* Header Section */}
-      <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-lg shadow-sm overflow-hidden">
         <div className="bg-[#5b2d90] text-white px-6 py-4">
           <h1 className="text-xl font-bold text-center">
             แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์ <span>สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน</span>

@@ -20,7 +20,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const formTypes = [
   { value: 'home_inspection_forms', label: 'แบบฟอร์มที่อยู่อาศัย' },
   { value: 'other_inspection_forms', label: 'แบบฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)' },
-  { value: 'condo_inspection_forms', label: 'แบบฟอร์มอาคารรชุด (คอนโดมิเนียม)' },
+  { value: 'condo_inspection_forms', label: 'แบบฟอร์มอาคารชุด (คอนโดมิเนียม)' },
   { value: 'ev_charger_lv_inspection', label: 'แบบฟอร์ม EV CHARGER รับไฟฟ้าแรงต่ำจาก PEA' },
   { value: 'ev_charger_hv_inspection', label: 'แบบฟอร์ม EV CHARGER รับไฟฟ้าแรงสูงจาก PEA' },
   { value: 'construction_inspection', label: 'แบบฟอร์มระบบจำหน่ายของPEA' },

@@ -14,11 +14,11 @@ const personalOptions = [
   },
   {
     key: "singleLine",
-    label: "แผนผังระบบไฟฟ้า (Single Line Diagram) (ถ้ามี)",
+    label: "แผนผังระบบไฟฟ้า (Single Line Diagram)",
   },
   {
     key: "loadSchedule",
-    label: "ตารางโหลด (Load Schedule) (ถ้ามี)",
+    label: "ตารางโหลด (Load Schedule) และรายการคำนวณทางไฟฟ้า",
   },
 ];
 
@@ -107,7 +107,8 @@ export default function DocumentSection({
                 className="w-4 h-4 text-blue-600 border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 group-hover:border-blue-400"
               />
               <span className="text-gray-800 font-medium group-hover:text-blue-600 transition-colors">
-                2.1 กรณีผู้ขอใช้ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าในพื้นที่ส่วนบุคคล (เช่น บ้านอยู่อาศัย กิจการขนาดเล็ก หรืออาคารที่คล้ายคลึงกัน)
+                2.1 กรณีผู้ขอใช้ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าในพื้นที่ส่วนบุคคล (เช่น บ้านอยู่อาศัย กิจการขนาดเล็ก หรืออาคารที่คล้ายคลึงกัน) 
+ต้องมีเอกสารประกอบการตรวจสอบดังต่อไปนี้ 
               </span>
             </label>
             <label className="flex items-center gap-3 cursor-pointer group">
@@ -120,8 +121,9 @@ export default function DocumentSection({
                 className="w-4 h-4 text-blue-600 border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 group-hover:border-blue-400"
               />
               <span className="text-gray-800 font-medium group-hover:text-blue-600 transition-colors">
-                2.2 กรณีผู้ขอใช้ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าในพื้นที่สาธารณะ (สถานีอัดประจุยานยนต์ไฟฟ้า ร้านอาหาร ร้านค้า ร้านสะดวกซื้อ
- ถนนสาธารณะ หรืออาคารที่คล้ายคลึงกัน) ต้องมีเอกสารประกอบการตรวจสอบดังต่อไปนี้ 
+                2.2 กรณีผู้ขอใช้ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าในพื้นที่สาธารณะ (สถานีอัดประจุยานยนต์ไฟฟ้า ห้างสรรพสินค้า โรงแรม อาคารชุด 
+ร้านอาหาร ร้านค้า ร้านสะดวกซื้อ ธุรกิจให้เช่าที่จอดรถ ถนนสาธารณะ หรืออาคารที่คล้ายคลึงกัน) ต้องมีเอกสารประกอบการตรวจสอบ
+ ดังต่อไปนี้ 
               </span>
             </label>
           </div>

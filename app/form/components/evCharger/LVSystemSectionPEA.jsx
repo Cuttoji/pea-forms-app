@@ -122,6 +122,7 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
         </div>
         <div className="p-6 space-y-6">
           {/* 3.1.1 มาตรฐานสายเมน */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div className="form-group">
             <label className="block text-sm font-medium text-gray-700 mb-3">
               3.1.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน
@@ -143,8 +144,10 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
             </div>
             {renderCorrectIncorrectField("standard_status", "standardCorrect", "standardNote")}
           </div>
+          </div>
 
           {/* 3.1.2 ชนิดสายตัวนำ */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div className="form-group">
             <label className="block text-sm font-medium text-gray-700 mb-3">3.1.2 ชนิดสายตัวนำ</label>
             <div className="flex flex-wrap gap-4">
@@ -183,8 +186,10 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
               </div>
             </div>
           </div>
+          </div>
 
           {/* 3.1.3 ขนาดสายเฟส */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div className="form-group">
             <div className="flex items-center gap-3 mb-2">
               <label className="text-sm font-medium text-gray-700">3.1.3 ขนาดสายเฟส</label>
@@ -200,8 +205,10 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
             </div>
             {renderCorrectIncorrectField("phase_wire_status", "phaseWireSizeCorrect", "phaseWireSizeNote")}
           </div>
+          </div>
 
           {/* 3.1.4 ขนาดสายนิวทรัล */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div className="form-group">
             <div className="flex items-center gap-3 mb-2">
               <label className="text-sm font-medium text-gray-700">3.1.4 ขนาดสายนิวทรัล</label>
@@ -215,24 +222,30 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
             </div>
             {renderCorrectIncorrectField("neutral_wire_status", "neutralWireSizeCorrect", "neutralWireSizeNote")}
           </div>
+          </div>
 
           {/* 3.1.5 ระบุเฟสสายตัวนำ */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div className="form-group">
             <label className="block text-sm font-medium text-gray-700 mb-3">
               3.1.5 ระบุเฟสสายตัวนำ โดยใช้สีของฉนวนหรือการทำเครื่องหมายที่สายตัวนำ
             </label>
             {renderCorrectIncorrectField("phase_id_status", "phaseIdentificationCorrect", "phaseIdentificationNote")}
           </div>
+          </div>
 
           {/* 3.1.6 ช่องเดินสาย */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div className="form-group">
             <label className="block text-sm font-medium text-gray-700 mb-3">
               3.1.6 ช่องเดินสายมีความต่อเนื่องทางกล และความมั่นคงแข็งแรงเพียงพอ
             </label>
             {renderCorrectIncorrectField("cable_pathway_status", "cablePathwayCorrect", "cablePathwayNote")}
           </div>
+          </div>
 
           {/* 3.1.7 วิธีการเดินสาย */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group">
                 <label className="block text-sm font-medium text-gray-700 mb-3">3.1.7 วิธีการเดินสาย</label>
                 <div className="space-y-3 mb-4">
@@ -354,8 +367,10 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
                 </div>
                 {renderCorrectIncorrectField("wiring_method_status", "wiringMethodCorrect", "wiringMethodNote", true, 5)}
                 </div>
+          </div>
 
                 {/* 3.1.8 ประเภทท่อร้อยสาย */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group">
                 <label className="block text-sm font-medium text-gray-700 mb-3">3.1.8 ประเภทท่อร้อยสาย</label>
                 <div className="space-y-4 mb-4">
@@ -572,6 +587,7 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
                   {renderCorrectIncorrectField("conduit_type_status", "conduitTypeCorrect", "conduitTypeNote", true, 2)}
                   </div>
                   </div>
+                  </div>
                   </section>
               <section className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
@@ -579,14 +595,16 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
               </div>
               <div className="p-6 space-y-6">
                 {/* 3.2.1 มาตรฐาน */}
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group">
                   <label className="block text-sm font-medium text-gray-700 mb-3">
                     3.2.1 เบรกเกอร์ที่ตระบกอนจะใช้ไปได้ตามมาตรฐาน IEC 60898 หรือ IEC 60947-2
                   </label>
                   {renderCorrectIncorrectField("main_breaker_standard_status", "mainBreakerStandardCorrect", "mainBreakerStandardNote")}
-                </div>
+                </div></div>
 
                 {/* 3.2.2 ขนาด */}
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group">
                     {/* คอลัมน์ซ้าย */}
                     <div className="flex items-center">
@@ -601,8 +619,10 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
                     </div>
                     {renderCorrectIncorrectField("main_breaker_size_status", "mainBreakerSizeCorrect", "mainBreakerSizeNote")}
                 </div>
+                </div>
 
                 {/* 3.2.3 กำลังตัดวงจร */}
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group">
                     {/* คอลัมน์ซ้าย */}
                     <div className="flex items-center">
@@ -617,6 +637,7 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
                     </div>
                     {renderCorrectIncorrectField("short_circuit_rating_status", "shortCircuitRatingCorrect", "shortCircuitRatingNote")}
                 </div>
+                </div>
               </div>
               </section>
       <section className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -625,12 +646,12 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
         </div>
         <div className="p-6 space-y-6">
           {/* 3.3.1 ขนาดสายดิน */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div className="form-group">
             <div className="flex items-center gap-3 mb-2">
               <label className="text-sm font-medium text-gray-700">
                 3.3.1 สายต่อพื้นดิน (ตัวนำของแบบ) ขนาด
               </label>
-            
             <input
               type="text"
               value={value.groundWireSize}
@@ -640,8 +661,10 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
             />ตร.มม. สอดคล้องกับขนาดสายตัวนำและตารางที่ 1 ในหมวดที่ 5</div>
             {renderCorrectIncorrectField("ground_wire_size_status", "groundWireSizeCorrect", "groundWireSizeNote")}
           </div>
+          </div>
 
           {/* 3.3.2 การต่อสายดินและนิวทรัล */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div className="form-group">
             <label className="block text-sm font-medium text-gray-700 mb-3">
               3.3.2 การต่อสายดินและสายนิวทรัล
@@ -687,6 +710,7 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
               </div>
             </div>
             {renderCorrectIncorrectField("grounding_system_status", "groundingSystemCorrect", "groundingSystemNote")}
+          </div>
           </div>
         </div>
       </section>

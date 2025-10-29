@@ -96,7 +96,7 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
 
               <div className="p-0 md:p-0 space-y-8">
                 {/* 5.7.1 ข้อมูลเครื่องอัดประจุยานยนต์ไฟฟ้า */}
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-gray-100 p-4 rounded-lg">
                   <h4 className="font-semibold text-lg mb-4 text-blue-900">5.7.1 ข้อมูลเครื่องอัดประจุยานยนต์ไฟฟ้า</h4>
                   <div className="grid grid-cols-1 gap-4">
                     {/* คอลัมน์ซ้าย */}
@@ -221,10 +221,6 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                           <span className="text-sm">โหมด 4 (DC)</span>
                         </label>
                       </div>
-
-                      <div className="text-xs text-gray-600 italic">
-                        * AC คือ ไฟฟ้ากระแสสลับ&nbsp;&nbsp;&nbsp;DC คือ ไฟฟ้ากระแสตรง
-                      </div>
                     </div>
                   </div>
                   <CorrectableRow
@@ -236,7 +232,7 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                 </div>
 
                 {/* 5.7.2 ลักษณะหัวชาร์จ / การชาร์จ */}
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-gray-100 p-4 rounded-lg">
                   <h4 className="font-semibold text-lg mb-4 text-blue-900">5.7.2 ลักษณะหัวชาร์จ / การชาร์จ</h4>
                   
                   <div className="space-y-3">
@@ -258,7 +254,7 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                         value={safeValue(item?.acType2Current)} 
                         onChange={e => handleCharger(idx, "acType2Current", e.target.value)} 
                       />
-                      <span className="text-sm">AAC</span>
+                      <span className="text-sm">A<sub>AC</sub></span>
                       <span className="text-sm ml-2">พิกัดแรงดัน</span>
                       <input 
                         type="text" 
@@ -266,7 +262,7 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                         value={safeValue(item?.acType2Voltage)} 
                         onChange={e => handleCharger(idx, "acType2Voltage", e.target.value)} 
                       />
-                      <span className="text-sm">VAC</span>
+                      <span className="text-sm">V<sub>AC</sub></span>
                       <span className="text-sm ml-2">พิกัดกำลัง</span>
                       <input 
                         type="text" 
@@ -295,7 +291,7 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                         value={safeValue(item?.dcChadeMoCurrent)} 
                         onChange={e => handleCharger(idx, "dcChadeMoCurrent", e.target.value)} 
                       />
-                      <span className="text-sm">ADC</span>
+                      <span className="text-sm">A<sub>DC</sub></span>
                       <span className="text-sm ml-2">พิกัดแรงดัน</span>
                       <input 
                         type="text" 
@@ -303,7 +299,7 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                         value={safeValue(item?.dcChadeMoVoltage)} 
                         onChange={e => handleCharger(idx, "dcChadeMoVoltage", e.target.value)} 
                       />
-                      <span className="text-sm">VDC</span>
+                      <span className="text-sm">V<sub>DC</sub></span>
                       <span className="text-sm ml-2">พิกัดกำลัง</span>
                       <input 
                         type="text" 
@@ -332,7 +328,7 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                         value={safeValue(item?.dcCcsCurrent)} 
                         onChange={e => handleCharger(idx, "dcCcsCurrent", e.target.value)} 
                       />
-                      <span className="text-sm">ADC</span>
+                      <span className="text-sm">A<sub>DC</sub></span>
                       <span className="text-sm ml-2">พิกัดแรงดัน</span>
                       <input 
                         type="text" 
@@ -340,7 +336,7 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                         value={safeValue(item?.dcCcsVoltage)} 
                         onChange={e => handleCharger(idx, "dcCcsVoltage", e.target.value)} 
                       />
-                      <span className="text-sm">VDC</span>
+                      <span className="text-sm">V<sub>DC</sub></span>
                       <span className="text-sm ml-2">พิกัดกำลัง</span>
                       <input 
                         type="text" 
@@ -501,35 +497,35 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                   />
                   
                   <CorrectableRow 
-                    label="ข) ต้องเป็นแบบมีสายชาร์จยึดติดกับเครื่องเท่านั้น" 
+                    label="ข)  เครื่องอัดประจุยานยนต์ไฟฟ้าต้องเป็นแบบมีสายชาร์จยึดติดกับเครื่องอัดประจุยานยนต์ไฟฟ้าเท่านั้น" 
                     value={item?.gasStationFixedCable} 
                     onChange={v => handleCharger(idx, "gasStationFixedCable", v)} 
                     detail 
                   />
                   
                   <CorrectableRow 
-                    label="ค) ต้องติดตั้งสวิตช์ควบคุมฉุกเฉินสำหรับปลดวงจรเมนสวิตช์" 
+                    label="ค)  ต้องติดตั้งสวิตช์ควบคุมฉุกเฉิน (Emergency Switch) สำหรับปลดวงจรเมนสวิตช์ที่จ่ายไฟให้กับตู้จ่ายวัตถุอันตรายและจ่ายไฟให้เครื่องอัดประจุยานยนต์ไฟฟ้า พิกัดไม่ต่ำกว่าพิกัดกระแสของเมนสวิตช์แรงต่ำ และเป็นชนิดที่ตัดกระแสไฟฟ้าในสายไฟฟ้าทุกเส้นรวมถึงสายนิวทรัลออกพร้อมกัน" 
                     value={item?.gasStationMainSwitch} 
                     onChange={v => handleCharger(idx, "gasStationMainSwitch", v)} 
                     detail 
                   />
                   
                   <CorrectableRow 
-                    label="ง) สวิตช์ควบคุมฉุกเฉินต้องอยู่ห่างจากตู้จ่ายวัตถุอันตราย 6-30 เมตร" 
+                    label="ง) ต้องติดตั้งสวิตช์ควบคุมฉุกเฉิน อยู่ห่างในแนวระดับจากตู้จ่ายวัตถุอันตรายไม่น้อยกว่า 6 เมตร แต่ไม่เกิน 30 เมตร และต้องสามารถเข้าถึงได้อย่างสะดวก" 
                     value={item?.gasStationSwitchDistance} 
                     onChange={v => handleCharger(idx, "gasStationSwitchDistance", v)} 
                     detail 
                   />
                   
                   <CorrectableRow 
-                    label="จ) อุปกรณ์ไฟฟ้าต้องปฏิบัติตามมาตรฐานของกรมธุรกิจพลังงาน" 
+                    label="จ)  อุปกรณ์ไฟฟ้าที่เกี่ยวข้องกับการจ่ายไฟฟ้าให้กับเครื่องอัดประจุยานยนต์ไฟฟ้า เช่น กล่องต่อสาย แผงสวิตช์ ช่องเดินสาย หากจำเป็นต้องมีการติดตั้งหรือเดินผ่านภายในบริเวณอันตรายของสถานีบริการ (รวมถึงบริเวณอันตรายนอกสถานีบริการ) ให้ปฏิบัติตามมาตรฐานที่กำหนดในกฎหมายของกรมธุรกิจพลังงาน" 
                     value={item?.gasStationElectricalStandard} 
                     onChange={v => handleCharger(idx, "gasStationElectricalStandard", v)} 
                     detail 
                   />
                   
                   <CorrectableRow 
-                    label="ฉ) ต้องใช้ข้อกำหนดระยะห่างของบริเวณอันตรายตามกฎหมายกรมธุรกิจพลังงาน" 
+                    label="ฉ)  เครื่องอัดประจุยานยนต์ไฟฟ้า รวมถึงสายยึดติดเครื่องและหัวจ่ายอัดประจุในขณะทำการอัดประจุยานยนต์ไฟฟ้าที่อยู่ภายในเขตสถานีบริการ และนอกเขตสถานีบริการแต่ยังอยู่ในบริเวณอันตราย ให้ใช้ข้อกำหนดว่าด้วยระยะห่างของบริเวณอันตราย ตามที่กฎหมายของกรมธุรกิจพลังงานกำหนด" 
                     value={item?.gasStationSafetyDistance} 
                     onChange={v => handleCharger(idx, "gasStationSafetyDistance", v)} 
                     detail 

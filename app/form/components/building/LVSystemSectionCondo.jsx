@@ -66,7 +66,7 @@ export default function LVSystemSectionCondo({ value = {}, onChange }) {
         </div>
       </div>
 
-      <div className="space-y-8 px-6 py-6 bg-white rounded-b-xl shadow-lg">
+      <div className="space-y-8 px-6 py-6 bg-white rounded-b-xl shadow-lg text-gray-700">
         
         {/* 2.14 สายตัวนำประธานแรงต่ำ */}
         <div className="space-y-4">
@@ -223,6 +223,10 @@ export default function LVSystemSectionCondo({ value = {}, onChange }) {
                         placeholder="ระบุวิธีการอื่นๆ"
                       />
                     )}
+                    <div className="mt-4 text-gray-600 font-medium text-sm">* การไฟฟ้าส่วนภูมิภาคกำหนดให้ใช้สายตัวนำทองแดงสำหรับ  
+การเดินสายภายในและภายนอกอาคาร สำหรับสายตัวนำอะลูมิเนียม
+ อนุญาตให้ใช้เป็นตัวนำประธานได้เฉพาะการเดินสายบนลูกถ้วยฉนวน
+ ภายนอกอาคาร </div>
 
                     {/* ผลการตรวจ */}
                     <div className="mt-4">
@@ -275,19 +279,30 @@ export default function LVSystemSectionCondo({ value = {}, onChange }) {
                 />
                 <span className="text-sm text-gray-700">สวิตช์พร้อมฟิวส์</span>
               </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={getField('mainSwitch.has_other_standard', false)}
+                  onChange={(e) => updateField('mainSwitch.has_other_standard', e.target.checked)}
+                  className="w-4 h-4 text-purple-600 focus:ring-purple-500"
+                />
+                <span className="text-sm text-gray-700">มาตรฐานอื่นๆ</span>
+              </label>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">มาตรฐานอื่นๆ:</label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                  value={getField('mainSwitch.other_standard')}
-                  onChange={(e) => updateField('mainSwitch.other_standard', e.target.value)}
-                  placeholder="ระบุมาตรฐาน"
-                />
-              </div>
+              {getField('mainSwitch.has_other_standard', false) && (
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">ระบุมาตรฐานอื่นๆ:</label>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
+                    value={getField('mainSwitch.other_standard')}
+                    onChange={(e) => updateField('mainSwitch.other_standard', e.target.value)}
+                    placeholder="ระบุมาตรฐาน"
+                  />
+                </div>
+              )}
               <div>
                 <label className="block text-sm text-gray-600 mb-1">ผลิตภัณฑ์:</label>
                 <input
@@ -366,6 +381,10 @@ export default function LVSystemSectionCondo({ value = {}, onChange }) {
                 <span className="text-sm text-gray-600">A</span>
               </div>
             </div>
+            <div className="mt-4 text-gray-600 font-medium text-sm">
+              บริภัณฑ์ประธานแรงต่ำที่มีขนาดตั้งแต่ 1,000 A ขึ้นไป ต้องติดตั้ง 
+Ground Fault Protection (GFP)
+              </div>
 
             <RadioOption
               name="mainSwitch-result"

@@ -30,7 +30,7 @@ export default function InspectionSummarySection({ value = "", onChange = () => 
                 className="text-green-600 focus:ring-green-500 h-5 w-5 border-gray-300"
               />
               <div className="ml-4">
-                <span className="text-green-700 font-medium text-base">ติดตั้งเรียบร้อย</span>
+                <span className="text-green-700 font-medium text-base">ติดตั้งถาวร</span>
               </div>
             </label>
 

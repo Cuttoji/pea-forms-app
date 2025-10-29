@@ -108,12 +108,7 @@ export default function HomeInspectionPage({ initialForm }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          แบบตรวจสอบระบบไฟฟ้าภายในบ้านพักอาศัย
-        </h1>
-      </div>
+    <div>
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6" ref={formRef}>
         <GeneralInfoSection
           data={form.general}
@@ -140,12 +135,11 @@ export default function HomeInspectionPage({ initialForm }) {
                <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden mb-6">
       <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold text-gray-800">6. ข้อบ่งขีดและข้อจำกัดในการตรวจสอบ</h2>
+          <h2 className="text-lg font-bold text-gray-800">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ</h2>
         </div>
       </div>
       <div className="px-6 py-6 space-y-6 text-gray-700">
         <div className="space-y-4">
-          <h3 className="text-base font-semibold text-gray-800">รายละเอียดขอบเขตและข้อจำกัด</h3>
           6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจนข้อปลีกย่อยอื่นๆ ที่ผู้ขอใช้
  ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าของผู้ขอใช้ไฟฟ้าให้เป็นไปตามมาตรฐานการ
  ติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิด   
@@ -195,9 +189,9 @@ export default function HomeInspectionPage({ initialForm }) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
+            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800 disabled:opacity-50"
           >
-            {isSubmitting ? "กำลังบันทึก..." : "บันทึกฟอร์ม"}
+            {isSubmitting ? "กำลังบันทึก..." : "บันทึกแบบฟอร์ม"}
           </button>
         </div>
       </form>

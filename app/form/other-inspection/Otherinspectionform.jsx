@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import otherFormSchema, { getNewOtherTransformer } from "@/lib/constants/otherFormSchema";
-import GeneralInfoSection from "../components/building/GeneralInfoSection";
+import GeneralInfoSectionOther from "../components/building/GeneralInfoSectionOther";
 import DocumentSection from "../components/building/DocumentSection";
 import HVSystemSection from "../components/evCharger/HVSystemSection";
 import InspectionSummarySection from "../components/shared/InspectionSummarySection";
@@ -120,28 +120,13 @@ export default function OtherInspectionPage({ initialForm }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          แบบฟอร์มตรวจสอบระบบไฟฟ้าอื่นๆ
-        </h1>
-      </div>
+    <div>
       
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6" ref={formRef}>
-        {/* Page Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            แบบฟอร์มตรวจสอบระบบไฟฟ้าอื่นๆ
-          </h2>
-          <p className="text-lg text-gray-600">
-            การตรวจสอบระบบไฟฟ้าและอุปกรณ์ป้องกันสำหรับอาคารพิเศษ
-          </p>
-          <div className="w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-6"></div>
-        </div>
 
-        <GeneralInfoSection 
-          data={formData.general} 
-          onChange={(field, value) => handleSectionChange("general", field, value)} 
+        <GeneralInfoSectionOther
+          data={formData.general}
+          onChange={(field, value) => handleSectionChange("general", field, value)}
           data-section="general"
           id="general-info-section"
         />
@@ -185,12 +170,11 @@ export default function OtherInspectionPage({ initialForm }) {
                        <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden mb-6">
       <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold text-gray-800">5. ข้อบ่งขีดและข้อจำกัดในการตรวจสอบ</h2>
+          <h2 className="text-lg font-bold text-gray-800">5. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ </h2>
         </div>
       </div>
       <div className="px-6 py-6 space-y-6 text-gray-700">
         <div className="space-y-4">
-          <h3 className="text-base font-semibold text-gray-800">รายละเอียดขอบเขตและข้อจำกัด</h3>
           5.1  งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทอื่นๆ นอกเหนือจากที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน ตลอดจน
  ข้อปลีกย่อยอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าให้เป็นไปตาม
  มาตรฐานการติดตั ้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม 
@@ -237,9 +221,9 @@ export default function OtherInspectionPage({ initialForm }) {
           </button>
           <button
             type="submit"
-            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
+            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800 disabled:opacity-50"
           >
-            บันทึกฟอร์ม
+            บันทึกแบบฟอร์ม
           </button>
         </div>
       </form>

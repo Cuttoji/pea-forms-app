@@ -159,16 +159,7 @@ export default function CondoInspectionPage(props) {
   return (
     <>
       <form onSubmit={handleSubmit} className="max-w-6xl mx-auto space-y-10 py-8 px-4">
-        {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            แบบฟอร์มตรวจสอบระบบไฟฟ้าอาคารชุด
-          </h1>
-          <p className="text-xl text-gray-600">
-            การตรวจสอบระบบไฟฟ้าและอุปกรณ์ป้องกันสำหรับอาคารชุดพักอาศัย
-          </p>
-          <div className="w-full h-1 bg-blue-200 from-blue-500 to-purple-500 rounded-full mt-6"></div>
-        </div>
+
 
         <GeneralInfoSection 
           data={formData.general} 
@@ -272,12 +263,11 @@ export default function CondoInspectionPage(props) {
        <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden mb-6">
       <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold text-gray-800">5. ข้อบ่งขีดและข้อจำกัดในการตรวจสอบ</h2>
+          <h2 className="text-lg font-bold text-gray-800">5. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ </h2>
         </div>
       </div>
       <div className="px-6 py-6 space-y-6 text-gray-700">
         <div className="space-y-4">
-          <h3 className="text-base font-semibold text-gray-800">รายละเอียดขอบเขตและข้อจำกัด</h3>
           5.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าประเภทอาคารที่มีผู้ทรงสิทธิ์หลายรายหรืออาคารที่คล้ายคลึงกัน ตลอดจนข้อปลีกย่อย
  อื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง การไฟฟ้าส่วนภูมิภาคจะตรวจสอบการติดตั้งระบบไฟฟ้าให้เป็นไปตามมาตรฐาน  
 การติดตั้งทางไฟฟ้าสำหรับประเทศไทย (ฉบับที่ กฟภ. เห็นชอบล่าสุด) และแม้ว่าการไฟฟ้าส่วนภูมิภาคได้ทำการตรวจสอบแล้วก็ตาม หากเกิด
@@ -305,16 +295,28 @@ export default function CondoInspectionPage(props) {
           <button
             type="button"
             onClick={handleDownloadPDF}
-            className="px-12 py-4 bg-blue-500 from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
             disabled={isGeneratingPDF}
+            className="bg-red-600 text-white px-8 py-2 rounded shadow font-bold hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
           >
-            {isGeneratingPDF ? "กำลังสร้าง PDF..." : "สร้าง PDF"}
+            {isGeneratingPDF ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                กำลังสร้าง PDF...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                ดาวน์โหลด PDF
+              </>
+            )}
           </button>
           <button
             type="submit"
-            className="px-12 py-4 bg-green-500 from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
+            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800 disabled:opacity-50"
           >
-            บันทึกและส่งข้อมูล
+            บันทึกแบบฟอร์ม
           </button>
         </div>
       </form>

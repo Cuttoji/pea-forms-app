@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 import { getNewEvCharger, getNewTransformer } from "@/lib/constants/evHvChargerFormSchema";
 import GeneralInfoHvSection from "@/app/form/components/evCharger/GeneralInfoHvSection";
-import DocumentSection from "@/app/form/components/evCharger/DocumentSection";
+import DocumentSectionhv from "@/app/form/components/evCharger/DocumentSectionhv";
 import TransformerSection from "@/app/form/components/evCharger/TransformerSection";
 import SubCircuitSection from "@/app/form/components/evCharger/SubCircuitSection";
 import LVSystemSection from "@/app/form/components/evCharger/LVSystemSection";
@@ -185,12 +185,6 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
   return (
     <div className="min-h-screen p-4">
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าก่อนติดตั้งมิเตอร์
-        </h2>
-        <p className="text-center text-gray-600 mb-6">
-          สำหรับผู้ใช้ไฟฟ้าที่รับไฟฟ้าแรงสูงโดยติดตั้งหม้อแปลงเฉพาะราย
-        </p>
 
         <GeneralInfoHvSection
           value={form.general}
@@ -199,7 +193,7 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
           id="general-info-section"
         />
 
-        <DocumentSection
+        <DocumentSectionhv
           value={form.documents}
           onChange={value => handleSectionChange("documents", value)}
           data-section="documents"
@@ -309,13 +303,12 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
         <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden mb-6">
       <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold text-gray-800">4. ข้อบ่งขีดและข้อจำกัดในการตรวจสอบ</h2>
+          <h2 className="text-lg font-bold text-gray-800">4. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ </h2>
         </div>
       </div>
 
       <div className="px-6 py-6 space-y-6 text-gray-700">
         <div className="space-y-4">
-          <h3 className="text-base font-semibold text-gray-800">รายละเอียดขอบเขตและข้อจำกัด</h3>
           8.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าที่รับไฟฟ้าจากหม้อแปลงเฉพาะราย ตลอดจนข้อปลีกย่อยอื่นๆ    
 ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง PEA จะตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าให้เป็นไปตามมาตรฐานการติดตั้ง
  ระบบอัดประจุยานยนต์ไฟฟ้า ตามที่ PEA กำหนด และแม้ว่า PEA ได้ทำการตรวจสอบแล้วก็ตาม หากเกิดความเสียหายหรือมีอันตรายเกิดขึ้น
@@ -362,9 +355,9 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
           </button>
           <button
             type="submit"
-            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800"
+            className="bg-blue-700 text-white px-8 py-2 rounded shadow font-bold hover:bg-blue-800 disabled:opacity-50"
           >
-            บันทึกฟอร์ม
+            บันทึกแบบฟอร์ม
           </button>
         </div>
       </form>

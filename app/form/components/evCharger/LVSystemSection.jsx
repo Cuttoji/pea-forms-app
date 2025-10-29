@@ -94,6 +94,7 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                 </h3>
                 
                 {/* 5.1.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน */}
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                         5.1.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน
@@ -134,6 +135,7 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                         </label>
                     </div>
                     {renderCorrectIncorrectField('lv_standard', 'standardCorrect', 'standardNote')}
+                </div>
                 </div>
 
                 {/* 5.1.2 ชนิดสายตัวนำ */}
@@ -191,6 +193,7 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                 </div>
 
                 {/* 5.1.3 ขนาดสายเฟส */}
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                         5.1.3 ขนาดสายเฟส
@@ -206,8 +209,10 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                     {renderCorrectIncorrectField('lv_phase_wire', 'phaseWireSizeCorrect', 'phaseWireSizeNote')}
                 </label>
                 </div>
+                </div>
 
                 {/* 5.1.4 ขนาดสายนิวทรัล */}
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                         5.1.4 ขนาดสายนิวทรัล
@@ -221,24 +226,30 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                     ตร.มม.</label>
                     {renderCorrectIncorrectField('lv_neutral_wire', 'neutralWireSizeCorrect', 'neutralWireSizeNote')}
                 </div>
+                </div>
 
                 {/* 5.1.5 ระบุเฟสสายตัวนำ โดยใช้สีของฉนวนหรือการทำเครื่องหมายที่สายตัวนำ */}
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                         5.1.5 ระบุเฟสสายตัวนำ โดยใช้สีของฉนวนหรือการทำเครื่องหมายที่สายตัวนำ
                     </label>
                     {renderCorrectIncorrectField('lv_phase_identification', 'phaseIdentificationCorrect', 'phaseIdentificationNote')}
                 </div>
+                </div>
 
                 {/* 5.1.6 ช่องเดินสายมีความต่อเนื่องทางกล และความมั่นคงแข็งแรงเพียงพอ */}
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                         5.1.6 ช่องเดินสายมีความต่อเนื่องทางกล และความมั่นคงแข็งแรงเพียงพอ
                     </label>
                     {renderCorrectIncorrectField('lv_cable_pathway', 'cablePathwayCorrect', 'cablePathwayNote')}
                 </div>
+                </div>
 
                 {/* 5.1.7 วิธีการเดินสาย */}
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                         5.1.7 วิธีการเดินสาย
@@ -358,9 +369,10 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                     </div>
 
                     {renderCorrectIncorrectField('lv_wiring_method', 'wiringMethodCorrect', 'wiringMethodNote', true, 5)}
-                </div>
+                </div></div>
 
                 {/* 5.1.8 ประเภทท่อร้อยสาย */}
+                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                         5.1.8 ประเภทท่อร้อยสาย
@@ -443,9 +455,11 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
 
                     {renderCorrectIncorrectField('lv_conduit_type', 'conduitTypeCorrect', 'conduitTypeNote')}
                 </div>
+                </div>
             </div>
 
             {/* 5.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์ (บริภัณฑ์ประธาน) */}
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="bg-green-50 p-4 rounded-lg">
                 <h3 className="text-lg font-semibold text-green-800 mb-4">
                     5.2 เครื่องป้องกันกระแสเกินของแผงเมนสวิตช์ (บริภัณฑ์ประธาน)
@@ -499,8 +513,10 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                     {renderCorrectIncorrectField('ground_fault_protection', 'groundFaultProtectionCorrect', 'groundFaultProtectionNote')}
                 </div>
             </div>
+            </div>
 
             {/* 5.3 ระบบการต่อลงดินที่แผงเมนสวิตช์ */}
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="bg-purple-50 p-4 rounded-lg">
                 <h3 className="text-lg font-semibold text-purple-800 mb-4">
                     5.3 ระบบการต่อลงดินที่แผงเมนสวิตช์
@@ -569,8 +585,10 @@ Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) 
                     {renderCorrectIncorrectField('grounding_config', 'groundingConfigCorrect', 'groundingConfigNote', true, 3)}
                 </div>
             </div>
+            </div>
 
             {/* 5.4 รูปแบบการต่อลงดินที่แผงเมนสวิตช์ */}
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="bg-orange-50 p-4 rounded-lg">
                 <h3 className="text-lg font-semibold text-orange-800 mb-4">
                     5.4 รูปแบบการต่อลงดินที่แผงเมนสวิตช์ (เลือกหนึ่งรูปแบบ)
@@ -740,6 +758,7 @@ Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) 
                         {renderCorrectIncorrectField('tns_system', 'tnsCorrect', 'tnsNote')}
                     </div>
                 )}
+            </div>
             </div>
         </div>
     );
