@@ -47,6 +47,15 @@ export default function HomeInspectionPage({ initialForm }) {
   // ฟังก์ชันบันทึกหรือส่งฟอร์ม (ส่งไป API เท่านั้น)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // ตรวจสอบความครบถ้วนของข้อมูลก่อน submit
+    const { validateAndScroll } = await import('@/lib/utils/formValidationHelper');
+    const isValid = validateAndScroll(form, 'Home');
+    
+    if (!isValid) {
+      return; // หยุดการ submit ถ้าข้อมูลไม่ครบ
+    }
+    
     setIsSubmitting(true);
 
     try {
@@ -109,14 +118,20 @@ export default function HomeInspectionPage({ initialForm }) {
         <GeneralInfoSection
           data={form.general}
           onChange={(field, value) => handleSectionChange("general", field, value)}
+          data-section="general"
+          id="general-info-section"
         />
         <HomeInspectionSection
           data={form.inspection}
           onChange={(field, value) => handleSectionChange("inspection", field, value)}
+          data-section="inspection"
+          id="home-inspection-section"
         />
         <InspectionSummarySection
           value={form.summary}
           onChange={(value) => setForm((prev) => ({ ...prev, summary: value }))}
+          data-section="summary"
+          id="summary-section"
         />
         <LimitationSection
           value={form.limitation}
@@ -153,6 +168,8 @@ export default function HomeInspectionPage({ initialForm }) {
         <SignaturePadSection
           value={form.signature}
           onChange={(value) => setForm((prev) => ({ ...prev, signature: value }))}
+          data-section="signature"
+          id="signature-section"
         />
         <div className="flex justify-center mt-8 space-x-4">
           <button

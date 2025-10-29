@@ -56,14 +56,26 @@ export default function OtherInspectionPage({ initialForm }) {
   // ส่งข้อมูลไป API /api/submit-form/other-inspection
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // ตรวจสอบความครบถ้วนของข้อมูลก่อน submit
+    const { validateAndScroll } = await import('@/lib/utils/formValidationHelper');
+    
+    const payload = {
+      ...formData,
+      transformers,
+    };
+    
+    const isValid = validateAndScroll(payload, 'Other');
+    
+    if (!isValid) {
+      return; // หยุดการ submit ถ้าข้อมูลไม่ครบ
+    }
+    
     try {
       const response = await fetch('/api/submit-form/other-inspection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          transformers,
-        }),
+        body: JSON.stringify(payload),
       });
       const result = await response.json();
       if (response.ok && result.success) {
@@ -130,19 +142,25 @@ export default function OtherInspectionPage({ initialForm }) {
         <GeneralInfoSection 
           data={formData.general} 
           onChange={(field, value) => handleSectionChange("general", field, value)} 
+          data-section="general"
+          id="general-info-section"
         />
         
         <DocumentSection 
           value={formData.documents} 
           onChange={(value) => handleSectionObject("documents", value)} 
+          data-section="documents"
+          id="document-section"
         />
         
         <HVSystemSection 
           value={formData.hvSystem} 
           onChange={(value) => handleSectionObject("hvSystem", value)} 
+          data-section="hvSystem"
+          id="hv-system-section"
         />
 
-        <div className="space-y-10 mb-6">
+        <div className="space-y-10 mb-6" data-section="transformers" id="transformers-section">
           <div className="text-center">
             <h3 className="text-lg font-bold mb-6">หม้อแปลงไฟฟ้า</h3>
           </div>
@@ -156,6 +174,8 @@ export default function OtherInspectionPage({ initialForm }) {
         <InspectionSummarySection 
           value={formData.summary} 
           onChange={(value) => handleSectionObject("summary", value)} 
+          data-section="summary"
+          id="summary-section"
         />
         
         <LimitationSection 
@@ -189,6 +209,8 @@ export default function OtherInspectionPage({ initialForm }) {
         <SignaturePadSection 
           value={formData.signature}
           onChange={(value) => handleSectionObject("signature", value)}
+          data-section="signature"
+          id="signature-section"
         />
 
         {/* Submit Buttons */}

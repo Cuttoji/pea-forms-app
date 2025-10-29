@@ -128,6 +128,14 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // ตรวจสอบความครบถ้วนของข้อมูลก่อน submit
+    const { validateAndScroll } = await import('@/lib/utils/formValidationHelper');
+    const isValid = validateAndScroll(form, 'HV');
+    
+    if (!isValid) {
+      return; // หยุดการ submit ถ้าข้อมูลไม่ครบ
+    }
+
     try {
       const response = await fetch("/api/submit-form/ev-charger-hv-inspection", {
         method: "POST",
@@ -187,16 +195,22 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
         <GeneralInfoHvSection
           value={form.general}
           onChange={handleGeneralChange}
+          data-section="general"
+          id="general-info-section"
         />
 
         <DocumentSection
           value={form.documents}
           onChange={value => handleSectionChange("documents", value)}
+          data-section="documents"
+          id="document-section"
         />
 
         <HVSystemSection
           value={form.hvSystem}
           onChange={value => handleSectionChange("hvSystem", value)}
+          data-section="hvSystem"
+          id="hv-system-section"
         />
 
         <div className="space-y-8 mt-8">
@@ -207,6 +221,7 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
             <div className="w-full h-px bg-gradient-to-r from-blue-500 to-purple-500 mb-6"></div>
           </div>
 
+          <div data-section="transformers" id="transformers-section">
           {form.transformers.map((transformer, transformerIndex) => (
             <div
               key={transformerIndex}
@@ -268,6 +283,7 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
               </div>
             </div>
           ))}
+          </div>
         </div>
 
         <div className="flex justify-center">
@@ -283,6 +299,8 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
         <InspectionSummarySection
           value={form.summary}
           onChange={(value) => setForm((prev) => ({ ...prev, summary: value }))}
+          data-section="summary"
+          id="summary-section"
         />
         <LimitationSection
           value={form.limitation}
@@ -317,6 +335,8 @@ export default function EvChargerHvInspectionForm({ initialForm }) {
         <SignaturePadSection
           value={form.signature}
           onChange={value => handleSectionChange("signature", value)}
+          data-section="signature"
+          id="signature-section"
         />
 
         <div className="flex justify-center mt-8 space-x-4">

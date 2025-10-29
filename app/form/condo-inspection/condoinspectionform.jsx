@@ -86,6 +86,9 @@ export default function CondoInspectionPage(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // ตรวจสอบความครบถ้วนของข้อมูลก่อน submit
+    const { validateAndScroll } = await import('@/lib/utils/formValidationHelper');
+    
     // รวมข้อมูลทั้งหมด
     const payload = {
       general: formData.general,
@@ -97,6 +100,12 @@ export default function CondoInspectionPage(props) {
       signature: formData.signature,
       created_at: new Date().toISOString(),
     };
+    
+    const isValid = validateAndScroll(payload, 'Condo');
+    
+    if (!isValid) {
+      return; // หยุดการ submit ถ้าข้อมูลไม่ครบ
+    }
 
     try {
       const response = await fetch("/api/submit-form/condo-inspection", {
@@ -164,21 +173,27 @@ export default function CondoInspectionPage(props) {
         <GeneralInfoSection 
           data={formData.general} 
           onChange={(field, value) => handleSectionChange("general", field, value)} 
+          data-section="general"
+          id="general-info-section"
         />
         
         <DocumentSection 
           value={formData.documents} 
           onChange={(value) => handleSectionObject("documents", value)} 
+          data-section="documents"
+          id="document-section"
         />
         
         <HVSystemSection
           sectionNumber={2}
           value={formData.hvSystem}
           onChange={value => handleSectionObject("hvSystem", value)}
+          data-section="hvSystem"
+          id="hv-system-section"
         />
 
         {/* ระบบหม้อแปลง (ตกแต่งใหม่) */}
-        <div className="space-y-10">
+        <div className="space-y-10" data-section="transformers" id="transformers-section">
           <div className="text-center">
             <h2 className="text-3xl font-bold mb-4">
               4. ระบบหม้อแปลงและไฟฟ้าแรงต่ำ
@@ -247,6 +262,8 @@ export default function CondoInspectionPage(props) {
         <InspectionSummarySection
           value={formData.summary?.summaryType || ""}
           onChange={(value) => handleSectionObject("summary", { summaryType: value })}
+          data-section="summary"
+          id="summary-section"
         />        
         <LimitationSection 
           value={formData.limitation}
@@ -279,6 +296,8 @@ export default function CondoInspectionPage(props) {
         <SignaturePadSection 
           value={formData.signature}
           onChange={(value) => handleSectionObject("signature", value)}
+          data-section="signature"
+          id="signature-section"
         />
 
         {/* Submit Button */}

@@ -89,6 +89,15 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb, mod
   // ฟังก์ชันบันทึกหรือส่งฟอร์ม (ส่งไป API เท่านั้น)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // ตรวจสอบความครบถ้วนของข้อมูลก่อน submit
+    const { validateAndScroll } = await import('@/lib/utils/formValidationHelper');
+    const isValid = validateAndScroll(form, 'LV');
+    
+    if (!isValid) {
+      return; // หยุดการ submit ถ้าข้อมูลไม่ครบ
+    }
+    
     setIsSubmitting(true);
     try {
       let endpoint, method;
@@ -178,20 +187,29 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb, mod
         <GeneralInfoLvSection
           data={form.general}
           onChange={(field, value) => handleSectionChange("general", field, value)}
+          data-section="general"
+          id="general-info-section"
         />
         <DocumentSection
           value={form.documents}
           onChange={(value) => handleSectionObject("documents", value)}
+          data-section="documents"
+          id="document-section"
         />
         <LVSystemSectionPEA
           value={form.LVSystemPEA}
           onChange={(value) => handleSectionObject("LVSystemPEA", value)}
+          data-section="lvSystemPEA"
+          id="lv-system-pea-section"
         />
         <PanelBoardSection
           value={form.panel}
           sectionNumber={3}
           onChange={(value) => handleSectionObject("panel", value)}
+          data-section="panel"
+          id="panel-board-section"
         />
+        <div data-section="subCircuits" id="sub-circuits-section">
         <SubCircuitSection
           sectionNumber={3}
           value={form.subCircuits || []}
@@ -208,10 +226,13 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb, mod
             handleSectionObject("subCircuits", updatedSubCircuits);
           }}
         />
+        </div>
                 
         <InspectionSummarySection
           value={form.summary}
           onChange={(value) => handleSectionObject("summary", value)}
+          data-section="summary"
+          id="summary-section"
         />
         <LimitationSection
           value={form.limitation}
@@ -244,6 +265,8 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb, mod
         <SignaturePadSection
           value={form.signature}
           onChange={(value) => handleSectionObject("signature", value)}
+          data-section="signature"
+          id="signature-section"
         />
         <div className="flex justify-center mt-8 space-x-4">
           <button

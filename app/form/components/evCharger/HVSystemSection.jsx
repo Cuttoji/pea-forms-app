@@ -227,18 +227,17 @@ export default function HVSystemSection({
           })}
         </div>
 
-        {/* 3.3 เครื่องปลดวงจรต้นทาง (แสดงเฉพาะเมื่อ sectionNumber = 3) */}
-        {sectionNumber === 3 && (
-          <div className="border border-gray-200 rounded-lg p-4 bg-white">
-            <h4 className="text-base font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
-              3.3 การติดตั้งเครื่องปลดวงจรต้นทาง (ส่วนของผู้ขอใช้ไฟฟ้า)
-            </h4>
-            
-            <div className="space-y-4">
-              {/* เลือกชนิดอุปกรณ์ก่อน */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h5 className="text-sm font-medium text-gray-700 mb-3">เลือกชนิดอุปกรณ์ที่เกี่ยวข้อง</h5>
-                <div className="flex flex-col gap-3">
+        {/* เครื่องปลดวงจรต้นทาง (แสดงเสมอ) */}
+        <div className="border border-gray-200 rounded-lg p-4 bg-white">
+          <h4 className="text-base font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+            {sectionNumber}.3 การติดตั้งเครื่องปลดวงจรต้นทาง (ส่วนของผู้ขอใช้ไฟฟ้า)
+          </h4>
+          
+          <div className="space-y-4">
+            {/* เลือกชนิดอุปกรณ์ก่อน */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+              <h5 className="text-sm font-medium text-gray-700 mb-3">เลือกชนิดอุปกรณ์ที่เกี่ยวข้อง</h5>
+              <div className="flex flex-col gap-3">
                   <label className="inline-flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -300,31 +299,28 @@ export default function HVSystemSection({
                       }}
                       className="text-blue-600 focus:ring-blue-500 w-4 h-4"
                     />
-                    <span className="text-gray-700">RMU (ไม่รวมถึงฟังก์ชั่นการทำงาน)</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* แสดงการประเมินผล (ถูกต้อง/ต้องแก้ไข) หลังจากเลือกอุปกรณ์แล้ว */}
-              {Array.isArray(hv33.type) && hv33.type.length > 0 && (
-                <div className="mt-4">
-                  <CorrectableRow
-                    label=""
-                    value={hv33}
-                    onChange={(newValue) => onChange({ ...value, hv33: newValue })}
-                    detail={true}
-                    placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
-                  />
-                </div>
-              )}
+                <span className="text-gray-700">RMU (ไม่รวมถึงฟังก์ชั่นการทำงาน)</span>
+              </label>
             </div>
           </div>
-        )}
 
-        {/* Other Section */}
+          {/* แสดงการประเมินผล (ถูกต้อง/ต้องแก้ไข) หลังจากเลือกอุปกรณ์แล้ว */}
+          {Array.isArray(hv33.type) && hv33.type.length > 0 && (
+            <div className="mt-4">
+              <CorrectableRow
+                label=""
+                value={hv33}
+                onChange={(newValue) => onChange({ ...value, hv33: newValue })}
+                detail={true}
+                placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
+              />
+            </div>
+          )}
+        </div>
+      </div>        {/* Other Section */}
         <div className="border border-gray-200 rounded-lg p-4 bg-white">
           <h4 className="text-base font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
-            {sectionNumber}.{sectionNumber === 3 ? 4 : 3} อื่นๆ
+            {sectionNumber}.4 อื่นๆ
           </h4>
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <textarea
