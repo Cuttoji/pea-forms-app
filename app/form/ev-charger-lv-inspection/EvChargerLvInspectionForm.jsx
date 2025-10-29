@@ -208,6 +208,7 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb, mod
             handleSectionObject("subCircuits", updatedSubCircuits);
           }}
         />
+                
         <InspectionSummarySection
           value={form.summary}
           onChange={(value) => handleSectionObject("summary", value)}
@@ -216,6 +217,30 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb, mod
           value={form.limitation}
           onChange={(value) => handleSectionObject("limitation", value)}
         />
+      <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden mb-6">
+      <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-bold text-gray-800">5. ข้อบ่งขีดและข้อจำกัดในการตรวจสอบ</h2>
+        </div>
+      </div>
+      <div className="px-6 py-6 space-y-6 text-gray-700">
+        <div className="space-y-4">
+          <h3 className="text-base font-semibold text-gray-800">รายละเอียดขอบเขตและข้อจำกัด</h3>
+          6.1 งานเดินสายและติดตั้งอุปกรณ์ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าที่รับไฟฟ้าจากหม้อแปลงจำหน่ายของการไฟฟ้าส่วนภูมิภาค 
+(PEA) ตลอดจนข้อปลีกย่อยอื่นๆ ที่ผู้ขอใช้ไฟฟ้าเป็นผู้ทำการก่อสร้างและติดตั้งเอง PEA จะตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
+ ให้เป็นไปตามมาตรฐานการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ตามที่ PEA กำหนด และแม้ว่า PEA ได้ทำการตรวจสอบแล้วก็ตาม หากเกิด
+ ความเสียหายหรือมีอันตรายเกิดขึ้นภายหลังการตรวจสอบแล้วก็ยังคงให้อยู่ในความรับผิดชอบของผู้ขอใช้ไฟฟ้าแต่เพียงฝ่ายเดียว
+        <div>
+6.2  ในกรณีที่ PEA เป็นผู้ดำเนินการก่อสร้างให้ ถ้ามีการเปลี่ยนแปลงโดยที่ผู้ขอใช้ไฟฟ้าเป็นผู้ดำเนินการเองในภายหน้า หรืออุปกรณ์ดังกล่าว
+ เสื่อมคุณภาพไปตามสภาพ ทางผู้ขอใช้ไฟฟ้าจะต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว 
+        </div>
+        <div>
+6.3 สำหรับระบบอัดประจุยานยนต์ไฟฟ้าของผู้ขอใช้ไฟฟ้าในส่วนที่ PEA ไม่สามารถตรวจสอบได้ ผู้ขอใช้ไฟฟ้าต้องติดตั้งตามมาตรฐาน
+การติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า ตามที่ PEA กำหนด หากเกิดความเสียหายผู้ขอใช้ไฟฟ้าต้องเป็นผู้รับผิดชอบแต่เพียงฝ่ายเดียว
+        </div>
+      </div>
+    </div>
+    </div>
         <SignaturePadSection
           value={form.signature}
           onChange={(value) => handleSectionObject("signature", value)}

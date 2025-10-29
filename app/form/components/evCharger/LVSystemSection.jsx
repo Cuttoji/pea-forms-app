@@ -577,52 +577,60 @@ Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) 
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <label className="flex items-center gap-2 p-3 border border-gray-300 rounded-md">
-                        <input
-                            type="radio"
-                            name={`groundingSystem_${transformerIndex}`}
-                            value="TN-C-S"
-                            checked={formData.groundingSystem === 'TN-C-S'}
-                            onChange={(e) => handleInputChange('groundingSystem', e.target.value)}
-                            className="w-4 h-4"
-                        />
-                        <span className="text-sm font-medium">TN-C-S ทั้งระบบ</span>
+                    <label className="flex flex-col gap-2 p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50">
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="radio"
+                                name={`groundingSystem_${transformerIndex}`}
+                                value="TN-C-S"
+                                checked={formData.groundingSystem === 'TN-C-S'}
+                                onChange={(e) => handleInputChange('groundingSystem', e.target.value)}
+                                className="w-4 h-4"
+                            />
+                            <span className="text-sm font-medium">TN-C-S ทั้งระบบ</span>
+                        </div>
                         <img src="/ex_system/TN-C.png" alt="TN-C-S" className="w-full h-auto rounded-md border" />
                     </label>
-                    <label className="flex items-center gap-2 p-3 border border-gray-300 rounded-md">
-                        <input
-                            type="radio"
-                            name={`groundingSystem_${transformerIndex}`}
-                            value="TT"
-                            checked={formData.groundingSystem === 'TT'}
-                            onChange={(e) => handleInputChange('groundingSystem', e.target.value)}
-                            className="w-4 h-4"
-                        />
-                        <span className="text-sm font-medium">TT ทั้งระบบ</span>
+                    <label className="flex flex-col gap-2 p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50">
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="radio"
+                                name={`groundingSystem_${transformerIndex}`}
+                                value="TT"
+                                checked={formData.groundingSystem === 'TT'}
+                                onChange={(e) => handleInputChange('groundingSystem', e.target.value)}
+                                className="w-4 h-4"
+                            />
+                            <span className="text-sm font-medium">TT ทั้งระบบ</span>
+                        </div>
                         <img src="/ex_system/TT-all.png" alt="TT" className="w-full h-auto rounded-md border" />
                     </label>
-                    <label className="flex items-center gap-2 p-3 border border-gray-300 rounded-md">
-                        <input
-                            type="radio"
-                            name={`groundingSystem_${transformerIndex}`}
-                            value="TT_partial"
-                            checked={formData.groundingSystem === 'TT_partial'}
-                            onChange={(e) => handleInputChange('groundingSystem', e.target.value)}
-                            className="w-4 h-4"
-                        />
-                        <span className="text-sm font-medium">TT บางส่วน</span>
+                    <label className="flex flex-col gap-2 p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50">
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="radio"
+                                name={`groundingSystem_${transformerIndex}`}
+                                value="TT_partial"
+                                checked={formData.groundingSystem === 'TT_partial'}
+                                onChange={(e) => handleInputChange('groundingSystem', e.target.value)}
+                                className="w-4 h-4"
+                            />
+                            <span className="text-sm font-medium">TT บางส่วน</span>
+                        </div>
                         <img src="/ex_system/TT.png" alt="TT Partial" className="w-full h-auto rounded-md border" />
                     </label>
-                    <label className="flex items-center gap-2 p-3 border border-gray-300 rounded-md">
-                        <input
-                            type="radio"
-                            name={`groundingSystem_${transformerIndex}`}
-                            value="TN-S"
-                            checked={formData.groundingSystem === 'TN-S'}
-                            onChange={(e) => handleInputChange('groundingSystem', e.target.value)}
-                            className="w-4 h-4"
-                        />
-                        <span className="text-sm font-medium">TN-S ทั้งระบบ</span>
+                    <label className="flex flex-col gap-2 p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50">
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="radio"
+                                name={`groundingSystem_${transformerIndex}`}
+                                value="TN-S"
+                                checked={formData.groundingSystem === 'TN-S'}
+                                onChange={(e) => handleInputChange('groundingSystem', e.target.value)}
+                                className="w-4 h-4"
+                            />
+                            <span className="text-sm font-medium">TN-S ทั้งระบบ</span>
+                        </div>
                         <img src="/ex_system/TN-S.png" alt="TN-S" className="w-full h-auto rounded-md border" />
                     </label>
                 </div>

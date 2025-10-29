@@ -437,33 +437,33 @@ export default function TransformerSection({ value = {}, onChange = () => {} }) 
               <div className="space-y-4">
                 <h4 className="text-base font-medium text-gray-800">4.7 สภาพภายนอกหม้อแปลง (เฉพาะหม้อแปลงชนิดน้ำมัน)</h4>
                 <div className="space-y-3">
-                  <text className="text-sm text-gray-600 ml-2">
+                  <div className="text-sm text-gray-600 ml-2">
                     4.7.1 สารดูดความชื้น
-                  </text>
+                  </div>
                   <CorrectableRow
                     value={item.ext?.silica}
                     onChange={v => handleTransformer(idx, "ext", { ...item.ext, silica: v })}
                     detail
                   />
-                  <text className="text-sm text-gray-600 ml-2">
+                  <div className="text-sm text-gray-600 ml-2">
                     4.7.2 สภาพบุชชิ่ง
-                  </text>
+                  </div>
                   <CorrectableRow
                     value={item.ext?.bushing}
                     onChange={v => handleTransformer(idx, "ext", { ...item.ext, bushing: v })}
                     detail
                   />
-                  <text className="text-sm text-gray-600 ml-2"> 
+                  <div className="text-sm text-gray-600 ml-2"> 
                     4.7.3 ระดับน้ำมัน
-                  </text>
+                  </div>
                   <CorrectableRow
                     value={item.ext?.oilLevel}
                     onChange={v => handleTransformer(idx, "ext", { ...item.ext, oilLevel: v })}
                     detail
                   />
-                  <text className="text-sm text-gray-600 ml-2">
+                  <div className="text-sm text-gray-600 ml-2">
                     4.7.4 การรั่วซึมของน้ำมันหม้อแปลง
-                  </text>
+                  </div>
                   <CorrectableRow
                     value={item.ext?.leak}
                     onChange={v => handleTransformer(idx, "ext", { ...item.ext, leak: v })}

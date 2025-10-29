@@ -194,12 +194,9 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
                 onChange={(e) => handleInputChange("phaseWireSize", e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-md text-sm w-20"
               />
-              <span className="text-sm text-gray-600">ตร.มม.</span>
-            </div>
-            <div className="bg-blue-50 p-3 rounded-md mb-3">
-              <p className="text-sm text-gray-700">
-                พิกัดกระแสสายตัวนำประธานต้องไม่น้อยกว่าขนาดปรับตั้งของเมนเซอร์กิตเบรกเกอร์ และสอดคล้องกับขนาดมิเตอร์ตามที่การไฟฟ้าส่วนภูมิภาคกำหนด
-              </p>
+              <span className="text-sm text-gray-600">ตร.มม พิกัดกระแสสายตัวนำประธานต้อง 
+ไม่น้อยกว่าขนาดปรับตั้งของเมนเซอร์กิตเบรกเกอร์ และสอดคล้องกับขนาดมิเตอร์ 
+ตามที่การไฟฟ้าส่วนภูมิภาค กำหนด</span>
             </div>
             {renderCorrectIncorrectField("phase_wire_status", "phaseWireSizeCorrect", "phaseWireSizeNote")}
           </div>
@@ -236,251 +233,392 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
           </div>
 
           {/* 3.1.7 วิธีการเดินสาย */}
-          <div className="form-group">
-            <label className="block text-sm font-medium text-gray-700 mb-3">3.1.7 วิธีการเดินสาย</label>
-            <div className="space-y-3 mb-4">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="wiring_method"
-                  value="overhead"
-                  checked={value.wiringMethod === "overhead"}
-                  onChange={() => handleInputChange("wiringMethod", "overhead")}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-sm">เดินสายบนลูกถ้วยฉนวนในอากาศ</span>
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="wiring_method"
-                  value="cable_tray"
-                  checked={value.wiringMethod === "cable_tray"}
-                  onChange={() => handleInputChange("wiringMethod", "cable_tray")}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-sm">เดินบนรางเคเบิล (Cable Tray) ขนาด</span>
-                <input
-                  type="text"
-                  value={value.cableTraySize.width}
-                  onChange={(e) =>
+                <div className="form-group">
+                <label className="block text-sm font-medium text-gray-700 mb-3">3.1.7 วิธีการเดินสาย</label>
+                <div className="space-y-3 mb-4">
+                  <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="wiring_method"
+                    value="overhead"
+                    checked={value.wiringMethod === "overhead"}
+                    onChange={() => handleInputChange("wiringMethod", "overhead")}
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm">เดินสายบนลูกถ้วยฉนวนในอากาศ</span>
+                  </label>
+                  <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="wiring_method"
+                    value="cable_tray"
+                    checked={value.wiringMethod === "cable_tray"}
+                    onChange={() => handleInputChange("wiringMethod", "cable_tray")}
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm">เดินบนรางเคเบิล (Cable Tray) ขนาด</span>
+                  <input
+                    type="text"
+                    value={value.cableTraySize.width}
+                    onChange={(e) =>
                     handleInputChange("cableTraySize", { ...value.cableTraySize, width: e.target.value })
-                  }
-                  className="px-2 py-1 border border-gray-300 rounded text-sm w-16"
-                  disabled={value.wiringMethod !== "cable_tray"}
-                />
-                <span className="text-sm">มม. x</span>
-                <input
-                  type="text"
-                  value={value.cableTraySize.height}
-                  onChange={(e) =>
+                    }
+                    className="px-2 py-1 border border-gray-300 rounded text-sm w-16"
+                    disabled={value.wiringMethod !== "cable_tray"}
+                  />
+                  <span className="text-sm">มม. x</span>
+                  <input
+                    type="text"
+                    value={value.cableTraySize.height}
+                    onChange={(e) =>
                     handleInputChange("cableTraySize", { ...value.cableTraySize, height: e.target.value })
-                  }
-                  className="px-2 py-1 border border-gray-300 rounded text-sm w-16"
-                  disabled={value.wiringMethod !== "cable_tray"}
-                />
-                <span className="text-sm">มม.</span>
-              </div>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="wiring_method"
-                  value="direct_burial"
-                  checked={value.wiringMethod === "direct_burial"}
-                  onChange={() => handleInputChange("wiringMethod", "direct_burial")}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-sm">เดินสายฝังดินโดยตรง (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)</span>
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="wiring_method"
-                  value="underground_conduit"
-                  checked={value.wiringMethod === "underground_conduit"}
-                  onChange={() => handleInputChange("wiringMethod", "underground_conduit")}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-sm">เดินสายร้อยท่อฝังดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้) โดยใช้ท่อร้อยสายขนาด</span>
-                <input
-                  type="text"
-                  value={value.conduitSize}
-                  onChange={(e) => handleInputChange("conduitSize", e.target.value)}
-                  className="px-2 py-1 border border-gray-300 rounded text-sm w-16"
-                  disabled={value.wiringMethod !== "underground_conduit"}
-                />
-                <span className="text-sm">นิ้ว</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="wiring_method"
-                  value="wall_conduit"
-                  checked={value.wiringMethod === "wall_conduit"}
-                  onChange={() => handleInputChange("wiringMethod", "wall_conduit")}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-sm">เดินร้อยท่อเกาะผนัง โดยใช้ท่อร้อยสายขนาด</span>
-                <input
-                  type="text"
-                  value={value.conduitSizeWall}
-                  onChange={(e) => handleInputChange("conduitSizeWall", e.target.value)}
-                  className="px-2 py-1 border border-gray-300 rounded text-sm w-16"
-                  disabled={value.wiringMethod !== "wall_conduit"}
-                />
-                <span className="text-sm">นิ้ว</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="wiring_method"
-                  value="other"
-                  checked={value.wiringMethod === "other"}
-                  onChange={() => handleInputChange("wiringMethod", "other")}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-sm">อื่นๆ ระบุ</span>
-                <input
-                  type="text"
-                  value={value.otherWiringMethod}
-                  onChange={(e) => handleInputChange("otherWiringMethod", e.target.value)}
-                  className="px-3 py-1 border border-gray-300 rounded text-sm flex-1 max-w-xs"
-                  disabled={value.wiringMethod !== "other"}
-                  placeholder="ระบุรายละเอียด"
-                />
-              </div>
-            </div>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 mb-4">
-              <p className="text-sm text-yellow-800">
-                <strong>หมายเหตุ:</strong> การไฟฟ้าส่วนภูมิภาคกำหนดให้ใช้สายตัวนำทองแดงสำหรับการเดินสายภายในและภายนอกอาคาร ส่วนสายตัวนำอะลูมิเนียมอนุญาตให้ใช้เป็นตัวนำประธานได้เฉพาะการเดินสายบนลูกถ้วยฉนวนภายนอกอาคาร
-              </p>
-            </div>
-            {renderCorrectIncorrectField("wiring_method_status", "wiringMethodCorrect", "wiringMethodNote", true, 5)}
-          </div>
+                    }
+                    className="px-2 py-1 border border-gray-300 rounded text-sm w-16"
+                    disabled={value.wiringMethod !== "cable_tray"}
+                  />
+                  <span className="text-sm">มม.</span>
+                  </div>
+                  <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="wiring_method"
+                    value="direct_burial"
+                    checked={value.wiringMethod === "direct_burial"}
+                    onChange={() => handleInputChange("wiringMethod", "direct_burial")}
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm">เดินสายฝังดินโดยตรง (ตรวจสอบเฉพาะส่วนที่มองเห็นได้)</span>
+                  </label>
+                  <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="wiring_method"
+                    value="underground_conduit"
+                    checked={value.wiringMethod === "underground_conduit"}
+                    onChange={() => handleInputChange("wiringMethod", "underground_conduit")}
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm">เดินสายร้อยท่อฝังดิน (ตรวจสอบเฉพาะส่วนที่มองเห็นได้) โดยใช้ท่อร้อยสายขนาด</span>
+                  <input
+                    type="text"
+                    value={value.conduitSize}
+                    onChange={(e) => handleInputChange("conduitSize", e.target.value)}
+                    className="px-2 py-1 border border-gray-300 rounded text-sm w-16"
+                    disabled={value.wiringMethod !== "underground_conduit"}
+                  />
+                  <span className="text-sm">นิ้ว</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="wiring_method"
+                    value="wall_conduit"
+                    checked={value.wiringMethod === "wall_conduit"}
+                    onChange={() => handleInputChange("wiringMethod", "wall_conduit")}
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm">เดินร้อยท่อเกาะผนัง โดยใช้ท่อร้อยสายขนาด</span>
+                  <input
+                    type="text"
+                    value={value.conduitSizeWall}
+                    onChange={(e) => handleInputChange("conduitSizeWall", e.target.value)}
+                    className="px-2 py-1 border border-gray-300 rounded text-sm w-16"
+                    disabled={value.wiringMethod !== "wall_conduit"}
+                  />
+                  <span className="text-sm">นิ้ว</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="wiring_method"
+                    value="other"
+                    checked={value.wiringMethod === "other"}
+                    onChange={() => handleInputChange("wiringMethod", "other")}
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm">อื่นๆ ระบุ</span>
+                  <input
+                    type="text"
+                    value={value.otherWiringMethod}
+                    onChange={(e) => handleInputChange("otherWiringMethod", e.target.value)}
+                    className="px-3 py-1 border border-gray-300 rounded text-sm flex-1 max-w-xs"
+                    disabled={value.wiringMethod !== "other"}
+                    placeholder="ระบุรายละเอียด"
+                  />
+                  </div>
+                </div>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 mb-4">
+                  <p className="text-sm text-yellow-800">
+                  <strong>หมายเหตุ:</strong> การไฟฟ้าส่วนภูมิภาคกำหนดให้ใช้สายตัวนำทองแดงสำหรับการเดินสายภายในและภายนอกอาคาร ส่วนสายตัวนำอะลูมิเนียมอนุญาตให้ใช้เป็นตัวนำประธานได้เฉพาะการเดินสายบนลูกถ้วยฉนวนภายนอกอาคาร
+                  </p>
+                </div>
+                {renderCorrectIncorrectField("wiring_method_status", "wiringMethodCorrect", "wiringMethodNote", true, 5)}
+                </div>
 
-          {/* 3.1.8 ประเภทท่อร้อยสาย */}
-          <div className="form-group">
-            <label className="block text-sm font-medium text-gray-700 mb-3">3.1.8 ประเภทท่อร้อยสาย</label>
-            <div className="space-y-4 mb-4">
-              <div>
-                <div className="font-medium text-gray-700 mb-2">ท่อโลหะ</div>
-                <div className="ml-4 flex flex-wrap gap-4">
-                  {[
+                {/* 3.1.8 ประเภทท่อร้อยสาย */}
+                <div className="form-group">
+                <label className="block text-sm font-medium text-gray-700 mb-3">3.1.8 ประเภทท่อร้อยสาย</label>
+                <div className="space-y-4 mb-4">
+                  <div>
+                  <div className="font-medium text-gray-700 mb-2">ท่อโลหะ</div>
+                  <div className="ml-4 flex flex-wrap gap-4 items-center">
+                    {[
                     { value: "RMC", label: "หนา (RMC)" },
                     { value: "IMC", label: "หนาปานกลาง (IMC)" },
                     { value: "EMT", label: "บาง (EMT)" },
-                  ].map((type) => (
-                    <label key={type.value} className="flex items-center gap-2">
+                    ].map((type) => {
+                    const checked = Array.isArray(value.conduitType)
+                      ? value.conduitType.includes(type.value)
+                      : value.conduitType === type.value;
+                    return (
+                      <label key={type.value} className="flex items-center gap-2">
                       <input
-                        type="radio"
-                        name="conduit_type"
+                        type="checkbox"
+                        name="conduit_type_metal"
                         value={type.value}
-                        checked={value.conduitType === type.value}
-                        onChange={() => handleInputChange("conduitType", type.value)}
+                        checked={checked}
+                        onChange={() => {
+                        const current = value.conduitType;
+                        let next;
+                        if (Array.isArray(current)) {
+                          next = current.includes(type.value) ? current.filter((v) => v !== type.value) : [...current, type.value];
+                        } else {
+                          // convert single to array or toggle
+                          next = current === type.value ? [] : [...(current ? [current] : []), type.value];
+                        }
+                        handleInputChange("conduitType", next);
+                        }}
                         className="w-4 h-4 text-blue-600"
                       />
                       <span className="text-sm">{type.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <div className="font-medium text-gray-700 mb-2">ท่ออโลหะ</div>
-                <div className="ml-4 flex flex-wrap gap-4">
-                  {[
+                      </label>
+                    );
+                    })}
+                  </div>
+                  </div>
+                  <div>
+                  <div className="font-medium text-gray-700 mb-2">ท่ออโลหะ</div>
+                  <div className="ml-4 flex flex-wrap gap-4 items-center">
+                    {[
                     { value: "RNC", label: "แข็ง (RNC)" },
                     { value: "ENT", label: "อ่อน (ENT)" },
-                  ].map((type) => (
-                    <label key={type.value} className="flex items-center gap-2">
+                    ].map((type) => {
+                    const checked = Array.isArray(value.conduitType)
+                      ? value.conduitType.includes(type.value)
+                      : value.conduitType === type.value;
+                    return (
+                      <label key={type.value} className="flex items-center gap-2">
                       <input
-                        type="radio"
-                        name="conduit_type"
+                        type="checkbox"
+                        name="conduit_type_nonmetal"
                         value={type.value}
-                        checked={value.conduitType === type.value}
-                        onChange={() => handleInputChange("conduitType", type.value)}
+                        checked={checked}
+                        onChange={() => {
+                        const current = value.conduitType;
+                        let next;
+                        if (Array.isArray(current)) {
+                          next = current.includes(type.value) ? current.filter((v) => v !== type.value) : [...current, type.value];
+                        } else {
+                          next = current === type.value ? [] : [...(current ? [current] : []), type.value];
+                        }
+                        handleInputChange("conduitType", next);
+                        }}
                         className="w-4 h-4 text-blue-600"
                       />
                       <span className="text-sm">{type.label}</span>
-                    </label>
-                  ))}
+                      </label>
+                    );
+                    })}
+                  </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="conduit_type_other"
+                    value="other"
+                    checked={Array.isArray(value.conduitType) ? value.conduitType.includes("other") : value.conduitType === "other"}
+                    onChange={() => {
+                    const current = value.conduitType;
+                    let next;
+                    if (Array.isArray(current)) {
+                      next = current.includes("other") ? current.filter((v) => v !== "other") : [...current, "other"];
+                    } else {
+                      next = current === "other" ? [] : [...(current ? [current] : []), "other"];
+                    }
+                    handleInputChange("conduitType", next);
+                    }}
+                    className="w-4 h-4 text-blue-600"
+                    />
+                    <span className="text-sm">อื่นๆ ระบุ</span>
+                    <input
+                    type="text"
+                    value={value.otherConduitType}
+                    onChange={(e) => handleInputChange("otherConduitType", e.target.value)}
+                    className="px-3 py-1 border border-gray-300 rounded text-sm flex-1 max-w-xs"
+                    disabled={!(Array.isArray(value.conduitType) ? value.conduitType.includes("other") : value.conduitType === "other")}
+                    placeholder="ระบุรายละเอียด"
+                    />
+                    </div>
+                  </div>
+
+                  {/* Arrange conduit groups horizontally */}
+                  <div className="flex flex-wrap gap-8 mb-4">
+                    <div className="min-w-[220px]">
+                    <div className="font-medium text-gray-700 mb-2">ท่อโลหะ</div>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      {[
+                      { value: "RMC", label: "หนา (RMC)" },
+                      { value: "IMC", label: "หนาปานกลาง (IMC)" },
+                      { value: "EMT", label: "บาง (EMT)" },
+                      ].map((type) => {
+                      const checked = Array.isArray(value.conduitType)
+                        ? value.conduitType.includes(type.value)
+                        : value.conduitType === type.value;
+                      return (
+                        <div key={type.value} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="conduit_type_metal"
+                          value={type.value}
+                          checked={checked}
+                          onChange={() => {
+                          const current = value.conduitType;
+                          let next;
+                          if (Array.isArray(current)) {
+                            next = current.includes(type.value) ? current.filter((v) => v !== type.value) : [...current, type.value];
+                          } else {
+                            next = current === type.value ? [] : [...(current ? [current] : []), type.value];
+                          }
+                          handleInputChange("conduitType", next);
+                          }}
+                          className="w-4 h-4 text-blue-600"
+                        />
+                        <span className="text-sm">{type.label}</span>
+                        </div>
+                      );
+                      })}
+                    </div>
+                    </div>
+
+                    <div className="min-w-[220px]">
+                    <div className="font-medium text-gray-700 mb-2">ท่ออโลหะ</div>
+                    <div className="flex flex-wrap gap-4 items-center">
+                      {[
+                      { value: "RNC", label: "แข็ง (RNC)" },
+                      { value: "ENT", label: "อ่อน (ENT)" },
+                      ].map((type) => {
+                      const checked = Array.isArray(value.conduitType)
+                        ? value.conduitType.includes(type.value)
+                        : value.conduitType === type.value;
+                      return (
+                        <label key={type.value} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          name="conduit_type_nonmetal"
+                          value={type.value}
+                          checked={checked}
+                          onChange={() => {
+                          const current = value.conduitType;
+                          let next;
+                          if (Array.isArray(current)) {
+                            next = current.includes(type.value) ? current.filter((v) => v !== type.value) : [...current, type.value];
+                          } else {
+                            next = current === type.value ? [] : [...(current ? [current] : []), type.value];
+                          }
+                          handleInputChange("conduitType", next);
+                          }}
+                          className="w-4 h-4 text-blue-600"
+                        />
+                        <span className="text-sm">{type.label}</span>
+                        </label>
+                      );
+                      })}
+                    </div>
+                    </div>
+
+                    <div className="min-w-[240px] flex-shrink">
+                    <div className="font-medium text-gray-700 mb-2">อื่นๆ</div>
+                    <div className="flex items-center gap-2">
+                      <input
+                      type="checkbox"
+                      name="conduit_type_other"
+                      value="other"
+                      checked={Array.isArray(value.conduitType) ? value.conduitType.includes("other") : value.conduitType === "other"}
+                      onChange={() => {
+                        const current = value.conduitType;
+                        let next;
+                        if (Array.isArray(current)) {
+                        next = current.includes("other") ? current.filter((v) => v !== "other") : [...current, "other"];
+                        } else {
+                        next = current === "other" ? [] : [...(current ? [current] : []), "other"];
+                        }
+                        handleInputChange("conduitType", next);
+                      }}
+                      className="w-4 h-4 text-blue-600"
+                      />
+                      <span className="text-sm">ระบุ</span>
+                      <input
+                      type="text"
+                      value={value.otherConduitType}
+                      onChange={(e) => handleInputChange("otherConduitType", e.target.value)}
+                      className="px-3 py-1 border border-gray-300 rounded text-sm flex-1 max-w-xs"
+                      disabled={!(Array.isArray(value.conduitType) ? value.conduitType.includes("other") : value.conduitType === "other")}
+                      placeholder="ระบุรายละเอียด"
+                      />
+                    </div>
+                    </div>
+                  </div>
+
+                  {renderCorrectIncorrectField("conduit_type_status", "conduitTypeCorrect", "conduitTypeNote", true, 2)}
+                  </div>
+                  </div>
+                  </section>
+              <section className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">3.2 เครื่องป้องกันกระแสเกินของแผงสายเมน (หรือที่เทียบเท่าระบาน)</h3>
+              </div>
+              <div className="p-6 space-y-6">
+                {/* 3.2.1 มาตรฐาน */}
+                <div className="form-group">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    3.2.1 เบรกเกอร์ที่ตระบกอนจะใช้ไปได้ตามมาตรฐาน IEC 60898 หรือ IEC 60947-2
+                  </label>
+                  {renderCorrectIncorrectField("main_breaker_standard_status", "mainBreakerStandardCorrect", "mainBreakerStandardNote")}
+                </div>
+
+                {/* 3.2.2 ขนาด */}
+                <div className="form-group">
+                    {/* คอลัมน์ซ้าย */}
+                    <div className="flex items-center">
+                      <span className="text-sm">3.2.2 เบรกเกอร์ที่ตระบกอนจะริทนาด AT</span>
+                      <input
+                        type="text"
+                        value={value.mainBreakerSize}
+                        onChange={(e) => handleInputChange("mainBreakerSize", e.target.value)}
+                        className="w-24 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400"
+                      />
+                      <span className="text-sm"> แอมแปร์ (A) สอดคล้องกับพิกัดกระแสสายตัวนำประธาน</span>
+                    </div>
+                    {renderCorrectIncorrectField("main_breaker_size_status", "mainBreakerSizeCorrect", "mainBreakerSizeNote")}
+                </div>
+
+                {/* 3.2.3 กำลังตัดวงจร */}
+                <div className="form-group">
+                    {/* คอลัมน์ซ้าย */}
+                    <div className="flex items-center">
+                      <span className="text-sm">3.2.3 พิกัดกำลังตัดวงจรสั้น (Ic)</span>
+                      <input
+                        type="text"
+                        value={value.shortCircuitRating}
+                        onChange={(e) => handleInputChange("shortCircuitRating", e.target.value)}
+                        className="w-24 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400"
+                      />
+                      <span className="text-sm">กิโลแอมแปร์ (kA)</span>
+                    </div>
+                    {renderCorrectIncorrectField("short_circuit_rating_status", "shortCircuitRatingCorrect", "shortCircuitRatingNote")}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="conduit_type"
-                  value="other"
-                  checked={value.conduitType === "other"}
-                  onChange={() => handleInputChange("conduitType", "other")}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-sm">อื่นๆ ระบุ</span>
-                <input
-                  type="text"
-                  value={value.otherConduitType}
-                  onChange={(e) => handleInputChange("otherConduitType", e.target.value)}
-                  className="px-3 py-1 border border-gray-300 rounded text-sm flex-1 max-w-xs"
-                  disabled={value.conduitType !== "other"}
-                  placeholder="ระบุรายละเอียด"
-                />
-              </div>
-            </div>
-            {renderCorrectIncorrectField("conduit_type_status", "conduitTypeCorrect", "conduitTypeNote", true, 2)}
-          </div>
-        </div>
-      </section>
-
-      {/* 3.2 เครื่องป้องกันกระแสเกินของแผงสายเมน */}
-      <section className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">3.2 เครื่องป้องกันกระแสเกินของแผงสายเมน (หรือที่เทียบเท่าระบาน)</h3>
-        </div>
-        <div className="p-6 space-y-6">
-          {/* 3.2.1 มาตรฐาน */}
-          <div className="form-group">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              3.2.1 เบรกเกอร์ที่ตระบกอนจะใช้ไปได้ตามมาตรฐาน IEC 60898 หรือ IEC 60947-2
-            </label>
-            {renderCorrectIncorrectField("main_breaker_standard_status", "mainBreakerStandardCorrect", "mainBreakerStandardNote")}
-          </div>
-
-          {/* 3.2.2 ขนาด */}
-          <div className="form-group">
-            <div className="flex items-center gap-3 mb-2">
-              <label className="text-sm font-medium text-gray-700">
-                3.2.2 เบรกเกอร์ที่ตระบกอนจะริทนาด AT...แอมแปร์ (A) สอดคล้องกับพิกัดกระแสสายตัวนำประธาน
-              </label>
-            </div>
-            <input
-              type="text"
-              value={value.mainBreakerSize}
-              onChange={(e) => handleInputChange("mainBreakerSize", e.target.value)}
-              placeholder="ระบุขนาด AT (แอมแปร์)"
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm w-40 mb-3"
-            />
-            {renderCorrectIncorrectField("main_breaker_size_status", "mainBreakerSizeCorrect", "mainBreakerSizeNote")}
-          </div>
-
-          {/* 3.2.3 กำลังตัดวงจร */}
-          <div className="form-group">
-            <div className="flex items-center gap-3 mb-2">
-              <label className="text-sm font-medium text-gray-700">
-                3.2.3 พิกัดกำลังตัดวงจรสั้น (Icn)...กิโลแอมแปร์ (kA)
-              </label>
-            </div>
-            <input
-              type="text"
-              value={value.shortCircuitRating}
-              onChange={(e) => handleInputChange("shortCircuitRating", e.target.value)}
-              placeholder="ระบุกำลังตัดวงจรสั้น (kA)"
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm w-40 mb-3"
-            />
-            {renderCorrectIncorrectField("short_circuit_rating_status", "shortCircuitRatingCorrect", "shortCircuitRatingNote")}
-          </div>
-        </div>
-      </section>
-
-      {/* 3.3 ระบบการต่อสายดินและสายนิวทรัล */}
+              </section>
       <section className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">3.3 ระบบการต่อสายดินและสายนิวทรัล</h3>
@@ -490,16 +628,16 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
           <div className="form-group">
             <div className="flex items-center gap-3 mb-2">
               <label className="text-sm font-medium text-gray-700">
-                3.3.1 สายต่อพื้นดิน (ตัวนำของแบบ) ขนาด...ตร.มม. สอดคล้องกับขนาดสายตัวนำและตารางที่ 1 ในหมวดที่ 5
+                3.3.1 สายต่อพื้นดิน (ตัวนำของแบบ) ขนาด
               </label>
-            </div>
+            
             <input
               type="text"
               value={value.groundWireSize}
               onChange={(e) => handleInputChange("groundWireSize", e.target.value)}
               placeholder="ระบุขนาดสายดิน (ตร.มม.)"
               className="px-3 py-2 border border-gray-300 rounded-md text-sm w-40 mb-3"
-            />
+            />ตร.มม. สอดคล้องกับขนาดสายตัวนำและตารางที่ 1 ในหมวดที่ 5</div>
             {renderCorrectIncorrectField("ground_wire_size_status", "groundWireSizeCorrect", "groundWireSizeNote")}
           </div>
 
