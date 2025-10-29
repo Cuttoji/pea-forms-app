@@ -17,7 +17,7 @@ const PanelBoardSection = ({ panelBoard, transformerIndex = 0 }) => {
         {/* 5.5.1 วงจรสายป้อน */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallBoldText}>5.5.1 วงจรสายป้อน</Text>
+            <Text style={styles.smallBoldText}>5.5.1 วงจรสายป้อน </Text>
             
             <Text style={styles.smallText}>ก) สายป้อนเป็นไปตามมาตรฐาน</Text>
             <View style={styles.checkboxLine}>
@@ -39,7 +39,7 @@ const PanelBoardSection = ({ panelBoard, transformerIndex = 0 }) => {
 
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>ข) ชนิดสายตัวนำ</Text>
+            <Text style={styles.smallText}>ข) ชนิดสายตัวนำ  </Text>
             <View style={styles.checkboxLine}>
               <Checkbox checked={panelBoard?.wireType?.includes("IEC01")} />
               <Text style={styles.smallText}> IEC01  </Text>
@@ -106,7 +106,7 @@ const PanelBoardSection = ({ panelBoard, transformerIndex = 0 }) => {
 
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>ฉ) ระบุเฟสสายตัวนำ โดยใช้สีของฉนวนหรือการทำเครื่องหมายที่สายตัวนำ</Text>
+            <Text style={styles.smallText}>ฉ) ระบุเฟสสายตัวนำ โดยใช้สีของฉนวนหรือการทำเครื่องหมายที่สายตัวนำ </Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -118,7 +118,7 @@ const PanelBoardSection = ({ panelBoard, transformerIndex = 0 }) => {
 
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>ช) ช่องเดินสายมีความต่อเนื่องทางกล และความมั่นคงแข็งแรงเพียงพอ</Text>
+            <Text style={styles.smallText}>ช) ช่องเดินสายมีความต่อเนื่องทางกล และความมั่นคงแข็งแรงเพียงพอ </Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -131,32 +131,32 @@ const PanelBoardSection = ({ panelBoard, transformerIndex = 0 }) => {
         {/* 5.5.2 วิธีการเดินสาย */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallBoldText}>5.5.2 วิธีการเดินสาย</Text>
+            <Text style={styles.smallBoldText}>5.5.2 วิธีการเดินสาย  </Text>
             
             <View style={styles.checkboxLine}>
               <Checkbox checked={panelBoard?.method?.includes("wireway")} />
               <Text style={styles.smallText}> ราง (Wireway) ขนาด </Text>
-              <Text style={styles.underlineDotted}>{panelBoard?.wirewayW || "...."}</Text>
+              <Text style={styles.underlineDotted}>{panelBoard?.methodWirewayW || "...."}</Text>
               <Text style={styles.smallText}> x </Text>
-              <Text style={styles.underlineDotted}>{panelBoard?.wirewayH || "...."}</Text>
+              <Text style={styles.underlineDotted}>{panelBoard?.methodWirewayH || "...."}</Text>
               <Text style={styles.smallText}> มม.</Text>
             </View>
             
             <View style={styles.checkboxLine}>
               <Checkbox checked={panelBoard?.method?.includes("cableTray")} />
               <Text style={styles.smallText}> ถาดเคเบิล (Cable Tray) ขนาด </Text>
-              <Text style={styles.underlineDotted}>{panelBoard?.cableTrayW || "...."}</Text>
+              <Text style={styles.underlineDotted}>{panelBoard?.methodCableTrayW || "...."}</Text>
               <Text style={styles.smallText}> x </Text>
-              <Text style={styles.underlineDotted}>{panelBoard?.cableTrayH || "...."}</Text>
+              <Text style={styles.underlineDotted}>{panelBoard?.methodCableTrayH || "...."}</Text>
               <Text style={styles.smallText}> มม.</Text>
             </View>
             
             <View style={styles.checkboxLine}>
               <Checkbox checked={panelBoard?.method?.includes("busway")} />
               <Text style={styles.smallText}> บัสเวย์ (Busway) หรือบัสดัก (Bus duct) ขนาด </Text>
-              <Text style={styles.underlineDotted}>{panelBoard?.buswayW || "...."}</Text>
+              <Text style={styles.underlineDotted}>{panelBoard?.methodBuswayW || "...."}</Text>
               <Text style={styles.smallText}> x </Text>
-              <Text style={styles.underlineDotted}>{panelBoard?.buswayH || "...."}</Text>
+              <Text style={styles.underlineDotted}>{panelBoard?.methodBuswayH || "...."}</Text>
               <Text style={styles.smallText}> มม.</Text>
             </View>
             
@@ -193,7 +193,7 @@ const PanelBoardSection = ({ panelBoard, transformerIndex = 0 }) => {
         {/* 5.5.3 ประเภทท่อร้อยสาย */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallBoldText}>5.5.3 ประเภทท่อร้อยสาย</Text>
+            <Text style={styles.smallBoldText}>5.5.3 ประเภทท่อร้อยสาย  </Text>
             
             <View style={styles.checkboxLine}>
               <Text style={styles.smallText}>ท่อโลหะ  </Text>

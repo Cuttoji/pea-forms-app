@@ -6,7 +6,6 @@ const FormDashboard = dynamic(() => import("@/app/dashboard/FormDashboard"), { s
 export default function DashboardPage() {
   return (
     <main>
-      <h1 className="text-2xl font-bold mb-4 text-gray-700">PEA Forms Dashboard</h1>
       <FormDashboard />
     </main>
   );

@@ -18,12 +18,12 @@ import FormListTable from "./FormListTable";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const formTypes = [
-  { value: 'home_inspection_forms', label: 'ฟอร์มที่อยู่อาศัย' },
-  { value: 'condo_inspection_forms', label: 'ฟอร์มอาคารชุด' },
-  { value: 'ev_charger_lv_inspection', label: 'ฟอร์ม EV Charger (แรงต่ำ)' },
-  { value: 'ev_charger_hv_inspection', label: 'ฟอร์ม EV Charger (แรงสูง)' },
-  { value: 'other_inspection_forms', label: 'ฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)' },
-  { value: 'construction_inspection', label: 'ฟอร์มตรวจสอบงานก่อสร้าง' },
+  { value: 'home_inspection_forms', label: 'แบบฟอร์มที่อยู่อาศัย' },
+  { value: 'other_inspection_forms', label: 'แบบฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)' },
+  { value: 'condo_inspection_forms', label: 'แบบฟอร์มอาคารรชุด (คอนโดมิเนียม)' },
+  { value: 'ev_charger_lv_inspection', label: 'แบบฟอร์ม EV CHARGER รับไฟฟ้าแรงต่ำจาก PEA' },
+  { value: 'ev_charger_hv_inspection', label: 'แบบฟอร์ม EV CHARGER รับไฟฟ้าแรงสูงจาก PEA' },
+  { value: 'construction_inspection', label: 'แบบฟอร์มระบบจำหน่ายของPEA' },
 ];
 
 export default function FormDashboard() {
@@ -225,7 +225,7 @@ export default function FormDashboard() {
           <Bar data={chartData} options={chartOptions} />
         </div>
         <div className="lg:col-span-2 bg-white rounded-xl shadow-lg border p-6 flex flex-col gap-6">
-          <h2 className="text-2xl font-bold text-[#3a1a5b] mb-4">การจัดการข้อมูลฟอร์ม</h2>
+          <h2 className="text-2xl font-bold text-[#3a1a5b] mb-4">กรองข้อมูลฟอร์ม</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label htmlFor="formType" className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">

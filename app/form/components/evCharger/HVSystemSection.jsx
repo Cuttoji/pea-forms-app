@@ -1,18 +1,60 @@
 import React from "react";
 
+// CorrectableRow component
+function CorrectableRow({ label, value, onChange, detail = false, placeholder = "โปรดระบุรายละเอียด" }) {
+  return (
+    <div className="mt-3">
+      <div className="flex-1 text-gray-700 font-medium">{label}</div>
+      <div className="flex items-start gap-6">
+        <label className="flex items-center gap-2 min-w-20">
+          <input
+            type="radio"
+            checked={value?.result === "ถูกต้อง"}
+            onChange={() => onChange({ ...value, result: "ถูกต้อง", detail: "" })}
+            className="w-4 h-4 text-blue-600"
+          />
+          <span className="text-sm font-medium text-green-700">ถูกต้อง</span>
+        </label>
+        <label className="flex items-center gap-2 min-w-24">
+          <input
+            type="radio"
+            checked={value?.result === "ต้องแก้ไข"}
+            onChange={() => onChange({ ...value, result: "ต้องแก้ไข" })}
+            className="w-4 h-4 text-blue-600"
+          />
+          <span className="text-sm font-medium text-red-700">ต้องแก้ไข</span>
+        </label>
+        {value?.result === "ต้องแก้ไข" && detail && (
+          <div className="flex-1">
+            <input
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              placeholder={placeholder}
+              value={value?.detail || ""}
+              onChange={e => onChange({ ...value, detail: e.target.value })}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Dynamic items based on prefix
 const HV_ABOVE_ITEMS = (prefix) => [
   {
     key: `${prefix}_1`,
     label: `${prefix}.1 ชนิดสายตัวนำ`,
-    hasText: true,
-    detailPlaceholder: "ระบุรายละเอียด (ถ้ามี)..."
+    hasInput: true,
+    inputPlaceholder: "ระบุชนิดสาย",
+    labelSuffix: "เหมาะสมกับกำลังที่ใช้และสภาพแวดล้อม"
   },
   {
     key: `${prefix}_2`,
     label: `${prefix}.2 ขนาดสายตัวนำ`,
-    hasText: true,
-    detailPlaceholder: "ระบุขนาดสาย (ตร.มม.)"
+    hasInput: true,
+    inputPlaceholder: "ระบุขนาด",
+    labelSuffix: "ตร.มม."
   },
   { key: `${prefix}_3`, label: `${prefix}.3 สภาพเสาและระยะห่างระหว่างเสา` },
   { key: `${prefix}_4`, label: `${prefix}.4 การประกอบอุปกรณ์หัวเสา` },
@@ -29,26 +71,22 @@ const HV_UNDER_ITEMS = (prefix) => [
   {
     key: `${prefix}_1`,
     label: `${prefix}.1 ชนิดสายตัวนำ`,
-    hasText: true,
-    detailPlaceholder: "ระบุรายละเอียด (ถ้ามี)..."
+    hasInput: true,
+    inputPlaceholder: "ระบุชนิดสาย",
+    labelSuffix: "เหมาะสมกับกำลังที่ใช้และสภาพแวดล้อม"
   },
   {
     key: `${prefix}_2`,
     label: `${prefix}.2 ขนาดสายตัวนำ`,
-    hasText: true,
-    detailPlaceholder: "ระบุขนาดสาย (ตร.มม.)"
+    hasInput: true,
+    inputPlaceholder: "ระบุขนาด",
+    labelSuffix: "ตร.มม."
   },
   { key: `${prefix}_3`, label: `${prefix}.3 สภาพสายส่วนที่มองเห็นได้` },
   { key: `${prefix}_4`, label: `${prefix}.4 ความตึงของสายช่วงเข้า-ออก อาคารหรือสิ่งก่อสร้าง` },
   { key: `${prefix}_5`, label: `${prefix}.5 การติดตั้งกับดักเสิร์จแรงสูง (HV Surge Arrester)` },
   { key: `${prefix}_6`, label: `${prefix}.6 สภาพของจุดต่อสาย` },
   { key: `${prefix}_7`, label: `${prefix}.7 การต่อลงดิน` }
-];
-
-const DROPOUT_OPTIONS = [
-  { value: "dropout", label: "ดรอพเอาท์ฟิวส์คัตเอาท์" },
-  { value: "switch", label: "สวิตช์ตัดตอน" },
-  { value: "rmu", label: "RMU (ไม่รวมถึงฟังก์ชั่นการทำงาน)" }
 ];
 
 export default function HVSystemSection({
@@ -60,25 +98,11 @@ export default function HVSystemSection({
   const prefix = `${sectionNumber}.${currentMode === "above" ? 1 : 2}`;
   const items = currentMode === "above" ? HV_ABOVE_ITEMS(prefix) : HV_UNDER_ITEMS(prefix);
 
-  // Generic radio handler
-  const handleRadio = (name, result) => {
+  // Handler for updating item values
+  const handleItemChange = (key, newValue) => {
     onChange({
       ...value,
-      [name]: {
-        ...value[name],
-        result,
-        detail: result === "ต้องแก้ไข" ? (value[name]?.detail || "") : ""
-      }
-    });
-  };
-
-  const handleDetail = (name, detail) => {
-    onChange({
-      ...value,
-      [name]: {
-        ...value[name],
-        detail
-      }
+      [key]: newValue
     });
   };
 
@@ -166,67 +190,41 @@ export default function HVSystemSection({
           <h3 className="text-base font-semibold text-gray-800 border-b border-gray-200 pb-2">
             {currentMode === "above" ? "ระบบจำหน่ายเหนือดิน" : "ระบบจำหน่ายใต้ดิน"}
           </h3>
-          {items.map(item => (
-            <div key={item.key} className="border border-gray-200 rounded-lg p-4 bg-white">
-              <div className="mb-3">
-                <div className="text-gray-700 font-medium text-sm leading-relaxed">
-                  {item.label}
-                  {item.hasText && (
+          {items.map(item => {
+            const itemValue = value[item.key] || { result: null, text: "", detail: "" };
+            
+            // Create label with input field if needed
+            const renderLabel = () => {
+              if (item.hasInput) {
+                return (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span>{item.label}</span>
                     <input
                       type="text"
-                      placeholder={item.detailPlaceholder}
-                      className="ml-3 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 w-48"
-                      value={value[item.key]?.text || ""}
+                      placeholder={item.inputPlaceholder}
+                      className="px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 min-w-[120px]"
+                      value={itemValue.text || ""}
                       onChange={e => handleText(item.key, e.target.value)}
                     />
-                  )}
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <div className="flex flex-wrap gap-3">
-                  <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-green-50 cursor-pointer transition-colors">
-                    <input
-                      type="radio"
-                      name={item.key}
-                      value="ถูกต้อง"
-                      checked={value[item.key]?.result === "ถูกต้อง"}
-                      onChange={() => handleRadio(item.key, "ถูกต้อง")}
-                      className="text-green-600 focus:ring-green-500"
-                    />
-                    <span className="ml-2 text-green-700 font-medium">✓ ถูกต้อง</span>
-                  </label>
-                  
-                  <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-red-50 cursor-pointer transition-colors">
-                    <input
-                      type="radio"
-                      name={item.key}
-                      value="ต้องแก้ไข"
-                      checked={value[item.key]?.result === "ต้องแก้ไข"}
-                      onChange={() => handleRadio(item.key, "ต้องแก้ไข")}
-                      className="text-red-600 focus:ring-red-500"
-                    />
-                    <span className="ml-2 text-red-700 font-medium">✗ ต้องแก้ไข</span>
-                  </label>
-                </div>
-                
-                {value[item.key]?.result === "ต้องแก้ไข" && (
-                  <div className="mt-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      รายละเอียดการแก้ไข
-                    </label>
-                    <textarea
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500 text-gray-700 resize-none"
-                      rows={2}
-                      placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
-                      value={value[item.key]?.detail || ""}
-                      onChange={e => handleDetail(item.key, e.target.value)}
-                    />
+                    {item.labelSuffix && <span>{item.labelSuffix}</span>}
                   </div>
-                )}
+                );
+              }
+              return item.label;
+            };
+
+            return (
+              <div key={item.key} className="border border-gray-200 rounded-lg p-4 bg-white">
+                <CorrectableRow
+                  label={renderLabel()}
+                  value={itemValue}
+                  onChange={(newValue) => handleItemChange(item.key, newValue)}
+                  detail={true}
+                  placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
+                />
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* 3.3 เครื่องปลดวงจรต้นทาง (แสดงเฉพาะเมื่อ sectionNumber = 3) */}
@@ -309,48 +307,15 @@ export default function HVSystemSection({
 
               {/* แสดงการประเมินผล (ถูกต้อง/ต้องแก้ไข) หลังจากเลือกอุปกรณ์แล้ว */}
               {Array.isArray(hv33.type) && hv33.type.length > 0 && (
-                <>
-                  <div className="flex flex-wrap gap-3">
-                    <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-green-50 cursor-pointer transition-colors">
-                      <input
-                        type="radio"
-                        name="hv33"
-                        value="ถูกต้อง"
-                        checked={hv33.result === "ถูกต้อง"}
-                        onChange={() => handleHv33Radio("ถูกต้อง")}
-                        className="text-green-600 focus:ring-green-500"
-                      />
-                      <span className="ml-2 text-green-700 font-medium">✓ ถูกต้อง</span>
-                    </label>
-                    
-                    <label className="flex items-center p-2 border border-gray-200 rounded-md hover:bg-red-50 cursor-pointer transition-colors">
-                      <input
-                        type="radio"
-                        name="hv33"
-                        value="ต้องแก้ไข"
-                        checked={hv33.result === "ต้องแก้ไข"}
-                        onChange={() => handleHv33Radio("ต้องแก้ไข")}
-                        className="text-red-600 focus:ring-red-500"
-                      />
-                      <span className="ml-2 text-red-700 font-medium">✗ ต้องแก้ไข</span>
-                    </label>
-                  </div>
-
-                  {hv33.result === "ต้องแก้ไข" && (
-                    <div className="mt-3">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        รายละเอียดการแก้ไข
-                      </label>
-                      <textarea
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500 text-gray-700 resize-none"
-                        rows={2}
-                        placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
-                        value={hv33.detail || ""}
-                        onChange={e => handleHv33Detail(e.target.value)}
-                      />
-                    </div>
-                  )}
-                </>
+                <div className="mt-4">
+                  <CorrectableRow
+                    label=""
+                    value={hv33}
+                    onChange={(newValue) => onChange({ ...value, hv33: newValue })}
+                    detail={true}
+                    placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
+                  />
+                </div>
               )}
             </div>
           </div>

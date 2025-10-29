@@ -152,7 +152,7 @@ export default function DocumentSection({
           </div>
 
           {/* Completion Status */}
-          <div className="border-t border-gray-200 pt-6">
+          <div className="border-t border-gray-200 pt-6 text-gray-900">
             <h4 className="text-base font-medium text-gray-800 mb-4">สถานะความครบถ้วนของเอกสาร</h4>
             <div className="space-y-3">
               <label className="flex items-center gap-3 cursor-pointer group p-3 border border-gray-200 rounded-lg hover:bg-green-50 transition-colors">

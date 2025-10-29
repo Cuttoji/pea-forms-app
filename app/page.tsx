@@ -71,23 +71,31 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           <FeatureCard
             icon={<Home size={28} />}
-            title="ฟอร์มที่อยู่อาศัย"
-            description="สำหรับตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัย บ้านเดี่ยว และอาคารพักอาศัย"
+            title="แบบฟอร์มที่อยู่อาศัย"
+            description="สำหรับตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัย บ้านเดี่ยว"
             href="/form/home-inspection"
             linkText="เริ่มกรอกฟอร์ม"
             gradient="bg-gradient-to-br from-green-500 to-emerald-600"
           />
           <FeatureCard
             icon={<Factory size={28} />}
-            title="ฟอร์มพาณิชย์กรรม"
+            title="แบบฟอร์มอื่นๆ (นอกเหนือจากที่อยู่อาศัย)"
             description="สำหรับตรวจสอบการติดตั้งระบบไฟฟ้าประเภทพาณิชย์กรรม โรงงาน และสถานประกอบการ"
             href="/form/other-inspection"
             linkText="เริ่มกรอกฟอร์ม"
             gradient="bg-gradient-to-br from-blue-500 to-indigo-600"
           />
           <FeatureCard
+            icon={<Building size={28} />}
+            title="แบบฟอร์มอาคารชุด (คอนโดมิเนียม)"
+            description="สำหรับตรวจสอบการติดตั้งระบบไฟฟ้าในอาคารชุด คอนโดมิเนียม หรืออาคารที่มีผู้ทรงสิทธิ์หลายราย"
+            href="/form/condo-inspection"
+            linkText="เริ่มกรอกฟอร์ม"
+            gradient="bg-gradient-to-br from-purple-500 to-violet-600"
+          />
+          <FeatureCard
             icon={<Zap size={28} />}
-            title="ฟอร์ม EV Charger (แรงต่ำ)"
+            title="แบบฟอร์ม EV CHARGER รับไฟฟ้าแรงต่ำจาก PEA"
             description="สำหรับตรวจสอบระบบอัดประจุยานยนต์ไฟฟ้าที่รับไฟแรงต่ำ สำหรับที่อยู่อาศัยและธุรกิจขนาดเล็ก"
             href="/form/ev-charger-lv-inspection"
             linkText="เริ่มกรอกฟอร์ม"
@@ -95,23 +103,15 @@ export default function HomePage() {
           />
           <FeatureCard
             icon={<Zap className="transform rotate-180" size={28} />}
-            title="ฟอร์ม EV Charger (แรงสูง)"
+            title="แบบฟอร์ม EV CHARGER รับไฟฟ้าแรงสูงจาก PEA"
             description="สำหรับตรวจสอบระบบอัดประจุยานยนต์ไฟฟ้าสำหรับผู้ใช้ไฟฟ้าที่รับไฟฟ้าแรงสูงโดยติดตั้งหม้อแปลงเฉพาะราย"
             href="/form/ev-charger-hv-inspection"
             linkText="เริ่มกรอกฟอร์ม"
             gradient="bg-gradient-to-br from-red-500 to-pink-600"
           />
           <FeatureCard
-            icon={<Building size={28} />}
-            title="ฟอร์มคอนโดมิเนียม"
-            description="สำหรับตรวจสอบการติดตั้งระบบไฟฟ้าในอาคารชุด คอนโดมิเนียม หรืออาคารที่มีผู้ทรงสิทธิ์หลายราย"
-            href="/form/condo-inspection"
-            linkText="เริ่มกรอกฟอร์ม"
-            gradient="bg-gradient-to-br from-purple-500 to-violet-600"
-          />
-          <FeatureCard
             icon={<Construction size={28} />}
-            title="ฟอร์มตรวจสอบงานก่อสร้าง"
+            title="แบบฟอร์มระบบจำหน่ายของPEA"
             description="สำหรับตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจำหน่ายไฟฟ้าของ กฟภ. ตามข้อกำหนดทางเทคนิค"
             href="/form/construction-inspection"
             linkText="เริ่มกรอกฟอร์ม"

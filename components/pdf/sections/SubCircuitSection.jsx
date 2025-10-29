@@ -20,8 +20,8 @@ const SubCircuitSection = ({ subCircuits, transformerIndex = 0 }) => {
             {/* ข้อมูลพื้นฐานของวงจร */}
             <View style={styles.tableRow}>
               <View style={styles.leftColumn}>
-                <Text style={styles.subsectionTitle}>5.6.1 วงจรย่อยของเครื่องอัดประจุยานยนต์ไฟฟ้า</Text>
-                <Text style={styles.smallText}>ก) วงจรย่อยสำหรับเครื่องอัดประจุยานยนต์ไฟฟ้าเท่านั้น (ไม่รวมโหลดอื่น)</Text>
+                <Text style={styles.subsectionTitle}>5.6.1 วงจรย่อยของเครื่องอัดประจุยานยนต์ไฟฟ้า </Text>
+                <Text style={styles.smallText}>ก) วงจรย่อยสำหรับเครื่องอัดประจุยานยนต์ไฟฟ้าเท่านั้น</Text>
                 <Text style={styles.smallText}>ข) วงจรย่อยสำหรับเครื่องอัดประจุยานยนต์ไฟฟ้า 1 เครื่อง ต่อ 1 วงจรย่อย</Text>
               </View>
               <View style={styles.rightColumn}>
@@ -52,27 +52,26 @@ const SubCircuitSection = ({ subCircuits, transformerIndex = 0 }) => {
               <View style={styles.leftColumn}>
                 <Text style={styles.subsectionTitle}>5.6.2 วงจรย่อย - สายไฟฟ้า</Text>
                 
-                <Text style={styles.smallText}>ก) สายตัวนำวงจรย่อยเป็นไปตามมาตรฐาน</Text>
+                <Text style={styles.smallText}>ก) สายตัวนำวงจรย่อยเป็นไปตามมาตรฐาน </Text>
                 <View style={styles.checkboxLine}>
-                  {["TIS 17", "IEC 60364", "BS 7671", "NEC"].map(std => (
+                  {["มอก. 11-2553", "มอก. 293-2541", "IEC 60502 "].map(std => (
                     <View key={std} style={styles.checkboxInline}>
-                      <Checkbox checked={item?.standard?.includes(std)} />
+                      <Radio checked={item?.standard?.includes(std)} />
                       <Text style={styles.smallText}> {std}  </Text>
                     </View>
                   ))}
                 </View>
                 
-                <Text style={styles.smallText}>ข) ชนิดสายตัวนำ</Text>
+                <Text style={styles.smallText}>ข) ชนิดสายตัวนำ </Text>
                 <View style={styles.checkboxLine}>
-                  {["THW", "THHN", "NYY", "VV", "XLPE"].map(type => (
+                  {["IEC01", "NYY", "CV", "อื่นๆ"].map(type => (
                     <View key={type} style={styles.checkboxInline}>
-                      <Checkbox checked={item?.wireType?.includes(type)} />
+                      <Radio checked={item?.wireType?.includes(type)} />
                       <Text style={styles.smallText}> {type}  </Text>
                     </View>
                   ))}
                   <View style={styles.checkboxInline}>
-                    <Checkbox checked={item?.wireType?.includes("อื่นๆ")} />
-                    <Text style={styles.smallText}> อื่นๆ</Text>
+                    <Radio checked={item?.wireType?.includes("อื่นๆ")} />
                     <Text style={styles.underlineDotted}>{item?.wireTypeOther || ""}</Text>
                   </View>
                 </View>
@@ -133,7 +132,7 @@ const SubCircuitSection = ({ subCircuits, transformerIndex = 0 }) => {
             {/* การติดตั้งเดินสาย */}
             <View style={[styles.tableRow, styles.borderTop]}>
               <View style={styles.leftColumn}>
-                <Text style={styles.subsectionTitle}>5.6.3 วิธีการเดินสาย</Text>
+                <Text style={styles.subsectionTitle}>5.6.3 วิธีการเดินสาย </Text>
                 
                 <View style={styles.checkboxLine}>
                   {["ท่อร้อยสายบนผนัง", "ท่อร้อยสายฝังดิน", "ราง Wireway", "ถาด Cable Tray", "อื่นๆ"].map(method => (

@@ -37,7 +37,7 @@ function CorrectableRow({ label, value, onChange, detail = false, placeholder = 
     </div>
   );
 }
-
+    
 export default function PanelBoardSection({ sectionNumber = 5, value = {}, onChange = () => {} }) {
   // สำหรับ checkbox array
   const handleCheckbox = (key, v) => {
@@ -106,94 +106,68 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
               </h3>
               
               {/* สายป้อนเป็นไปตามมาตรฐาน */}
-              <div className="mb-6 bg-white rounded-lg p-4">
+              <div className="mb-6 rounded-lg p-4">
                 <div className="text-sm font-medium text-gray-800 mb-4">ก) สายป้อนเป็นไปตามมาตรฐาน</div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                   {Object.entries({
-                    "มอก11": "มอก. 11-2553",
-                    "มอก293": "มอก. 293-2541", 
-                    "iec60502": "IEC 60502"
+                    "มอก. 11-2553": "มอก. 11-2553",
+                    "มอก. 293-2541": "มอก. 293-2541", 
+                    "IEC 60502": "IEC 60502"
                   }).map(([key, label]) => (
                     <label key={key} className="flex items-center gap-3 cursor-pointer bg-gray-50 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors">
                       <input
-                        type="checkbox"
-                        checked={value.standard?.includes(key)}
-                        onChange={() => handleCheckbox("standard", key)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 rounded"
+                        type="radio"
+                        name="standard"
+                        checked={value.standard === key}
+                        onChange={() => handleField("standard", key)}
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                       />
                       <span className="text-sm font-medium text-gray-700">{label}</span>
                     </label>
                   ))}
                 </div>
                 
-                <div className="flex items-center gap-4 text-sm flex-wrap">
-                  <label className="flex items-center gap-2 cursor-pointer bg-green-50 px-4 py-2 rounded-lg hover:bg-green-100 transition-colors">
-                    <input
-                      type="radio"
-                      checked={value.standardCheck?.result === "ถูกต้อง"}
-                      onChange={() => handleField("standardCheck", { result: "ถูกต้อง", detail: "" })}
-                      className="w-4 h-4 text-green-600 focus:ring-green-500"
-                    />
-                    <span className="text-green-700 font-medium">ถูกต้อง</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer bg-red-50 px-4 py-2 rounded-lg hover:bg-red-100 transition-colors">
-                    <input
-                      type="radio"
-                      checked={value.standardCheck?.result === "ต้องแก้ไข"}
-                      onChange={() => handleField("standardCheck", { result: "ต้องแก้ไข" })}
-                      className="w-4 h-4 text-red-600 focus:ring-red-500"
-                    />
-                    <span className="text-red-700 font-medium">ต้องแก้ไข</span>
-                  </label>
-                  {value.standardCheck?.result === "ต้องแก้ไข" && (
-                    <input
-                      type="text"
-                      className="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
-                      value={value.standardCheck?.detail || ""}
-                      onChange={e => handleField("standardCheck", { ...value.standardCheck, detail: e.target.value })}
-                    />
-                  )}
-                </div>
+                <CorrectableRow
+                  label="ตรวจสอบมาตรฐานของสายป้อน"
+                  value={value.standardCheck}
+                  onChange={v => handleField("standardCheck", v)}
+                  detail
+                />
               </div>
 
               {/* ชนิดสายตัวนำ */}
               <div className="mb-4">
                 <div className="text-sm text-gray-700 mb-3">ข) ชนิดสายตัวนำ</div>
                 <div className="flex flex-wrap gap-6 mb-4">
-                  {["IEC01", "NYY", "CV"].map((type) => (
-                    <label key={type} className="flex items-center gap-2 cursor-pointer">
+                  {[
+                    { key: "IEC01", label: "IEC01" },
+                    { key: "NYY", label: "NYY" },
+                    { key: "CV", label: "CV" },
+                    { key: "other", label: "อื่นๆ" }
+                  ].map((type) => (
+                    <label key={type.key} className="flex items-center gap-2 cursor-pointer">
                       <input
-                        type="checkbox"
-                        checked={value.wireType?.includes(type)}
-                        onChange={() => handleCheckbox("wireType", type)}
+                        type="radio"
+                        name="wireType"
+                        checked={value.wireType === type.key}
+                        onChange={() => handleField("wireType", type.key)}
                         className="w-4 h-4 text-blue-600"
                       />
-                      <span className="text-sm text-gray-700">{type}</span>
+                      <span className="text-sm text-gray-700">{type.label}</span>
+                      {type.key === "other" && value.wireType === "other" && (
+                        <input
+                          type="text"
+                          className="ml-2 px-2 py-1 border border-gray-300 rounded text-sm w-32"
+                          placeholder="ระบุ"
+                          value={value.wireTypeOther || ""}
+                          onChange={e => handleField("wireTypeOther", e.target.value)}
+                        />
+                      )}
                     </label>
                   ))}
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={value.wireType?.includes("other")}
-                      onChange={() => handleCheckbox("wireType", "other")}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                    <span className="text-sm text-gray-700">อื่นๆ</span>
-                    {value.wireType?.includes("other") && (
-                      <input
-                        type="text"
-                        className="ml-2 px-2 py-1 border border-gray-300 rounded text-sm w-32"
-                        placeholder="ระบุ"
-                        value={value.wireTypeOther || ""}
-                        onChange={e => handleField("wireTypeOther", e.target.value)}
-                      />
-                    )}
-                  </div>
                 </div>
 
                 <CorrectableRow 
-                  label="ตรวจสอบชนิดสายตัวนำ" 
                   value={value.wireTypeCheck} 
                   onChange={v => handleField("wireTypeCheck", v)} 
                   detail 
@@ -211,15 +185,9 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                     value={value.phaseSize || ""}
                     onChange={e => handleField("phaseSize", e.target.value)}
                   />
-                  <span className="text-sm text-gray-600">ตร.มม.</span>
+                  <span className="text-sm text-gray-600">ตร.มม.(พิกัดกระแสสายป้อนต้องไม่น้อยกว่าขนาดปรับตั้งของเซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน และขนาดสายป้อนต้องไม่เล็กกว่า 4 ตร.มม.)</span>
                 </div>
-                
-                <div className="bg-blue-50 p-3 rounded text-xs text-gray-700 mb-3">
-                  (พิกัดกระแสสายป้อนต้องไม่น้อยกว่าขนาดปรับตั้งของเซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน และขนาดสายป้อนต้องไม่เล็กกว่า 4 ตร.มม.)
-                </div>
-
                 <CorrectableRow 
-                  label="ตรวจสอบขนาดสายเฟส" 
                   value={value.phaseSizeCheck} 
                   onChange={v => handleField("phaseSizeCheck", v)} 
                   detail 
@@ -241,7 +209,6 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                 </div>
 
                 <CorrectableRow 
-                  label="ตรวจสอบขนาดสายนิวทรัล" 
                   value={value.neutralSizeCheck} 
                   onChange={v => handleField("neutralSizeCheck", v)} 
                   detail 
@@ -259,10 +226,10 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                     value={value.groundSize || ""}
                     onChange={e => handleField("groundSize", e.target.value)}
                   />
-                  <span className="text-sm text-gray-600">ตร.มม.</span>
+                  <span className="text-sm text-gray-600">ตร.มม.  สอดคล้องกับขนาดสายเฟสของ
+ วงจรสายป้อน ตามตารางที่ 1 ในหน้าที่ 7 </span>
                 </div>
                 <CorrectableRow 
-                  label="ตรวจสอบขนาดสายดิน" 
                   value={value.groundSizeCheck} 
                   onChange={v => handleField("groundSizeCheck", v)} 
                   detail 
@@ -474,95 +441,98 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
             </div>
 
             {/* 5.5.3 ประเภทท่อร้อยสาย */}
-            <div className="bg-purple-50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-purple-900 mb-6 flex items-center">
-                <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-bold mr-3">{sectionNumber}.5.3</span>
-                ประเภทท่อร้อยสาย
-              </h3>
-              
-              <div className="bg-white rounded-lg p-4">
-                <div className="space-y-4 mb-4">
-                  <div>
-                    <div className="text-sm font-medium text-gray-700 mb-2">ท่อโลหะ</div>
-                    <div className="flex flex-wrap gap-4 ml-4">
-                      {Object.entries({
-                        "RMC": "หนา (RMC)",
-                        "IMC": "หนาปานกลาง (IMC)",
-                        "EMT": "บาง (EMT)"
-                      }).map(([key, label]) => (
-                        <label key={key} className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={value.conduitType?.includes(key)}
-                            onChange={() => handleCheckbox("conduitType", key)}
-                            className="w-4 h-4 text-blue-600"
-                          />
-                          <span className="text-sm text-gray-700">{label}</span>
+                  <div className="bg-purple-50 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-purple-900 mb-6 flex items-center">
+                    <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-bold mr-3">{sectionNumber}.5.3</span>
+                    ประเภทท่อร้อยสาย
+                    </h3>
+                    
+                    <div className="bg-white rounded-lg p-4">
+                    <div className="space-y-4 mb-4">
+                      <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                        <span className="font-medium">ท่อโลหะ:</span>
+                        <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={value.conduitMetalRMC || false}
+                          onChange={(e) => handleField('conduitMetalRMC', e.target.checked)}
+                          className="w-4 h-4"
+                        />
+                        <span>หนา (RMC)</span>
                         </label>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <div className="text-sm font-medium text-gray-700 mb-2">ท่ออโลหะ</div>
-                    <div className="flex flex-wrap gap-4 ml-4">
-                      {Object.entries({
-                        "RNC": "แข็ง (RNC)",
-                        "ENT": "อ่อน (ENT)"
-                      }).map(([key, label]) => (
-                        <label key={key} className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={value.conduitType?.includes(key)}
-                            onChange={() => handleCheckbox("conduitType", key)}
-                            className="w-4 h-4 text-blue-600"
-                          />
-                          <span className="text-sm text-gray-700">{label}</span>
+                        <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={value.conduitMetalIMC || false}
+                          onChange={(e) => handleField('conduitMetalIMC', e.target.checked)}
+                          className="w-4 h-4"
+                        />
+                        <span>หนาปานกลาง (IMC)</span>
                         </label>
-                      ))}
-                    </div>
-                  </div>
+                        <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={value.conduitMetalEMT || false}
+                          onChange={(e) => handleField('conduitMetalEMT', e.target.checked)}
+                          className="w-4 h-4"
+                        />
+                        <span>บาง (EMT)</span>
+                        </label>
+                      </div>
 
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={value.conduitType?.includes("Flexible")}
-                      onChange={() => handleCheckbox("conduitType", "Flexible")}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                    <span className="text-sm text-gray-700">ท่อโลหะอ่อน (Flexible Metal Conduit)</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={value.conduitType?.includes("other")}
-                      onChange={() => handleCheckbox("conduitType", "other")}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                    <span className="text-sm text-gray-700">อื่นๆ ระบุ</span>
-                    {value.conduitType?.includes("other") && (
-                      <input
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                        <span className="font-medium">ท่ออโลหะ:</span>
+                        <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={value.conduitNonMetalRNC || false}
+                          onChange={(e) => handleField('conduitNonMetalRNC', e.target.checked)}
+                          className="w-4 h-4"
+                        />
+                        <span>แข็ง (RNC)</span>
+                        </label>
+                        <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={value.conduitNonMetalENT || false}
+                          onChange={(e) => handleField('conduitNonMetalENT', e.target.checked)}
+                          className="w-4 h-4"
+                        />
+                        <span>อ่อน (ENT)</span>
+                        </label>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={value.conduitTypeOther || false}
+                          onChange={(e) => handleField('conduitTypeOther', e.target.checked)}
+                          className="w-4 h-4"
+                        />
+                        <span>อื่นๆ ระบุ (</span>
+                        </label>
+                        <input
                         type="text"
-                        className="px-3 py-1 border border-gray-300 rounded text-sm w-48 ml-2"
-                        placeholder="โปรดระบุ"
-                        value={value.conduitTypeOther || ""}
-                        onChange={e => handleField("conduitTypeOther", e.target.value)}
-                      />
-                    )}
+                        value={value.conduitTypeOtherText || ''}
+                        onChange={(e) => handleField('conduitTypeOtherText', e.target.value)}
+                        className="w-32 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ml-2 mr-2 bg-white"
+                        disabled={!value.conduitTypeOther}
+                        />
+                        <span>)</span>
+                      </div>
+                      </div>
+                    </div>
+
+                    <CorrectableRow 
+                      value={value.conduitCheck} 
+                      onChange={v => handleField("conduitCheck", v)} 
+                      detail 
+                    />
+                    </div>
                   </div>
-                </div>
-
-                <CorrectableRow 
-                  label="ตรวจสอบประเภทท่อร้อยสาย" 
-                  value={value.conduitCheck} 
-                  onChange={v => handleField("conduitCheck", v)} 
-                  detail 
-                />
-              </div>
-            </div>
-
-            {/* 5.5.4 เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน */}
+            {/* 5.5.4 เซอร์กิตเบรกเกอร์ป้องกันวงจรสายป้อน */}      
             <div className="bg-orange-50 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-orange-900 mb-6 flex items-center">
                 <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-bold mr-3">{sectionNumber}.5.4</span>
@@ -574,7 +544,6 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                   <div className="text-sm text-gray-700 mb-2">ก) เซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898 หรือ IEC 60947-2</div>
                   
                   <CorrectableRow 
-                    label="ตรวจสอบมาตรฐานเซอร์กิตเบรกเกอร์" 
                     value={value.breakerStandard} 
                     onChange={v => handleField("breakerStandard", v)} 
                     detail 
@@ -597,9 +566,7 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
                   <div className="bg-blue-50 p-3 rounded text-xs text-gray-700 mb-3">
                     ไม่เกินพิกัดกระแสสายป้อน และไม่ต่ำกว่าโหลดสูงสุดของสายป้อน
                   </div>
-
                   <CorrectableRow 
-                    label="ตรวจสอบขนาดเซอร์กิตเบรกเกอร์" 
                     value={value.breakerCheck} 
                     onChange={v => handleField("breakerCheck", v)} 
                     detail 

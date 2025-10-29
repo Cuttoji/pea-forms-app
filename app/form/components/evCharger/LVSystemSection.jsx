@@ -51,7 +51,8 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                     />
                     <span className="text-sm font-medium text-green-700">ถูกต้อง</span>
                 </label>
-                <label className="flex items-center gap-2 min-w-24">
+
+                <label className="flex items-center gap-2 min-w-24 flex-1">
                     <input
                         type="radio"
                         name={`${uniqueId}_${transformerIndex}`}
@@ -60,16 +61,15 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                         className="w-4 h-4 text-blue-600"
                     />
                     <span className="text-sm font-medium text-red-700">ต้องแก้ไข</span>
-                </label>
-                {formData[correctField] === "ต้องแก้ไข" && (
-                    <div className="flex-1">
-                        {isTextarea ? (
+
+                    {formData[correctField] === "ต้องแก้ไข" && (
+                        isTextarea ? (
                             <textarea
                                 value={formData[noteField] || ''}
                                 onChange={(e) => handleInputChange(noteField, e.target.value)}
                                 placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
                                 rows={rows}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                className="ml-3 flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                             />
                         ) : (
                             <input
@@ -77,11 +77,11 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                                 value={formData[noteField] || ''}
                                 onChange={(e) => handleInputChange(noteField, e.target.value)}
                                 placeholder="ระบุรายละเอียดที่ต้องแก้ไข..."
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                className="ml-3 flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                             />
-                        )}
-                    </div>
-                )}
+                        )
+                    )}
+                </label>
             </div>
         </div>
     );
@@ -101,27 +101,33 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                     <div className="flex flex-wrap gap-4">
                         <label className="flex items-center gap-2">
                             <input
-                                type="checkbox"
-                                checked={formData.standardMok11 || false}
-                                onChange={(e) => handleInputChange('standardMok11', e.target.checked)}
+                                type="radio"
+                                name={`standard_${transformerIndex}`}
+                                value="มอก. 11-2553"
+                                checked={formData.standard === "มอก. 11-2553"}
+                                onChange={(e) => handleInputChange('standard', e.target.value)}
                                 className="w-4 h-4"
                             />
                             <span>มอก. 11-2553</span>
                         </label>
                         <label className="flex items-center gap-2">
                             <input
-                                type="checkbox"
-                                checked={formData.standardMok293 || false}
-                                onChange={(e) => handleInputChange('standardMok293', e.target.checked)}
+                                type="radio"
+                                name={`standard_${transformerIndex}`}
+                                value="มอก. 293-2541"
+                                checked={formData.standard === "มอก. 293-2541"}
+                                onChange={(e) => handleInputChange('standard', e.target.value)}
                                 className="w-4 h-4"
                             />
                             <span>มอก. 293-2541</span>
                         </label>
                         <label className="flex items-center gap-2">
                             <input
-                                type="checkbox"
-                                checked={formData.standardIEC60502 || false}
-                                onChange={(e) => handleInputChange('standardIEC60502', e.target.checked)}
+                                type="radio"
+                                name={`standard_${transformerIndex}`}
+                                value="IEC 60502"
+                                checked={formData.standard === "IEC 60502"}
+                                onChange={(e) => handleInputChange('standard', e.target.value)}
                                 className="w-4 h-4"
                             />
                             <span>IEC 60502</span>
@@ -176,7 +182,7 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                                 value={formData.conductorOtherText || ''}
                                 onChange={(e) => handleInputChange('conductorOtherText', e.target.value)}
                                 placeholder="ระบุ..."
-                                className="px-2 py-1 border border-gray-300 rounded ml-2"
+                                className="w-32 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ml-2 mr-2"
                                 disabled={!formData.conductorOther}
                             />
                         </label>
@@ -187,30 +193,32 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                 {/* 5.1.3 ขนาดสายเฟส */}
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                        5.1.3 ขนาดสายเฟส ตร.มม. (พิกัดกระแสสายตัวนำประธานต้องไม่น้อยกว่าขนาดปรับตั้งของเมนเซอร์กิตเบรกเกอร์ และสอดคล้องกับขนาดมิเตอร์ตามที่การไฟฟ้าส่วนภูมิภาคกำหนด)
-                    </label>
+                        5.1.3 ขนาดสายเฟส
+                    
                     <input
                         type="text"
                         value={formData.phaseWireSize || ''}
                         onChange={(e) => handleInputChange('phaseWireSize', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        className="w-32 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ml-2 mr-2"
                         placeholder="ขนาดสายเฟส ตร.มม."
                     />
+                    ตร.มม. (พิกัดกระแสสายตัวนำประธานต้องไม่น้อยกว่าขนาดปรับตั้งของเมนเซอร์กิตเบรกเกอร์ และสอดคล้องกับขนาดมิเตอร์ตามที่การไฟฟ้าส่วนภูมิภาคกำหนด)
                     {renderCorrectIncorrectField('lv_phase_wire', 'phaseWireSizeCorrect', 'phaseWireSizeNote')}
+                </label>
                 </div>
 
                 {/* 5.1.4 ขนาดสายนิวทรัล */}
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                        5.1.4 ขนาดสายนิวทรัล ตร.มม.
-                    </label>
+                        5.1.4 ขนาดสายนิวทรัล
                     <input
                         type="text"
                         value={formData.neutralWireSize || ''}
                         onChange={(e) => handleInputChange('neutralWireSize', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        className="w-32 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ml-2 mr-2"
                         placeholder="ขนาดสายนิวทรัล ตร.มม."
                     />
+                    ตร.มม.</label>
                     {renderCorrectIncorrectField('lv_neutral_wire', 'neutralWireSizeCorrect', 'neutralWireSizeNote')}
                 </div>
 
@@ -358,80 +366,78 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                         5.1.8 ประเภทท่อร้อยสาย
                     </label>
                     
-                    <div className="space-y-3">
-                        <div>
+                    <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                             <span className="font-medium">ท่อโลหะ:</span>
-                            <div className="ml-4 flex flex-wrap gap-4 mt-2">
-                                <label className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.conduitMetalRMC || false}
-                                        onChange={(e) => handleInputChange('conduitMetalRMC', e.target.checked)}
-                                        className="w-4 h-4"
-                                    />
-                                    <span>หนา (RMC)</span>
-                                </label>
-                                <label className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.conduitMetalIMC || false}
-                                        onChange={(e) => handleInputChange('conduitMetalIMC', e.target.checked)}
-                                        className="w-4 h-4"
-                                    />
-                                    <span>หนาปานกลาง (IMC)</span>
-                                </label>
-                                <label className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.conduitMetalEMT || false}
-                                        onChange={(e) => handleInputChange('conduitMetalEMT', e.target.checked)}
-                                        className="w-4 h-4"
-                                    />
-                                    <span>บาง (EMT)</span>
-                                </label>
-                            </div>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.conduitMetalRMC || false}
+                                    onChange={(e) => handleInputChange('conduitMetalRMC', e.target.checked)}
+                                    className="w-4 h-4"
+                                />
+                                <span>หนา (RMC)</span>
+                            </label>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.conduitMetalIMC || false}
+                                    onChange={(e) => handleInputChange('conduitMetalIMC', e.target.checked)}
+                                    className="w-4 h-4"
+                                />
+                                <span>หนาปานกลาง (IMC)</span>
+                            </label>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.conduitMetalEMT || false}
+                                    onChange={(e) => handleInputChange('conduitMetalEMT', e.target.checked)}
+                                    className="w-4 h-4"
+                                />
+                                <span>บาง (EMT)</span>
+                            </label>
                         </div>
 
-                        <div>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                             <span className="font-medium">ท่ออโลหะ:</span>
-                            <div className="ml-4 flex flex-wrap gap-4 mt-2">
-                                <label className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.conduitNonMetalRNC || false}
-                                        onChange={(e) => handleInputChange('conduitNonMetalRNC', e.target.checked)}
-                                        className="w-4 h-4"
-                                    />
-                                    <span>แข็ง (RNC)</span>
-                                </label>
-                                <label className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.conduitNonMetalENT || false}
-                                        onChange={(e) => handleInputChange('conduitNonMetalENT', e.target.checked)}
-                                        className="w-4 h-4"
-                                    />
-                                    <span>อ่อน (ENT)</span>
-                                </label>
-                            </div>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.conduitNonMetalRNC || false}
+                                    onChange={(e) => handleInputChange('conduitNonMetalRNC', e.target.checked)}
+                                    className="w-4 h-4"
+                                />
+                                <span>แข็ง (RNC)</span>
+                            </label>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.conduitNonMetalENT || false}
+                                    onChange={(e) => handleInputChange('conduitNonMetalENT', e.target.checked)}
+                                    className="w-4 h-4"
+                                />
+                                <span>อ่อน (ENT)</span>
+                            </label>
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                checked={formData.conduitTypeOther || false}
-                                onChange={(e) => handleInputChange('conduitTypeOther', e.target.checked)}
-                                className="w-4 h-4"
-                            />
-                            <span>อื่นๆ ระบุ</span>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.conduitTypeOther || false}
+                                    onChange={(e) => handleInputChange('conduitTypeOther', e.target.checked)}
+                                    className="w-4 h-4"
+                                />
+                                <span>อื่นๆ ระบุ (</span>
+                            </label>
                             <input
                                 type="text"
                                 value={formData.conduitTypeOtherText || ''}
                                 onChange={(e) => handleInputChange('conduitTypeOtherText', e.target.value)}
-                                placeholder="ระบุ..."
-                                className="px-2 py-1 border border-gray-300 rounded flex-1"
+                                className="w-32 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ml-2 mr-2 bg-white"
                                 disabled={!formData.conduitTypeOther}
                             />
+                            <span>)</span>
                         </div>
                     </div>
 
@@ -456,30 +462,32 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                 {/* 5.2.2 เมนเซอร์กิตเบรกเกอร์ขนาด */}
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                        5.2.2 เมนเซอร์กิตเบรกเกอร์ขนาด AT แอมแปร์ (A) สอดคล้องกับพิกัดกระแสสายตัวนำประธาน
-                    </label>
+                        5.2.2 เมนเซอร์กิตเบรกเกอร์ขนาด AT 
                     <input
                         type="text"
                         value={formData.mainBreakerSize || ''}
                         onChange={(e) => handleInputChange('mainBreakerSize', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        className="w-32 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ml-2 mr-2"
                         placeholder="ขนาด AT แอมแปร์ (A)"
                     />
+                    แอมแปร์ (A) สอดคล้องกับพิกัดกระแสสายตัวนำประธาน
+                    </label>
                     {renderCorrectIncorrectField('main_breaker_size', 'mainBreakerSizeCorrect', 'mainBreakerSizeNote')}
                 </div>
 
                 {/* 5.2.3 พิกัดทนกระแสลัดวงจร */}
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                        5.2.3 พิกัดทนกระแสลัดวงจร (Ic) กิโลแอมแปร์ (kA)
-                    </label>
+                        5.2.3 พิกัดทนกระแสลัดวงจร (Ic)
+                    
                     <input
                         type="text"
                         value={formData.shortCircuitRating || ''}
                         onChange={(e) => handleInputChange('shortCircuitRating', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        className="w-32 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ml-2 mr-2"
                         placeholder="พิกัดทนกระแสลัดวงจร (Ic) กิโลแอมแปร์ (kA)"
                     />
+                    กิโลแอมแปร์ (kA)</label>
                     {renderCorrectIncorrectField('short_circuit_rating', 'shortCircuitRatingCorrect', 'shortCircuitRatingNote')}
                 </div>
 
@@ -501,15 +509,15 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                 {/* 5.3.1 สายต่อหลักดิน */}
                 <div className="form-group mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                        5.3.1 สายต่อหลักดิน (ตัวนำทองแดง) ขนาด ตร.มม. สอดคล้องกับขนาดสายตัวนำประธาน ตามตารางที่ 1 ในหน้าที่ 7
-                    </label>
+                        5.3.1 สายต่อหลักดิน (ตัวนำทองแดง) ขนาด 
                     <input
                         type="text"
                         value={formData.groundWireSize || ''}
                         onChange={(e) => handleInputChange('groundWireSize', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        className="w-32 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ml-2 mr-2"
                         placeholder="ขนาดสายต่อหลักดิน ตร.มม."
-                    />
+                    />ตร.มม. สอดคล้องกับขนาดสายตัวนำประธาน ตามตารางที่ 1 ในหน้าที่ 7
+                    </label>
                     {renderCorrectIncorrectField('ground_wire_size', 'groundWireSizeCorrect', 'groundWireSizeNote')}
                 </div>
 
@@ -531,9 +539,10 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                                     className="w-4 h-4 mt-1"
                                 />
                                 <span className="text-sm">
-                                    <strong>กรณีระบบไฟฟ้า 1 เฟส</strong> แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และต่อสายนิวทรัล (Neutral Wire) 
-                                    ของตัวนำประธาน (Main Conductor) เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน (Main Circuit Breaker) 
-                                    ตามที่การไฟฟ้าส่วนภูมิภาคกำหนด
+                                    <strong>กรณีระบบไฟฟ้า 1 เฟส</strong>  กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground 
+Bus) และต่อสายนิวทรัล (Neutral Wire) ของตัวนำประธาน (Main Conductor) 
+เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน (Main Circuit Breaker) ตามที่       
+การไฟฟ้าส่วนภูมิภาคกำหนด 
                                 </span>
                             </label>
                         </div>
@@ -549,8 +558,9 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                                     className="w-4 h-4 mt-1"
                                 />
                                 <span className="text-sm">
-                                    <strong>กรณีระบบไฟฟ้า 3 เฟส</strong> แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) 
-                                    โดยติดตั้งสายต่อหลักดินและสายดินบริภัณฑ์ภายในแผงเมนสวิตช์ ตามที่การไฟฟ้าส่วนภูมิภาคกำหนด
+                                    <strong>กรณีระบบไฟฟ้า 3 เฟส</strong>  แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground 
+Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายดิน
+ บริภัณฑ์ ภายในแผงเมนสวิตช์ ตามที่การไฟฟ้าส่วนภูมิภาคกำหนด
                                 </span>
                             </label>
                         </div>
@@ -630,10 +640,11 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                                     className="w-4 h-4 mt-1"
                                 />
                                 <span className="text-sm">
-                                    มีการจัดโหลดไฟฟ้า 3 เฟส ให้สมดุลอย่างเพียงพอ โดยให้มีโหลดต่างกันระหว่างเฟสได้ไม่เกิน 20 แอมแปร์ 
-                                    รวมทั้งค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม ยกเว้นพื้นที่ที่ยากแก่การต่อลงดิน 
-                                    ยอมให้ค่าความต้านทานของหลักดินกับดินต้องไม่เกิน 25 โอห์ม หากทำการวัดแล้วยังมีค่าเกิน 
-                                    ให้ปักหลักดินเพิ่มอีกตามความเหมาะสม
+                                    มีการจัดโหลดไฟฟ้า 3 เฟส ให้สมดุลอย่างเพียงพอ โดยให้มีโหลดต่างกัน
+ ระหว่างเฟสได้ไม่เกิน 20 แอมแปร์ รวมทั้งค่าความต้านทานการต่อลงดินต้อง      
+ไม่เกิน 5 โอห์ม ยกเว้นพื้นที่ที่ยากแก่การต่อลงดิน ยอมให้ค่าความต้านทานของ
+ หลักดินกับดินต้องไม่เกิน 25 โอห์ม หากทำการวัดแล้วยังมีค่าเกิน ให้ปักหลักดิน
+ เพิ่มอีกตามความเหมาะสม 
                                 </span>
                             </label>
 
@@ -645,8 +656,9 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                                     className="w-4 h-4 mt-1"
                                 />
                                 <span className="text-sm">
-                                    มีมาตรการป้องกันไม่ให้สายนิวทรัลจากหม้อแปลงไฟฟ้าไปยังบริภัณฑ์ประธานชำรุดหรือเสียหาย 
-                                    โดยติดตั้งสายไฟฟ้าในรางเคเบิล บัสเวย์ (หรือบัสดัก) หรือช่องเดินสายเท่านั้น
+                                     มีมาตรการป้องกันไม่ให้สายนิวทรัลจากหม้อแปลงไฟฟ้าไปยังบริภัณฑ์
+ ประธานชำรุดหรือเสียหาย โดยติดตั้งสายไฟฟ้าในรางเคเบิล บัสเวย์ (หรือบัสดัก) 
+หรือช่องเดินสายเท่านั้น 
                                 </span>
                             </label>
 
@@ -658,9 +670,10 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                                     className="w-4 h-4 mt-1"
                                 />
                                 <span className="text-sm">
-                                    ติดตั้งอุปกรณ์ป้องกันแรงดันไฟฟ้าสัมผัส (Touch Voltage) ที่โครงบริภัณฑ์เทียบกับดินเกิน 70 โวลต์ 
-                                    ซึ่งอุปกรณ์ดังกล่าวใช้สำหรับปลดวงจรการอัดประจุไฟฟ้า โดยสามารถตัดกระแสไฟฟ้าทุกเส้น 
-                                    รวมถึงสายนิวทรัลและสายดินออกพร้อมกันภายในเวลา 5 วินาที
+                                     ติดตั้งอุปกรณ์ป้องกันแรงดันไฟฟ้าสัมผัส (Touch Voltage) ที่โครง
+ บริภัณฑ์เทียบกับดินเกิน 70 โวลต์ ซึ่งอุปกรณ์ดังกล่าวใช้สำหรับปลดวงจรการอัด
+ ประจุไฟฟ้า โดยสามารถตัดกระแสไฟฟ้าทุกเส้น รวมถึงสายนิวทรัลและสายดิน   
+ออกพร้อมกันภายในเวลา 5 วินาท
                                 </span>
                             </label>
                         </div>
@@ -674,8 +687,8 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                     <div className="mb-6 p-4 border border-orange-200 rounded-md">
                         <h4 className="font-semibold mb-3">5.4.2 กรณีต่อลงดินแบบ TT ทั้งระบบ</h4>
                         <p className="text-sm mb-3">
-                            ต้องติดตั้งเครื่องตัดไฟรั่ว (RCD) ทุกวงจรไฟฟ้าที่จ่ายไฟ หรือทุกเครื่องใช้ไฟฟ้า 
-                            ไม่ว่าจะเกี่ยวข้องกับการอัดประจุยานยนต์ไฟฟ้าหรือไม่ก็ตาม
+                            ต้องติดตั้งเครื่องตัดไฟรั่ว (RCD) ทุกวงจรไฟฟ้าที่จ่ายไฟ หรือทุกเครื่องใช้ไฟฟ้า    
+ไม่ว่าจะเกี่ยวข้องกับการอัดประจุยานยนต์ไฟฟ้าหรือไม่ก็ตาม 
                         </p>
                         {renderCorrectIncorrectField('tt_system', 'ttCorrect', 'ttNote')}
                     </div>
@@ -685,7 +698,24 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                 {formData.groundingSystem === 'TT_partial' && (
                     <div className="mb-6 p-4 border border-orange-200 rounded-md">
                         <h4 className="font-semibold mb-3">5.4.3 กรณีต่อลงดินแบบ TT บางส่วน (ต้องดำเนินการครบทุกข้อ ก) – จ))</h4>
-                        <p className="text-sm mb-3">รายละเอียดตามแบบฟอร์ม...</p>
+                        <p className="text-sm mb-3">ก) มีการประเมินความเสี่ยงก่อนว่า ไม่มีโอกาสที่บุคคลจะสัมผัสโครงบริภัณฑ์
+ ไฟฟ้าอื่นที่ต่อลงดินแบบ TN-C-S กับโครงบริภัณฑ์จ่ายไฟยานยนต์ไฟฟ้า หรือโครง
+ ยานยนต์ไฟฟ้าที่ต่อลงดินแบบ TT โดยพร้อมกัน หรือมีระยะห่างไม่น้อยกว่า 2.50 
+เมตร สามารถใช้การห่อหุ้มหรือกั้นได้ </p>
+                        <p className="text-sm mb-3">
+ข) ระยะห่างระหว่างหลักดินของระบบ TN-C-S กับระบบ TT ต้องห่างกัน
+ อย่างน้อย 2.00 เมตร </p>
+                        <p className="text-sm mb-3">
+ค) มีการติดตั้งป้ายแสดงข้อความเตือนบริเวณเครื่องอัดประจุยานยนต์ไฟฟ้า 
+ตามที่การไฟฟ้าส่วนภูมิภาคกำหนด </p>
+                        <p className="text-sm mb-3">
+ง) มีมาตรการป้องกันไม่ให้สายนิวทรัลจากหม้อแปลงไฟฟ้าไปยังบริภัณฑ์
+ ประธานชำรุดหรือเสียหาย โดยติดตั้งสายไฟฟ้าในรางเคเบิล บัสเวย์ (หรือบัสดัก) 
+หรือช่องเดินสายเท่านั้น </p>
+                        <p className="text-sm mb-3">
+จ) ค่าความต้านทานการต่อลงดินแบบ TN-C-S ต้องไม่เกิน 5 โอห์ม ยกเว้น
+ พื้นที่ที่ยากแก่การต่อลงดิน ยอมให้ค่าความต้านทานของหลักดินกับดินต้อง ไม่เกิน 
+25 โอห์ม หากทำการวัดแล้วยังมีค่าเกิน ให้ปักหลักดินเพิ่มอีกตามความเหมาะสม</p>
                         {renderCorrectIncorrectField('tt_partial_system', 'ttPartialCorrect', 'ttPartialNote', true, 5)}
                     </div>
                 )}
@@ -695,9 +725,9 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                     <div className="mb-6 p-4 border border-orange-200 rounded-md">
                         <h4 className="font-semibold mb-3">5.4.4 กรณีต่อลงดินแบบ TN-S ทั้งระบบ</h4>
                         <p className="text-sm mb-3">
-                            ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม ยกเว้นพื้นที่ที่ยากแก่การต่อลงดิน 
-                            ยอมให้ค่าความต้านทานของหลักดินกับดินต้องไม่เกิน 25 โอห์ม หากทำการวัดแล้วยังมีค่าเกิน 
-                            ให้ปักหลักดินเพิ่มอีกตามความเหมาะสม
+ค่าความต้านทานการต่อลงดินต้องไม่เกิน 5 โอห์ม ยกเว้นพื้นที่ที่ยากแก่การ
+ ต่อลงดิน ยอมให้ค่าความต้านทานของหลักดินกับดินต้องไม่เกิน 25 โอห์ม หากทำ
+ การวัดแล้วยังมีค่าเกิน ให้ปักหลักดินเพิ่มอีกตามความเหมาะสม 
                         </p>
                         {renderCorrectIncorrectField('tns_system', 'tnsCorrect', 'tnsNote')}
                     </div>

@@ -56,7 +56,7 @@ const TransformerSection = ({ transformers, includeLvSystem = false, sectionPref
                 <View style={styles.transformerRow}>
                   <View style={styles.transformerLeftCol}>
                     <Text style={styles.smallText}>
-                      ผลการทดสอบ <Text style={styles.underlineDotted}>{general?.testResult || ""}</Text> กำลัง <Text style={styles.underlineDotted}>{general?.capacity || ""}</Text> kVA
+                      ขนาด <Text style={styles.underlineDotted}>{general?.capacity || ""}</Text> kVA
                     </Text>
                     <Text style={styles.smallText}>
                       พิกัดแรงดันด้านแรงสูง <Text style={styles.underlineDotted}>{general?.hvVoltage || ""}</Text> kV พิกัดแรงดันด้านแรงต่ำ <Text style={styles.underlineDotted}>{general?.lvVoltage || ""}</Text> V
@@ -73,9 +73,6 @@ const TransformerSection = ({ transformers, includeLvSystem = false, sectionPref
                       <Checkbox checked={general?.transformerType === "อื่นๆ"} />
                       <Text style={styles.smallText}> อื่นๆ</Text>
                     </View>
-                    <Text style={styles.smallText}>
-                      Vector Group  <Text style={styles.underlineDotted}>{general?.vectorGroup || ""}</Text>
-                    </Text>
                     <Text style={styles.smallText}>
                       พิกัดการทนกระแสลัดวงจรสูงสุด  <Text style={styles.underlineDotted}>{general?.shortCircuitCurrent || ""}</Text> kA
                     </Text>
@@ -112,10 +109,10 @@ const TransformerSection = ({ transformers, includeLvSystem = false, sectionPref
                         <Text style={styles.smallText}> แขวน</Text>
                         <Checkbox checked={
                           Array.isArray(transformerData?.type) 
-                            ? transformerData?.type?.includes("วางราบ")
+                            ? transformerData?.type?.includes("นั่งร้าน")
                             : false
                         } />
-                        <Text style={styles.smallText}> วางราบ</Text>
+                        <Text style={styles.smallText}> นั่งร้าน</Text>
                         <Checkbox checked={
                           Array.isArray(transformerData?.type) 
                             ? transformerData?.type?.includes("ตั้งพื้น")

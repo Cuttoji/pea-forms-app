@@ -11,12 +11,12 @@ import type { User } from '@supabase/supabase-js';
 
 // รายการฟอร์มสำหรับเมนู
 const formLinks = [
-  { href: "/form/home-inspection", label: "ฟอร์มที่อยู่อาศัย", icon: <FileText size={16} /> },
-  { href: "/form/condo-inspection", label: "ฟอร์มอาคารชุด", icon: <Building size={16} /> },
-  { href: "/form/ev-charger-lv-inspection", label: "ฟอร์ม EV Charger (แรงต่ำ)", icon: <Zap size={16} /> },
-  { href: "/form/ev-charger-hv-inspection", label: "ฟอร์ม EV Charger (แรงสูง)", icon: <Zap size={16} /> },
-  { href: "/form/other-inspection", label: "ฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)", icon: <FileText size={16} /> },
-  { href: "/form/construction-inspection", label: "ฟอร์มตรวจสอบงานก่อสร้าง", icon: <Building size={16} /> },
+  { href: "/form/home-inspection", label: "แบบฟอร์มที่อยู่อาศัย", icon: <FileText size={16} /> },
+  { href: "/form/other-inspection", label: "แบบฟอร์มอื่นๆ (นอกเหนือที่อยู่อาศัย)", icon: <FileText size={16} /> },
+  { href: "/form/condo-inspection", label: "แบบฟอร์มอาคารรชุด (คอนโดมิเนียม)", icon: <Building size={16} /> },
+  { href: "/form/ev-charger-lv-inspection", label: "แบบฟอร์ม EV CHARGER รับไฟฟ้าแรงต่ำจาก PEA", icon: <Zap size={16} /> },
+  { href: "/form/ev-charger-hv-inspection", label: "แบบฟอร์ม EV CHARGER รับไฟฟ้าแรงสูงจาก PEA", icon: <Zap size={16} /> },
+  { href: "/form/construction-inspection", label: "แบบฟอร์มระบบจำหน่ายของPEA", icon: <Building size={16} /> },
 ];
 
 export default function SiteNavbar() {
@@ -83,7 +83,7 @@ export default function SiteNavbar() {
                   </button>
                   <Link href="/" className="flex items-center gap-3">
                       <Image src="/pea_logo.png" alt="PEA Logo" width={48} height={48} />
-                      <span className="text-lg font-semibold text-[#5b2d90]">PEA Forms</span>
+                      <span className="text-lg font-semibold text-[#5b2d90]">PEA</span>
                   </Link>
               </div>
               <div className="flex items-center space-x-2 text-sm text-gray-500 ">
@@ -128,7 +128,7 @@ export default function SiteNavbar() {
                 <Link href="/dashboard" className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors">Dashboard</Link>
                 <Menu as="div" className="relative">
                     <Menu.Button className="px-4 py-2 text-sm font-medium rounded-md hover:bg-pea-dark/50 transition-colors flex items-center">
-                        <span>ฟอร์มทั้งหมด</span>
+                        <span>แบบฟอร์มตรวจสอบระบบไฟฟ้า</span>
                         <ChevronDown className="w-4 h-4 ml-1" />
                     </Menu.Button>
                      <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95" enterTo="transform opacity-100 scale-100" leave="transition ease-in duration-75" leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95">

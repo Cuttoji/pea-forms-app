@@ -98,195 +98,335 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                 {/* 5.7.1 ข้อมูลเครื่องอัดประจุยานยนต์ไฟฟ้า */}
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="font-semibold text-lg mb-4 text-blue-900">5.7.1 ข้อมูลเครื่องอัดประจุยานยนต์ไฟฟ้า</h4>
-                  
-                  <div className="flex flex-col md:flex-row flex-wrap gap-y-2 md:gap-4 items-stretch md:items-end">
-                    <div className="flex flex-col w-full md:w-auto">
-                      <label className="mb-1 font-medium text-base">ผลิตภัณฑ์</label>
-                      <input type="text" className="border border-gray-300 rounded px-2 py-2 w-full md:w-32 bg-white focus:ring-1 focus:ring-blue-400 text-base" value={safeValue(item?.product)} onChange={e => handleCharger(idx, "product", e.target.value)} />
-                    </div>
-                    <div className="flex flex-col w-full md:w-auto">
-                      <label className="mb-1 font-medium text-base">รุ่น</label>
-                      <input type="text" className="border border-gray-300 rounded px-2 py-2 w-full md:w-24 bg-white focus:ring-1 focus:ring-blue-400 text-base" value={safeValue(item?.model)} onChange={e => handleCharger(idx, "model", e.target.value)} />
-                    </div>
-                    <div className="flex flex-col w-full md:w-auto">
-                      <label className="mb-1 font-medium text-base">Serial Number</label>
-                      <input type="text" className="border border-gray-300 rounded px-2 py-2 w-full md:w-40 bg-white focus:ring-1 focus:ring-blue-400 text-base" value={safeValue(item?.sn)} onChange={e => handleCharger(idx, "sn", e.target.value)} />
-                    </div>
-                    <div className="flex flex-col w-full md:w-auto">
-                      <label className="mb-1 font-medium text-base">IP</label>
-                      <input type="text" className="border border-gray-300 rounded px-2 py-2 w-full md:w-28 bg-white focus:ring-1 focus:ring-blue-400 text-base" value={safeValue(item?.ip)} onChange={e => handleCharger(idx, "ip", e.target.value)} />
-                    </div>
-                  </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    {/* คอลัมน์ซ้าย */}
+                    <div className="space-y-3">
+                      {/* ผลิตภัณฑ์ */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm w-32">ผลิตภัณฑ์</span>
+                        <input 
+                          type="text" 
+                          className="w-32 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400"  
+                          value={safeValue(item?.product)} 
+                          onChange={e => handleCharger(idx, "product", e.target.value)} 
+                        />
+                        <span className="text-sm">รุ่น</span>
+                        <input 
+                          type="text" 
+                          className="w-32 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                          value={safeValue(item?.model)} 
+                          onChange={e => handleCharger(idx, "model", e.target.value)} 
+                        />
+                      </div>
 
-                  <div className="flex flex-col md:flex-row flex-wrap gap-y-2 md:gap-4 items-stretch md:items-end mt-4">
-                    <div className="flex flex-col w-full md:w-auto">
-                      <label className="mb-1 font-medium text-base">ระบบ</label>
-                      <div className="flex flex-wrap gap-x-4">
-                        <label className="mr-2">
-                          <input type="checkbox" checked={safeArray(item?.chargeType).includes("1")} onChange={() => handleCheckbox(idx, "chargeType", "1")} />
-                          <span className="ml-1">1 เฟส</span>
+                      {/* Serial Number และ IP */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">Serial Number</span>
+                        <input 
+                          type="text" 
+                          className="w-40 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                          value={safeValue(item?.sn)} 
+                          onChange={e => handleCharger(idx, "sn", e.target.value)} 
+                        />
+                        <span className="text-sm">IP</span>
+                        <input 
+                          type="text" 
+                          className="w-32 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                          value={safeValue(item?.ip)} 
+                          onChange={e => handleCharger(idx, "ip", e.target.value)} 
+                        />
+                      </div>
+
+                      {/* ระบบ */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">ระบบ</span>
+                        <label className="flex items-center gap-1">
+                          <input 
+                            type="radio" 
+                            name={`chargeType_${idx}`}
+                            checked={item?.chargeType === "1"}
+                            onChange={() => handleCharger(idx, "chargeType", "1")}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm">1 เฟส</span>
                         </label>
-                        <label className="mr-2">
-                          <input type="checkbox" checked={safeArray(item?.chargeType).includes("3")} onChange={() => handleCheckbox(idx, "chargeType", "3")} />
-                          <span className="ml-1">3 เฟส</span>
+                        <label className="flex items-center gap-1">
+                          <input 
+                            type="radio" 
+                            name={`chargeType_${idx}`}
+                            checked={item?.chargeType === "3"}
+                            onChange={() => handleCharger(idx, "chargeType", "3")}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm">3 เฟส</span>
+                        </label>
+                        <span className="text-sm ml-4">จำนวนหัวชาร์จ</span>
+                        <input 
+                          type="text" 
+                          className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                          value={safeValue(item?.chargingHeads)} 
+                          onChange={e => handleCharger(idx, "chargingHeads", e.target.value)} 
+                        />
+                        <span className="text-sm">หัว</span>
+                      </div>
+
+                      {/* พิกัดกำลังไฟฟ้ารวม */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">พิกัดกำลังไฟฟ้ารวม</span>
+                        <input 
+                          type="text" 
+                          className="w-24 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                          value={safeValue(item?.totalPower)} 
+                          onChange={e => handleCharger(idx, "totalPower", e.target.value)} 
+                        />
+                        <span className="text-sm">kW</span>
+                        <span className="text-sm ml-4">พิกัดกระแสรวม (Input)</span>
+                        <input 
+                          type="text" 
+                          className="w-24 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                          value={safeValue(item?.totalCurrent)} 
+                          onChange={e => handleCharger(idx, "totalCurrent", e.target.value)} 
+                        />
+                        <span className="text-sm">A</span>
+                      </div>
+
+                      {/* การอัดประจุไฟฟ้า */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">การอัดประจุไฟฟ้า</span>
+                        <label className="flex items-center gap-1">
+                          <input 
+                            type="checkbox" 
+                            checked={safeArray(item?.mode).includes("2")}
+                            onChange={() => handleCheckbox(idx, "mode", "2")}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm">โหมด 2 (AC)</span>
+                        </label>
+                        <label className="flex items-center gap-1">
+                          <input 
+                            type="checkbox" 
+                            checked={safeArray(item?.mode).includes("3")}
+                            onChange={() => handleCheckbox(idx, "mode", "3")}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm">โหมด 3 (AC)</span>
+                        </label>
+                        <label className="flex items-center gap-1">
+                          <input 
+                            type="checkbox" 
+                            checked={safeArray(item?.mode).includes("4")}
+                            onChange={() => handleCheckbox(idx, "mode", "4")}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm">โหมด 4 (DC)</span>
                         </label>
                       </div>
-                    </div>
-                    <div className="flex flex-col w-full md:w-auto">
-                      <label className="mb-1 font-medium text-base">จำนวนหัวชาร์จ</label>
-                      <input type="text" className="border border-gray-300 rounded px-2 py-2 w-full md:w-24 bg-white focus:ring-1 focus:ring-blue-400 text-base" value={safeValue(item?.chargingHeads)} onChange={e => handleCharger(idx, "chargingHeads", e.target.value)} />
-                    </div>
-                    <div className="flex flex-col w-full md:w-auto">
-                      <label className="mb-1 font-medium text-base">พิกัดกำลังไฟฟ้ารวม (kW)</label>
-                      <input type="text" className="border border-gray-300 rounded px-2 py-2 w-full md:w-28 bg-white focus:ring-1 focus:ring-blue-400 text-base" value={safeValue(item?.totalPower)} onChange={e => handleCharger(idx, "totalPower", e.target.value)} />
-                    </div>
-                    <div className="flex flex-col w-full md:w-auto">
-                      <label className="mb-1 font-medium text-base">พิกัดกระแสรวม Input (A)</label>
-                      <input type="text" className="border border-gray-300 rounded px-2 py-2 w-full md:w-28 bg-white focus:ring-1 focus:ring-blue-400 text-base" value={safeValue(item?.totalCurrent)} onChange={e => handleCharger(idx, "totalCurrent", e.target.value)} />
-                    </div>
-                  </div>
 
-                  <div className="flex flex-col w-full mt-4">
-                    <label className="mb-1 font-medium text-base">การอัดประจุไฟฟ้า</label>
-                    <div className="flex flex-wrap gap-x-4">
-                      <label className="mr-2">
-                        <input type="checkbox" checked={safeArray(item?.mode).includes("2")} onChange={() => handleCheckbox(idx, "mode", "2")} />
-                        <span className="ml-1">โหมด 2 (AC)</span>
-                      </label>
-                      <label className="mr-2">
-                        <input type="checkbox" checked={safeArray(item?.mode).includes("3")} onChange={() => handleCheckbox(idx, "mode", "3")} />
-                        <span className="ml-1">โหมด 3 (AC)</span>
-                      </label>
-                      <label className="mr-2">
-                        <input type="checkbox" checked={safeArray(item?.mode).includes("4")} onChange={() => handleCheckbox(idx, "mode", "4")} />
-                        <span className="ml-1">โหมด 4 (DC)</span>
-                      </label>
+                      <div className="text-xs text-gray-600 italic">
+                        * AC คือ ไฟฟ้ากระแสสลับ&nbsp;&nbsp;&nbsp;DC คือ ไฟฟ้ากระแสตรง
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className="mt-4">
-                    <CorrectableRow label="ข้อมูลเครื่องอัดประจุยานยนต์ไฟฟ้า" value={item?.infoCheck} onChange={v => handleCharger(idx, "infoCheck", v)} detail />
-                  </div>
+                  <CorrectableRow
+                      label="ตรวจสอบข้อมูล"
+                      value={item?.infoCheck}
+                      onChange={v => handleCharger(idx, "infoCheck", v)}
+                      detail
+                    />
                 </div>
 
                 {/* 5.7.2 ลักษณะหัวชาร์จ / การชาร์จ */}
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="font-semibold text-lg mb-4 text-blue-900">5.7.2 ลักษณะหัวชาร์จ / การชาร์จ</h4>
                   
-                  {/* AC Type 2 */}
-                  <div className="mb-4 p-3 border border-gray-200 rounded">
-                    <label className="flex items-center mb-2">
-                      <input type="checkbox" checked={safeArray(item?.headTypes).includes("ACType2")} onChange={() => handleCheckbox(idx, "headTypes", "ACType2")} className="mr-2" />
-                      <span className="font-medium">AC Type 2</span>
-                    </label>
-                    {safeArray(item?.headTypes).includes("ACType2") && (
-                      <div className="flex flex-wrap gap-4 ml-6">
-                        <div className="flex flex-col">
-                          <label className="text-sm">พิกัดกระแส (AAC)</label>
-                          <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.acType2Current)} onChange={e => handleCharger(idx, "acType2Current", e.target.value)} />
-                        </div>
-                        <div className="flex flex-col">
-                          <label className="text-sm">พิกัดแรงดัน (VAC)</label>
-                          <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.acType2Voltage)} onChange={e => handleCharger(idx, "acType2Voltage", e.target.value)} />
-                        </div>
-                        <div className="flex flex-col">
-                          <label className="text-sm">พิกัดกำลัง (kW)</label>
-                          <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.acType2Power)} onChange={e => handleCharger(idx, "acType2Power", e.target.value)} />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* DC CHAdeMO */}
-                  <div className="mb-4 p-3 border border-gray-200 rounded">
-                    <label className="flex items-center mb-2">
-                      <input type="checkbox" checked={safeArray(item?.headTypes).includes("DCCHAdeMO")} onChange={() => handleCheckbox(idx, "headTypes", "DCCHAdeMO")} className="mr-2" />
-                      <span className="font-medium">DC CHAdeMO</span>
-                    </label>
-                    {safeArray(item?.headTypes).includes("DCCHAdeMO") && (
-                      <div className="flex flex-wrap gap-4 ml-6">
-                        <div className="flex flex-col">
-                          <label className="text-sm">พิกัดกระแส (ADC)</label>
-                          <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.dcChadeMoCurrent)} onChange={e => handleCharger(idx, "dcChadeMoCurrent", e.target.value)} />
-                        </div>
-                        <div className="flex flex-col">
-                          <label className="text-sm">พิกัดแรงดัน (VDC)</label>
-                          <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.dcChadeMoVoltage)} onChange={e => handleCharger(idx, "dcChadeMoVoltage", e.target.value)} />
-                        </div>
-                        <div className="flex flex-col">
-                          <label className="text-sm">พิกัดกำลัง (kW)</label>
-                          <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.dcChadeMoPower)} onChange={e => handleCharger(idx, "dcChadeMoPower", e.target.value)} />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* DC CCS */}
-                  <div className="mb-4 p-3 border border-gray-200 rounded">
-                    <label className="flex items-center mb-2">
-                      <input type="checkbox" checked={safeArray(item?.headTypes).includes("DCCCS")} onChange={() => handleCheckbox(idx, "headTypes", "DCCCS")} className="mr-2" />
-                      <span className="font-medium">DC CCS</span>
-                    </label>
-                    {safeArray(item?.headTypes).includes("DCCCS") && (
-                      <div className="flex flex-wrap gap-4 ml-6">
-                        <div className="flex flex-col">
-                          <label className="text-sm">พิกัดกระแส (ADC)</label>
-                          <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.dcCcsCurrent)} onChange={e => handleCharger(idx, "dcCcsCurrent", e.target.value)} />
-                        </div>
-                        <div className="flex flex-col">
-                          <label className="text-sm">พิกัดแรงดัน (VDC)</label>
-                          <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.dcCcsVoltage)} onChange={e => handleCharger(idx, "dcCcsVoltage", e.target.value)} />
-                        </div>
-                        <div className="flex flex-col">
-                          <label className="text-sm">พิกัดกำลัง (kW)</label>
-                          <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.dcCcsPower)} onChange={e => handleCharger(idx, "dcCcsPower", e.target.value)} />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* อื่นๆ */}
-                  <div className="mb-4 p-3 border border-gray-200 rounded">
-                    <label className="flex items-center mb-2">
-                      <input type="checkbox" checked={safeArray(item?.headTypes).includes("Other")} onChange={() => handleCheckbox(idx, "headTypes", "Other")} className="mr-2" />
-                      <span className="font-medium">อื่นๆ ระบุ</span>
-                    </label>
-                    {safeArray(item?.headTypes).includes("Other") && (
-                      <div className="ml-6">
-                        <div className="flex flex-wrap gap-4 mb-2">
-                          <input type="text" placeholder="ระบุประเภท" className="border border-gray-300 rounded px-2 py-1 flex-1 text-sm" value={safeValue(item?.otherHeadType)} onChange={e => handleCharger(idx, "otherHeadType", e.target.value)} />
-                        </div>
-                        <div className="flex flex-wrap gap-4">
-                          <div className="flex flex-col">
-                            <label className="text-sm">พิกัดกระแส (A)</label>
-                            <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.otherCurrent)} onChange={e => handleCharger(idx, "otherCurrent", e.target.value)} />
-                          </div>
-                          <div className="flex flex-col">
-                            <label className="text-sm">พิกัดแรงดัน (V)</label>
-                            <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.otherVoltage)} onChange={e => handleCharger(idx, "otherVoltage", e.target.value)} />
-                          </div>
-                          <div className="flex flex-col">
-                            <label className="text-sm">พิกัดกำลัง (kW)</label>
-                            <input type="text" className="border border-gray-300 rounded px-2 py-1 w-20 text-sm" value={safeValue(item?.otherPower)} onChange={e => handleCharger(idx, "otherPower", e.target.value)} />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mb-4">
-                    <label className="font-medium text-sm mb-2 block">หัวชาร์จสามารถชาร์จได้พร้อมกัน</label>
-                    <div className="flex items-center gap-4">
-                      <input type="text" className="border border-gray-300 rounded px-2 py-1 w-16 text-sm" value={safeValue(item?.simultaneousCharge)} onChange={e => handleCharger(idx, "simultaneousCharge", e.target.value)} />
-                      <span className="text-sm">หัว คือ</span>
-                      <input type="text" className="border border-gray-300 rounded px-2 py-1 flex-1 text-sm" value={safeValue(item?.simultaneousChargeDetail)} onChange={e => handleCharger(idx, "simultaneousChargeDetail", e.target.value)} />
+                  <div className="space-y-3">
+                    {/* AC Type 2 */}
+                    <div className="flex items-center gap-2">
+                      <label className="flex items-center gap-2">
+                        <input 
+                          type="checkbox" 
+                          checked={safeArray(item?.headTypes).includes("ACType2")} 
+                          onChange={() => handleCheckbox(idx, "headTypes", "ACType2")} 
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm font-medium">AC Type 2</span>
+                      </label>
+                      <span className="text-sm">พิกัดกระแส</span>
+                      <input 
+                        type="text" 
+                        className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                        value={safeValue(item?.acType2Current)} 
+                        onChange={e => handleCharger(idx, "acType2Current", e.target.value)} 
+                      />
+                      <span className="text-sm">AAC</span>
+                      <span className="text-sm ml-2">พิกัดแรงดัน</span>
+                      <input 
+                        type="text" 
+                        className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                        value={safeValue(item?.acType2Voltage)} 
+                        onChange={e => handleCharger(idx, "acType2Voltage", e.target.value)} 
+                      />
+                      <span className="text-sm">VAC</span>
+                      <span className="text-sm ml-2">พิกัดกำลัง</span>
+                      <input 
+                        type="text" 
+                        className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                        value={safeValue(item?.acType2Power)} 
+                        onChange={e => handleCharger(idx, "acType2Power", e.target.value)} 
+                      />
+                      <span className="text-sm">kW</span>
                     </div>
-                  </div>
 
-                  <CorrectableRow label="ลักษณะหัวชาร์จ / การชาร์จ" value={item?.headCheck} onChange={v => handleCharger(idx, "headCheck", v)} detail />
-                </div>
+                    {/* DC CHAdeMO */}
+                    <div className="flex items-center gap-2">
+                      <label className="flex items-center gap-2">
+                        <input 
+                          type="checkbox" 
+                          checked={safeArray(item?.headTypes).includes("DCCHAdeMO")} 
+                          onChange={() => handleCheckbox(idx, "headTypes", "DCCHAdeMO")} 
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm font-medium">DC CHAdeMO</span>
+                      </label>
+                      <span className="text-sm">พิกัดกระแส</span>
+                      <input 
+                        type="text" 
+                        className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                        value={safeValue(item?.dcChadeMoCurrent)} 
+                        onChange={e => handleCharger(idx, "dcChadeMoCurrent", e.target.value)} 
+                      />
+                      <span className="text-sm">ADC</span>
+                      <span className="text-sm ml-2">พิกัดแรงดัน</span>
+                      <input 
+                        type="text" 
+                        className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                        value={safeValue(item?.dcChadeMoVoltage)} 
+                        onChange={e => handleCharger(idx, "dcChadeMoVoltage", e.target.value)} 
+                      />
+                      <span className="text-sm">VDC</span>
+                      <span className="text-sm ml-2">พิกัดกำลัง</span>
+                      <input 
+                        type="text" 
+                        className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                        value={safeValue(item?.dcChadeMoPower)} 
+                        onChange={e => handleCharger(idx, "dcChadeMoPower", e.target.value)} 
+                      />
+                      <span className="text-sm">kW</span>
+                    </div>
 
-                {/* 5.7.3 กรณีติดตั้งเครื่องอัดประจุยานยนต์ไฟฟ้า โหมด 2 */}
+                    {/* DC CCS */}
+                    <div className="flex items-center gap-2">
+                      <label className="flex items-center gap-2">
+                        <input 
+                          type="checkbox" 
+                          checked={safeArray(item?.headTypes).includes("DCCCS")} 
+                          onChange={() => handleCheckbox(idx, "headTypes", "DCCCS")} 
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm font-medium">DC CCS</span>
+                      </label>
+                      <span className="text-sm ml-10">พิกัดกระแส</span>
+                      <input 
+                        type="text" 
+                        className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                        value={safeValue(item?.dcCcsCurrent)} 
+                        onChange={e => handleCharger(idx, "dcCcsCurrent", e.target.value)} 
+                      />
+                      <span className="text-sm">ADC</span>
+                      <span className="text-sm ml-2">พิกัดแรงดัน</span>
+                      <input 
+                        type="text" 
+                        className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                        value={safeValue(item?.dcCcsVoltage)} 
+                        onChange={e => handleCharger(idx, "dcCcsVoltage", e.target.value)} 
+                      />
+                      <span className="text-sm">VDC</span>
+                      <span className="text-sm ml-2">พิกัดกำลัง</span>
+                      <input 
+                        type="text" 
+                        className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                        value={safeValue(item?.dcCcsPower)} 
+                        onChange={e => handleCharger(idx, "dcCcsPower", e.target.value)} 
+                      />
+                      <span className="text-sm">kW</span>
+                    </div>
+
+                    {/* อื่นๆ ระบุ */}
+                              <div className="flex items-center gap-2">
+                                <label className="flex items-center gap-2">
+                                <input 
+                                  type="checkbox" 
+                                  checked={safeArray(item?.headTypes).includes("Other")} 
+                                  onChange={() => handleCheckbox(idx, "headTypes", "Other")} 
+                                  className="w-4 h-4"
+                                />
+                                <span className="text-sm font-medium">อื่นๆ ระบุ</span>
+                                </label>
+                                <input 
+                                type="text" 
+                                className="w-32 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                                value={safeValue(item?.otherHeadType)} 
+                                onChange={e => handleCharger(idx, "otherHeadType", e.target.value)} 
+                                />
+                                <span className="text-sm">พิกัดกระแส</span>
+                                <input 
+                                type="text" 
+                                className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                                value={safeValue(item?.otherCurrent)} 
+                                onChange={e => handleCharger(idx, "otherCurrent", e.target.value)} 
+                                />
+                                <span className="text-sm">A</span>
+                                <span className="text-sm ml-2">พิกัดแรงดัน</span>
+                                <input 
+                                type="text" 
+                                className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                                value={safeValue(item?.otherVoltage)} 
+                                onChange={e => handleCharger(idx, "otherVoltage", e.target.value)} 
+                                />
+                                <span className="text-sm">V</span>
+                                <span className="text-sm ml-2">พิกัดกำลัง</span>
+                                <input 
+                                type="text" 
+                                className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                                value={safeValue(item?.otherPower)} 
+                                onChange={e => handleCharger(idx, "otherPower", e.target.value)} 
+                                />
+                                <span className="text-sm">kW</span>
+                              </div>
+
+                              {/* หัวชาร์จสามารถชาร์จได้พร้อมกัน */}
+                              <div className="flex items-center gap-2">
+                                <label className="flex items-center gap-2">
+                                <input 
+                                  type="checkbox" 
+                                  checked={safeArray(item?.headTypes).includes("simultaneousCharge")} 
+                                  onChange={() => handleCheckbox(idx, "headTypes", "simultaneousCharge")}
+                                  className="w-4 h-4"
+                                />
+                                <span className="text-sm">หัวชาร์จสามารถชาร์จได้พร้อมกัน</span>
+                                </label>
+                                <input 
+                                type="text" 
+                                className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                                value={safeValue(item?.simultaneousCharge)} 
+                                onChange={e => handleCharger(idx, "simultaneousCharge", e.target.value)} 
+                                />
+                                <span className="text-sm">หัว คือ</span>
+                                <input 
+                                type="text" 
+                                className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-400" 
+                                value={safeValue(item?.simultaneousChargeDetail)} 
+                                onChange={e => handleCharger(idx, "simultaneousChargeDetail", e.target.value)} 
+                                />
+                              </div>
+                              </div>
+
+                              <div className="mt-4">
+                              <CorrectableRow label="ลักษณะหัวชาร์จ / การชาร์จ" value={item?.headCheck} onChange={v => handleCharger(idx, "headCheck", v)} detail />
+                              </div>
+                            </div>
+
+                            {/* 5.7.3 กรณีติดตั้งเครื่องอัดประจุยานยนต์ไฟฟ้า โหมด 2 */}
                 {safeArray(item?.mode).includes("2") && (
                   <div className="bg-yellow-50 p-4 rounded-lg">
                     <h4 className="font-semibold text-lg mb-4 text-blue-900">5.7.3 กรณีติดตั้งเครื่องอัดประจุยานยนต์ไฟฟ้า โหมด 2</h4>
