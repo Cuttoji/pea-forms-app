@@ -10,15 +10,15 @@ const DocumentSection = ({ documents }) => {
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>2. เอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า</Text>
+      <Text style={styles.sectionTitle}>2. เอกสารประกอบการตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า  </Text>
       
       {/* ประเภทพื้นที่ */}
       <View style={[styles.checkboxLine, { marginTop: 8 }]}>
         <Text style={styles.infoText}>ประเภทพื้นที่: </Text>
         <Checkbox checked={areaType === "personal"} />
-        <Text style={styles.infoText}> ใช้ส่วนบุคคล  </Text>
+        <Text style={styles.infoText}> กรณีผู้ขอใช้ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าในพื้นที่ส่วนบุคคล (เช่น บ้านอยู่อาศัย กิจการขนาดเล็ก หรืออาคารที่คล้ายคลึงกัน) ต้องมีเอกสารประกอบการตรวจสอบดังต่อไปนี้   </Text>
         <Checkbox checked={areaType === "public"} />
-        <Text style={styles.infoText}> ใช้สาธารณะ</Text>
+        <Text style={styles.infoText}>  กรณีผู้ขอใช้ไฟฟ้าสำหรับระบบอัดประจุยานยนต์ไฟฟ้าในพื้นที่สาธารณะ (สถานีอัดประจุยานยนต์ไฟฟ้า ห้างสรรพสินค้า โรงแรม อาคารชุด ร้านอาหาร ร้านค้า ร้านสะดวกซื้อ ธุรกิจให้เช่าที่จอดรถ ถนนสาธารณะ หรืออาคารที่คล้ายคลึงกัน) ต้องมีเอกสารประกอบการตรวจสอบ ดังต่อไปนี้ </Text>
       </View>
 
       {areaType === "personal" && (
@@ -34,11 +34,11 @@ const DocumentSection = ({ documents }) => {
               </View>
               <View style={styles.docItem}>
                 <Checkbox checked={documents?.singleLine === true} />
-                <Text style={styles.smallText}>แผนผังระบบไฟฟ้า (Single Line Diagram) (ถ้ามี)</Text>
+                <Text style={styles.smallText}>แผนผังระบบไฟฟ้า (Single Line Diagram) </Text>
               </View>
               <View style={styles.docItem}>
                 <Checkbox checked={documents?.loadSchedule === true} />
-                <Text style={styles.smallText}>ตารางโหลด (Load Schedule) (ถ้ามี)</Text>
+                <Text style={styles.smallText}>ตารางโหลด (Load Schedule) และรายการคำนวณทางไฟฟ้า </Text>
               </View>
             </View>
             <View style={styles.rightColumn}>

@@ -197,32 +197,17 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-gray-700 font-medium mb-3">ระบบไฟฟ้า</label>
-              <div className="flex gap-6">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="systemType"
-                    value=" 3 เฟส (400 / 230 โวลต์)"
-                    checked={data.systemType === " 3 เฟส (400 / 230 โวลต์)"}
-                    onChange={() => onChange("systemType", " 3 เฟส (400 / 230 โวลต์)")}
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                  />
-                  <span className="text-gray-700 font-medium"> 3 เฟส (400 / 230 โวลต์)</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="systemType"
-                    value="1 เฟส (230 โวลต์)"
-                    checked={data.systemType === "1 เฟส (230 โวลต์)"}
-                    onChange={() => onChange("systemType", "1 เฟส (230 โวลต์)")}
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                  />
-                  <span className="text-gray-700 font-medium">1 เฟส (230 โวลต์)</span>
-                </label>
-              </div>
+              <select
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 bg-white"
+                value={data.systemType || ""}
+                onChange={e => onChange("systemType", e.target.value)}
+              >
+                <option value="">-- เลือกระบบไฟฟ้า --</option>
+                <option value="3 เฟส (400 / 230 โวลต์)">3 เฟส (400 / 230 โวลต์)</option>
+                <option value="1 เฟส (230 โวลต์)">1 เฟส (230 โวลต์)</option>
+              </select>
             </div>
-            
+
             <div>
               <label className="block text-gray-700 font-medium mb-2">กระแสโหลด (ด้านแรงต่ำ) รวมโดยประมาณ (A)</label>
               <input

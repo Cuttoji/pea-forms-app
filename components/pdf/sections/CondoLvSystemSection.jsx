@@ -37,7 +37,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
   return (
     <View style={{ paddingTop: 4 }}>
       {showSectionTitle && index === 0 && (
-        <Text style={styles.sectionTitle}>{sectionNumber}. ระบบไฟฟ้าแรงต่ำ</Text>
+        <Text style={styles.sectionTitle}>{sectionNumber}. ระบบไฟฟ้าแรงต่ำ  </Text>
       )}
       <Text style={styles.subsectionTitle}>{sectionNumber}.14 สายตัวนำประธานแรงต่ำ (หม้อแปลงที่ {index + 1})</Text>
       
@@ -60,7 +60,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
         {/* 2.14.2 ชนิดและขนาดของสายไฟฟ้า */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>{sectionNumber}.14.2 ชนิดและขนาดของสายไฟฟ้า</Text>
+            <Text style={styles.smallText}>{sectionNumber}.14.2 ชนิดและขนาดของสายไฟฟ้า  </Text>
             <View style={styles.checkboxLine}>
               {(getNestedValue(conductorStandard, '2.14.2.types') || []).includes('iec01') && (
                 <>
@@ -104,7 +104,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
         {/* 2.14.3 วิธีการเดินสาย */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>{sectionNumber}.14.3 วิธีการเดินสาย</Text>
+            <Text style={styles.smallText}>{sectionNumber}.14.3 วิธีการเดินสาย  </Text>
             <View style={styles.checkboxLine}>
               {(getNestedValue(conductorStandard, '2.14.3.methods') || []).map((method, idx) => {
                 const labels = {
@@ -197,7 +197,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
         {/* 2.16.2 */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>{sectionNumber}.16.2 ค่าความต้านทานการต่อลงดิน</Text>
+            <Text style={styles.smallText}>{sectionNumber}.16.2 ค่าความต้านทานการต่อลงดิน  </Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -210,7 +210,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
         {/* 2.16.3 */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>{sectionNumber}.16.3 จุดทดสอบ</Text>
+            <Text style={styles.smallText}>{sectionNumber}.16.3 จุดทดสอบ  </Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -223,7 +223,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
         {/* 2.16.4 */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>{sectionNumber}.16.4 ขั้วต่อสายดิน/นิวทรัล (Busbar)</Text>
+            <Text style={styles.smallText}>{sectionNumber}.16.4 ขั้วต่อสายดิน/นิวทรัล (Busbar)  </Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -242,7 +242,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
         {/* 2.17.1 */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>{sectionNumber}.17.1 เซอร์กิตเบรกเกอร์ตามมาตรฐาน</Text>
+            <Text style={styles.smallText}>{sectionNumber}.17.1 เซอร์กิตเบรกเกอร์ตามมาตรฐาน  </Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -272,7 +272,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
         {/* 2.17.3 */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>{sectionNumber}.17.3 ขั้วต่อสายดิน</Text>
+            <Text style={styles.smallText}>{sectionNumber}.17.3 ขั้วต่อสายดิน  </Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -285,7 +285,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
 
       {/* 2.18 เซอร์กิตเบรกเกอร์ด้านไฟเข้าของมิเตอร์ */}
       <Text style={[styles.subsectionTitle, { marginTop: 8 }]}>
-        {sectionNumber}.18 เซอร์กิตเบรกเกอร์ด้านไฟเข้าของมิเตอร์
+        {sectionNumber}.18 เซอร์กิตเบรกเกอร์ด้านไฟเข้าของมิเตอร์  
       </Text>
       <View style={styles.lvTable}>
         <View style={[styles.tableRow, styles.borderTop]}>
@@ -307,7 +307,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
 
       {/* 2.19 สายตัวนำประธานเข้าห้องชุด */}
       <Text style={[styles.subsectionTitle, { marginTop: 8 }]}>
-        {sectionNumber}.19 สายตัวนำประธานเข้าห้องชุด
+        {sectionNumber}.19 สายตัวนำประธานเข้าห้องชุด  
       </Text>
       <View style={styles.lvTable}>
         <View style={[styles.tableRow, styles.borderTop]}>
@@ -343,7 +343,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
         {/* 2.20.1 */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>{sectionNumber}.20.1 เซอร์กิตเบรกเกอร์ตามมาตรฐาน</Text>
+            <Text style={styles.smallText}>{sectionNumber}.20.1 เซอร์กิตเบรกเกอร์ตามมาตรฐาน  </Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -372,7 +372,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
         {/* 2.20.3 */}
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>{sectionNumber}.20.3 IC</Text>
+            <Text style={styles.smallText}>{sectionNumber}.20.3 IC  </Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 
@@ -390,7 +390,7 @@ const CondoLvSystemSection = ({ transformer, index, showSectionTitle = true, sec
       <View style={styles.lvTable}>
         <View style={[styles.tableRow, styles.borderTop]}>
           <View style={styles.leftColumn}>
-            <Text style={styles.smallText}>ขั้วต่อสายดิน (Ground Bus)</Text>
+            <Text style={styles.smallText}>ขั้วต่อสายดิน (Ground Bus)  </Text>
           </View>
           <View style={styles.rightColumn}>
             <CheckboxResult 

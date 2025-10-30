@@ -13,7 +13,7 @@ const DocumentSectionCondo = ({ documents }) => {
 
   return (
     <View style={styles.section} wrap={false}>
-      <Text style={styles.sectionTitle}>2. การตรวจสอบเอกสาร</Text>
+      <Text style={styles.sectionTitle}>2. การตรวจสอบเอกสาร  </Text>
       
       <View style={styles.lvTable}>
         <View style={[styles.tableRow, styles.borderTop]}>
@@ -21,7 +21,7 @@ const DocumentSectionCondo = ({ documents }) => {
             {/* มีเอกสาร */}
             <View style={{ flexDirection: 'row', marginBottom: 4 }}>
               <Checkbox checked={hasDocument} />
-              <Text style={styles.smallText}> มี เอกสารรับรองการออกแบบระบบไฟฟ้า ดังนี้</Text>
+              <Text style={styles.smallText}> มี เอกสารรับรองการออกแบบระบบไฟฟ้า ดังนี้ </Text>
             </View>
             
             {/* รายการเอกสาร - เยื้องซ้าย */}

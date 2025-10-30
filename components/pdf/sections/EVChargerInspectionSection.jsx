@@ -8,7 +8,7 @@ const EVChargerInspectionSection = ({ evChargers, transformerIndex = 0 }) => {
     return (
       <View style={styles.section}>
         <Text style={styles.subsectionTitle}>5.7 การตรวจสอบเครื่องอัดประจุยานยนต์ไฟฟ้า เครื่องที่ 1</Text>
-        <Text style={styles.smallText}>ไม่มีข้อมูลเครื่องอัดประจุ</Text>
+        <Text style={styles.smallText}>ไม่มีข้อมูลเครื่องอัดประจุ  </Text>
       </View>
     );
   }
@@ -24,7 +24,7 @@ const EVChargerInspectionSection = ({ evChargers, transformerIndex = 0 }) => {
           <View style={styles.lvTable}>
             <View style={styles.tableRow}>
               <View style={styles.leftColumn}>
-                <Text style={styles.subsectionTitle}>5.7.1 ข้อมูลเครื่องอัดประจุยานยนต์ไฟฟ้า</Text>
+                <Text style={styles.subsectionTitle}>5.7.1 ข้อมูลเครื่องอัดประจุยานยนต์ไฟฟ้า  </Text>
                 <Text style={styles.smallText}>
                   ผลิตภัณฑ์ <Text style={styles.underlineDotted}>{charger?.product || "............................................................. "}</Text> 
                   รุ่น <Text style={styles.underlineDotted}>{charger?.model || ".........................................."}</Text>
