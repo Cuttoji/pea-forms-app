@@ -108,7 +108,7 @@ export default function HomePage() {
           />
           <FeatureCard
             icon={<Construction size={28} />}
-            title="แบบฟอร์มระบบจำหน่ายของ PEA"
+            title="แบบฟอร์มตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจําหน่าย PEA"
             description="สำหรับตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจำหน่ายไฟฟ้าของ กฟภ. ตามข้อกำหนดทางเทคนิค"
             href="/form/construction-inspection"
             linkText="เริ่มกรอกฟอร์ม"

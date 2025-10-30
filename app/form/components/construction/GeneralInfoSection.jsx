@@ -17,8 +17,7 @@ export default function GeneralInfoSection({ value = {}, onChange = () => {} }) 
       <div className="bg-white border border-gray-100 rounded-lg shadow-sm overflow-hidden">
         <div className="bg-[#5b2d90] text-white px-6 py-4">
           <h1 className="text-xl font-bold text-center">
-            แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์ <span>สำหรับผู้ใช้ไฟฟ้าประเภทที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน</span>
-          </h1>
+แบบฟอร์มตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจําหน่าย ของการไฟฟ้าส่วนภูมิภาค (PEA)</h1>
         </div>
         
         {/* Custom Project Info Section */}
@@ -137,13 +136,13 @@ export default function GeneralInfoSection({ value = {}, onChange = () => {} }) 
               />
             </div>
             <div>
-              <label className="block text-gray-600 mb-1">หม้อแปลงรวม (KVA):</label>
+              <label className="block text-gray-600 mb-1">หม้อแปลงรวม (kVA):</label>
               <input
                 type="number"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700"
                 value={value.kva || ""}
                 onChange={e => onChange("kva", e.target.value)}
-                placeholder="กรอก KVA"
+                placeholder="กรอก kVA"
               />
             </div>
             <div>

@@ -160,7 +160,7 @@ const FloorSection = ({ getField, updateField, RadioOption }) => {
                         className="mt-2 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
                         onClick={() => addRoomCheck(panelIdx)}
                     >
-                        +ตรวจสอบห้อง
+                        + เพิ่มห้องชุด
                     </button>
                     {panel.rooms.map((room, roomIdx) => (
                         <div key={room.id} className="mt-6 space-y-4 border-l-4 border-purple-200 pl-4">
@@ -311,7 +311,7 @@ const FloorSection = ({ getField, updateField, RadioOption }) => {
                 className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
                 onClick={addFloorPanel}
             >
-                +แผงจ่ายไฟประจำชั้น
+                + เพิ่มแผงจ่ายไฟประจำชั้น
             </button>
         </div>
     );

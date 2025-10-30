@@ -12,11 +12,11 @@ import type { User } from '@supabase/supabase-js';
 // รายการฟอร์มสำหรับเมนู
 const formLinks = [
   { href: "/form/home-inspection", label: "แบบฟอร์มที่อยู่อาศัย", icon: <FileText size={16} /> },
-  { href: "/form/other-inspection", label: "แบบฟอร์มอื่นๆ \n(นอกเหนือที่อยู่อาศัย)", icon: <FileText size={16} /> },
+  { href: "/form/other-inspection", label: "แบบฟอร์มผู้ใช้ไฟฟ้าประเภทอื่นๆ \n(นอกเหนือจากที่อยู่อาศัย)", icon: <FileText size={16} /> },
   { href: "/form/condo-inspection", label: "แบบฟอร์มอาคารชุด \n(คอนโดมิเนียม)", icon: <Building size={16} /> },
   { href: "/form/ev-charger-lv-inspection", label: "แบบฟอร์ม EV CHARGER \n(รับไฟฟ้าแรงต่ำจาก PEA)", icon: <Zap size={16} /> },
   { href: "/form/ev-charger-hv-inspection", label: "แบบฟอร์ม EV CHARGER \n(รับไฟฟ้าแรงสูงจาก PEA)", icon: <Zap size={16} /> },
-  { href: "/form/construction-inspection", label: "แบบฟอร์มระบบจำหน่ายของ PEA", icon: <Building size={16} /> },
+  { href: "/form/construction-inspection", label: "แบบฟอร์มตรวจสอบมาตรฐานงานก่อสร้างและปรับปรุงระบบจําหน่าย PEA", icon: <Building size={16} /> },
 ];
 
 export default function SiteNavbar() {

@@ -13,8 +13,8 @@ export default function GeneralInfoHvSection({ data = {}, onChange = () => {} })
       <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
         <div className="bg-[#5b2d90] text-white px-6 py-4">
           <h1 className="text-xl font-bold text-center">
-            แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้า
-            <span className="block text-lg font-medium mt-1">สำหรับผู้ใช้ไฟฟ้าแรงต่ำ</span>
+            แบบฟอร์มตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าก่อนติดตั้งมิเตอร์ 
+            <span className="block text-lg font-medium mt-1">สำหรับผู้ใช้ไฟฟ้าที่รับไฟฟ้าแรงต่ำจากหม้อแปลงจำหน่ายของการไฟฟ้าส่วนภูมิภาค (PEA)</span>
           </h1>
         </div>
         

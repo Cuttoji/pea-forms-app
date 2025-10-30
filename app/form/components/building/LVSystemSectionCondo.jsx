@@ -149,34 +149,46 @@ export default function LVSystemSectionCondo({ value = {}, onChange }) {
           </h4>
 
           {/* 2.14.1 */}
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="mb-3">
-              <p className="text-gray-700 font-medium">2.14.1 สายไฟฟ้าเป็นไปตามมาตรฐาน มอก.11-2553 หรือ มอก. 293-2541 หรือ IEC 60502</p>
-            </div>
-            <RadioOption
-              name="2.14.1-result"
-              selectedValue={getField('conductorStandard.2.14.1.result')}
-              options={[
-                { label: 'ถูกต้อง', value: 'correct' },
-                { label: 'ต้องแก้ไข', value: 'incorrect' }
-              ]}
-              onSelect={(val) => updateField('conductorStandard.2.14.1.result', val)}
-            />
-            {getField('conductorStandard.2.14.1.result') === 'incorrect' && (
-              <div className="mt-3">
-                <label className="block text-sm text-gray-600 mb-1">รายละเอียด:</label>
-                <textarea
-                  className="w-full px-3 py-2 border border-red-300 rounded focus:outline-none focus:border-red-500 text-sm"
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div className="mb-3">
+                  <p className="text-gray-700 font-medium">
+                  2.14.1 เลือกมาตรฐานที่สายไฟฟ้าเป็นไปตาม
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  {[
+                  { label: 'มอก.11-2553', value: 'tis11_2553' },
+                  { label: 'มอก.293-2541', value: 'tis293_2541' },
+                  { label: 'IEC 60502', value: 'iec60502' }
+                  ].map(opt => (
+                  <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                    type="radio"
+                    name="2.14.1-standard"
+                    value={opt.value}
+                    checked={getField('conductorStandard.2.14.1.standard', '') === opt.value}
+                    onChange={() => updateField('conductorStandard.2.14.1.standard', opt.value)}
+                    className="w-4 h-4 text-purple-600 focus:ring-purple-500"
+                    />
+                    <span className="text-sm text-gray-700">{opt.label}</span>
+                  </label>
+                  ))}
+                </div>
+
+                <div className="mt-3">
+                  <label className="block text-sm text-gray-600 mb-1">หมายเหตุ (ถ้ามี):</label>
+                  <textarea
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
                   rows={2}
                   value={getField('conductorStandard.2.14.1.detail')}
                   onChange={(e) => updateField('conductorStandard.2.14.1.detail', e.target.value)}
-                  placeholder="กรุณาระบุรายละเอียดที่ต้องแก้ไข"
-                />
-              </div>
-            )}
-          </div>
+                  placeholder="ระบุหมายเหตุหรือรายละเอียดเพิ่มเติม (ถ้ามี)"
+                  />
+                </div>
+                </div>
 
-          {/* 2.14.2 */}
+                {/* 2.14.2 */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="mb-3">
               <p className="text-gray-700 font-medium">2.14.2 ชนิดและขนาดของสายไฟฟ้า</p>
