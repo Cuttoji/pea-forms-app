@@ -136,16 +136,7 @@ pnpm install
 1. ในหน้า Supabase Project ของคุณ
 2. ไปที่เมนูซ้ายมือ → **Table Editor**
 3. กด **Create a new table**
-4. กรอกข้อมูล:
-   - **Name**: `forms` (หรือตามที่โปรเจกต์กำหนด)
-   - เพิ่ม Columns ตามที่ต้องการ เช่น:
-     - `id` (int8, primary key, auto-increment)
-     - `title` (text)
-     - `description` (text)
-     - `created_at` (timestamp, default: now())
-     - `updated_at` (timestamp)
-     - `user_id` (uuid)
-
+4. เอาคำสั้งใน **supabase database editor**ไปใช้สร้าง
 5. กด **Save**
 
 #### 4.2 เอา API Keys
@@ -222,8 +213,8 @@ pea-forms-app/
 │   └── forms/             # โฟลเดอร์สำหรับหน้าฟอร์มต่างๆ
 │
 ├── components/             # Components ที่ใช้ซ้ำได้
-│   ├── FormInput.js       # Input component
-│   └── PDFViewer.js       # PDF viewer component
+│   ├── ui                 # ui component
+│   └── PDF                # PDF component
 │
 ├── lib/                    # ไลบรารีและ utilities
 │   └── supabase.js        # การตั้งค่า Supabase client
@@ -234,11 +225,12 @@ pea-forms-app/
 ├── styles/                 # ไฟล์ CSS
 │   └── globals.css
 │
-├── .env.local             # ตัวแปร Environment (ไม่ commit ลน Git)
+├── .env.local             # ตัวแปร Environment (ไม่ commit)
 ├── .gitignore             # ไฟล์ที่ไม่ต้องการ commit
 ├── package.json           # รายการ Dependencies
 ├── next.config.js         # การตั้งค่า Next.js
-└── README.md              # ไฟล์นี้
+├── README.md              # ไฟล์นี้
+└── supabase database editor.txt # ไฟล์คำสั่งสร้างฐานข้อมูลในsupabase
 ```
 
 ---
