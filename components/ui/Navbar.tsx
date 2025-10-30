@@ -16,7 +16,7 @@ const formLinks = [
   { href: "/form/condo-inspection", label: "แบบฟอร์มอาคารชุด \n(คอนโดมิเนียม)", icon: <Building size={16} /> },
   { href: "/form/ev-charger-lv-inspection", label: "แบบฟอร์ม EV CHARGER \n(รับไฟฟ้าแรงต่ำจาก PEA)", icon: <Zap size={16} /> },
   { href: "/form/ev-charger-hv-inspection", label: "แบบฟอร์ม EV CHARGER \n(รับไฟฟ้าแรงสูงจาก PEA)", icon: <Zap size={16} /> },
-  { href: "/form/construction-inspection", label: "แบบฟอร์มระบบจำหน่ายของPEA", icon: <Building size={16} /> },
+  { href: "/form/construction-inspection", label: "แบบฟอร์มระบบจำหน่ายของ PEA", icon: <Building size={16} /> },
 ];
 
 export default function SiteNavbar() {

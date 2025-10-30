@@ -16,8 +16,9 @@ export default function GeneralInfoSection({ data = {}, onChange = () => {} }) {
       <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden">
         <div className="bg-[#5b2d90] text-white px-6 py-4">
           <h1 className="text-xl font-bold text-center">
-            แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์ <span>สำหรับผู้ใช้ไฟฟ้าประเภทอื่นๆ นอกเหนือจากที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน</span>
-          </h1>
+            แบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าภายในของผู้ใช้ไฟฟ้าก่อนติดตั้งมิเตอร์ </h1>
+            <h1 className="text-xl font-bold text-center">สำหรับผู้ใช้ไฟฟ้าประเภทอื่นๆ นอกเหนือจากที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน</h1>
+          
         </div>
         
         {/* Form Header Info */}
