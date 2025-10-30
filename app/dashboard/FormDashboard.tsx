@@ -179,13 +179,6 @@ export default function FormDashboard() {
           <h1 className="text-4xl font-extrabold text-[#3a1a5b]">Operational Dashboard</h1>
           <p className="text-gray-700 mt-2 text-lg">ภาพรวมและจัดการฟอร์มการตรวจสอบระบบไฟฟ้า</p>
         </div>
-        <a
-          href={`/form/${selectedFormType.replace("_forms", "").replace("_inspection", "-inspection")}`}
-          className="px-6 py-3 bg-[#5b2d90] text-white rounded-lg shadow-md hover:bg-[#4a2575] flex items-center gap-2 transition-all duration-200"
-        >
-          <FilePlus size={20} />
-          สร้างฟอร์มใหม่
-        </a>
       </div>
 
       {/* KPIs */}
