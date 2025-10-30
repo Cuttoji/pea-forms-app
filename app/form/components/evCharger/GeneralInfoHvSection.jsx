@@ -2,7 +2,7 @@ import React from "react";
 
 /**
  * GeneralInfoHvSection สำหรับฟอร์ม EV Charger - Government form style UI/UX
- * Props:
+ * Props: 
  * - value: object (ข้อมูลฟอร์ม)
  * - onChange: (field, value) => void
  */
