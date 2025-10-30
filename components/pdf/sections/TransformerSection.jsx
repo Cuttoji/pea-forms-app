@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "@react-pdf/renderer";
-import { Checkbox, CheckboxResult } from "../common/FormElements";
+import { Checkbox, CheckboxResult, Radio } from "../common/FormElements";
 import { styles } from "../styles/pdfStyles";
 import LvSystemSection from "./LvSystemSection";
 
@@ -72,6 +72,9 @@ const TransformerSection = ({ transformers, includeLvSystem = false, sectionPref
                       <Text style={styles.smallText}> Dry </Text>
                       <Checkbox checked={general?.transformerType === "อื่นๆ"} />
                       <Text style={styles.smallText}> อื่นๆ</Text>
+                      <Text style={styles.underlineDotted}>
+                        {general?.transformerTypeOther || ""}
+                      </Text>
                     </View>
                     <Text style={styles.smallText}>
                       พิกัดการทนกระแสลัดวงจรสูงสุด  <Text style={styles.underlineDotted}>{general?.shortCircuitCurrent || ""}</Text> kA

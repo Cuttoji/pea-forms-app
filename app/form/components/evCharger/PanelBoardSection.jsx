@@ -107,7 +107,7 @@ export default function PanelBoardSection({ sectionNumber = 5, value = {}, onCha
               </h3>
               
               {/* สายป้อนเป็นไปตามมาตรฐาน */}
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <div className="mb-6 rounded-lg p-4">
                 <div className="text-sm font-medium text-gray-800 mb-4">ก) สายป้อนเป็นไปตามมาตรฐาน</div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">

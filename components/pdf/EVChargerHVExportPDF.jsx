@@ -11,7 +11,6 @@ import TransformerSection from "./sections/TransformerSection";
 import EVChargerInspectionSection from "./sections/EVChargerInspectionSection";
 import SummarySection from "./sections/SummarySection";
 import SignatureSection from "./sections/SignatureSection";
-import SingleLineDiagram from "./sections/SingleLineDiagram";
 
 // Import styles
 import { styles } from "./styles/pdfStyles";
@@ -121,7 +120,7 @@ const EVChargerHVExportPDF = ({ formData }) => {
       <Page size="A4" style={styles.page}>
         <SummarySection />
         <SignatureSection signature={safeData.signature} />
-        <SingleLineDiagram />
+        
       </Page>
     </Document>
   );

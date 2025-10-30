@@ -480,34 +480,6 @@ const SignatureSection = ({ signature }) => (
   </View>
 );
 
-// หน้า 3: ไดอะแกรม
-const DiagramPage = () => (
-  <Page size="A4" style={styles.page}>
-    <Text style={styles.pageNumber}>หน้า 3/3</Text>
-    
-    <Text style={styles.diagramTitle}>รูปแบบการรับไฟฟ้าผ่านระบบจำหน่ายแรงต่ำ (400/230 โวลต์)</Text>
-    <Text style={styles.diagramSubtitle}>สำหรับผู้ใช้ไฟฟ้าประเภทอื่นอย่างอาคารที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกัน</Text>
-    
-    <View style={styles.diagramContainer}>
-      <Image src="/homediagram.png" style={{ width: 400, height: 200, marginBottom: 10 }} />
-    </View>
-
-    <View style={styles.requirementBox}>
-      <Text style={styles.requirementTitle}>ข้อกำหนด</Text>
-      <Text style={styles.requirementText}>1. สำหรับผู้ใช้ไฟฟ้าประเภทอื่นอย่างอาคารที่อยู่อาศัยหรืออาคารที่คล้ายคลึงกันให้ใช้วิธีการตรวจสอบระบบไฟฟ้าตามมาตรฐาน 1 - 4</Text>
-      <Text style={styles.requirementText}>2. นอกจากการตรวจสอบสายต่อหลักดินของแผง MDB ตามมาตรฐาน 4 แล้ว ให้ตรวจสอบระบบต่อลงดินภายในแผง MDB ร่วมด้วย</Text>
-      <Text style={styles.requirementText}>3. ตรวจสอบว่ามีการติดตั้ง RCD ในวงจรที่มีความเสี่ยง หากผู้ขอใช้ไฟฟ้าไม่ประสงค์ติดตั้ง RCD ผู้ตรวจสอบมาตรฐานต้องแจ้งให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนทราบถึงความเสี่ยงจากการไม่ติดตั้ง RCD และให้ผู้ขอใช้ไฟฟ้าหรือผู้แทนลงนามในแบบฟอร์มตรวจสอบการติดตั้งระบบไฟฟ้าด้วย</Text>
-    </View>
-
-    <View style={styles.recommendationBox}>
-      <Text style={styles.recommendationTitle}>ข้อแนะนำ</Text>
-      <Text style={styles.recommendationText}>1. ควรติดตั้งเครื่องตัดไฟรั่ว (RCD) ขนาดพิกัดกระแสรั่ว (IΔn) ไม่เกิน 30 mA โดยติดตั้งในวงจรที่มีความเสี่ยง เช่น บริเวณที่เป็นหย่อมชื้น ห้องน้ำ ห้องอาบน้ำ ห้องครัว ห้องใต้ถุน อ่างล้างมือ วงจรไฟฟ้าภายนอกอาคาร รวมทั้งวงจรย่อยสำหรับเครื่องทำน้ำอุ่น/อ่างอาบน้ำ</Text>
-      <Text style={styles.recommendationText}>2. ควรติดตั้งสายดินกับบริภัณฑ์ไฟฟ้าเพื่อความปลอดภัย ในกรณีเกิดไฟฟ้ารั่ว หรือไฟฟ้าลัดวงจร</Text>
-      <Text style={styles.recommendationText}>3. ควรติดตั้งระบบไฟฟ้าโดยช่างที่ได้รับหนังสือรับรองการผ่านทดสอบ มาตรฐานฝีมือแรงงานแห่งชาติ จากกรมพัฒนาฝีมือแรงงาน</Text>
-    </View>
-
-  </Page>
-);
 
 // Main Document Component
 const HomeInspectionPDF = ({ formData }) => {

@@ -313,7 +313,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
               // ข) ชนิดและขนาด (special layout)
               if (sub.isWireType) {
                 return (
-                  <div key={sub.label} className="mb-6">
+                  <div key={sub.label || `wireType-${subIdx}`} className="mb-6">
                     <div className="bg-gray-50 p-3 rounded-md mb-3">
                       <div className="font-medium text-gray-700">{sub.label}</div>
                       <div className="flex flex-wrap gap-4 items-center mt-3">
@@ -406,7 +406,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
               // ปกติ
               if (sub.wiringMethods) {
                 return (
-                  <div key={sub.label} className="ml-4 mb-4">
+                  <div key={sub.label || `wiringMethods-${subIdx}`} className="ml-4 mb-4">
                     <div className="font-medium text-gray-700 mb-3 bg-gray-50 p-3 rounded-md">
                       {sub.label}
                     </div>
@@ -414,7 +414,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
                       {sub.wiringMethods.map((method, methodIdx) => {
                         const isSelected = selectedWiringMethods.includes(method.key);
                         return (
-                          <div key={method.key} className="ml-4 mb-4">
+                          <div key={method.key || `method-${methodIdx}`} className="ml-4 mb-4">
                             <div className="bg-blue-50 p-3 rounded-md mb-3">
                               <div className="flex items-center gap-3">
                                 <label className="flex items-center cursor-pointer">
@@ -437,7 +437,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
                                   const flatIdx = flatCheckList.findIndex(l => l === item.label);
                                   return (
                                     <CheckItemRow
-                                      key={item.label}
+                                      key={`checkitem-${method.key}-${itemIdx}-${item.label}`}
                                       label={item.label}
                                       idx={flatIdx}
                                       value={items[flatIdx]}
@@ -458,7 +458,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
               
               if (sub.subItems) {
                 return (
-                  <div key={sub.label} className="ml-4 mb-4">
+                  <div key={sub.label || `subItems-${subIdx}`} className="ml-4 mb-4">
                     <div className="font-medium text-gray-700 mb-3 bg-gray-50 p-3 rounded-md">
                       {sub.label}
                     </div>
@@ -466,7 +466,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
                       {sub.subItems.map((subsub, subsubIdx) => {
                         if (subsub.checkItems) {
                           return (
-                            <div key={subsub.label} className="ml-4 mb-4">
+                            <div key={subsub.label || `subsub-${subsubIdx}`} className="ml-4 mb-4">
                               <div className="font-medium text-gray-600 mb-3 bg-blue-50 p-3 rounded-md">
                                 {subsub.label}
                               </div>
@@ -475,7 +475,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
                                   const flatIdx = flatCheckList.findIndex(l => l === item.label);
                                   return (
                                     <CheckItemRow
-                                      key={item.label}
+                                      key={`checkitem-${subsub.label}-${itemIdx}-${item.label}`}
                                       label={item.label}
                                       idx={flatIdx}
                                       value={items[flatIdx]}
@@ -491,7 +491,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
                           const flatIdx = flatCheckList.findIndex(l => l === subsub.label);
                           return (
                             <CheckItemRow
-                              key={subsub.label}
+                              key={`checkitem-${subsub.label}-${subsubIdx}`}
                               label={subsub.label}
                               idx={flatIdx}
                               value={items[flatIdx]}
@@ -508,7 +508,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
               // ปกติ
               const flatIdx = flatCheckList.findIndex(l => l === sub.label);
               return (
-                <div key={sub.label} className="mb-4">
+                <div key={sub.label || `sub-${subIdx}`} className="mb-4">
                   <div className="bg-gray-50 p-3 rounded-md mb-3">
                     <div className="flex items-baseline gap-2 text-gray-700">
                       <span className="font-medium">
@@ -543,6 +543,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
                     </div>
                   </div>
                   <CheckItemRow
+                    key={`checkitem-${sub.label}-${subIdx}`}
                     label=""
                     idx={flatIdx}
                     value={items[flatIdx]}
@@ -556,6 +557,7 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
                 const flatIdx = flatCheckList.findIndex(l => l === section.label);
                 return (
                   <CheckItemRow
+                    key={`checkitem-${section.label}-${sectionIdx}`}
                     label=""
                     idx={flatIdx}
                     value={items[flatIdx]}

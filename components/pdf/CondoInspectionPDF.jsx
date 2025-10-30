@@ -9,6 +9,7 @@ import CondoLvSystemSection from "./sections/CondoLvSystemSection";
 import HVSystemSection from "./sections/HVSystemSection";
 import SignatureSection from "./sections/SignatureSection";
 import { Checkbox, CheckboxResult } from "./common/FormElements";
+import SummarySection from "./sections/SummarySection";
 
 // Register Sarabun font
 Font.register({
@@ -53,31 +54,6 @@ const GeneralInfoSection = ({ general }) => (
   </View>
 );
 
-
-// Section 3: สรุปผลการตรวจสอบ
-const InspectionSummarySection = ({ summaryType }) => (
-  <View style={styles.section}>
-    <Text style={styles.sectionTitle}>3. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</Text>
-    <View style={styles.lvTable}>
-      <View style={[styles.tableRow, styles.borderTop]}>
-        <View style={styles.leftColumn}>
-          <View style={styles.checkboxLine}>
-            <Checkbox checked={summaryType === "complete"} />
-            <Text style={styles.smallText}> ติดตั้งเรียบร้อย</Text>
-          </View>
-          <View style={styles.checkboxLine}>
-            <Checkbox checked={summaryType === "incomplete_minor"} />
-            <Text style={styles.smallText}> ติดตั้งไม่เรียบร้อย</Text>
-          </View>
-          <View style={styles.checkboxLine}>
-            <Checkbox checked={summaryType === "incomplete_reject"} />
-            <Text style={styles.smallText}> ต้องปรับปรุงเพิ่มเติมตามข้อแนะนำ</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  </View>
-);
 
 // Section 4: ข้อบ่งขีดและข้อจำกัด
 const LimitationsSection = ({ limitation }) => (
@@ -219,7 +195,7 @@ const CondoInspectionPDF = ({ formData }) => {
         </View>
 
         {/* Section 3: สรุปผล */}
-        <InspectionSummarySection summaryType={safeData.summaryType} />
+        <SummarySection summary={safeData.summaryType} />
 
         {/* Section 4: ข้อจำกัด */}
         <LimitationsSection limitation={safeData.limitation} />

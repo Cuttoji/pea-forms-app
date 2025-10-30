@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "@react-pdf/renderer";
-import { Checkbox, CheckboxResult } from "../common/FormElements";
+import { Checkbox } from "../common/FormElements";
 import { styles } from "../styles/pdfStyles";
 
 const SubCircuitSection = ({ subCircuits, transformerIndex = 0 }) => {
@@ -56,7 +56,7 @@ const SubCircuitSection = ({ subCircuits, transformerIndex = 0 }) => {
                 <View style={styles.checkboxLine}>
                   {["มอก. 11-2553", "มอก. 293-2541", "IEC 60502 "].map(std => (
                     <View key={std} style={styles.checkboxInline}>
-                      <Radio checked={item?.standard?.includes(std)} />
+                      <Checkbox checked={item?.standard?.includes(std)} />
                       <Text style={styles.smallText}> {std}  </Text>
                     </View>
                   ))}
@@ -66,12 +66,12 @@ const SubCircuitSection = ({ subCircuits, transformerIndex = 0 }) => {
                 <View style={styles.checkboxLine}>
                   {["IEC01", "NYY", "CV", "อื่นๆ"].map(type => (
                     <View key={type} style={styles.checkboxInline}>
-                      <Radio checked={item?.wireType?.includes(type)} />
+                      <Checkbox checked={item?.wireType?.includes(type)} />
                       <Text style={styles.smallText}> {type}  </Text>
                     </View>
                   ))}
                   <View style={styles.checkboxInline}>
-                    <Radio checked={item?.wireType?.includes("อื่นๆ")} />
+                    <Checkbox checked={item?.wireType?.includes("อื่นๆ")} />
                     <Text style={styles.underlineDotted}>{item?.wireTypeOther || ""}</Text>
                   </View>
                 </View>

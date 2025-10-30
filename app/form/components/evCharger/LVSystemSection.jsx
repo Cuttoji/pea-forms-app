@@ -94,103 +94,68 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                 </h3>
                 
                 {/* 5.1.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน */}
-                          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <div className="form-group mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                        5.1.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน
-                    </label>
-                    <div className="flex flex-wrap gap-4">
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="radio"
-                                name={`standard_${transformerIndex}`}
-                                value="มอก. 11-2553"
-                                checked={formData.standard === "มอก. 11-2553"}
-                                onChange={(e) => handleInputChange('standard', e.target.value)}
-                                className="w-4 h-4"
-                            />
-                            <span>มอก. 11-2553</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="radio"
-                                name={`standard_${transformerIndex}`}
-                                value="มอก. 293-2541"
-                                checked={formData.standard === "มอก. 293-2541"}
-                                onChange={(e) => handleInputChange('standard', e.target.value)}
-                                className="w-4 h-4"
-                            />
-                            <span>มอก. 293-2541</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="radio"
-                                name={`standard_${transformerIndex}`}
-                                value="IEC 60502"
-                                checked={formData.standard === "IEC 60502"}
-                                onChange={(e) => handleInputChange('standard', e.target.value)}
-                                className="w-4 h-4"
-                            />
-                            <span>IEC 60502</span>
-                        </label>
-                    </div>
-                    {renderCorrectIncorrectField('lv_standard', 'standardCorrect', 'standardNote')}
-                </div>
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div className="mb-6 rounded-lg p-4">
+    <div className="text-sm font-medium text-gray-800 mb-4">ก) สายป้อนเป็นไปตามมาตรฐาน</div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+      {[
+        { key: "มอก. 11-2553", label: "มอก. 11-2553" },
+        { key: "มอก. 293-2541", label: "มอก. 293-2541" },
+        { key: "IEC 60502", label: "IEC 60502" }
+      ].map(({ key, label }) => (
+        <label key={key} className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="radio"
+            name="standard"
+            checked={formData.standard === key}
+            onChange={() => handleInputChange("standard", key)}
+            className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+          />
+          <span className="text-sm font-medium text-gray-700">{label}</span>
+        </label>
+      ))}
+    </div>
+    {/* Replace with your CorrectableRow component if available */}
+    {renderCorrectIncorrectField('lv_standard', 'standardCorrect', 'standardNote')}
+  </div>
                 </div>
 
                 {/* 5.1.2 ชนิดสายตัวนำ */}
-                <div className="form-group mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                        5.1.2 ชนิดสายตัวนำ
-                    </label>
-                    <div className="flex flex-wrap gap-4">
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                checked={formData.conductorIEC01 || false}
-                                onChange={(e) => handleInputChange('conductorIEC01', e.target.checked)}
-                                className="w-4 h-4"
-                            />
-                            <span>IEC01</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                checked={formData.conductorNYY || false}
-                                onChange={(e) => handleInputChange('conductorNYY', e.target.checked)}
-                                className="w-4 h-4"
-                            />
-                            <span>NYY</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                checked={formData.conductorCV || false}
-                                onChange={(e) => handleInputChange('conductorCV', e.target.checked)}
-                                className="w-4 h-4"
-                            />
-                            <span>CV</span>
-                        </label>
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                checked={formData.conductorOther || false}
-                                onChange={(e) => handleInputChange('conductorOther', e.target.checked)}
-                                className="w-4 h-4"
-                            />
-                            <span>อื่นๆ</span>
-                            <input
-                                type="text"
-                                value={formData.conductorOtherText || ''}
-                                onChange={(e) => handleInputChange('conductorOtherText', e.target.value)}
-                                placeholder="ระบุ..."
-                                className="w-32 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-gray-700 ml-2 mr-2"
-                                disabled={!formData.conductorOther}
-                            />
-                        </label>
-                    </div>
-                    {renderCorrectIncorrectField('lv_conductor_type', 'conductorTypeCorrect', 'conductorTypeNote')}
-                </div>
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+  <div className="mb-4">
+    <div className="text-sm text-gray-700 mb-3">ข) ชนิดสายตัวนำ</div>
+    <div className="flex flex-wrap gap-6 mb-4">
+      {[
+        { key: "IEC01", label: "IEC01" },
+        { key: "NYY", label: "NYY" },
+        { key: "CV", label: "CV" },
+        { key: "other", label: "อื่นๆ" }
+      ].map(type => (
+        <label key={type.key} className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name="wireType"
+            checked={formData.wireType === type.key}
+            onChange={() => handleInputChange("wireType", type.key)}
+            className="w-4 h-4 text-blue-600"
+          />
+          <span className="text-sm text-gray-700">{type.label}</span>
+          {type.key === "other" && formData.wireType === "other" && (
+            <input
+              type="text"
+              className="ml-2 px-2 py-1 border border-gray-300 rounded text-sm w-32"
+              placeholder="ระบุ"
+              value={formData.wireTypeOther || ""}
+              onChange={e => handleInputChange("wireTypeOther", e.target.value)}
+            />
+          )}
+        </label>
+      ))}
+    </div>
+    {/* Replace with your CorrectableRow component if available */}
+    {renderCorrectIncorrectField('lv_conductor_type', 'conductorTypeCorrect', 'conductorTypeNote')}
+  </div>
+</div>
 
                 {/* 5.1.3 ขนาดสายเฟส */}
                           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">

@@ -29,11 +29,11 @@ const LvSystemSection = ({ transformer, index, showSectionTitle = true, sectionP
           <View style={styles.leftColumn}>
             <Text style={styles.smallText}>{mainSection}.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน  </Text>
             <View style={styles.checkboxLine}>
-              <Checkbox checked={lvSystem?.standardMok11 === true} />
+              <Checkbox checked={lvSystem?.standard === true} />
               <Text style={styles.smallText}> มอก. 11-2553  </Text>
-              <Checkbox checked={lvSystem?.standardMok293 === true} />
+              <Checkbox checked={lvSystem?.standard === true} />
               <Text style={styles.smallText}> มอก. 293-2541  </Text>
-              <Checkbox checked={lvSystem?.standardIEC60502 === true} />
+              <Checkbox checked={lvSystem?.standard === true} />
               <Text style={styles.smallText}> IEC 60502</Text>
             </View>
           </View>
