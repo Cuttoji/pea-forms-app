@@ -148,17 +148,17 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
             <div className="space-y-6 text-gray-700">
               {/* ข้อมูลพื้นฐานของวงจร */}
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-lg mb-4 text-blue-900">ข้อมูลพื้นฐานของวงจร</h4>
+                <h4 className="font-semibold text-lg mb-4 text-blue-900">5.6.1 วงจรย่อยของเครื่องอัดประจุยานยนต์ไฟฟ้า</h4>
 
                 <CorrectableRow 
-                  label="วงจรนี้ใช้สำหรับเครื่องอัดประจุยานยนต์ไฟฟ้าเท่านั้น" 
+                  label="ก) วงจรนี้ใช้สำหรับเครื่องอัดประจุยานยนต์ไฟฟ้าเท่านั้น (ไม่รวมโหลดอื่น)" 
                   value={item?.evOnly} 
                   onChange={v => handleSub(idx, "evOnly", v)} 
                   detail 
                 />
 
                 <CorrectableRow 
-                  label="วงจรนี้ใช้สำหรับเครื่องอัดประจุยานยนต์ไฟฟ้า 1 เครื่องต่อ 1 วงจร" 
+                  label="ข) วงจรนี้ใช้สำหรับเครื่องอัดประจุยานยนต์ไฟฟ้า 1 เครื่องต่อ 1 วงจรย่อย" 
                   value={item?.evOnePerCircuit} 
                   onChange={v => handleSub(idx, "evOnePerCircuit", v)} 
                   detail 
@@ -1112,8 +1112,8 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
                           แอมแปร์ (A)
                         </div>
                         <div className="mb-2">
-                          เป็น RCD ซึ่งติดตั้งระหว่างเครื่องอัดประจุกับวงจรย่อยของบริภัณฑ์ของขอบเขตงานของเครื่องจักรกล และมีมาตร
-                          พิกัดความล่าช้าสูงสุดในการเปิดวงจรหรือตัดกระแสวงจร Type S <strong>โดยสามารถปรับระดับ</strong>
+                          เป็น RCD ชนิดตัดกระแสไฟฟ้าทุกเส้นรวมถึงนิวทรัลออกพร้อมกัน และมีขนาด
+                          พิกัดกระแสไม่น้อยกว่าพิกัดกระแสของเครื่องป้องกันกระแสเกิน
                         </div>
                       </div>
                     </div>
@@ -1157,10 +1157,10 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
                             onChange={e => handleSub(idx, "rcdTypeBInChargerIn", e.target.value)} 
                             disabled={!item?.rcdTypeBInCharger}
                           />
-                          แอมแปร์ (A)
-                          เป็น RCD ซึ่งติดตั้งภายในเครื่องอัดประจุยานยนต์ไฟฟ้า และเป็นส่วนหนึ่งของเครื่องอัดประจุ และให้มาตรพิกัด
-                          กระแสเล็กน้อยกว่าพิกัดกระแสตั้งของเครื่องป้องกันกระแสเกิน ติดตั้งภายในเครื่องอัดประจุ 
-                          หรือใช้อัดไฟ้าที่ไฟฟ้าปรับเฮลฟไฟฟ้าแล้วไม่ให้พิกัด</div>
+                          แอมแปร์ (A) 
+                          เป็น RCD ชนิดตัดกระแสไฟฟ้าทุกเส้นรวมถึงนิวทรัลออกพร้อมกัน และมีขนาพิกัด
+                          กระแสไม่น้อยกว่าพิกัดกระแสของเครื่องป้องกันกระแสเกิน ติดตั้งมาภายใน     
+                          เครื่องอัดประจุยานยนต์ไฟฟ้า </div>
                         </div>
                       </div>
                     </div>
@@ -1180,9 +1180,10 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
 
                     {/* หมายเหตุ */}
                     <div className="text-xs text-gray-600 pl-6">
-                      * กรณีการต่อประจุในโหมด 2 ให้ติดตั้งเครื่องตัดไฟรั่วชนิดเคลื่อนปลั่ว หรือก่อนเข้า
-                      เต้ารับ หากไม่มีช่วงที่ RCD Type B หรือเปิดเทียบเท่าติดตั้มมากับ IC-CPD 
-                      (In-Cable Control and Protection Device)
+                      *กรณีการอัดประจุโหมด 2 ให้ติดตั้งเครื่องตัดไฟรั่วบริเวณแผงวงจร หรือก่อนเข้า
+ เต้ารับ หากไม่มั่นใจว่ามี RCD Type B หรือเทียบเท่าติดตั้งมากับ I 
+C-CPD       
+(In-Cable Control and Protection Device)
                     </div>
                   </div>
                 </div>
@@ -1197,13 +1198,9 @@ export default function SubCircuitSection({ sectionNumber = 5, value = [], onCha
 
               {/* 5.6.7 กรณีมีข้อตัดไฟรั่ว */}
               <div className="bg-purple-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-lg mb-4 text-blue-900">5.6.7 กรณีมีข้อตัดไฟรั่ว (RCD) Type B สำหรับวงจรย่อยติดตั้งไกลกับ RCD Type B ต้องไม่มีเครื่องหยุดการทำงาน IC-DD Type อื่น อยู่ก่อนหรือหลังขึ้น</h4>
-                
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="text-sm">
-                    ให้ให้ โดย RCD Type B ต้องไม่มีเครื่องหยุดการทำงาน IC-DD Type อื่น อยู่ก่อนหรือหลังของวงจรเดียวกัน
-                  </div>
-                </div>
+                <h4 className="font-semibold text-lg mb-4 text-blue-900">5.6.7  กรณีติดตั้งเครื่องตัดไฟรั่ว (RCD) Type B สำหรับเครื่องอัดประจุยานยนต์
+ ไฟฟ้า โดย RCD Type B ต้องไม่ติดตั้งภายใต้วงจรที่มี RCD Type อื่นๆ อยู่ที่เมน
+ ของวงจรนั้นๆ </h4>
                 <CorrectableRow 
                     value={item?.rcdTypeBCheck}
                     onChange={v => handleSub(idx, "rcdTypeBCheck", v)}

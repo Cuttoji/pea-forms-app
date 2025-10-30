@@ -131,7 +131,7 @@ export default function DocumentSection({
       <section className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">
-            รายการเอกสาร{areaType === "public" ? " (สำหรับใช้สาธารณะ)" : " (สำหรับใช้ส่วนบุคคล)"}
+            รายการเอกสาร{areaType === "public" ? " (สำหรับพื้นที่สาธารณะ)" : " (สำหรับพื้นที่ส่วนบุคคล)"}
           </h3>
         </div>
 
@@ -196,21 +196,6 @@ export default function DocumentSection({
                     />
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
-
-          {/* Information Box */}
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="text-sm text-blue-800">
-                <strong className="font-semibold">หมายเหตุ:</strong> โปรดตรวจสอบเอกสารให้ครบถ้วนตามรายการที่กำหนด
-                เพื่อให้การตรวจสอบการติดตั้งระบบอัดประจุยานยนต์ไฟฟ้าเป็นไปอย่างราบรื่น
               </div>
             </div>
           </div>

@@ -90,13 +90,13 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
         <div className="space-y-8 text-gray-700">
             <div className="bg-blue-50 p-4 rounded-lg">
                 <h3 className="text-lg font-semibold text-blue-800 mb-4">
-                    5. วงจรประธานแรงต่ำ
+                    5.1 วงจรประธานแรงต่ำ
                 </h3>
                 
                 {/* 5.1.1 สายตัวนำประธาน (สายเมน) เป็นไปตามมาตรฐาน */}
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="mb-6 rounded-lg p-4">
-    <div className="text-sm font-medium text-gray-800 mb-4">ก) สายป้อนเป็นไปตามมาตรฐาน</div>
+    <div className="text-sm font-medium text-gray-800 mb-4">5.1.1 สายตัวนำประธาน(สายเมน)เป็นไปตามมาตรฐาน</div>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
       {[
         { key: "มอก. 11-2553", label: "มอก. 11-2553" },
@@ -123,7 +123,7 @@ const LVSystemSection = ({ value = {}, onChange, transformerIndex = 0 }) => {
                 {/* 5.1.2 ชนิดสายตัวนำ */}
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
   <div className="mb-4">
-    <div className="text-sm text-gray-700 mb-3">ข) ชนิดสายตัวนำ</div>
+    <div className="text-sm text-gray-700 mb-3">5.1.2 ชนิดสายตัวนำ</div>
     <div className="flex flex-wrap gap-6 mb-4">
       {[
         { key: "IEC01", label: "IEC01" },

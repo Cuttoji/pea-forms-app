@@ -227,7 +227,7 @@ export default function EvChargerLvInspectionPage({ initialForm, formFromDb, mod
       <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden mb-6">
       <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold text-gray-800">5. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ </h2>
+          <h2 className="text-lg font-bold text-gray-800">6. สำหรับผู้ขอใช้ไฟฟ้ารับทราบ </h2>
         </div>
       </div>
       <div className="px-6 py-6 space-y-6 text-gray-700">

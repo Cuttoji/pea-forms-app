@@ -591,14 +591,14 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
                   </section>
               <section className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">3.2 เครื่องป้องกันกระแสเกินของแผงสายเมน (หรือที่เทียบเท่าระบาน)</h3>
+                <h3 className="text-lg font-semibold text-gray-900">3.2 เครื่องป้องกันกระแสเกินของแผงสายเมนสวิตช์ (บริภัณฑ์ประธาน)</h3>
               </div>
               <div className="p-6 space-y-6">
                 {/* 3.2.1 มาตรฐาน */}
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="form-group">
                   <label className="block text-sm font-medium text-gray-700 mb-3">
-                    3.2.1 เบรกเกอร์ที่ตระบกอนจะใช้ไปได้ตามมาตรฐาน IEC 60898 หรือ IEC 60947-2
+                    3.2.1 เมนเซอร์กิตเบรกเกอร์เป็นไปตามมาตรฐาน IEC 60898 หรือ IEC 60947-2
                   </label>
                   {renderCorrectIncorrectField("main_breaker_standard_status", "mainBreakerStandardCorrect", "mainBreakerStandardNote")}
                 </div></div>
@@ -608,7 +608,7 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
                 <div className="form-group">
                     {/* คอลัมน์ซ้าย */}
                     <div className="flex items-center">
-                      <span className="text-sm">3.2.2 เบรกเกอร์ที่ตระบกอนจะริทนาด AT</span>
+                      <span className="text-sm">3.2.2 เมนเซอร์กิตเบรกเกอร์ขนาด AT</span>
                       <input
                         type="text"
                         value={value.mainBreakerSize}
@@ -626,7 +626,7 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
                 <div className="form-group">
                     {/* คอลัมน์ซ้าย */}
                     <div className="flex items-center">
-                      <span className="text-sm">3.2.3 พิกัดกำลังตัดวงจรสั้น (Ic)</span>
+                      <span className="text-sm">3.2.3 พิกัดทนกระแสลัดวงจร (Ic)</span>
                       <input
                         type="text"
                         value={value.shortCircuitRating}
@@ -650,7 +650,7 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
           <div className="form-group">
             <div className="flex items-center gap-3 mb-2">
               <label className="text-sm font-medium text-gray-700">
-                3.3.1 สายต่อพื้นดิน (ตัวนำของแบบ) ขนาด
+                3.3.1 สายต่อดิน (ตัวนำทองแดง) ขนาด
               </label>
             <input
               type="text"
@@ -658,7 +658,7 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
               onChange={(e) => handleInputChange("groundWireSize", e.target.value)}
               placeholder="ระบุขนาดสายดิน (ตร.มม.)"
               className="px-3 py-2 border border-gray-300 rounded-md text-sm w-40 mb-3"
-            />ตร.มม. สอดคล้องกับขนาดสายตัวนำและตารางที่ 1 ในหมวดที่ 5</div>
+            />ตร.มม. สอดคล้องกับขนาดสายตัวนำประธาน ตามตารางที่ 1 ในหน้าที่ 5</div>
             {renderCorrectIncorrectField("ground_wire_size_status", "groundWireSizeCorrect", "groundWireSizeNote")}
           </div>
           </div>
@@ -667,7 +667,7 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div className="form-group">
             <label className="block text-sm font-medium text-gray-700 mb-3">
-              3.3.2 การต่อสายดินและสายนิวทรัล
+              3.3.2 การต่อลงดินที่แผงเมนสวิตช์
             </label>
             <div className="space-y-3 mb-3">
               <div className="flex items-start gap-2">
@@ -686,8 +686,10 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
                   className="w-4 h-4 text-blue-600 mt-1"
                 />
                 <label className="text-sm text-gray-700">
-                  กรณีระบบไฟฟ้า 1 เฟส และสายเมนเวทียดำยึดอุปกรณ์ระบบอุปถานของดิน (Ground Bus) และหัวต่อต่างชนิดระหว่าง (Main Conductor) เข้าสายตัวนำอลาดินย้อนเป็นท่อเป็นดินเบรกเกอร์ระบบ (Main Circuit Breaker) ตามที่การไฟฟ้าส่วนภูมิภาคกำหนด
-                </label>
+กรณีระบบไฟฟ้า 1 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground 
+Bus) และต่อสายนิวทรัล (Neutral Wire) ของตัวนำประธาน (Main Conductor) 
+เข้าขั้วต่อสายดินก่อนเข้าบริภัณฑ์ประธาน (Main Circuit Breaker) ตามที่       
+การไฟฟ้าส่วนภูมิภาค กำหนด</label>
               </div>
               <div className="flex items-start gap-2">
                 <input
@@ -705,8 +707,7 @@ export default function LVSystemSectionPEA({ value = initialState, onChange = ()
                   className="w-4 h-4 text-blue-600 mt-1"
                 />
                 <label className="text-sm text-gray-700">
-                  กรณีระบบไฟฟ้า 3 เฟส และสายเมนเวทียดำเมนทำในหัวต่อดินระบุ (Ground Bus) และหัวต่อต่างชนิดระหว่าง (Neutral Bus) โดยที่ดินตัวนำของดินและการนิวทรัลบริเทิยเข้าธ้นไฟในสายเมนเวทียดำยืดที่การไฟฟ้าส่วนภูมิภาคกำหนด
-                </label>
+กรณีระบบไฟฟ้า 3 เฟส แผงเมนสวิตช์ต้องมีขั้วต่อสายดิน (Ground Bus) และขั้วต่อสายนิวทรัล (Neutral Bus) โดยติดตั้งสายต่อหลักดินและสายดินบริภัณฑ์ ภายในแผงเมนสวิตช์ ตามที่การไฟฟ้าส่วนภูมิภาค กำหนด</label>
               </div>
             </div>
             {renderCorrectIncorrectField("grounding_system_status", "groundingSystemCorrect", "groundingSystemNote")}

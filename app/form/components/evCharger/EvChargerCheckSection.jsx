@@ -446,7 +446,8 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                       value={item?.mode2WarningSign} 
                       onChange={v => handleCharger(idx, "mode2WarningSign", v)} 
                       detail 
-                    />
+                    /><p className="text-sm text-gray-500 mt-1">* ข้อแนะนำ : ตำแหน่งติดตั้งเต้ารับควรอยู่สูงจากพื้นผิวการจอดของยานยนต์     
+ไม่น้อยกว่า 0.75 เมตร แต่ไม่เกิน 1.20 เมตร</p>
                   </div>
                 )}
 
@@ -481,7 +482,8 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                       value={item?.mode34CableLength} 
                       onChange={v => handleCharger(idx, "mode34CableLength", v)} 
                       detail 
-                    />
+                    /><p className="text-sm text-gray-500 mt-1">* ข้อแนะนำ : กรณีอัดประจุโหมด 3 แบบมีเต้ารับ ตำแหน่งติดตั้งควรอยู่สูงจาก
+ พื้นผิวการจอดของยานยนต์ ไม่น้อยกว่า 0.75 เมตร แต่ไม่เกิน 1.20 เมตร </p>
                   </div>
                 )}
 
@@ -490,7 +492,7 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                   <h4 className="font-semibold text-lg mb-4 text-blue-900">5.7.5 กรณีติดตั้งในบริเวณสถานีบริการน้ำมัน, LPG และ CNG</h4>
                   
                   <CorrectableRow 
-                    label="ก) เครื่องอัดประจุต้องเป็นโหมด 3 หรือโหมด 4" 
+                    label="ก) เครื่องอัดประจุยานยนต์ไฟฟ้าต้องเป็นการอัดประจุโหมด 3 หรือโหมด 4" 
                     value={item?.gasStationMode} 
                     onChange={v => handleCharger(idx, "gasStationMode", v)} 
                     detail 
@@ -538,7 +540,7 @@ function EvChargerCheckSection({ value = [], onChange = () => {} }) {
                   
                   <div className="space-y-3">
                     <div className="py-3 border-b border-gray-200 last:border-b-0 text-gray-700">
-                      <div className="text-sm text-gray-700 mb-2">ก) มีการป้องกันความเสียหายจากการชนของยานยนต์</div>
+                      <div className="text-sm text-gray-700 mb-2">ก) มีการป้องกันความเสียหายของเครื่องอัดประจุไฟฟ้าจากการชนของยานยนต์ </div>
                       <div className="flex items-center gap-4">
                         <label className="flex items-center gap-2 cursor-pointer">
                           <input
