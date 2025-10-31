@@ -22,7 +22,7 @@ CREATE TABLE condo_inspection_forms (
     documents JSONB,
     hvSystem JSONB,
     transformers JSONB,
-    summaryType JSONB,
+    summary JSONB,
     limitation TEXT,
     signature JSONB
 );
@@ -76,7 +76,7 @@ CREATE TABLE other_inspection_forms (
     documents JSONB,
     hvSystem JSONB,
     transformers JSONB,
-    summaryType JSONB,
+    summary JSONB,
     limitation TEXT,
     signature JSONB
 );
