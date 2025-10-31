@@ -505,6 +505,14 @@ export default function HomeInspectionSection({ data = {}, onChange = () => {} }
                   </div>
                 );
               }
+              // SKIP duplicate result radio for 2.1 and 2.2 first subItem
+              if (
+                (sectionIdx === 0 && subIdx === 0 && sub.standardType) ||
+                (sectionIdx === 1 && subIdx === 0 && sub.breakerOptions)
+              ) {
+                return null;
+              }
+
               // ปกติ
               const flatIdx = flatCheckList.findIndex(l => l === sub.label);
               return (

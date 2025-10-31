@@ -145,7 +145,7 @@ export default function HVSystemSection({
   };
 
   return (
-    <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden mt-8">
+    <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden mt-8 text-gray-700">
       <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">

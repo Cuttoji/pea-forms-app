@@ -175,17 +175,15 @@ export default function LVSystemSectionCondo({ value = {}, onChange }) {
                   </label>
                   ))}
                 </div>
-
-                <div className="mt-3">
-                  <label className="block text-sm text-gray-600 mb-1">หมายเหตุ (ถ้ามี):</label>
-                  <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-purple-500 text-sm"
-                  rows={2}
-                  value={getField('conductorStandard.2.14.1.detail')}
-                  onChange={(e) => updateField('conductorStandard.2.14.1.detail', e.target.value)}
-                  placeholder="ระบุหมายเหตุหรือรายละเอียดเพิ่มเติม (ถ้ามี)"
-                  />
-                </div>
+                  <RadioOption
+                name="2.14.1-result"
+                selectedValue={getField('conductorStandard.2.14.1.result')}
+                options={[
+                  { label: 'ถูกต้อง', value: 'correct' },
+                  { label: 'ต้องแก้ไข', value: 'incorrect' }
+                ]}
+                onSelect={(val) => updateField('conductorStandard.2.14.1.result', val)}
+              />
                 </div>
 
                 {/* 2.14.2 */}
