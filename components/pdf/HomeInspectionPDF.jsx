@@ -405,24 +405,24 @@ const OtherTypeSection = ({ data }) => (
 );
 
 // Section 4: สรุปผลการตรวจสอบ
-const SummarySection = ({ overallResult }) => {
+const SummarySection = ({ summaryType }) => {
   // Add debugging
-  console.log("SummarySection received:", overallResult);
-
+  console.log("SummarySection received:", summaryType);
+  
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>4. สรุปผลการตรวจสอบการติดตั้งระบบไฟฟ้า</Text>
       <View style={styles.checkboxColumn}>
         <View style={styles.optionRow}>
-          <Checkbox checked={overallResult === "compliant"} size={10} />
+          <Checkbox checked={summaryType === "compliant"} size={10} />
           <Text style={styles.summaryText}>ติดตั้งมิเตอร์ได้</Text>
         </View>
         <View style={styles.optionRow}>
-          <Checkbox checked={overallResult === "compliant_with_conditions"} size={10} />
+          <Checkbox checked={summaryType === "compliant_with_conditions"} size={10} />
           <Text style={styles.summaryText}>ติดตั้งมิเตอร์ได้ตามเงื่อนไข</Text>
         </View>
         <View style={styles.optionRow}>
-          <Checkbox checked={overallResult === "non_compliant"} size={10} />
+          <Checkbox checked={summaryType === "non_compliant"} size={10} />
           <Text style={styles.summaryText}>ต้องปรับปรุงแก้ไขก่อนติดตั้งมิเตอร์</Text>
         </View>
       </View>
@@ -490,15 +490,16 @@ const HomeInspectionPDF = ({ formData }) => {
   const safeData = {
     general: formData?.general || {},
     inspection: formData?.inspection || {},
+    // แก้จาก summaryType เป็น summary ให้ตรงกับฐานข้อมูล
     summary: formData?.summary || {},
     limitation: formData?.limitation || "",
     signature: formData?.signature || {},
     otherTypeNotes: formData?.otherTypeNotes || "",
   };
   
-  // ดึง overallResult จาก summary object
-  const overallResult = safeData.summary?.overallResult || "";
-  console.log("overallResult ที่จะส่งให้ checkbox:", overallResult);
+  // ดึง summaryType จาก summary object
+  const summaryType = safeData.summary?.summaryType || "";
+  console.log("summaryType ที่จะส่งให้ checkbox:", summaryType);
   
   return (
     <Document>
@@ -522,7 +523,7 @@ const HomeInspectionPDF = ({ formData }) => {
         <Text style={styles.pageNumber}>หน้า 2/3</Text>
         
         <OtherTypeSection data={safeData} />
-        <SummarySection overallResult={overallResult} />
+        <SummarySection summaryType={formData.summary?.summaryType || ""} />
         <SuggestionSection limitation={safeData.limitation} />
         <AcknowledgmentSection />
         <SignatureSection signature={safeData.signature} />
