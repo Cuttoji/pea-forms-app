@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useRef } from "react";
+import ReportWritingAssistant from "@/components/forms/ReportWritingAssistant";
 
 export default function LimitationSection({ value = "", onChange = () => {} }) {
+  const textareaRef = useRef(null);
+
+  // Handle template selection from assistant
+  const handleSelectTemplate = (templateText) => {
+    // Add template text to current value with proper spacing
+    const newValue = value
+      ? `${value}\n${templateText}`
+      : templateText;
+    onChange(newValue);
+    
+    // Focus the textarea after adding text using requestAnimationFrame
+    // to ensure DOM is updated before setting selection
+    requestAnimationFrame(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        // Move cursor to end
+        textareaRef.current.setSelectionRange(newValue.length, newValue.length);
+      }
+    });
+  };
+
   return (
     <div className="bg-white border border-gray-300 rounded-lg shadow-sm overflow-hidden mb-6">
       <div className="bg-blue-50 px-6 py-3 border-b border-gray-200">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2">
           <h2 className="text-lg font-bold text-gray-800">4. ขอบเขตและข้อจำกัดในการตรวจสอบ</h2>
+          <ReportWritingAssistant onSelectTemplate={handleSelectTemplate} />
         </div>
       </div>
 
@@ -13,6 +36,7 @@ export default function LimitationSection({ value = "", onChange = () => {} }) {
         <div className="space-y-4">
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <textarea
+              ref={textareaRef}
               className="w-full bg-transparent border-none outline-none resize-none text-gray-700 placeholder-gray-500"
               rows={4}
               placeholder="ระบุขอบเขตหรือข้อจำกัดของการตรวจสอบ เช่น พื้นที่ที่ไม่สามารถเข้าตรวจสอบได้ หรือข้อจำกัดทางเทคนิค (ถ้ามี)..."
