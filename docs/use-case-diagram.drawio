@@ -1,0 +1,274 @@
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="Mozilla/5.0" version="22.1.0" etag="pea-forms-use-case" type="device">
+  <diagram name="Use Case Diagram" id="pea-forms-use-case-diagram">
+    <mxGraphModel dx="1434" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- System Boundary -->
+        <mxCell id="system-boundary" value="ระบบจัดการแบบฟอร์มออนไลน์ PEA Forms App" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=200;height=30;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="200" y="40" width="750" height="700" as="geometry" />
+        </mxCell>
+        
+        <!-- Actor: พนักงาน PEA -->
+        <mxCell id="actor-pea" value="พนักงาน PEA" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="80" y="340" width="40" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 1: ลงทะเบียน -->
+        <mxCell id="uc-register" value="ลงทะเบียน" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 2: เข้าสู่ระบบ -->
+        <mxCell id="uc-login" value="เข้าสู่ระบบ" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 3: รีเซ็ตรหัสผ่าน -->
+        <mxCell id="uc-reset-password" value="รีเซ็ตรหัสผ่าน" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="500" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 4: ดู Dashboard -->
+        <mxCell id="uc-dashboard" value="ดู Dashboard&#xa;รายการฟอร์ม" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="230" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 5: เลือกประเภทฟอร์ม -->
+        <mxCell id="uc-select-form" value="เลือกประเภท&#xa;แบบฟอร์ม" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 6: กรอกข้อมูลฟอร์ม -->
+        <mxCell id="uc-fill-form" value="กรอกข้อมูล&#xa;แบบฟอร์ม" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="410" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 7: อัพโหลดรูปภาพ -->
+        <mxCell id="uc-upload-image" value="อัพโหลดรูปภาพ" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="500" y="320" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 8: เลือกตำแหน่งแผนที่ -->
+        <mxCell id="uc-select-location" value="เลือกตำแหน่ง&#xa;แผนที่" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="500" y="390" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 9: ลงลายเซ็นดิจิทัล -->
+        <mxCell id="uc-signature" value="ลงลายเซ็น&#xa;ดิจิทัล" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="500" y="460" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 10: เพิ่มรายการซ้ำ -->
+        <mxCell id="uc-add-repeating" value="เพิ่มรายการซ้ำ&#xa;(หม้อแปลง/วงจรย่อย)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="680" y="390" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 11: บันทึกฟอร์ม -->
+        <mxCell id="uc-save-form" value="บันทึกฟอร์ม" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="500" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 12: แก้ไขฟอร์ม -->
+        <mxCell id="uc-edit-form" value="แก้ไขฟอร์ม&#xa;ที่บันทึกไว้" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="580" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 13: ค้นหา/กรองฟอร์ม -->
+        <mxCell id="uc-search-form" value="ค้นหา/กรอง&#xa;ฟอร์ม" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="500" y="230" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 14: ดาวน์โหลด PDF -->
+        <mxCell id="uc-download-pdf" value="ดาวน์โหลด&#xa;รายงาน PDF" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="660" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Case 15: ออกจากระบบ -->
+        <mxCell id="uc-logout" value="ออกจากระบบ" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="500" y="80" width="120" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Form Types (sub use cases) -->
+        <mxCell id="uc-home" value="ตรวจสอบบ้าน" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="680" y="240" width="100" height="35" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc-condo" value="ตรวจสอบคอนโด" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="800" y="240" width="100" height="35" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc-construction" value="ตรวจสอบก่อสร้าง" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="680" y="285" width="100" height="35" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc-ev-lv" value="ตรวจสอบ EV LV" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="800" y="285" width="100" height="35" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc-ev-hv" value="ตรวจสอบ EV HV" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="680" y="330" width="100" height="35" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc-other" value="ตรวจสอบอื่นๆ" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="800" y="330" width="100" height="35" as="geometry" />
+        </mxCell>
+        
+        <!-- Associations (Actor to Use Cases) -->
+        <mxCell id="assoc-1" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor-pea" target="uc-register">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc-2" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor-pea" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc-3" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor-pea" target="uc-dashboard">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc-4" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor-pea" target="uc-select-form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc-5" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor-pea" target="uc-fill-form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc-6" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor-pea" target="uc-save-form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc-7" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor-pea" target="uc-edit-form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc-8" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor-pea" target="uc-download-pdf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Extend relationships -->
+        <mxCell id="extend-1" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#666666;" edge="1" parent="1" source="uc-reset-password" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend-1-label" value="&lt;&lt;extend&gt;&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="440" y="135" width="60" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="extend-2" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#666666;" edge="1" parent="1" source="uc-search-form" target="uc-dashboard">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend-2-label" value="&lt;&lt;extend&gt;&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="440" y="225" width="60" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Include relationships -->
+        <mxCell id="include-1" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#0066CC;" edge="1" parent="1" source="uc-fill-form" target="uc-upload-image">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include-1-label" value="&lt;&lt;include&gt;&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#0066CC;" vertex="1" parent="1">
+          <mxGeometry x="420" y="360" width="60" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include-2" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#0066CC;" edge="1" parent="1" source="uc-fill-form" target="uc-select-location">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include-2-label" value="&lt;&lt;include&gt;&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#0066CC;" vertex="1" parent="1">
+          <mxGeometry x="420" y="400" width="60" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include-3" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#0066CC;" edge="1" parent="1" source="uc-fill-form" target="uc-signature">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include-3-label" value="&lt;&lt;include&gt;&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#0066CC;" vertex="1" parent="1">
+          <mxGeometry x="420" y="450" width="60" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="include-4" style="endArrow=open;endSize=12;dashed=1;html=1;strokeColor=#0066CC;" edge="1" parent="1" source="uc-fill-form" target="uc-add-repeating">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include-4-label" value="&lt;&lt;include&gt;&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#0066CC;" vertex="1" parent="1">
+          <mxGeometry x="550" y="430" width="60" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Generalization for form types -->
+        <mxCell id="gen-1" style="endArrow=block;endFill=0;html=1;strokeColor=#b85450;" edge="1" parent="1" source="uc-home" target="uc-select-form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="gen-2" style="endArrow=block;endFill=0;html=1;strokeColor=#b85450;" edge="1" parent="1" source="uc-condo" target="uc-select-form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="gen-3" style="endArrow=block;endFill=0;html=1;strokeColor=#b85450;" edge="1" parent="1" source="uc-construction" target="uc-select-form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="gen-4" style="endArrow=block;endFill=0;html=1;strokeColor=#b85450;" edge="1" parent="1" source="uc-ev-lv" target="uc-select-form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="gen-5" style="endArrow=block;endFill=0;html=1;strokeColor=#b85450;" edge="1" parent="1" source="uc-ev-hv" target="uc-select-form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="gen-6" style="endArrow=block;endFill=0;html=1;strokeColor=#b85450;" edge="1" parent="1" source="uc-other" target="uc-select-form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Legend -->
+        <mxCell id="legend-box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="20" y="500" width="150" height="180" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-title" value="คำอธิบายสัญลักษณ์" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="20" y="505" width="150" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-uc" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="30" y="530" width="30" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-uc-text" value="Use Case หลัก" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="65" y="525" width="100" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-sub" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="30" y="555" width="30" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-sub-text" value="Sub Use Case" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="65" y="550" width="100" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-form" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="30" y="580" width="30" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-form-text" value="ประเภทฟอร์ม" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="65" y="575" width="100" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-include" value="- - - - - -" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;fontColor=#0066CC;" vertex="1" parent="1">
+          <mxGeometry x="30" y="600" width="30" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-include-text" value="&lt;&lt;include&gt;&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="65" y="600" width="100" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-extend" value="- - - - - -" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="30" y="625" width="30" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-extend-text" value="&lt;&lt;extend&gt;&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="65" y="625" width="100" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-gen" value="△" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=14;fontColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="35" y="645" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-gen-text" value="Generalization" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="65" y="650" width="100" height="20" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
